@@ -1,0 +1,616 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8131566C17EF5E370043ED43 /* EventsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A317EBABEE00033D4F /* EventsViewController.xib */; };
+		8149DFC017EBB2FD0092F8F9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8149DFBF17EBB2FD0092F8F9 /* QuartzCore.framework */; };
+		8149DFC917EBB4F90092F8F9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */; };
+		8149DFCB17EBB5450092F8F9 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8149DFCA17EBB5450092F8F9 /* MessageUI.framework */; };
+		8149DFCD17EBB5780092F8F9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8149DFCC17EBB5780092F8F9 /* main.m */; };
+		81745A7517EBAEED008D2C2C /* CinequestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */; };
+		81745A7617EBAEED008D2C2C /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5317EBAEED008D2C2C /* DDXMLDocument.m */; };
+		81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5517EBAEED008D2C2C /* DDXMLElement.m */; };
+		81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5717EBAEED008D2C2C /* DDXMLElementAdditions.m */; };
+		81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5917EBAEED008D2C2C /* DDXMLNode.m */; };
+		81745A7A17EBAEED008D2C2C /* DVD.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5C17EBAEED008D2C2C /* DVD.m */; };
+		81745A7B17EBAEED008D2C2C /* DVDsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5E17EBAEED008D2C2C /* DVDsViewController.m */; };
+		81745A7C17EBAEED008D2C2C /* EventDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6017EBAEED008D2C2C /* EventDetailViewController.m */; };
+		81745A7D17EBAEED008D2C2C /* EventsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6217EBAEED008D2C2C /* EventsViewController.m */; };
+		81745A7E17EBAEED008D2C2C /* FilmDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6417EBAEED008D2C2C /* FilmDetail.m */; };
+		81745A7F17EBAEED008D2C2C /* FilmsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6617EBAEED008D2C2C /* FilmsViewController.m */; };
+		81745A8017EBAEED008D2C2C /* ForumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6817EBAEED008D2C2C /* ForumsViewController.m */; };
+		81745A8117EBAEED008D2C2C /* LoadDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6A17EBAEED008D2C2C /* LoadDataViewController.m */; };
+		81745A8217EBAEED008D2C2C /* LogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6C17EBAEED008D2C2C /* LogInViewController.m */; };
+		81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */; };
+		81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7017EBAEED008D2C2C /* NewsViewController.m */; };
+		81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7217EBAEED008D2C2C /* NSStringAdditions.m */; };
+		81745A8617EBAEED008D2C2C /* Schedule.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7417EBAEED008D2C2C /* Schedule.m */; };
+		8192CC6217EBC91D00DBE036 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8192CC6117EBC91D00DBE036 /* libxml2.dylib */; };
+		8192CC6417EBC92D00DBE036 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */; };
+		81C8B38217EBAB3200033D4F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38117EBAB3200033D4F /* UIKit.framework */; };
+		81C8B38417EBAB3200033D4F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38317EBAB3200033D4F /* Foundation.framework */; };
+		81C8B38617EBAB3200033D4F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38517EBAB3200033D4F /* CoreGraphics.framework */; };
+		81C8B3AC17EBABEE00033D4F /* DVDsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A117EBABEE00033D4F /* DVDsViewController.xib */; };
+		81C8B3AD17EBABEE00033D4F /* EventDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */; };
+		81C8B3AF17EBABEE00033D4F /* FilmDetail.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A417EBABEE00033D4F /* FilmDetail.xib */; };
+		81C8B3B017EBABEE00033D4F /* FilmsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A517EBABEE00033D4F /* FilmsViewController.xib */; };
+		81C8B3B117EBABEE00033D4F /* ForumsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A617EBABEE00033D4F /* ForumsViewController.xib */; };
+		81C8B3B217EBABEE00033D4F /* LoadDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A717EBABEE00033D4F /* LoadDataViewController.xib */; };
+		81C8B3B317EBABEE00033D4F /* LogInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A817EBABEE00033D4F /* LogInViewController.xib */; };
+		81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A917EBABEE00033D4F /* MainWindow.xib */; };
+		81C8B3B517EBABEE00033D4F /* MySchedulerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */; };
+		81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */; };
+		81C8B3CE17EBAC2C00033D4F /* checkbox-checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */; };
+		81C8B3CF17EBAC2C00033D4F /* checkbox-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BB17EBAC2C00033D4F /* checkbox-pressed.png */; };
+		81C8B3D017EBAC2C00033D4F /* checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BC17EBAC2C00033D4F /* checkbox.png */; };
+		81C8B3D117EBAC2C00033D4F /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BD17EBAC2C00033D4F /* checked.png */; };
+		81C8B3D217EBAC2C00033D4F /* cq_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BE17EBAC2C00033D4F /* cq_logo.png */; };
+		81C8B3D317EBAC2C00033D4F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BF17EBAC2C00033D4F /* Default-568h@2x.png */; };
+		81C8B3D417EBAC2C00033D4F /* Default-retina.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C017EBAC2C00033D4F /* Default-retina.png */; };
+		81C8B3D517EBAC2C00033D4F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C117EBAC2C00033D4F /* Default.png */; };
+		81C8B3D617EBAC2C00033D4F /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C217EBAC2C00033D4F /* Default@2x.png */; };
+		81C8B3D717EBAC2C00033D4F /* dvd_icon_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C317EBAC2C00033D4F /* dvd_icon_small.png */; };
+		81C8B3D817EBAC2C00033D4F /* events_icon_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C417EBAC2C00033D4F /* events_icon_small.png */; };
+		81C8B3D917EBAC2C00033D4F /* film_icon2.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C517EBAC2C00033D4F /* film_icon2.png */; };
+		81C8B3DA17EBAC2C00033D4F /* iphone_icon_114_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C617EBAC2C00033D4F /* iphone_icon_114_114.png */; };
+		81C8B3DB17EBAC2C00033D4F /* iphone_icon57_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C717EBAC2C00033D4F /* iphone_icon57_57.png */; };
+		81C8B3DC17EBAC2C00033D4F /* iphone_icon512_512.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C817EBAC2C00033D4F /* iphone_icon512_512.jpg */; };
+		81C8B3DD17EBAC2C00033D4F /* logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C917EBAC2C00033D4F /* logo.gif */; };
+		81C8B3DE17EBAC2C00033D4F /* schedule.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3CA17EBAC2C00033D4F /* schedule.png */; };
+		81C8B3DF17EBAC2C00033D4F /* sjsulogo_new_sjsu4.gif in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3CB17EBAC2C00033D4F /* sjsulogo_new_sjsu4.gif */; };
+		81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3CC17EBAC2C00033D4F /* trans_forums_small.png */; };
+		81C8B3E117EBAC2C00033D4F /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3CD17EBAC2C00033D4F /* unchecked.png */; };
+		81C8B3F917EBAC6100033D4F /* FBConnect.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3E317EBAC6100033D4F /* FBConnect.bundle */; };
+		81C8B3FA17EBAC6100033D4F /* FBConnectGlobal.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3E617EBAC6100033D4F /* FBConnectGlobal.m */; };
+		81C8B3FB17EBAC6100033D4F /* FBDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3E817EBAC6100033D4F /* FBDialog.m */; };
+		81C8B3FC17EBAC6100033D4F /* FBFeedDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3EA17EBAC6100033D4F /* FBFeedDialog.m */; };
+		81C8B3FD17EBAC6100033D4F /* FBLoginButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3EC17EBAC6100033D4F /* FBLoginButton.m */; };
+		81C8B3FE17EBAC6100033D4F /* FBLoginDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3EE17EBAC6100033D4F /* FBLoginDialog.m */; };
+		81C8B3FF17EBAC6100033D4F /* FBPermissionDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F017EBAC6100033D4F /* FBPermissionDialog.m */; };
+		81C8B40017EBAC6100033D4F /* FBRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F217EBAC6100033D4F /* FBRequest.m */; };
+		81C8B40117EBAC6100033D4F /* FBSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F417EBAC6100033D4F /* FBSession.m */; };
+		81C8B40217EBAC6100033D4F /* FBStreamDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F617EBAC6100033D4F /* FBStreamDialog.m */; };
+		81C8B40317EBAC6100033D4F /* FBXMLHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8149DFBF17EBB2FD0092F8F9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		8149DFCA17EBB5450092F8F9 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		8149DFCC17EBB5780092F8F9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sources/main.m; sourceTree = SOURCE_ROOT; };
+		81745A4E17EBAEED008D2C2C /* Cinequest-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Cinequest-Prefix.pch"; path = "sources/Cinequest-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		81745A4F17EBAEED008D2C2C /* CinequestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CinequestAppDelegate.h; path = sources/CinequestAppDelegate.h; sourceTree = SOURCE_ROOT; };
+		81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CinequestAppDelegate.m; path = sources/CinequestAppDelegate.m; sourceTree = SOURCE_ROOT; };
+		81745A5117EBAEED008D2C2C /* DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDXML.h; path = sources/DDXML.h; sourceTree = SOURCE_ROOT; };
+		81745A5217EBAEED008D2C2C /* DDXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDXMLDocument.h; path = sources/DDXMLDocument.h; sourceTree = SOURCE_ROOT; };
+		81745A5317EBAEED008D2C2C /* DDXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDXMLDocument.m; path = sources/DDXMLDocument.m; sourceTree = SOURCE_ROOT; };
+		81745A5417EBAEED008D2C2C /* DDXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDXMLElement.h; path = sources/DDXMLElement.h; sourceTree = SOURCE_ROOT; };
+		81745A5517EBAEED008D2C2C /* DDXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDXMLElement.m; path = sources/DDXMLElement.m; sourceTree = SOURCE_ROOT; };
+		81745A5617EBAEED008D2C2C /* DDXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDXMLElementAdditions.h; path = sources/DDXMLElementAdditions.h; sourceTree = SOURCE_ROOT; };
+		81745A5717EBAEED008D2C2C /* DDXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDXMLElementAdditions.m; path = sources/DDXMLElementAdditions.m; sourceTree = SOURCE_ROOT; };
+		81745A5817EBAEED008D2C2C /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDXMLNode.h; path = sources/DDXMLNode.h; sourceTree = SOURCE_ROOT; };
+		81745A5917EBAEED008D2C2C /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDXMLNode.m; path = sources/DDXMLNode.m; sourceTree = SOURCE_ROOT; };
+		81745A5A17EBAEED008D2C2C /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDXMLPrivate.h; path = sources/DDXMLPrivate.h; sourceTree = SOURCE_ROOT; };
+		81745A5B17EBAEED008D2C2C /* DVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVD.h; path = sources/DVD.h; sourceTree = SOURCE_ROOT; };
+		81745A5C17EBAEED008D2C2C /* DVD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DVD.m; path = sources/DVD.m; sourceTree = SOURCE_ROOT; };
+		81745A5D17EBAEED008D2C2C /* DVDsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDsViewController.h; path = sources/DVDsViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A5E17EBAEED008D2C2C /* DVDsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DVDsViewController.m; path = sources/DVDsViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A5F17EBAEED008D2C2C /* EventDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventDetailViewController.h; path = sources/EventDetailViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A6017EBAEED008D2C2C /* EventDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventDetailViewController.m; path = sources/EventDetailViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A6117EBAEED008D2C2C /* EventsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventsViewController.h; path = sources/EventsViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A6217EBAEED008D2C2C /* EventsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventsViewController.m; path = sources/EventsViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A6317EBAEED008D2C2C /* FilmDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilmDetail.h; path = sources/FilmDetail.h; sourceTree = SOURCE_ROOT; };
+		81745A6417EBAEED008D2C2C /* FilmDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilmDetail.m; path = sources/FilmDetail.m; sourceTree = SOURCE_ROOT; };
+		81745A6517EBAEED008D2C2C /* FilmsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilmsViewController.h; path = sources/FilmsViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A6617EBAEED008D2C2C /* FilmsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilmsViewController.m; path = sources/FilmsViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A6717EBAEED008D2C2C /* ForumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForumsViewController.h; path = sources/ForumsViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A6817EBAEED008D2C2C /* ForumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForumsViewController.m; path = sources/ForumsViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A6917EBAEED008D2C2C /* LoadDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoadDataViewController.h; path = sources/LoadDataViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A6A17EBAEED008D2C2C /* LoadDataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoadDataViewController.m; path = sources/LoadDataViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A6B17EBAEED008D2C2C /* LogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogInViewController.h; path = sources/LogInViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A6C17EBAEED008D2C2C /* LogInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogInViewController.m; path = sources/LogInViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A6D17EBAEED008D2C2C /* MySchedulerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MySchedulerViewController.h; path = sources/MySchedulerViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MySchedulerViewController.m; path = sources/MySchedulerViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A6F17EBAEED008D2C2C /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewsViewController.h; path = sources/NewsViewController.h; sourceTree = SOURCE_ROOT; };
+		81745A7017EBAEED008D2C2C /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewsViewController.m; path = sources/NewsViewController.m; sourceTree = SOURCE_ROOT; };
+		81745A7117EBAEED008D2C2C /* NSStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSStringAdditions.h; path = sources/NSStringAdditions.h; sourceTree = SOURCE_ROOT; };
+		81745A7217EBAEED008D2C2C /* NSStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSStringAdditions.m; path = sources/NSStringAdditions.m; sourceTree = SOURCE_ROOT; };
+		81745A7317EBAEED008D2C2C /* Schedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Schedule.h; path = sources/Schedule.h; sourceTree = SOURCE_ROOT; };
+		81745A7417EBAEED008D2C2C /* Schedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Schedule.m; path = sources/Schedule.m; sourceTree = SOURCE_ROOT; };
+		8192CC6117EBC91D00DBE036 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		81C8B37E17EBAB3200033D4F /* Cinequest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cinequest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		81C8B38117EBAB3200033D4F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		81C8B38317EBAB3200033D4F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		81C8B38517EBAB3200033D4F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		81C8B3A117EBABEE00033D4F /* DVDsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = DVDsViewController.xib; path = resources/DVDsViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EventDetailViewController.xib; path = resources/EventDetailViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A317EBABEE00033D4F /* EventsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EventsViewController.xib; path = resources/EventsViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A417EBABEE00033D4F /* FilmDetail.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FilmDetail.xib; path = resources/FilmDetail.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A517EBABEE00033D4F /* FilmsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FilmsViewController.xib; path = resources/FilmsViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A617EBABEE00033D4F /* ForumsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ForumsViewController.xib; path = resources/ForumsViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A717EBABEE00033D4F /* LoadDataViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoadDataViewController.xib; path = resources/LoadDataViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A817EBABEE00033D4F /* LogInViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LogInViewController.xib; path = resources/LogInViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3A917EBABEE00033D4F /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = resources/MainWindow.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MySchedulerViewController.xib; path = resources/MySchedulerViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NewsViewController.xib; path = resources/NewsViewController.xib; sourceTree = SOURCE_ROOT; };
+		81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "checkbox-checked.png"; path = "images/checkbox-checked.png"; sourceTree = SOURCE_ROOT; };
+		81C8B3BB17EBAC2C00033D4F /* checkbox-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "checkbox-pressed.png"; path = "images/checkbox-pressed.png"; sourceTree = SOURCE_ROOT; };
+		81C8B3BC17EBAC2C00033D4F /* checkbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkbox.png; path = images/checkbox.png; sourceTree = SOURCE_ROOT; };
+		81C8B3BD17EBAC2C00033D4F /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = images/checked.png; sourceTree = SOURCE_ROOT; };
+		81C8B3BE17EBAC2C00033D4F /* cq_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cq_logo.png; path = images/cq_logo.png; sourceTree = SOURCE_ROOT; };
+		81C8B3BF17EBAC2C00033D4F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "images/Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
+		81C8B3C017EBAC2C00033D4F /* Default-retina.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-retina.png"; path = "images/Default-retina.png"; sourceTree = SOURCE_ROOT; };
+		81C8B3C117EBAC2C00033D4F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = images/Default.png; sourceTree = SOURCE_ROOT; };
+		81C8B3C217EBAC2C00033D4F /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "images/Default@2x.png"; sourceTree = SOURCE_ROOT; };
+		81C8B3C317EBAC2C00033D4F /* dvd_icon_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dvd_icon_small.png; path = images/dvd_icon_small.png; sourceTree = SOURCE_ROOT; };
+		81C8B3C417EBAC2C00033D4F /* events_icon_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = events_icon_small.png; path = images/events_icon_small.png; sourceTree = SOURCE_ROOT; };
+		81C8B3C517EBAC2C00033D4F /* film_icon2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = film_icon2.png; path = images/film_icon2.png; sourceTree = SOURCE_ROOT; };
+		81C8B3C617EBAC2C00033D4F /* iphone_icon_114_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_icon_114_114.png; path = images/iphone_icon_114_114.png; sourceTree = SOURCE_ROOT; };
+		81C8B3C717EBAC2C00033D4F /* iphone_icon57_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_icon57_57.png; path = images/iphone_icon57_57.png; sourceTree = SOURCE_ROOT; };
+		81C8B3C817EBAC2C00033D4F /* iphone_icon512_512.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = iphone_icon512_512.jpg; path = images/iphone_icon512_512.jpg; sourceTree = SOURCE_ROOT; };
+		81C8B3C917EBAC2C00033D4F /* logo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = logo.gif; path = images/logo.gif; sourceTree = SOURCE_ROOT; };
+		81C8B3CA17EBAC2C00033D4F /* schedule.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = schedule.png; path = images/schedule.png; sourceTree = SOURCE_ROOT; };
+		81C8B3CB17EBAC2C00033D4F /* sjsulogo_new_sjsu4.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = sjsulogo_new_sjsu4.gif; path = images/sjsulogo_new_sjsu4.gif; sourceTree = SOURCE_ROOT; };
+		81C8B3CC17EBAC2C00033D4F /* trans_forums_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = trans_forums_small.png; path = images/trans_forums_small.png; sourceTree = SOURCE_ROOT; };
+		81C8B3CD17EBAC2C00033D4F /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = images/unchecked.png; sourceTree = SOURCE_ROOT; };
+		81C8B3E317EBAC6100033D4F /* FBConnect.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FBConnect.bundle; path = FBConnect/FBConnect.bundle; sourceTree = SOURCE_ROOT; };
+		81C8B3E417EBAC6100033D4F /* FBConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBConnect.h; path = FBConnect/FBConnect.h; sourceTree = SOURCE_ROOT; };
+		81C8B3E517EBAC6100033D4F /* FBConnectGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBConnectGlobal.h; path = FBConnect/FBConnectGlobal.h; sourceTree = SOURCE_ROOT; };
+		81C8B3E617EBAC6100033D4F /* FBConnectGlobal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBConnectGlobal.m; path = FBConnect/FBConnectGlobal.m; sourceTree = SOURCE_ROOT; };
+		81C8B3E717EBAC6100033D4F /* FBDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBDialog.h; path = FBConnect/FBDialog.h; sourceTree = SOURCE_ROOT; };
+		81C8B3E817EBAC6100033D4F /* FBDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBDialog.m; path = FBConnect/FBDialog.m; sourceTree = SOURCE_ROOT; };
+		81C8B3E917EBAC6100033D4F /* FBFeedDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBFeedDialog.h; path = FBConnect/FBFeedDialog.h; sourceTree = SOURCE_ROOT; };
+		81C8B3EA17EBAC6100033D4F /* FBFeedDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBFeedDialog.m; path = FBConnect/FBFeedDialog.m; sourceTree = SOURCE_ROOT; };
+		81C8B3EB17EBAC6100033D4F /* FBLoginButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBLoginButton.h; path = FBConnect/FBLoginButton.h; sourceTree = SOURCE_ROOT; };
+		81C8B3EC17EBAC6100033D4F /* FBLoginButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBLoginButton.m; path = FBConnect/FBLoginButton.m; sourceTree = SOURCE_ROOT; };
+		81C8B3ED17EBAC6100033D4F /* FBLoginDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBLoginDialog.h; path = FBConnect/FBLoginDialog.h; sourceTree = SOURCE_ROOT; };
+		81C8B3EE17EBAC6100033D4F /* FBLoginDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBLoginDialog.m; path = FBConnect/FBLoginDialog.m; sourceTree = SOURCE_ROOT; };
+		81C8B3EF17EBAC6100033D4F /* FBPermissionDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBPermissionDialog.h; path = FBConnect/FBPermissionDialog.h; sourceTree = SOURCE_ROOT; };
+		81C8B3F017EBAC6100033D4F /* FBPermissionDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBPermissionDialog.m; path = FBConnect/FBPermissionDialog.m; sourceTree = SOURCE_ROOT; };
+		81C8B3F117EBAC6100033D4F /* FBRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBRequest.h; path = FBConnect/FBRequest.h; sourceTree = SOURCE_ROOT; };
+		81C8B3F217EBAC6100033D4F /* FBRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBRequest.m; path = FBConnect/FBRequest.m; sourceTree = SOURCE_ROOT; };
+		81C8B3F317EBAC6100033D4F /* FBSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBSession.h; path = FBConnect/FBSession.h; sourceTree = SOURCE_ROOT; };
+		81C8B3F417EBAC6100033D4F /* FBSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBSession.m; path = FBConnect/FBSession.m; sourceTree = SOURCE_ROOT; };
+		81C8B3F517EBAC6100033D4F /* FBStreamDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBStreamDialog.h; path = FBConnect/FBStreamDialog.h; sourceTree = SOURCE_ROOT; };
+		81C8B3F617EBAC6100033D4F /* FBStreamDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBStreamDialog.m; path = FBConnect/FBStreamDialog.m; sourceTree = SOURCE_ROOT; };
+		81C8B3F717EBAC6100033D4F /* FBXMLHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBXMLHandler.h; path = FBConnect/FBXMLHandler.h; sourceTree = SOURCE_ROOT; };
+		81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBXMLHandler.m; path = FBConnect/FBXMLHandler.m; sourceTree = SOURCE_ROOT; };
+		81C8B43D17EBAD0100033D4F /* Cinequest-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = "Cinequest-Info.plist"; path = "resources/Cinequest-Info.plist"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		81C8B37B17EBAB3200033D4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81C8B38217EBAB3200033D4F /* UIKit.framework in Frameworks */,
+				81C8B38417EBAB3200033D4F /* Foundation.framework in Frameworks */,
+				81C8B38617EBAB3200033D4F /* CoreGraphics.framework in Frameworks */,
+				8149DFC017EBB2FD0092F8F9 /* QuartzCore.framework in Frameworks */,
+				8149DFC917EBB4F90092F8F9 /* SystemConfiguration.framework in Frameworks */,
+				8149DFCB17EBB5450092F8F9 /* MessageUI.framework in Frameworks */,
+				8192CC6217EBC91D00DBE036 /* libxml2.dylib in Frameworks */,
+				8192CC6417EBC92D00DBE036 /* libsqlite3.0.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8149DFC117EBB3280092F8F9 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				8192CC6117EBC91D00DBE036 /* libxml2.dylib */,
+				8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		81745A8717EBAFAE008D2C2C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				81745A4E17EBAEED008D2C2C /* Cinequest-Prefix.pch */,
+				8149DFCC17EBB5780092F8F9 /* main.m */,
+				81C8B43D17EBAD0100033D4F /* Cinequest-Info.plist */,
+			);
+			name = "Supporting Files";
+			path = Cinequest;
+			sourceTree = "<group>";
+		};
+		81C8B37517EBAB3200033D4F = {
+			isa = PBXGroup;
+			children = (
+				81C8B43C17EBAC9100033D4F /* Sources */,
+				81C8B3E217EBAC4C00033D4F /* FBConnect */,
+				81C8B3B917EBAC1600033D4F /* Images */,
+				81C8B3A017EBABAA00033D4F /* Resources */,
+				81745A8717EBAFAE008D2C2C /* Supporting Files */,
+				8149DFC117EBB3280092F8F9 /* Libraries */,
+				81C8B38017EBAB3200033D4F /* Frameworks */,
+				81C8B37F17EBAB3200033D4F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		81C8B37F17EBAB3200033D4F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				81C8B37E17EBAB3200033D4F /* Cinequest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		81C8B38017EBAB3200033D4F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				81C8B38517EBAB3200033D4F /* CoreGraphics.framework */,
+				81C8B38317EBAB3200033D4F /* Foundation.framework */,
+				8149DFCA17EBB5450092F8F9 /* MessageUI.framework */,
+				8149DFBF17EBB2FD0092F8F9 /* QuartzCore.framework */,
+				8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */,
+				81C8B38117EBAB3200033D4F /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		81C8B3A017EBABAA00033D4F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				81C8B3A117EBABEE00033D4F /* DVDsViewController.xib */,
+				81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */,
+				81C8B3A317EBABEE00033D4F /* EventsViewController.xib */,
+				81C8B3A417EBABEE00033D4F /* FilmDetail.xib */,
+				81C8B3A517EBABEE00033D4F /* FilmsViewController.xib */,
+				81C8B3A617EBABEE00033D4F /* ForumsViewController.xib */,
+				81C8B3A717EBABEE00033D4F /* LoadDataViewController.xib */,
+				81C8B3A817EBABEE00033D4F /* LogInViewController.xib */,
+				81C8B3A917EBABEE00033D4F /* MainWindow.xib */,
+				81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */,
+				81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */,
+			);
+			name = Resources;
+			path = Cinequest;
+			sourceTree = "<group>";
+		};
+		81C8B3B917EBAC1600033D4F /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */,
+				81C8B3BB17EBAC2C00033D4F /* checkbox-pressed.png */,
+				81C8B3BC17EBAC2C00033D4F /* checkbox.png */,
+				81C8B3BD17EBAC2C00033D4F /* checked.png */,
+				81C8B3BE17EBAC2C00033D4F /* cq_logo.png */,
+				81C8B3BF17EBAC2C00033D4F /* Default-568h@2x.png */,
+				81C8B3C017EBAC2C00033D4F /* Default-retina.png */,
+				81C8B3C117EBAC2C00033D4F /* Default.png */,
+				81C8B3C217EBAC2C00033D4F /* Default@2x.png */,
+				81C8B3C317EBAC2C00033D4F /* dvd_icon_small.png */,
+				81C8B3C417EBAC2C00033D4F /* events_icon_small.png */,
+				81C8B3C517EBAC2C00033D4F /* film_icon2.png */,
+				81C8B3C617EBAC2C00033D4F /* iphone_icon_114_114.png */,
+				81C8B3C717EBAC2C00033D4F /* iphone_icon57_57.png */,
+				81C8B3C817EBAC2C00033D4F /* iphone_icon512_512.jpg */,
+				81C8B3C917EBAC2C00033D4F /* logo.gif */,
+				81C8B3CA17EBAC2C00033D4F /* schedule.png */,
+				81C8B3CB17EBAC2C00033D4F /* sjsulogo_new_sjsu4.gif */,
+				81C8B3CC17EBAC2C00033D4F /* trans_forums_small.png */,
+				81C8B3CD17EBAC2C00033D4F /* unchecked.png */,
+			);
+			name = Images;
+			path = Cinequest;
+			sourceTree = "<group>";
+		};
+		81C8B3E217EBAC4C00033D4F /* FBConnect */ = {
+			isa = PBXGroup;
+			children = (
+				81C8B3E317EBAC6100033D4F /* FBConnect.bundle */,
+				81C8B3E417EBAC6100033D4F /* FBConnect.h */,
+				81C8B3E517EBAC6100033D4F /* FBConnectGlobal.h */,
+				81C8B3E617EBAC6100033D4F /* FBConnectGlobal.m */,
+				81C8B3E717EBAC6100033D4F /* FBDialog.h */,
+				81C8B3E817EBAC6100033D4F /* FBDialog.m */,
+				81C8B3E917EBAC6100033D4F /* FBFeedDialog.h */,
+				81C8B3EA17EBAC6100033D4F /* FBFeedDialog.m */,
+				81C8B3EB17EBAC6100033D4F /* FBLoginButton.h */,
+				81C8B3EC17EBAC6100033D4F /* FBLoginButton.m */,
+				81C8B3ED17EBAC6100033D4F /* FBLoginDialog.h */,
+				81C8B3EE17EBAC6100033D4F /* FBLoginDialog.m */,
+				81C8B3EF17EBAC6100033D4F /* FBPermissionDialog.h */,
+				81C8B3F017EBAC6100033D4F /* FBPermissionDialog.m */,
+				81C8B3F117EBAC6100033D4F /* FBRequest.h */,
+				81C8B3F217EBAC6100033D4F /* FBRequest.m */,
+				81C8B3F317EBAC6100033D4F /* FBSession.h */,
+				81C8B3F417EBAC6100033D4F /* FBSession.m */,
+				81C8B3F517EBAC6100033D4F /* FBStreamDialog.h */,
+				81C8B3F617EBAC6100033D4F /* FBStreamDialog.m */,
+				81C8B3F717EBAC6100033D4F /* FBXMLHandler.h */,
+				81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */,
+			);
+			name = FBConnect;
+			path = Cinequest;
+			sourceTree = "<group>";
+		};
+		81C8B43C17EBAC9100033D4F /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				81745A4F17EBAEED008D2C2C /* CinequestAppDelegate.h */,
+				81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */,
+				81745A5117EBAEED008D2C2C /* DDXML.h */,
+				81745A5217EBAEED008D2C2C /* DDXMLDocument.h */,
+				81745A5317EBAEED008D2C2C /* DDXMLDocument.m */,
+				81745A5417EBAEED008D2C2C /* DDXMLElement.h */,
+				81745A5517EBAEED008D2C2C /* DDXMLElement.m */,
+				81745A5617EBAEED008D2C2C /* DDXMLElementAdditions.h */,
+				81745A5717EBAEED008D2C2C /* DDXMLElementAdditions.m */,
+				81745A5817EBAEED008D2C2C /* DDXMLNode.h */,
+				81745A5917EBAEED008D2C2C /* DDXMLNode.m */,
+				81745A5A17EBAEED008D2C2C /* DDXMLPrivate.h */,
+				81745A5B17EBAEED008D2C2C /* DVD.h */,
+				81745A5C17EBAEED008D2C2C /* DVD.m */,
+				81745A5D17EBAEED008D2C2C /* DVDsViewController.h */,
+				81745A5E17EBAEED008D2C2C /* DVDsViewController.m */,
+				81745A5F17EBAEED008D2C2C /* EventDetailViewController.h */,
+				81745A6017EBAEED008D2C2C /* EventDetailViewController.m */,
+				81745A6117EBAEED008D2C2C /* EventsViewController.h */,
+				81745A6217EBAEED008D2C2C /* EventsViewController.m */,
+				81745A6317EBAEED008D2C2C /* FilmDetail.h */,
+				81745A6417EBAEED008D2C2C /* FilmDetail.m */,
+				81745A6517EBAEED008D2C2C /* FilmsViewController.h */,
+				81745A6617EBAEED008D2C2C /* FilmsViewController.m */,
+				81745A6717EBAEED008D2C2C /* ForumsViewController.h */,
+				81745A6817EBAEED008D2C2C /* ForumsViewController.m */,
+				81745A6917EBAEED008D2C2C /* LoadDataViewController.h */,
+				81745A6A17EBAEED008D2C2C /* LoadDataViewController.m */,
+				81745A6B17EBAEED008D2C2C /* LogInViewController.h */,
+				81745A6C17EBAEED008D2C2C /* LogInViewController.m */,
+				81745A6D17EBAEED008D2C2C /* MySchedulerViewController.h */,
+				81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */,
+				81745A6F17EBAEED008D2C2C /* NewsViewController.h */,
+				81745A7017EBAEED008D2C2C /* NewsViewController.m */,
+				81745A7117EBAEED008D2C2C /* NSStringAdditions.h */,
+				81745A7217EBAEED008D2C2C /* NSStringAdditions.m */,
+				81745A7317EBAEED008D2C2C /* Schedule.h */,
+				81745A7417EBAEED008D2C2C /* Schedule.m */,
+			);
+			name = Sources;
+			path = Cinequest;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		81C8B37D17EBAB3200033D4F /* Cinequest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81C8B39B17EBAB3200033D4F /* Build configuration list for PBXNativeTarget "Cinequest" */;
+			buildPhases = (
+				81C8B37A17EBAB3200033D4F /* Sources */,
+				81C8B37B17EBAB3200033D4F /* Frameworks */,
+				81C8B37C17EBAB3200033D4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Cinequest;
+			productName = Cinequest;
+			productReference = 81C8B37E17EBAB3200033D4F /* Cinequest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		81C8B37617EBAB3200033D4F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "San Jose State University";
+			};
+			buildConfigurationList = 81C8B37917EBAB3200033D4F /* Build configuration list for PBXProject "Cinequest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 81C8B37517EBAB3200033D4F;
+			productRefGroup = 81C8B37F17EBAB3200033D4F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				81C8B37D17EBAB3200033D4F /* Cinequest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		81C8B37C17EBAB3200033D4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81C8B3AC17EBABEE00033D4F /* DVDsViewController.xib in Resources */,
+				81C8B3AD17EBABEE00033D4F /* EventDetailViewController.xib in Resources */,
+				81C8B3AF17EBABEE00033D4F /* FilmDetail.xib in Resources */,
+				81C8B3B017EBABEE00033D4F /* FilmsViewController.xib in Resources */,
+				81C8B3B117EBABEE00033D4F /* ForumsViewController.xib in Resources */,
+				81C8B3B217EBABEE00033D4F /* LoadDataViewController.xib in Resources */,
+				81C8B3B317EBABEE00033D4F /* LogInViewController.xib in Resources */,
+				81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */,
+				81C8B3B517EBABEE00033D4F /* MySchedulerViewController.xib in Resources */,
+				81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */,
+				81C8B3CE17EBAC2C00033D4F /* checkbox-checked.png in Resources */,
+				81C8B3CF17EBAC2C00033D4F /* checkbox-pressed.png in Resources */,
+				81C8B3D017EBAC2C00033D4F /* checkbox.png in Resources */,
+				81C8B3D117EBAC2C00033D4F /* checked.png in Resources */,
+				81C8B3D217EBAC2C00033D4F /* cq_logo.png in Resources */,
+				81C8B3D317EBAC2C00033D4F /* Default-568h@2x.png in Resources */,
+				81C8B3D417EBAC2C00033D4F /* Default-retina.png in Resources */,
+				81C8B3D517EBAC2C00033D4F /* Default.png in Resources */,
+				81C8B3D617EBAC2C00033D4F /* Default@2x.png in Resources */,
+				81C8B3D717EBAC2C00033D4F /* dvd_icon_small.png in Resources */,
+				81C8B3D817EBAC2C00033D4F /* events_icon_small.png in Resources */,
+				81C8B3D917EBAC2C00033D4F /* film_icon2.png in Resources */,
+				81C8B3DA17EBAC2C00033D4F /* iphone_icon_114_114.png in Resources */,
+				81C8B3DB17EBAC2C00033D4F /* iphone_icon57_57.png in Resources */,
+				81C8B3DC17EBAC2C00033D4F /* iphone_icon512_512.jpg in Resources */,
+				81C8B3DD17EBAC2C00033D4F /* logo.gif in Resources */,
+				81C8B3DE17EBAC2C00033D4F /* schedule.png in Resources */,
+				81C8B3DF17EBAC2C00033D4F /* sjsulogo_new_sjsu4.gif in Resources */,
+				81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */,
+				81C8B3E117EBAC2C00033D4F /* unchecked.png in Resources */,
+				81C8B3F917EBAC6100033D4F /* FBConnect.bundle in Resources */,
+				8131566C17EF5E370043ED43 /* EventsViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		81C8B37A17EBAB3200033D4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81C8B3FA17EBAC6100033D4F /* FBConnectGlobal.m in Sources */,
+				81C8B3FB17EBAC6100033D4F /* FBDialog.m in Sources */,
+				81C8B3FC17EBAC6100033D4F /* FBFeedDialog.m in Sources */,
+				81C8B3FD17EBAC6100033D4F /* FBLoginButton.m in Sources */,
+				81C8B3FE17EBAC6100033D4F /* FBLoginDialog.m in Sources */,
+				81C8B3FF17EBAC6100033D4F /* FBPermissionDialog.m in Sources */,
+				81C8B40017EBAC6100033D4F /* FBRequest.m in Sources */,
+				81C8B40117EBAC6100033D4F /* FBSession.m in Sources */,
+				81C8B40217EBAC6100033D4F /* FBStreamDialog.m in Sources */,
+				81C8B40317EBAC6100033D4F /* FBXMLHandler.m in Sources */,
+				81745A7517EBAEED008D2C2C /* CinequestAppDelegate.m in Sources */,
+				81745A7617EBAEED008D2C2C /* DDXMLDocument.m in Sources */,
+				81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */,
+				81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */,
+				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
+				81745A7A17EBAEED008D2C2C /* DVD.m in Sources */,
+				81745A7B17EBAEED008D2C2C /* DVDsViewController.m in Sources */,
+				81745A7C17EBAEED008D2C2C /* EventDetailViewController.m in Sources */,
+				81745A7D17EBAEED008D2C2C /* EventsViewController.m in Sources */,
+				81745A7E17EBAEED008D2C2C /* FilmDetail.m in Sources */,
+				81745A7F17EBAEED008D2C2C /* FilmsViewController.m in Sources */,
+				81745A8017EBAEED008D2C2C /* ForumsViewController.m in Sources */,
+				81745A8117EBAEED008D2C2C /* LoadDataViewController.m in Sources */,
+				81745A8217EBAEED008D2C2C /* LogInViewController.m in Sources */,
+				81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */,
+				81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */,
+				81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */,
+				81745A8617EBAEED008D2C2C /* Schedule.m in Sources */,
+				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		81C8B39917EBAB3200033D4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/FacebookSDK";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		81C8B39A17EBAB3200033D4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/FacebookSDK";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		81C8B39C17EBAB3200033D4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "sources/Cinequest-Prefix.pch";
+				INFOPLIST_FILE = "resources/Cinequest-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		81C8B39D17EBAB3200033D4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "sources/Cinequest-Prefix.pch";
+				INFOPLIST_FILE = "resources/Cinequest-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		81C8B37917EBAB3200033D4F /* Build configuration list for PBXProject "Cinequest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81C8B39917EBAB3200033D4F /* Debug */,
+				81C8B39A17EBAB3200033D4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81C8B39B17EBAB3200033D4F /* Build configuration list for PBXNativeTarget "Cinequest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81C8B39C17EBAB3200033D4F /* Debug */,
+				81C8B39D17EBAB3200033D4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 81C8B37617EBAB3200033D4F /* Project object */;
+}
