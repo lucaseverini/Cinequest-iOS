@@ -31,14 +31,6 @@
 @synthesize loadingLabel;
 @synthesize tableView = _tableView;
 
-- (void)dealloc {
-	[_tableView release];
-	[activity release];
-	[loadingLabel release];
-	[order release];
-	[data release];
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark UIViewController Methods
@@ -86,74 +78,67 @@
 	DVD *temp = [[DVD alloc] init];
 	FilmDetail *detail = [[FilmDetail alloc] initWithTitle:@"" andDataObject:temp andURL:url];
 	[self.navigationController pushViewController:detail animated:YES];
-	[detail release];
-	[temp release];
 }
 - (void)newRelease:(id)sender {
 	NSURL *url = [NSURL URLWithString:NEWRELEASE];
 	DVD *temp = [[DVD alloc] init];
 	FilmDetail *detail = [[FilmDetail alloc] initWithTitle:@"" andDataObject:temp andURL:url];
 	[self.navigationController pushViewController:detail animated:YES];
-	[detail release];
-	[temp release];
 }
 
 #pragma mark -
 #pragma mark Private Methods
 - (void)startParsingXML {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSURL *link = [NSURL URLWithString:DVDs];
-	NSData *dvddata = [NSData dataWithContentsOfURL:link];
-	
-	DDXMLDocument *dvdxmlDoc = [[DDXMLDocument alloc] initWithData:dvddata options:0 error:nil];
-	DDXMLNode *rootElement = [dvdxmlDoc rootElement];
-	
-	int childCount = [rootElement childCount];
-	
-	NSString *previousLetter = @"empty";
-	NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-	for (int i = 0; i < childCount; i++) {
-		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
-		NSDictionary *attributes = [child attributesAsDictionary];
+	@autoreleasepool {
+		NSURL *link = [NSURL URLWithString:DVDs];
+		NSData *dvddata = [NSData dataWithContentsOfURL:link];
 		
-		NSString *ID		= [attributes objectForKey:@"id"];
-		NSString *sort		= [attributes objectForKey:@"sort"];
+		DDXMLDocument *dvdxmlDoc = [[DDXMLDocument alloc] initWithData:dvddata options:0 error:nil];
+		DDXMLNode *rootElement = [dvdxmlDoc rootElement];
 		
-		DVD *dvd		= [[DVD alloc] init];
+		int childCount = [rootElement childCount];
 		
-		dvd.ID			= [ID intValue];
-		
-		dvd.title		= [child stringValue];
-		dvd.sort		= sort;
-		
-		NSString *letter = dvd.sort;
-		
-		if (![previousLetter isEqualToString:letter]) {
-			[data setObject:tempArray forKey:previousLetter];
+		NSString *previousLetter = @"empty";
+		NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+		for (int i = 0; i < childCount; i++) {
+			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
+			NSDictionary *attributes = [child attributesAsDictionary];
 			
-			previousLetter = [[NSString alloc] initWithString:letter];
-			[order addObject:previousLetter];
+			NSString *ID		= [attributes objectForKey:@"id"];
+			NSString *sort		= [attributes objectForKey:@"sort"];
+			
+			DVD *dvd		= [[DVD alloc] init];
+			
+			dvd.ID			= [ID intValue];
+			
+			dvd.title		= [child stringValue];
+			dvd.sort		= sort;
+			
+			NSString *letter = dvd.sort;
+			
+			if (![previousLetter isEqualToString:letter]) {
+				[data setObject:tempArray forKey:previousLetter];
+				
+				previousLetter = [[NSString alloc] initWithString:letter];
+				[order addObject:previousLetter];
+				
+				
+				tempArray = [[NSMutableArray alloc] init];
+				[tempArray addObject:dvd];
+			} else {
+				[tempArray addObject:dvd];
+			}
 			
 			
-			[tempArray release];
-			tempArray = [[NSMutableArray alloc] init];
-			[tempArray addObject:dvd];
-		} else {
-			[tempArray addObject:dvd];
 		}
+		[data setObject:tempArray forKey:previousLetter];
 		
-		[dvd release];
-		
-	}
-	[data setObject:tempArray forKey:previousLetter];
-	[tempArray release];
-	
-	[activity stopAnimating];
-	loadingLabel.hidden = YES;
-	[self.tableView reloadData];
-	self.tableView.hidden = NO;
+		[activity stopAnimating];
+		loadingLabel.hidden = YES;
+		[self.tableView reloadData];
+		self.tableView.hidden = NO;
 
-	[pool release];
+	}
 }
 #pragma mark -
 #pragma mark Table view methods
@@ -175,7 +160,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     // Set up the cell...
@@ -225,7 +210,6 @@
 	app.networkActivityIndicatorVisible = YES;
 	
 	[self.navigationController pushViewController:film animated:YES];
-	[film release];
 	
 	
 	//NSLog(@"%@%d",DETAILFORDVDID, dvd.ID);

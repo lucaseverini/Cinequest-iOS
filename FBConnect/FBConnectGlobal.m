@@ -31,5 +31,5 @@ NSMutableArray* FBCreateNonRetainingArray() {
   CFArrayCallBacks callbacks = kCFTypeArrayCallBacks;
   callbacks.retain = RetainNoOp;
   callbacks.release = ReleaseNoOp;
-  return (NSMutableArray*)CFArrayCreateMutable(nil, 0, &callbacks);
+  return (NSMutableArray*)CFBridgingRelease(CFArrayCreateMutable(nil, 0, &callbacks));
 }

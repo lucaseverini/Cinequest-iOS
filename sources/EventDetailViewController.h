@@ -37,9 +37,9 @@
 	UIButton *postThisButton;
 }
 
-@property (nonatomic, retain) IBOutlet UIWebView *webView;
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
 @property (readwrite) BOOL displayAddButton;
 
 - (id)initWithTitle:(NSString*)name andDataObject:(id)dataObject andURL:(NSURL*)link;

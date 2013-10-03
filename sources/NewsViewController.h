@@ -20,9 +20,9 @@
 	//		 object: array of rows
 	NSMutableDictionary *data;
 }
-@property (nonatomic, retain) UITableView *tableView;
-@property (nonatomic, retain) UILabel *loadingLabel;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UILabel *loadingLabel;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 		   
 
 @end

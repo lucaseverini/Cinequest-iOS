@@ -15,8 +15,7 @@
 	
 	NSString *result = [mStr copy];
 	
-	[mStr release];
-	return [result autorelease];
+	return result;
 }
 
 @end

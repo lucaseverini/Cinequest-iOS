@@ -14,16 +14,15 @@
 	
 	xmlDocPtr doc = (xmlDocPtr)nodePtr;
 	if(doc->_private == NULL)
-		return [[[DDXMLDocument alloc] initWithCheckedPrimitive:nodePtr] autorelease];
+		return [[DDXMLDocument alloc] initWithCheckedPrimitive:nodePtr];
 	else
-		return [[((DDXMLDocument *)(doc->_private)) retain] autorelease];
+		return ((__bridge DDXMLDocument *)(doc->_private));
 }
 
 - (id)initWithUncheckedPrimitive:(xmlKindPtr)nodePtr
 {
 	if(nodePtr == NULL || nodePtr->type != XML_DOCUMENT_NODE)
 	{
-		[self release];
 		return nil;
 	}
 	
@@ -34,8 +33,7 @@
 	}
 	else
 	{
-		[self release];
-		return [((DDXMLDocument *)(doc->_private)) retain];
+		return ((__bridge DDXMLDocument *)(doc->_private));
 	}
 }
 
@@ -68,7 +66,6 @@
 	{
 		if(error) *error = [NSError errorWithDomain:@"DDXMLErrorDomain" code:0 userInfo:nil];
 		
-		[self release];
 		return nil;
 	}
 	
@@ -84,7 +81,6 @@
 	{
 		if(error) *error = [NSError errorWithDomain:@"DDXMLErrorDomain" code:1 userInfo:nil];
 		//free(doc);
-		[self release];
 		return nil;
 	}
 	

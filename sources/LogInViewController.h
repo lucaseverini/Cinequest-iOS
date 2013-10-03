@@ -17,9 +17,9 @@
 	IBOutlet UITextField *usernameLabel;	
 	MySchedulerViewController *parentsView;
 }
-@property (nonatomic,retain) IBOutlet UITextField *passwordLabel;
-@property (nonatomic,retain) IBOutlet UITextField *usernameLabel;
-@property (nonatomic,retain) MySchedulerViewController *parentsView;
+@property (nonatomic,strong) IBOutlet UITextField *passwordLabel;
+@property (nonatomic,strong) IBOutlet UITextField *usernameLabel;
+@property (nonatomic,strong) MySchedulerViewController *parentsView;
 
 -(IBAction)loginUser:(id)sender;
 -(IBAction)signup:(id)sender;

@@ -66,7 +66,7 @@
   if (_session.isConnected) {
     [_session logout];
   } else {
-    FBLoginDialog* dialog = [[[FBLoginDialog alloc] initWithSession:_session] autorelease];
+    FBLoginDialog* dialog = [[FBLoginDialog alloc] initWithSession:_session];
     [dialog show];
   }
 }
@@ -102,12 +102,6 @@
   [self initButton];
 }
 
-- (void)dealloc {
-  //[_session.delegates removeObject:self];
-  [_session release];
-  [_imageView release];
-  [super dealloc];
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // UIView
@@ -145,8 +139,7 @@
 - (void)setSession:(FBSession*)session {
   if (session != _session) {
     [_session.delegates removeObject:self];
-    [_session release];
-    _session = [session retain];
+    _session = session;
     [_session.delegates addObject:self];
     
     [self updateImage];

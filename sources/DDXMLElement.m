@@ -12,7 +12,6 @@
 	xmlNodePtr node = xmlNewNode(NULL, [name xmlChar]);
 	if(node == NULL)
 	{
-		[self release];
 		return nil;
 	}
 	
@@ -26,7 +25,6 @@
 	xmlNodePtr node = xmlNewNode(NULL, [name xmlChar]);
 	if(node == NULL)
 	{
-		[self release];
 		return nil;
 	}
 	
@@ -43,7 +41,6 @@
 	xmlNodePtr node = xmlNewNode(NULL, [name xmlChar]);
 	if(node == NULL)
 	{
-		[self release];
 		return nil;
 	}
 	
@@ -58,16 +55,13 @@
 	DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:string options:0 error:error];
 	if(doc == nil)
 	{
-		[self release];
 		return nil;
 	}
 	
 	DDXMLElement *result = [doc rootElement];
 	[result detach];
-	[doc release];
 	
-	[self release];
-	return [result retain];
+	return result;
 }
 
 + (id)nodeWithPrimitive:(xmlKindPtr)nodePtr
@@ -79,16 +73,15 @@
 	
 	xmlNodePtr node = (xmlNodePtr)nodePtr;
 	if(node->_private == NULL)
-		return [[[DDXMLElement alloc] initWithCheckedPrimitive:nodePtr] autorelease];
+		return [[DDXMLElement alloc] initWithCheckedPrimitive:nodePtr];
 	else
-		return [[((DDXMLElement *)(node->_private)) retain] autorelease];
+		return ((__bridge DDXMLElement *)(node->_private));
 }
 
 - (id)initWithUncheckedPrimitive:(xmlKindPtr)nodePtr
 {
 	if(nodePtr == NULL || nodePtr->type != XML_ELEMENT_NODE)
 	{
-		[self release];
 		return nil;
 	}
 	
@@ -99,8 +92,7 @@
 	}
 	else
 	{
-		[self release];
-		return [((DDXMLElement *)(node->_private)) retain];
+		return ((__bridge DDXMLElement *)(node->_private));
 	}	
 }
 

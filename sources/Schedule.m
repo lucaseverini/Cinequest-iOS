@@ -24,18 +24,5 @@
 @synthesize fontColor;
 @synthesize endTimeString;
 
-- (void)dealloc {
-	[dateString release];
-	[timeString release];
-	[endTimeString release];
-	[title release];
-	[type release];
-	[venue release];
-	[date release];
-	[endDate release];
-	[fontColor release];
-	
-    [super dealloc];
-} 
 
 @end

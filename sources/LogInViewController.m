@@ -40,7 +40,6 @@
 							  otherButtonTitles:@"Nevermind", @"Register", nil];
 	
 	[alertView show];
-	[alertView release];
 	
 	//[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://mobile.cinequest.org/isch_reg.php"]];
 }
@@ -78,7 +77,6 @@
 								  otherButtonTitles:@"Try Again", @"Register", nil];
 		
 		[alertView show];
-		[alertView release];
 		
 		/*
 		
@@ -129,7 +127,6 @@
 									  otherButtonTitles:@"Try Again", @"Register", nil];
 			
 			[alertView show];
-			[alertView release];
 		}
 		else if ( [parentsView.xmlStatus isEqualToString:@"overwriteSchedule"] ) {
 			// should call method to upload schedule again, the new timestamp should be loaded
@@ -144,7 +141,6 @@
 							  cancelButtonTitle:@"Okay" 
 							  otherButtonTitles:nil];
 		[alert show];
-		[alert release];
 	}
 	
 }
@@ -159,7 +155,6 @@
 							  cancelButtonTitle:@"Okay" 
 							  otherButtonTitles:nil];
 		[alert show];
-		[alert release];		
 		return NO;
 	}
 	return YES;
@@ -172,12 +167,6 @@
 }
 
 
-- (void)dealloc {
-	[passwordLabel release];
-	[usernameLabel release];
-	[parentsView release];
-    [super dealloc];
-}
 
 #pragma mark UIActionSheet
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex

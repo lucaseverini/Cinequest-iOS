@@ -23,11 +23,11 @@
 	
 }
 
-@property (nonatomic, retain) NSMutableArray *order;
-@property (nonatomic, retain) NSMutableDictionary *data;
+@property (nonatomic, strong) NSMutableArray *order;
+@property (nonatomic, strong) NSMutableDictionary *data;
 
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, retain) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
 
 @end

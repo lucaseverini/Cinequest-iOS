@@ -24,13 +24,6 @@
 @synthesize isOffSeason;
 @synthesize newsView;
 
-- (void)dealloc {
-	[newsView release];
-    [tabBarController release];
-	[mySchedule release];
-    [window release];
-    [super dealloc];
-}
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
@@ -105,7 +98,6 @@
 												cancelButtonTitle:@"OK" 
 												otherButtonTitles:nil];
 	[errorAlert show];
-	[errorAlert release];
 
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {

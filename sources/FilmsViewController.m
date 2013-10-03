@@ -46,22 +46,6 @@
 @synthesize CQIcon;
 @synthesize offSeasonLabel;
 
-- (void)dealloc {
-	[backedUpData release];
-	[backedUpDays release];
-	[backedUpIndex release];
-	[_tableView release];
-	[switchTitle release];
-	[loadingLabel release];
-	[offSeasonLabel release];
-	[activity release];
-	[SJSUIcon release];
-	[CQIcon release];
-	[index release];
-	[days release];
-	[data release];
-    [super dealloc];
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -73,25 +57,25 @@
 		case VIEW_BY_DATE: {
 			if (self.navigationItem.rightBarButtonItem == nil) {
 				// Create add button 
-				self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Add"
+				self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
 																						   style:UIBarButtonItemStyleDone
 																						  target:self
-																						  action:@selector(addFilms:)] autorelease];
+																						  action:@selector(addFilms:)];
 			}
 			
 			if(refineOrBack == BACK)
 			{
-				self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Back"
+				self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
 																						  style:UIBarButtonItemStyleDone
 																						 target:self
-																						 action:@selector(back:)] autorelease];
+																						 action:@selector(back:)];
 			}
 			else if(refineOrBack == REFINE)
 			{
-				self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Refine"
+				self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refine"
 																						  style:UIBarButtonItemStylePlain
 																						 target:self
-																						 action:@selector(refine:)] autorelease];
+																						 action:@selector(refine:)];
 			}
 
 			
@@ -145,14 +129,14 @@
 	loadingLabel.hidden = NO;
 	
 	//Start parsing data
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[data removeAllObjects];
-	[days removeAllObjects];
-	[index removeAllObjects];
-	[TitlesWithSort removeAllObjects];
-	[sorts removeAllObjects];
-	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
-	[pool release];
+	@autoreleasepool {
+		[data removeAllObjects];
+		[days removeAllObjects];
+		[index removeAllObjects];
+		[TitlesWithSort removeAllObjects];
+		[sorts removeAllObjects];
+		[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
+	}
 }
 - (void)addFilms:(id)sender {
 	int counter = 0;
@@ -182,7 +166,6 @@
 					[mySchedule addObject:schedule];
 					counter++;
 				}
-				[schedule release];
 			}
 		}
 	}
@@ -197,10 +180,10 @@
 }
 - (void)refine:(id)sender {	
 	// Back button
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Back"
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
 																			 style:UIBarButtonItemStyleDone
 																			target:self
-																			action:@selector(back:)] autorelease];
+																			action:@selector(back:)];
 	
 	
 	
@@ -251,11 +234,8 @@
 	[self.tableView beginUpdates];
 	
 	[self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
-	[indexPaths release];
-	[itemsBeingDeleted release];
 	
 	[self.tableView deleteSections:indexSet withRowAnimation:NO];
-	[indexSet release];
 	
 	[self.tableView endUpdates];
 	
@@ -272,10 +252,10 @@
 }
 - (void)back:(id)sender {
 	// Refine button
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Refine"
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refine"
 																			  style:UIBarButtonItemStylePlain
 																			 target:self
-																			 action:@selector(refine:)] autorelease];
+																			 action:@selector(refine:)];
 	
 	// reload data
 	[days removeAllObjects];
@@ -295,7 +275,6 @@
 			[array addObject:item];
 		}
 		[data setObject:array forKey:day];
-		[array release];
 	}
 	
 	// push animation
@@ -325,7 +304,6 @@
 	
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
 	[self.navigationController presentModalViewController:navController animated:YES];
-	[navController release];
 	delegate.isPresentingModalView = YES;
 	
 	// Initialize data
@@ -367,149 +345,135 @@
 #pragma mark -
 #pragma mark Private Methods
 - (void)startParsingXML {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	@autoreleasepool {
 	// FILMS BY TIME
-	NSURL *link = [NSURL URLWithString:FILMSBYTIME];
-	NSData *htmldata = [NSData dataWithContentsOfURL:link];
-	DDXMLDocument *filmsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
-	DDXMLNode *rootElement = [filmsXMLDoc rootElement];
-	NSString *previousDay = @"empty";
-	NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-	for (int i = 0; i < [rootElement childCount]; i++) {
-		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
-		NSDictionary *attributes = [child attributesAsDictionary];
-		
-		NSString *ID		= [attributes objectForKey:@"id"];
-		NSString *prg_id	= [attributes objectForKey:@"program_item_id"];
-		NSString *type		= [attributes objectForKey:@"type"];
-		NSString *title		= [attributes objectForKey:@"title"];
-		NSString *start		= [attributes objectForKey:@"start_time"];
-		NSString *end		= [attributes objectForKey:@"end_time"];
-		NSString *venue		= [attributes objectForKey:@"venue"];
-		
-		Schedule *film	= [[Schedule alloc] init];
-		
-		film.ID			= [ID intValue];
-		film.type		= type;
-		film.prog_id	= [prg_id intValue];
-		film.title		= title;
-		film.venue		= venue;
-		
-		//Start Time
-		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-		NSDate *date = [dateFormatter dateFromString:start];
-		film.date = date;
-		[dateFormatter setDateFormat:@"hh:mm a"];
-		film.timeString = [dateFormatter stringFromDate:date];
-		//Date
-		[dateFormatter setDateFormat:@"EEEE, MMMM d"];
-		NSString *dateString = [dateFormatter stringFromDate:date];
-		film.dateString = dateString;
-		//End Time
-		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-		date = [dateFormatter dateFromString:end];
-		film.endDate = date;
-		[dateFormatter setDateFormat:@"hh:mm a"];
-		film.endTimeString = [dateFormatter stringFromDate:date];
-		[dateFormatter release];
-		
-		if (![previousDay isEqualToString:dateString]) {
-			[data setObject:tempArray forKey:previousDay];
+		NSURL *link = [NSURL URLWithString:FILMSBYTIME];
+		NSData *htmldata = [NSData dataWithContentsOfURL:link];
+		DDXMLDocument *filmsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
+		DDXMLNode *rootElement = [filmsXMLDoc rootElement];
+		NSString *previousDay = @"empty";
+		NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+		for (int i = 0; i < [rootElement childCount]; i++) {
+			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
+			NSDictionary *attributes = [child attributesAsDictionary];
 			
-			[previousDay release];
-			previousDay = [[NSString alloc] initWithString:dateString];
-			[days addObject:previousDay];
+			NSString *ID		= [attributes objectForKey:@"id"];
+			NSString *prg_id	= [attributes objectForKey:@"program_item_id"];
+			NSString *type		= [attributes objectForKey:@"type"];
+			NSString *title		= [attributes objectForKey:@"title"];
+			NSString *start		= [attributes objectForKey:@"start_time"];
+			NSString *end		= [attributes objectForKey:@"end_time"];
+			NSString *venue		= [attributes objectForKey:@"venue"];
 			
-			[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
+			Schedule *film	= [[Schedule alloc] init];
 			
-			[tempArray release];
-			tempArray = [[NSMutableArray alloc] init];
-			[tempArray addObject:film];
+			film.ID			= [ID intValue];
+			film.type		= type;
+			film.prog_id	= [prg_id intValue];
+			film.title		= title;
+			film.venue		= venue;
 			
-		} else {
-			[tempArray addObject:film];
+			//Start Time
+			NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+			NSDate *date = [dateFormatter dateFromString:start];
+			film.date = date;
+			[dateFormatter setDateFormat:@"hh:mm a"];
+			film.timeString = [dateFormatter stringFromDate:date];
+			//Date
+			[dateFormatter setDateFormat:@"EEEE, MMMM d"];
+			NSString *dateString = [dateFormatter stringFromDate:date];
+			film.dateString = dateString;
+			//End Time
+			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+			date = [dateFormatter dateFromString:end];
+			film.endDate = date;
+			[dateFormatter setDateFormat:@"hh:mm a"];
+			film.endTimeString = [dateFormatter stringFromDate:date];
+			
+			if (![previousDay isEqualToString:dateString]) {
+				[data setObject:tempArray forKey:previousDay];
+				
+				previousDay = [[NSString alloc] initWithString:dateString];
+				[days addObject:previousDay];
+				
+				[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
+				
+				tempArray = [[NSMutableArray alloc] init];
+				[tempArray addObject:film];
+				
+			} else {
+				[tempArray addObject:film];
+			}
 		}
-		[film release];
-	}
-	[data setObject:tempArray forKey:previousDay];
-	[previousDay release];
-	[tempArray release];
-	[filmsXMLDoc release];
-	
-	// FILMS BY TITLES
-	link = [NSURL URLWithString:FILMSBYTITLE];
-	htmldata = [NSData dataWithContentsOfURL:link];
-	DDXMLDocument *titleXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
-	rootElement = [titleXMLDoc rootElement];
-	NSString *pre			= @"empty";
-	NSMutableArray *temp	= [[NSMutableArray alloc] init];
-	for (int i = 0; i < [rootElement childCount]; i++) {
-		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
-		NSDictionary *attributes = [child attributesAsDictionary];
+		[data setObject:tempArray forKey:previousDay];
 		
-		NSString *ID		= [attributes objectForKey:@"id"];
-		NSString *sort		= [attributes objectForKey:@"sort"];
-		NSString *prog_id	= [attributes objectForKey:@"program_item_id"];
-		
-		DDXMLNode *titleTag = [child childAtIndex:0];
-		
-		NSString *title = [titleTag stringValue];
-		
-		Schedule *film		= [[Schedule alloc] init];
-		
-		film.ID			= [ID intValue];
-		film.title		= title;
-		film.prog_id	= [prog_id intValue];
-		
-		
-		NSString *sortString = sort;
-		
-		if (![pre isEqualToString:sortString]) {
-			[TitlesWithSort setObject:temp forKey:pre];
+		// FILMS BY TITLES
+		link = [NSURL URLWithString:FILMSBYTITLE];
+		htmldata = [NSData dataWithContentsOfURL:link];
+		DDXMLDocument *titleXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
+		rootElement = [titleXMLDoc rootElement];
+		NSString *pre			= @"empty";
+		NSMutableArray *temp	= [[NSMutableArray alloc] init];
+		for (int i = 0; i < [rootElement childCount]; i++) {
+			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
+			NSDictionary *attributes = [child attributesAsDictionary];
 			
-			pre = [NSString stringWithString:sortString];
-			[sorts addObject:pre];
+			NSString *ID		= [attributes objectForKey:@"id"];
+			NSString *sort		= [attributes objectForKey:@"sort"];
+			NSString *prog_id	= [attributes objectForKey:@"program_item_id"];
 			
-			[temp release];
-			temp = [[NSMutableArray alloc] init];
-			[temp addObject:film];
-		} else {
-			[temp addObject:film];
+			DDXMLNode *titleTag = [child childAtIndex:0];
+			
+			NSString *title = [titleTag stringValue];
+			
+			Schedule *film		= [[Schedule alloc] init];
+			
+			film.ID			= [ID intValue];
+			film.title		= title;
+			film.prog_id	= [prog_id intValue];
+			
+			
+			NSString *sortString = sort;
+			
+			if (![pre isEqualToString:sortString]) {
+				[TitlesWithSort setObject:temp forKey:pre];
+				
+				pre = [NSString stringWithString:sortString];
+				[sorts addObject:pre];
+				
+				temp = [[NSMutableArray alloc] init];
+				[temp addObject:film];
+			} else {
+				[temp addObject:film];
+			}
 		}
-		[film release];
-	}
-	[TitlesWithSort setObject:temp forKey:pre];
-	[titleXMLDoc release];
-	[temp release];
-	
-	//Display everything, hide activity indicator
-	switchTitle.hidden = NO;
-	loadingLabel.hidden = YES;
-	self.navigationItem.rightBarButtonItem.enabled = YES;
-	self.navigationItem.leftBarButtonItem.enabled = YES;
-	SJSUIcon.alpha = 0.2;
-	CQIcon.alpha = 0.2;
-	[activity stopAnimating];
-	self.tableView.hidden = NO;
-	[self.tableView reloadData];
+		[TitlesWithSort setObject:temp forKey:pre];
+		
+		//Display everything, hide activity indicator
+		switchTitle.hidden = NO;
+		loadingLabel.hidden = YES;
+		self.navigationItem.rightBarButtonItem.enabled = YES;
+		self.navigationItem.leftBarButtonItem.enabled = YES;
+		SJSUIcon.alpha = 0.2;
+		CQIcon.alpha = 0.2;
+		[activity stopAnimating];
+		self.tableView.hidden = NO;
+		[self.tableView reloadData];
 
-	[backedUpDays release];
-	[backedUpIndex release];
-	[backedUpData release];
-	// back up current data
-	backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
-	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
-	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
-	
-	[self syncTableDataWithScheduler];
-	
-	//Disable "Reload" button
-	self.tableView.tableHeaderView = nil;
+		// back up current data
+		backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
+		backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
+		backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
+		
+		[self syncTableDataWithScheduler];
+		
+		//Disable "Reload" button
+		self.tableView.tableHeaderView = nil;
 	//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] 
 	//				 atScrollPosition:UITableViewScrollPositionTop 
 	//						 animated:NO];
-	[pool release];
+	}
 }
 - (void)syncTableDataWithScheduler {
 	
@@ -523,7 +487,6 @@
 		for (int row = 0; row < [rows count]; row++) 
 		{
 			Schedule *film = [rows objectAtIndex:row];
-			[film retain];
 			//film.isSelected = NO;
 			for (i = 0; i < count; i++) 
 			{
@@ -574,7 +537,6 @@
 		for (int row = 0; row < [rows count]; row++) 
 		{
 			Schedule *film = [rows objectAtIndex:row];
-			[film retain];
 			//film.isSelected = NO;
 			for (i = 0; i < count; i++) 
 			{
@@ -701,7 +663,6 @@
 			// get film objects using date
 			NSMutableArray *films = [data objectForKey:dateString];
 			Schedule *film = [films objectAtIndex:row];
-			[film retain];
 			// create displayString
 			NSString *displayString = [NSString stringWithFormat:@"%@",film.title];
 			
@@ -735,18 +696,18 @@
 			UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"];
 			
 			if (tempCell == nil) {
-				tempCell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-												   reuseIdentifier:DateCellIdentifier]autorelease];
+				tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+												   reuseIdentifier:DateCellIdentifier];
 				
-				titleLabel = [[[UILabel alloc] initWithFrame:CGRectMake(50,2,230,20)] autorelease];
+				titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,2,230,20)];
 				titleLabel.tag = CELL_TITLE_LABEL_TAG;
 				[tempCell.contentView addSubview:titleLabel];
 				
-				timeLabel = [[[UILabel alloc] initWithFrame:CGRectMake(50,21,150,20)] autorelease];
+				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,21,150,20)];
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
 				[tempCell.contentView addSubview:timeLabel];
 				
-				venueLabel = [[[UILabel alloc] initWithFrame:CGRectMake(210,21,100,20)] autorelease];
+				venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(210,21,100,20)];
 				venueLabel.tag = CELL_VENUE_LABEL_TAG;
 				[tempCell.contentView addSubview:venueLabel];
 				
@@ -794,7 +755,7 @@
 			cell = [tableView dequeueReusableCellWithIdentifier:TitleCellIdentifier];
 			
 			if (cell == nil) {
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TitleCellIdentifier] autorelease];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TitleCellIdentifier];
 			}
 			
 			NSString *sort = [sorts objectAtIndex:section];
@@ -871,7 +832,6 @@
 			//NSLog(@"%@ , schedule id %d",link,film.ID);
 			
 			[[self navigationController] pushViewController:filmDetail animated:YES];
-			[filmDetail release];
 		}
 			break;
 			
@@ -890,7 +850,6 @@
 																andURL:[NSURL URLWithString:link]];
 			
 			[[self navigationController] pushViewController:filmDetail animated:YES];
-			[filmDetail release];
 			
 		}
 			break;
@@ -913,7 +872,6 @@
 			delegate.isPresentingModalView = YES;
 			UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
 			[self.navigationController presentModalViewController:navController animated:YES];
-			[navController release];
 		}
 	}
 }

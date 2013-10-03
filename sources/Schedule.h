@@ -35,14 +35,14 @@
 @property (readwrite) BOOL isSelected;
 
 
-@property (nonatomic, retain) UIColor *fontColor;
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *type;
-@property (nonatomic, retain) NSString *venue;
-@property (nonatomic, retain) NSDate *date;
-@property (nonatomic, retain) NSDate *endDate;
-@property (nonatomic, retain) NSString *dateString;
-@property (nonatomic, retain) NSString *timeString;
-@property (nonatomic, retain) NSString *endTimeString;
+@property (nonatomic, strong) UIColor *fontColor;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString *venue;
+@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) NSDate *endDate;
+@property (nonatomic, strong) NSString *dateString;
+@property (nonatomic, strong) NSString *timeString;
+@property (nonatomic, strong) NSString *endTimeString;
 
 @end

@@ -42,34 +42,6 @@ NSDate *previousEndDate;	// a pointer to a previous date to compare schedule con
 UITableViewCell *previousCell;
 
 
-- (void)dealloc 
-{
-	[index release];
-	[displayData release];
-	[titleForSection release];
-	[_tableView release];
-	[CQIcon release];
-	[SJSUIcon release];
-	[offSeasonLabel release];
-	
-	[username release];
-	[password release];
-	[retrievedTimeStamp release];
-	[status release];
-	[xmlStatus release];
-	
-	[confirmedList release];
-	[movedList release];
-	[removedList release];
-	[currentList release];
-	[MASTERLIST release];
-	
-	[currentColor release];
-	[previousEndDate release];
-	[previousCell release];
-	
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -105,15 +77,15 @@ UITableViewCell *previousCell;
 	}
 	
     //display an Edit button in the navigation bar for this view controller.
-    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
 																							target:self
-																							action:@selector(edit)] autorelease];
+																							action:@selector(edit)];
 	
 	// Sync button
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Sync"
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sync"
 																			 style:UIBarButtonItemStyleBordered
 																			target:self
-																			action:@selector(logIn:)] autorelease];
+																			action:@selector(logIn:)];
 	CQIcon.alpha = 0.2;
 	SJSUIcon.alpha = 0.2;
 	// harold's variables
@@ -122,8 +94,7 @@ UITableViewCell *previousCell;
 	movedList		= [[NSMutableArray alloc] init];
 	removedList		= [[NSMutableArray alloc] init];	
 	currentColor	= [UIColor blackColor];
-	MASTERLIST		= [NSArray arrayWithObjects:confirmedList,movedList,removedList,nil];	
-	[MASTERLIST retain];
+	MASTERLIST		= [NSArray arrayWithObjects:confirmedList,movedList,removedList,nil];
 }
 - (void)viewWillAppear:(BOOL)animated {
 	delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -158,7 +129,6 @@ UITableViewCell *previousCell;
 			//NSLog(lastDateString);
 			[index addObject:[[lastDateString componentsSeparatedByString:@" "] objectAtIndex: 2]];
 			
-			[tempArray release];
 			tempArray = [[NSMutableArray alloc] init];
 			[tempArray addObject:item];
 		}
@@ -166,7 +136,6 @@ UITableViewCell *previousCell;
 	}
 	[displayData setObject:tempArray forKey:lastDateString];
 	
-	[tempArray release];
 	
 	// reload tableView data
 	[self.tableView reloadData];
@@ -177,21 +146,20 @@ UITableViewCell *previousCell;
 #pragma mark Actions
 - (void)edit {
 	[self.tableView setEditing:YES animated:YES];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 																							target:self
-																							action:@selector(doneEditing)] autorelease];
+																							action:@selector(doneEditing)];
 }
 - (void)doneEditing {
 	[self.tableView setEditing:NO animated:YES];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
 																							target:self
-																							action:@selector(edit)] autorelease];
+																							action:@selector(edit)];
 }
 - (IBAction)logIn:(id)sender {	
 	LogInViewController *loginScreen = [[LogInViewController alloc] init];	
 	[loginScreen setParent:self];
 	[self.navigationController pushViewController:loginScreen animated:YES];
-	[loginScreen release];
 }
 // This function will attempt to login using provided credentials via POST to the cinequest script page
 // PRECOND: have a valid username/password -- protocolType should be SLGET?
@@ -207,7 +175,7 @@ UITableViewCell *previousCell;
 	
 	NSURL *myURL = [NSURL URLWithString:@"http://mobile.cinequest.org/mobileCQ.php"];
 	
-	NSMutableURLRequest *myRequest = [[[NSMutableURLRequest alloc] init] autorelease];
+	NSMutableURLRequest *myRequest = [[NSMutableURLRequest alloc] init];
 	[myRequest setURL:myURL];
 	[myRequest setHTTPMethod:@"POST"];	
 	[myRequest setValue:postLength forHTTPHeaderField:@"Content-Length"];
@@ -227,7 +195,6 @@ UITableViewCell *previousCell;
 	status = @"SLGET";
 	
 	[parser parse];	
-	[parser release];
 	
 	
 	if( [confirmedList count] > 0 ) {
@@ -264,7 +231,6 @@ UITableViewCell *previousCell;
 								  cancelButtonTitle:@"Okay" 
 								  otherButtonTitles:nil];
 			[alert show];
-			[alert release];
 		}
 	}
 }
@@ -307,7 +273,7 @@ UITableViewCell *previousCell;
 	NSString *postLength = [NSString stringWithFormat:@"%d", [postData length]];	
 	NSURL *myURL = [NSURL URLWithString:@"http://mobile.cinequest.org/mobileCQ.php"];
 	
-	NSMutableURLRequest *myRequest = [[[NSMutableURLRequest alloc] init] autorelease];
+	NSMutableURLRequest *myRequest = [[NSMutableURLRequest alloc] init];
 	[myRequest setURL:myURL];
 	[myRequest setHTTPMethod:@"POST"];	
 	[myRequest setValue:postLength forHTTPHeaderField:@"Content-Length"];
@@ -326,7 +292,6 @@ UITableViewCell *previousCell;
 	status = @"SLPUT";
 	
 	[parser parse];	
-	[parser release];
 }
 #pragma mark Utility Methods
 // This method helps increment the timestamp supplied
@@ -344,7 +309,6 @@ UITableViewCell *previousCell;
 	parsedDate = [parsedDate addTimeInterval:1];
 	
 	NSString *returnString = [CQDateFormat stringFromDate:parsedDate];	
-	[CQDateFormat release];
 	
 	return returnString;
 }
@@ -386,19 +350,19 @@ UITableViewCell *previousCell;
 	
 	
 	if (tempCell == nil) {
-		tempCell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-										   reuseIdentifier:CellIdentifier]autorelease];
+		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+										   reuseIdentifier:CellIdentifier];
 		
-		titleLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10,2,300,20)] autorelease];
+		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10,2,300,20)];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
 		[tempCell.contentView addSubview:titleLabel];
 		
-		timeLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10,21,150,20)] autorelease];
+		timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10,21,150,20)];
 		timeLabel.tag = CELL_TIME_LABEL_TAG;
 		[tempCell.contentView addSubview:timeLabel];
 		
 		
-		venueLabel = [[[UILabel alloc] initWithFrame:CGRectMake(170,21,100,20)] autorelease];
+		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(170,21,100,20)];
 		
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
 		[tempCell.contentView addSubview:venueLabel];
@@ -501,7 +465,6 @@ UITableViewCell *previousCell;
 										  otherButtonTitles:@"Retrieve", @"Overwrite", nil];
 										 
 				[alertView show];
-				[alertView release];
 			}
 			
 			//[uploadSucessful release];
@@ -571,8 +534,6 @@ UITableViewCell *previousCell;
 			if(newData.date != nil)
 			[currentList addObject:newData];
 			
-			[newData release];
-			[dateFormatter release];
 		}
 	}
 	
@@ -591,7 +552,6 @@ UITableViewCell *previousCell;
 							  cancelButtonTitle:@"Okay" 
 							  otherButtonTitles:nil];
 		[alert show];
-		[alert release];		
 	}
 	else if( [string isEqualToString:@"Authentication Failure"]  )
 	{
@@ -608,7 +568,6 @@ UITableViewCell *previousCell;
 							  cancelButtonTitle:@"Okay" 
 							  otherButtonTitles:nil];
 		[alert show];
-		[alert release];
 	} 
 }
 

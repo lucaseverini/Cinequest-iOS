@@ -31,11 +31,11 @@
 	CinequestAppDelegate* delegate;
 }
 
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
-@property (nonatomic, retain) IBOutlet UIImageView *CQIcon;
-@property (nonatomic, retain) IBOutlet UIImageView *SJSUIcon;
-@property (nonatomic, retain) IBOutlet UILabel *offSeasonLabel;
-@property (nonatomic, retain) NSString *username, *password, *retrievedTimeStamp, *status, *xmlStatus;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UIImageView *CQIcon;
+@property (nonatomic, strong) IBOutlet UIImageView *SJSUIcon;
+@property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
+@property (nonatomic, strong) NSString *username, *password, *retrievedTimeStamp, *status, *xmlStatus;
 //@property (readwrite) BOOL xmlSuccess;
 
 

@@ -39,13 +39,13 @@
 	CinequestAppDelegate *delegate;
 	
 }
-@property (nonatomic, retain) IBOutlet UILabel *offSeasonLabel;
-@property (nonatomic, retain) IBOutlet UIImageView *SJSUIcon;
-@property (nonatomic, retain) IBOutlet UIImageView *CQIcon;
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, retain) IBOutlet UILabel *loadingLabel;
-@property (nonatomic, retain) IBOutlet UISegmentedControl *switchTitle;
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
+@property (nonatomic, strong) IBOutlet UIImageView *SJSUIcon;
+@property (nonatomic, strong) IBOutlet UIImageView *CQIcon;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 
 
 - (IBAction)switchTitle:(id)sender;

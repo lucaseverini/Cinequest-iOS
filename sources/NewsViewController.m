@@ -25,14 +25,6 @@
 @synthesize activityIndicator;
 @synthesize loadingLabel;
 
-- (void)dealloc {
-	[data release];
-	[loadingLabel release];
-	[_tableView release];
-	[activityIndicator release];
-	[sections release];
-    [super dealloc];
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -44,14 +36,14 @@
 	data = [[NSMutableDictionary alloc] init];
 	sections = [[NSMutableArray alloc] init];
 	
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Festival"
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Festival"
 																			  style:UIBarButtonItemStyleBordered
 																			 target:self
-																			 action:@selector(toFestival:)] autorelease];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"DVDs"
+																			 action:@selector(toFestival:)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"DVDs"
 																			   style:UIBarButtonItemStyleBordered
 																			  target:self
-																			  action:@selector(toDVDs:)] autorelease];
+																			  action:@selector(toDVDs:)];
 	
 	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
 	self.tableView.hidden = YES;
@@ -62,104 +54,100 @@
 
 }
 - (void)startParsingXML {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSURL *link = [NSURL URLWithString:NEWS];
-	NSData *htmldata = [NSData dataWithContentsOfURL:link];
-	
-	DDXMLDocument *newsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
-	DDXMLElement *rootElement = [newsXMLDoc rootElement];
-	//NSLog(@"Count: %d",[rootElement childCount]);
-	NSString *preSection	= @"empty";
-	NSMutableArray *temp	= [[NSMutableArray alloc] init];
-	if ([rootElement childCount] == 3) {
-		for (int i=0; i<[rootElement childCount]; i++) {
-			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
-			NSDictionary *attributes = [child attributesAsDictionary];
-			
-			NSString *section = [attributes objectForKey:@"name"];
-			DDXMLElement *item = (DDXMLElement*)[child childAtIndex:0];
-			NSString *title = @"";
-			NSString *date = @"";
-			NSString *link = @"";
-			NSString *imgurl = @"";
+	@autoreleasepool {
+		NSURL *link = [NSURL URLWithString:NEWS];
+		NSData *htmldata = [NSData dataWithContentsOfURL:link];
+		
+		DDXMLDocument *newsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
+		DDXMLElement *rootElement = [newsXMLDoc rootElement];
+		//NSLog(@"Count: %d",[rootElement childCount]);
+		NSString *preSection	= @"empty";
+		NSMutableArray *temp	= [[NSMutableArray alloc] init];
+		if ([rootElement childCount] == 3) {
+			for (int i=0; i<[rootElement childCount]; i++) {
+				DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
+				NSDictionary *attributes = [child attributesAsDictionary];
+				
+				NSString *section = [attributes objectForKey:@"name"];
+				DDXMLElement *item = (DDXMLElement*)[child childAtIndex:0];
+				NSString *title = @"";
+				NSString *date = @"";
+				NSString *link = @"";
+				NSString *imgurl = @"";
+							
+				for (int j=0; j<[item childCount]; j++) {
+					DDXMLElement *node = (DDXMLElement*)[item childAtIndex:j];
+					if ([[node name] isEqualToString:@"title"]) {
+						title = [node stringValue];
+					}
+					if ([[node name] isEqualToString:@"date"]) {
+						date = [node stringValue];
+					}
+					if ([[node name] isEqualToString:@"imageURL"]) {
+						imgurl = [node stringValue];
 						
-			for (int j=0; j<[item childCount]; j++) {
-				DDXMLElement *node = (DDXMLElement*)[item childAtIndex:j];
-				if ([[node name] isEqualToString:@"title"]) {
-					title = [node stringValue];
+					}
+					if ([[node name] isEqualToString:@"link"]) {
+						NSDictionary *nodeAttributes = [node attributesAsDictionary];
+						link = [nodeAttributes objectForKey:@"id"];
+					}
 				}
-				if ([[node name] isEqualToString:@"date"]) {
-					date = [node stringValue];
-				}
-				if ([[node name] isEqualToString:@"imageURL"]) {
+				
+				if ([section isEqualToString:@"Header"]) {
+					DDXMLElement *node = (DDXMLElement*)[item childAtIndex:0];
 					imgurl = [node stringValue];
+				}
+				NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
+				[info setObject:title forKey:@"title"];
+				[info setObject:date forKey:@"date"];
+				[info setObject:link forKey:@"link"];
+				[info setObject:imgurl	forKey:@"image"];
+				
+				if (![preSection isEqualToString:section]) {
 					
+					[data setObject:temp forKey:preSection];
+					
+					preSection = [[NSString alloc] initWithString:section];
+					
+					[sections addObject:section];
+					
+					temp = [[NSMutableArray alloc] init];
+					[temp addObject:info];
+				} else {
+					[temp addObject:info];
 				}
-				if ([[node name] isEqualToString:@"link"]) {
-					NSDictionary *nodeAttributes = [node attributesAsDictionary];
-					link = [nodeAttributes objectForKey:@"id"];
-				}
+				
 			}
-			
-			if ([section isEqualToString:@"Header"]) {
-				DDXMLElement *node = (DDXMLElement*)[item childAtIndex:0];
-				imgurl = [node stringValue];
-			}
-			NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
-			[info setObject:title forKey:@"title"];
-			[info setObject:date forKey:@"date"];
-			[info setObject:link forKey:@"link"];
-			[info setObject:imgurl	forKey:@"image"];
-			
-			if (![preSection isEqualToString:section]) {
-				
-				[data setObject:temp forKey:preSection];
-				
-				[preSection release];
-				preSection = [[NSString alloc] initWithString:section];
-				
-				[sections addObject:section];
-				
-				[temp release];
-				temp = [[NSMutableArray alloc] init];
-				[temp addObject:info];
-			} else {
-				[temp addObject:info];
-			}
-			[info release];
-			
+		} else {
+			//NSLog(@"child count: %d",[rootElement childCount]);
+			loadingLabel.text = @"Error parsing XML.";
+			return;
 		}
-	} else {
-		//NSLog(@"child count: %d",[rootElement childCount]);
-		loadingLabel.text = @"Error parsing XML.";
-		return;
-	}
 
-	[data setObject:temp forKey:preSection];
-	
-	[preSection release];
-	[temp release];
-	[sections removeObjectAtIndex:0];
-	
-	[NSThread detachNewThreadSelector:@selector(loadImage) toTarget:self withObject:nil];
-	[pool release];
+		[data setObject:temp forKey:preSection];
+		
+		[sections removeObjectAtIndex:0];
+		
+		[NSThread detachNewThreadSelector:@selector(loadImage) toTarget:self withObject:nil];
+	}
 }
 - (void)loadImage{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSMutableArray *headerInfoArray = [data objectForKey:@"Header"];
-	NSMutableDictionary *headerInfo = [headerInfoArray objectAtIndex:0];
-	NSString *imagelink = [headerInfo objectForKey:@"image"];
-	NSData *imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:imagelink]];
-	UIImage *image = [UIImage imageWithData:imageData];
-	UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-	imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.tableView setTableHeaderView:imageView];
-	loadingLabel.hidden = YES;
-	[activityIndicator stopAnimating];
-	self.tableView.hidden = NO;
-	[self.tableView reloadData];
-	[pool drain];
-	[pool release];
+    
+    @autoreleasepool {
+        NSMutableArray *headerInfoArray = [data objectForKey:@"Header"];
+        NSMutableDictionary *headerInfo = [headerInfoArray objectAtIndex:0];
+        NSString *imagelink = [headerInfo objectForKey:@"image"];
+        NSData *imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:imagelink]];
+        UIImage *image = [UIImage imageWithData:imageData];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self.tableView setTableHeaderView:imageView];
+        loadingLabel.hidden = YES;
+        [activityIndicator stopAnimating];
+        self.tableView.hidden = NO;
+        [self.tableView reloadData];
+        
+    }
 }
 - (IBAction)toFestival:(id)sender {
 	CinequestAppDelegate *delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -193,7 +181,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     // Set up the cell...
@@ -235,7 +223,6 @@
 	UIApplication *app = [UIApplication sharedApplication];
 	app.networkActivityIndicatorVisible = YES;
 	[self.navigationController pushViewController:eventDetail animated:YES];
-	[eventDetail release];
 }
 
 @end

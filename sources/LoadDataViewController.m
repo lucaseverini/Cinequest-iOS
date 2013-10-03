@@ -40,11 +40,6 @@
 #pragma mark -
 #pragma mark Memory Management
 
-- (void)dealloc {
-	[statusLabel release];
-	[activity release];
-    [super dealloc];
-}
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -128,68 +123,67 @@
 #pragma mark Private Methods
 
 - (BOOL)checkNetWorkAndLoadData {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	statusLabel.text = @"Loading...";
-
-	if ([self connectedToNetwork]) {
-		NSLog(@"Checking connectivity... COMPLETE!");
-		
-		[self setOffSeason];
-		NSLog(@"Is OffSeason? %d",offSeason);
-		
-		NSLog(@"Loading... new data....");
-		
-		if (!offSeason) 
-		{
-			// Load online data to database
-			
-			// NSString *NEWS = @"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=home&iphone";
-			
-			// FILMSBYTIME = @"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone";
-			[self loadFILMSBYTIME];
-
-			// Films by Title: http://mobile.cinequest.org/mobileCQ.php?type=films&iphone
-			[self loadFILMSBYTITLE];
-
-			// Events: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ievents&iphone
-			[self loadEVENTS];
-			
-			// Forums: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=iforums&iphone
-			[self loadFORUMS];
-			
-			// DVD List: http://mobile.cinequest.org/mobileCQ.php?type=dvds&distribution=none&iphone
-			[self loadDVDs];
-			
-			[self loadNEWS];
-			// DVD New Release: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&release
-			// DVD Pick Of The Week: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&pick
-			//
-			//
-			// Detail for Film Id: http://mobile.cinequest.org/mobileCQ.php?type=film&iphone&id=
-			// Detail for DVD Id: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&id=
-			//
-			// Detail for Program Item: http://mobile.cinequest.org/mobileCQ.php?type=program_item&iphone&id=
-			// Detail for Item: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id=
-
-			// Done Loading Data... return.
-			[activity stopAnimating];
-			NSLog(@"Done.");
-			statusLabel.text = @"Done.";
-		}
-		
-		
-	}
-	else 
-	{
-		// alert
-	}
-	sqlite3_close(database);
-	
-	
+	@autoreleasepool {
+        
+        statusLabel.text = @"Loading...";
+        
+        if ([self connectedToNetwork]) {
+            NSLog(@"Checking connectivity... COMPLETE!");
+            
+            [self setOffSeason];
+            NSLog(@"Is OffSeason? %d",offSeason);
+            
+            NSLog(@"Loading... new data....");
+            
+            if (!offSeason)
+            {
+                // Load online data to database
+                
+                // NSString *NEWS = @"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=home&iphone";
+                
+                // FILMSBYTIME = @"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone";
+                [self loadFILMSBYTIME];
+                
+                // Films by Title: http://mobile.cinequest.org/mobileCQ.php?type=films&iphone
+                [self loadFILMSBYTITLE];
+                
+                // Events: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ievents&iphone
+                [self loadEVENTS];
+                
+                // Forums: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=iforums&iphone
+                [self loadFORUMS];
+                
+                // DVD List: http://mobile.cinequest.org/mobileCQ.php?type=dvds&distribution=none&iphone
+                [self loadDVDs];
+                
+                [self loadNEWS];
+                // DVD New Release: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&release
+                // DVD Pick Of The Week: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&pick
+                //
+                //
+                // Detail for Film Id: http://mobile.cinequest.org/mobileCQ.php?type=film&iphone&id=
+                // Detail for DVD Id: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&id=
+                //
+                // Detail for Program Item: http://mobile.cinequest.org/mobileCQ.php?type=program_item&iphone&id=
+                // Detail for Item: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id=
+                
+                // Done Loading Data... return.
+                [activity stopAnimating];
+                NSLog(@"Done.");
+                statusLabel.text = @"Done.";
+            }
+            
+            
+        }
+        else 
+        {
+            // alert
+        }
+        sqlite3_close(database);
+        
+    }
 	//CinequestAppDelegate *delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
 	//[delegate loadTabBarController];
-	[pool drain];
-	[pool release];
 	return YES;
 }
 - (void)loadEVENTS {
@@ -238,10 +232,8 @@
 			sqlite3_free(errorMsg);
 		}
 		
-		[query release];
 		
 	}
-	[xmlDoc release];
 }
 - (void)loadFORUMS {
 	NSURL *link = [NSURL URLWithString:FORUMS];
@@ -288,7 +280,6 @@
 		}
 		
 		
-		[query release];
 		
 	}
 }
@@ -336,7 +327,6 @@
 			sqlite3_free(errorMsg);
 		}
 		
-		[query release];
 		
 	}
 }
@@ -384,7 +374,6 @@
 			sqlite3_free(errorMsg);
 		}
 		
-		[query release];
 		
 	}
 	
@@ -433,7 +422,6 @@
 			sqlite3_free(errorMsg);
 		}
 		
-		[query release];
 		
 	}
 }
@@ -507,7 +495,6 @@
 			sqlite3_free(errorMsg);
 		}
 		
-		[query release];
 	}
 	
 	

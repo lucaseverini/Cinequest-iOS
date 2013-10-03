@@ -30,16 +30,16 @@
 	
 }
 
-@property (nonatomic, retain) NSMutableArray *days;
-@property (nonatomic, retain) NSMutableArray *index;
-@property (nonatomic, retain) NSMutableDictionary *data;
+@property (nonatomic, strong) NSMutableArray *days;
+@property (nonatomic, strong) NSMutableArray *index;
+@property (nonatomic, strong) NSMutableDictionary *data;
 
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, retain) IBOutlet UILabel *loadingLabel;
-@property (nonatomic, retain) IBOutlet UILabel *offSeasonLabel;
-@property (nonatomic, retain) IBOutlet UIImageView *SJSUIcon;
-@property (nonatomic, retain) IBOutlet UIImageView *CQIcon;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
+@property (nonatomic, strong) IBOutlet UIImageView *SJSUIcon;
+@property (nonatomic, strong) IBOutlet UIImageView *CQIcon;
 - (IBAction)reloadData:(id)sender;
 
 @end

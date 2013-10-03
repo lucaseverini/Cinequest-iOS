@@ -34,8 +34,8 @@
 	
 }
 
-@property (nonatomic, retain) UIActivityIndicatorView *activity;
-@property (nonatomic, retain) UILabel *statusLabel;
+@property (nonatomic, strong) UIActivityIndicatorView *activity;
+@property (nonatomic, strong) UILabel *statusLabel;
 
 - (BOOL) checkNetWorkAndLoadData;
 

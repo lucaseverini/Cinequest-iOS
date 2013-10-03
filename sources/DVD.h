@@ -18,7 +18,7 @@
 }
 
 @property (readwrite) NSUInteger ID;
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *sort;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *sort;
 
 @end
