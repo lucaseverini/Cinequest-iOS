@@ -585,30 +585,12 @@
 		// set button's image
 		UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"];
 		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-		
-		// loop through current data, mark checked to whatever has the same ID
-		for (int section = 0; section < [days count]; section++) 
-		{
-			NSString *day = [days objectAtIndex:section];
-			NSMutableArray *rows = [data objectForKey:day];
-			for (int row = 0; row < [rows count]; row++) 
-			{
-				Schedule *aRandomFilm = [rows objectAtIndex:row];
-				if (aRandomFilm.ID == film.ID) {
-					aRandomFilm.isSelected = film.isSelected;
-				}
-			}
-		}
-		//Reload Table
-		[self.tableView reloadData];
-		
 	}
-	
 }
 #pragma mark -
 #pragma mark Table View Datasource methods
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	int count;
+	int count = 0;
 	switch (switcher) 
 	{
 		case VIEW_BY_DATE:

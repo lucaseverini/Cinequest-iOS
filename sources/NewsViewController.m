@@ -40,10 +40,6 @@
 																			  style:UIBarButtonItemStyleBordered
 																			 target:self
 																			 action:@selector(toFestival:)];
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"DVDs"
-																			   style:UIBarButtonItemStyleBordered
-																			  target:self
-																			  action:@selector(toDVDs:)];
 	
 	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
 	self.tableView.hidden = YES;
@@ -149,19 +145,14 @@
         
     }
 }
+
 - (IBAction)toFestival:(id)sender {
 	CinequestAppDelegate *delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
 	delegate.tabBarController.selectedIndex = 0;
 	delegate.isPresentingModalView = NO;
 	[self dismissModalViewControllerAnimated:YES];
 }
-- (IBAction)toDVDs:(id)sender {
-	CinequestAppDelegate *delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
-	delegate.tabBarController.selectedIndex = 3;
-	delegate.isPresentingModalView = NO;
-	
-	[self dismissModalViewControllerAnimated:YES];
-}
+
 #pragma mark -
 #pragma mark UITableView Data Source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -195,9 +186,11 @@
 	
     return cell;
 }
+
 - (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
 	return [sections objectAtIndex:section];
 }
+
 #pragma mark -
 #pragma mark UITableView Delegate
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
