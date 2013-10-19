@@ -160,7 +160,7 @@ static CGFloat kBorderWidth = 10;
   CGFloat width = frame.size.width - kPadding * 2;
   CGFloat height = frame.size.height - kPadding * 2;
   
-  _orientation = [UIApplication sharedApplication].statusBarOrientation;
+    _orientation = [[UIDevice currentDevice] orientation];  //[UIApplication sharedApplication].statusBarOrientation;
   if (UIInterfaceOrientationIsLandscape(_orientation)) {
     self.frame = CGRectMake(kPadding, kPadding, height, width);
   } else {
@@ -419,7 +419,7 @@ static CGFloat kBorderWidth = 10;
 // UIDeviceOrientationDidChangeNotification
 
 - (void)deviceOrientationDidChange:(void*)object {
-  UIDeviceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];  //[UIApplication sharedApplication].statusBarOrientation;
   if (!_showingKeyboard && [self shouldRotateToOrientation:orientation]) {
     [self updateWebOrientation];
 

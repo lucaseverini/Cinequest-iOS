@@ -24,7 +24,7 @@
 #define MODE			@"http://mobile.cinequest.org/mobileCQ.php?type=mode"
 
 
-@interface LoadDataViewController : UIViewController <UIActionSheetDelegate>
+@interface LoadDataViewController : UIViewController <UIActionSheetDelegate, NSXMLParserDelegate>
 {
 	IBOutlet UIActivityIndicatorView *activity;
 	IBOutlet UILabel *statusLabel;

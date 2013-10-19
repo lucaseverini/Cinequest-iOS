@@ -306,7 +306,8 @@ UITableViewCell *previousCell;
 	[CQDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 	
 	NSDate *parsedDate = [CQDateFormat dateFromString:CQdateTime];
-	parsedDate = [parsedDate addTimeInterval:1];
+//	parsedDate = [parsedDate addTimeInterval:1];    //DEPRECATED
+    parsedDate = [parsedDate dateByAddingTimeInterval:1];   //New
 	
 	NSString *returnString = [CQDateFormat stringFromDate:parsedDate];	
 	

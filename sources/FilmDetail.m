@@ -555,7 +555,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 				[controller setSubject:myFilmData.title];
 				[controller setMessageBody:messageBody isHTML:NO]; 
 				delegate.isPresentingModalView = YES;
-				[self.navigationController presentModalViewController:controller animated:YES];
+				    [self.navigationController presentViewController:controller animated:YES completion:nil];
 				break;
 			}
 			default:
@@ -582,7 +582,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		//NSLog(@"It's away!");
 	}
 	delegate.isPresentingModalView = NO;
-	[self.navigationController dismissModalViewControllerAnimated:YES];
+	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 #pragma mark -
 #pragma mark FBDialog Delegate

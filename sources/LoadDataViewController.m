@@ -504,7 +504,7 @@
 	
 	NSXMLParser *parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
 	
-	[parser setDelegate: self];
+	[parser setDelegate:self];  // Added NSXMLParserDelegate to .h and removed the warning
 	[parser setShouldProcessNamespaces: NO];
 	[parser setShouldReportNamespacePrefixes: NO];
 	[parser setShouldResolveExternalEntities: NO];

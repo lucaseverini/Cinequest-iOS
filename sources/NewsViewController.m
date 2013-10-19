@@ -150,7 +150,7 @@
 	CinequestAppDelegate *delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
 	delegate.tabBarController.selectedIndex = 0;
 	delegate.isPresentingModalView = NO;
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -

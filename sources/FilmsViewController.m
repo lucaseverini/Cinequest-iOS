@@ -288,22 +288,23 @@
 	[self.tableView reloadData];
 
 }
+
 #pragma mark -
 #pragma mark UIViewController Methods
 - (void)viewDidLoad {
 	self.title = @"Films";
 	
     [super viewDidLoad];
-	
+	/*
 	//Configure and start accelerometer
 	[[UIAccelerometer sharedAccelerometer] setUpdateInterval:kUpdateInterval];
 	[[UIAccelerometer sharedAccelerometer] setDelegate:self];
-	
+	*/
 	delegate = (CinequestAppDelegate*)[UIApplication sharedApplication].delegate;
 	mySchedule = delegate.mySchedule;
 	
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
-	[self.navigationController presentModalViewController:navController animated:YES];
+    [self.navigationController presentViewController:navController animated:YES completion:nil];
 	delegate.isPresentingModalView = YES;
 	
 	// Initialize data
