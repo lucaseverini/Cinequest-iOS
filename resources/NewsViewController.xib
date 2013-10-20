@@ -39,7 +39,7 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUITableView" id="783419410">
 						<reference key="NSNextResponder" ref="67040533"/>
-						<int key="NSvFlags">1300</int>
+						<int key="NSvFlags">1302</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
 						<string key="NSFrameSize">{320, 460}</string>
 						<reference key="NSSuperview" ref="67040533"/>
