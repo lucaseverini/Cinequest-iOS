@@ -186,9 +186,9 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 					  ,[dataDictionary objectForKey:@"Description"]];
 	
 	//NSLog(@"%@",weba);
-	
+    
+	weba = [self htmlEntityDecode:weba];    //Render HTML properly
 	weba = [weba stringByAppendingString:@"<br/>"];
-	
 	[self.webView loadHTMLString:weba baseURL:nil];	
 }
 - (BOOL)connectedToNetwork {
@@ -591,4 +591,19 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	delegate.isLoggedInFacebook = NO;
 	[self.tableView reloadData];
 }
+
+#pragma mark -
+#pragma mark Decode NSString for HTML
+
+-(NSString *)htmlEntityDecode:(NSString *)string
+{
+//    string = [string stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+//    string = [string stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
+    string = [string stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+    string = [string stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+    string = [string stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+    
+    return string;
+}
+
 @end
