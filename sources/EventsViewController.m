@@ -84,8 +84,6 @@
     [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
-	
-	[self.tableView reloadData];
 }
 #pragma mark -
 #pragma mark Actions
@@ -539,21 +537,7 @@
 		// set button's image
 		UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"];
 		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-		
-		for (int section = 0; section < [days count]; section++) 
-		{
-			NSString *day = [days objectAtIndex:section];
-			NSMutableArray *rows = [data objectForKey:day];
-			for (int row = 0; row < [rows count]; row++) 
-			{
-				Schedule *aRandomEvent = [rows objectAtIndex:row];
-				if (aRandomEvent.ID == event.ID) {
-					aRandomEvent.isSelected = event.isSelected;
-				}
-				
-			}
-		}
-		[self.tableView reloadData];
+        
 	}
 	
 }

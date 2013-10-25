@@ -6,6 +6,7 @@
 
 #import <libxml/xpath.h>
 #import <libxml/xpathInternals.h>
+#include <objc/runtime.h>
 
 
 @implementation DDXMLNode
@@ -196,11 +197,11 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 	{
 		if(nodePtr->type == XML_ELEMENT_NODE)
 		{
-			self->isa = [DDXMLElement class];
+            object_setClass(self, [DDXMLElement class]);
 		}
 		else if(nodePtr->type == XML_DOCUMENT_NODE)
 		{
-			self->isa = [DDXMLDocument class];
+            object_setClass(self, [DDXMLDocument class]);   //	Deprecated self->isa = [DDXMLDocument class];
 		}
 	}
 	
@@ -254,11 +255,13 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 	{
 		if(nodePtr->type == XML_ELEMENT_NODE)
 		{
-			self->isa = [DDXMLElement class];
+//			self->isa = [DDXMLElement class];
+            object_setClass(self, [DDXMLElement class]);
 		}
 		else if(nodePtr->type == XML_DOCUMENT_NODE)
 		{
-			self->isa = [DDXMLDocument class];
+//			self->isa = [DDXMLDocument class];
+            object_setClass(self, [DDXMLDocument class]);
 		}
 	}
 	

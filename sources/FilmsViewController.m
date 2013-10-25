@@ -340,8 +340,6 @@
     [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
-	 
-	[self.tableView reloadData];
 }
 #pragma mark -
 #pragma mark Private Methods

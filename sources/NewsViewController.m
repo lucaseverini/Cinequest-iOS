@@ -53,10 +53,14 @@
 	@autoreleasepool {
 		NSURL *link = [NSURL URLWithString:NEWS];
 		NSData *htmldata = [NSData dataWithContentsOfURL:link];
-		
+        
+        NSString* myString = [[NSString alloc] initWithData:htmldata encoding:NSUTF8StringEncoding];
+        myString = [myString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+        myString = [myString stringByReplacingOccurrencesOfString:@"\t" withString:@""];
+        htmldata = [myString dataUsingEncoding:NSUTF8StringEncoding];
+        
 		DDXMLDocument *newsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
 		DDXMLElement *rootElement = [newsXMLDoc rootElement];
-		//NSLog(@"Count: %d",[rootElement childCount]);
 		NSString *preSection	= @"empty";
 		NSMutableArray *temp	= [[NSMutableArray alloc] init];
 		if ([rootElement childCount] == 3) {
