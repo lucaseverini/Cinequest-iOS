@@ -25,11 +25,12 @@
 @synthesize newsView;
 
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
-	
+- (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
+{
 	mySchedule = [[NSMutableArray alloc] init];
 	newsView = [[NewsViewController alloc] init];
-	if ([self connectedToNetwork:[NSURL URLWithString:MODE]]) {
+	if ([self connectedToNetwork:[NSURL URLWithString:MODE]])
+	{
 		[self setOffSeason];
 		//isOffSeason = YES;
 		//NSLog(@"IS OFFSEASON? %@",(isOffSeason) ? @"YES" : @"NO");
@@ -37,8 +38,14 @@
 	
 	//NSLog(@"Application has finished launching...");
     // Add the tab bar controller's current view as a subview of the window
-    [window addSubview:tabBarController.view];
+    // [window addSubview:tabBarController.view];
+	
+    self.window.rootViewController = tabBarController;
+    [self.window makeKeyAndVisible];
+	
+	 return YES;
 }
+
 - (void)setOffSeason {
 	NSURL *url = [NSURL URLWithString:MODE];
 	
