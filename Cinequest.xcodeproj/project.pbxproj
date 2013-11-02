@@ -84,6 +84,7 @@
 		8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8149DFCA17EBB5450092F8F9 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		8149DFCC17EBB5780092F8F9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sources/main.m; sourceTree = SOURCE_ROOT; };
+		815A275018161A5500D9CDCE /* New Features and Bugs.webloc */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "New Features and Bugs.webloc"; sourceTree = "<group>"; };
 		81745A4E17EBAEED008D2C2C /* Cinequest-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Cinequest-Prefix.pch"; path = "sources/Cinequest-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		81745A4F17EBAEED008D2C2C /* CinequestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CinequestAppDelegate.h; path = sources/CinequestAppDelegate.h; sourceTree = SOURCE_ROOT; };
 		81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CinequestAppDelegate.m; path = sources/CinequestAppDelegate.m; sourceTree = SOURCE_ROOT; };
@@ -215,6 +216,14 @@
 			name = Libraries;
 			sourceTree = "<group>";
 		};
+		815A275118161BDE00D9CDCE /* Bugs/Features log */ = {
+			isa = PBXGroup;
+			children = (
+				815A275018161A5500D9CDCE /* New Features and Bugs.webloc */,
+			);
+			name = "Bugs/Features log";
+			sourceTree = "<group>";
+		};
 		81745A8717EBAFAE008D2C2C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -229,6 +238,7 @@
 		81C8B37517EBAB3200033D4F = {
 			isa = PBXGroup;
 			children = (
+				815A275118161BDE00D9CDCE /* Bugs/Features log */,
 				81C8B43C17EBAC9100033D4F /* Sources */,
 				81C8B3E217EBAC4C00033D4F /* FBConnect */,
 				81C8B3B917EBAC1600033D4F /* Images */,
