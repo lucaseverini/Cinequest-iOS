@@ -23,6 +23,8 @@
 #define DETAILFORITEM	@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id="
 #define MODE			@"http://mobile.cinequest.org/mobileCQ.php?type=mode"
 
+#define XML_FEED_URL             @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
+
 #define CELL_BUTTON_TAG			1
 #define CELL_TITLE_LABEL_TAG	2
 #define	CELL_TIME_LABEL_TAG		3
