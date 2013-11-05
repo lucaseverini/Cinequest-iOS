@@ -77,15 +77,16 @@
 		81C8B40217EBAC6100033D4F /* FBStreamDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F617EBAC6100033D4F /* FBStreamDialog.m */; };
 		81C8B40317EBAC6100033D4F /* FBXMLHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */; };
 		93F451D417FDEE6C0091CEE7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F451D317FDEE6C0091CEE7 /* Social.framework */; };
-		C271392718289A9C00BF8DCB /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = C271392618289A9C00BF8DCB /* Show.m */; };
-		C271392A18289FDC00BF8DCB /* Showing.m in Sources */ = {isa = PBXBuildFile; fileRef = C271392918289FDC00BF8DCB /* Showing.m */; };
-		C271392D1828A06900BF8DCB /* Venue.m in Sources */ = {isa = PBXBuildFile; fileRef = C271392C1828A06900BF8DCB /* Venue.m */; };
-		C27139311828A86600BF8DCB /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C27139301828A86600BF8DCB /* FestivalParser.m */; };
 		C27139381828E8C900BF8DCB /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C27139371828E8C900BF8DCB /* XCTest.framework */; };
 		C27139391828E8C900BF8DCB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38317EBAB3200033D4F /* Foundation.framework */; };
 		C271393A1828E8C900BF8DCB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38117EBAB3200033D4F /* UIKit.framework */; };
 		C27139401828E8C900BF8DCB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C271393E1828E8C900BF8DCB /* InfoPlist.strings */; };
 		C27139421828E8C900BF8DCB /* List_of_Shows_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */; };
+		C2D6DC1A182975E5005A6897 /* Festival.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC19182975E5005A6897 /* Festival.m */; };
+		C2D6DC211829771E005A6897 /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1C1829771E005A6897 /* Show.m */; };
+		C2D6DC221829771E005A6897 /* Showing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1E1829771E005A6897 /* Showing.m */; };
+		C2D6DC231829771E005A6897 /* Venue.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC201829771E005A6897 /* Venue.m */; };
+		C2D6DC261829773C005A6897 /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC251829773C005A6897 /* FestivalParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -204,20 +205,22 @@
 		81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBXMLHandler.m; path = FBConnect/FBXMLHandler.m; sourceTree = SOURCE_ROOT; };
 		81C8B43D17EBAD0100033D4F /* Cinequest-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = "Cinequest-Info.plist"; path = "resources/Cinequest-Info.plist"; sourceTree = SOURCE_ROOT; };
 		93F451D317FDEE6C0091CEE7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		C271392518289A9C00BF8DCB /* Show.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Show.h; sourceTree = SOURCE_ROOT; };
-		C271392618289A9C00BF8DCB /* Show.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Show.m; sourceTree = SOURCE_ROOT; };
-		C271392818289FDC00BF8DCB /* Showing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Showing.h; sourceTree = SOURCE_ROOT; };
-		C271392918289FDC00BF8DCB /* Showing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Showing.m; sourceTree = SOURCE_ROOT; };
-		C271392B1828A06900BF8DCB /* Venue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Venue.h; sourceTree = SOURCE_ROOT; };
-		C271392C1828A06900BF8DCB /* Venue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Venue.m; sourceTree = SOURCE_ROOT; };
-		C271392F1828A86600BF8DCB /* FestivalParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FestivalParser.h; sourceTree = SOURCE_ROOT; };
-		C27139301828A86600BF8DCB /* FestivalParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FestivalParser.m; sourceTree = SOURCE_ROOT; };
 		C27139361828E8C800BF8DCB /* List of Shows Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "List of Shows Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C27139371828E8C900BF8DCB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C271393D1828E8C900BF8DCB /* List of Shows Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "List of Shows Tests-Info.plist"; sourceTree = "<group>"; };
 		C271393F1828E8C900BF8DCB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = List_of_Shows_Tests.m; sourceTree = "<group>"; };
 		C27139431828E8C900BF8DCB /* List of Shows Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "List of Shows Tests-Prefix.pch"; sourceTree = "<group>"; };
+		C2D6DC18182975E5005A6897 /* Festival.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Festival.h; path = sources/Festival.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC19182975E5005A6897 /* Festival.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Festival.m; path = sources/Festival.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC1B1829771E005A6897 /* Show.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Show.h; path = sources/Show.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC1C1829771E005A6897 /* Show.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Show.m; path = sources/Show.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC1D1829771E005A6897 /* Showing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Showing.h; path = sources/Showing.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC1E1829771E005A6897 /* Showing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Showing.m; path = sources/Showing.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC1F1829771E005A6897 /* Venue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Venue.h; path = sources/Venue.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC201829771E005A6897 /* Venue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Venue.m; path = sources/Venue.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC241829773C005A6897 /* FestivalParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FestivalParser.h; path = sources/FestivalParser.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC251829773C005A6897 /* FestivalParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FestivalParser.m; path = sources/FestivalParser.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -453,14 +456,16 @@
 		C271392E1828A36100BF8DCB /* new_classes */ = {
 			isa = PBXGroup;
 			children = (
-				C271392518289A9C00BF8DCB /* Show.h */,
-				C271392618289A9C00BF8DCB /* Show.m */,
-				C271392818289FDC00BF8DCB /* Showing.h */,
-				C271392918289FDC00BF8DCB /* Showing.m */,
-				C271392B1828A06900BF8DCB /* Venue.h */,
-				C271392C1828A06900BF8DCB /* Venue.m */,
-				C271392F1828A86600BF8DCB /* FestivalParser.h */,
-				C27139301828A86600BF8DCB /* FestivalParser.m */,
+				C2D6DC1B1829771E005A6897 /* Show.h */,
+				C2D6DC1C1829771E005A6897 /* Show.m */,
+				C2D6DC1D1829771E005A6897 /* Showing.h */,
+				C2D6DC1E1829771E005A6897 /* Showing.m */,
+				C2D6DC1F1829771E005A6897 /* Venue.h */,
+				C2D6DC201829771E005A6897 /* Venue.m */,
+				C2D6DC18182975E5005A6897 /* Festival.h */,
+				C2D6DC19182975E5005A6897 /* Festival.m */,
+				C2D6DC241829773C005A6897 /* FestivalParser.h */,
+				C2D6DC251829773C005A6897 /* FestivalParser.m */,
 			);
 			name = new_classes;
 			sourceTree = "<group>";
@@ -609,19 +614,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C27139311828A86600BF8DCB /* FestivalParser.m in Sources */,
+				C2D6DC211829771E005A6897 /* Show.m in Sources */,
+				C2D6DC1A182975E5005A6897 /* Festival.m in Sources */,
 				81C8B3FA17EBAC6100033D4F /* FBConnectGlobal.m in Sources */,
 				81C8B3FB17EBAC6100033D4F /* FBDialog.m in Sources */,
+				C2D6DC261829773C005A6897 /* FestivalParser.m in Sources */,
 				81C8B3FC17EBAC6100033D4F /* FBFeedDialog.m in Sources */,
 				81C8B3FD17EBAC6100033D4F /* FBLoginButton.m in Sources */,
 				81C8B3FE17EBAC6100033D4F /* FBLoginDialog.m in Sources */,
-				C271392D1828A06900BF8DCB /* Venue.m in Sources */,
 				81C8B3FF17EBAC6100033D4F /* FBPermissionDialog.m in Sources */,
 				81C8B40017EBAC6100033D4F /* FBRequest.m in Sources */,
 				81C8B40117EBAC6100033D4F /* FBSession.m in Sources */,
 				81C8B40217EBAC6100033D4F /* FBStreamDialog.m in Sources */,
 				81C8B40317EBAC6100033D4F /* FBXMLHandler.m in Sources */,
-				C271392718289A9C00BF8DCB /* Show.m in Sources */,
 				81745A7517EBAEED008D2C2C /* CinequestAppDelegate.m in Sources */,
 				81745A7617EBAEED008D2C2C /* DDXMLDocument.m in Sources */,
 				81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */,
@@ -634,14 +639,15 @@
 				81745A7E17EBAEED008D2C2C /* FilmDetail.m in Sources */,
 				81745A7F17EBAEED008D2C2C /* FilmsViewController.m in Sources */,
 				81745A8017EBAEED008D2C2C /* ForumsViewController.m in Sources */,
-				C271392A18289FDC00BF8DCB /* Showing.m in Sources */,
 				81745A8117EBAEED008D2C2C /* LoadDataViewController.m in Sources */,
+				C2D6DC231829771E005A6897 /* Venue.m in Sources */,
 				81745A8217EBAEED008D2C2C /* LogInViewController.m in Sources */,
 				81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */,
 				81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */,
 				81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */,
 				81745A8617EBAEED008D2C2C /* Schedule.m in Sources */,
 				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,
+				C2D6DC221829771E005A6897 /* Showing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -850,6 +856,7 @@
 				C27139481828E8C900BF8DCB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

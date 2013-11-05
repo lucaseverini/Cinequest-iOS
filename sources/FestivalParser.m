@@ -13,7 +13,10 @@
 #import "Showing.h"
 #import "Venue.h"
 
-@implementation FestivalParser
+@implementation FestivalParser {
+    Show *show;
+    Showing *showing;
+}
 
 @synthesize shows;
 
@@ -43,7 +46,7 @@
         for (int i = 0; i < [arrayOfShows childCount]; i++) {
             DDXMLElement *showElement = (DDXMLElement*)[arrayOfShows childAtIndex:i];
             
-            Show *show = [[Show alloc] init];
+            show = [[Show alloc] init];
             
             for (int j = 0; j<[showElement childCount]; j++) {
                 /* Should I declare showChild outside this block? */
@@ -94,7 +97,7 @@
                     // showChild here is an array of Showing
                     for (int k = 0; k < [showChild childCount]; k++) {
                         DDXMLElement *showingElement = (DDXMLElement*)[showChild childAtIndex:k];
-                        Showing *showing = [[Showing alloc] init];
+                        showing = [[Showing alloc] init];
                         
                         for (int l = 0; l < [showingElement childCount]; l++) {
                             DDXMLElement *showingChild = (DDXMLElement*)[showingElement childAtIndex:l];
@@ -128,11 +131,13 @@
                         }
                         
                         [show.currentShowings addObject:showing];
+                        showing = nil;
                     }
                 }
                 
             }
             [self.shows addObject:show];
+            show = nil;
         }
         
     }
