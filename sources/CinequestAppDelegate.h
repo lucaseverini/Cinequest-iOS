@@ -40,6 +40,7 @@
 #define EMPTY 0
 
 @class NewsViewController;
+@class Festival;
 
 @interface CinequestAppDelegate : NSObject 
 	<UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
@@ -51,8 +52,8 @@
 	BOOL isPresentingModalView;
 	BOOL isLoggedInFacebook;
 	BOOL isOffSeason;
-	
 }
+
 @property (nonatomic, strong) NewsViewController *newsView;
 @property (nonatomic, strong) NSMutableArray *mySchedule;
 @property (nonatomic, strong) IBOutlet UIWindow *window;
@@ -60,6 +61,8 @@
 @property (readwrite) BOOL isPresentingModalView;
 @property (readwrite) BOOL isLoggedInFacebook;
 @property (readwrite) BOOL isOffSeason;
+
+@property (nonatomic, strong) Festival* festival;
 
 - (void)jumpToScheduler;
 - (BOOL)connectedToNetwork:(NSURL*)URL;

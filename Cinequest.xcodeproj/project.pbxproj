@@ -403,7 +403,8 @@
 			children = (
 				81745A4F17EBAEED008D2C2C /* CinequestAppDelegate.h */,
 				81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */,
-				C271392E1828A36100BF8DCB /* new_classes */,
+				C271392E1828A36100BF8DCB /* FestivalParser */,
+				C271392418279DE300BF8DCB /* DDXMLFiles */,
 				81745A5B17EBAEED008D2C2C /* DVD.h */,
 				81745A5C17EBAEED008D2C2C /* DVD.m */,
 				81745A5D17EBAEED008D2C2C /* DVDsViewController.h */,
@@ -430,7 +431,6 @@
 				81745A7217EBAEED008D2C2C /* NSStringAdditions.m */,
 				81745A7317EBAEED008D2C2C /* Schedule.h */,
 				81745A7417EBAEED008D2C2C /* Schedule.m */,
-				C271392418279DE300BF8DCB /* DDXMLFiles */,
 			);
 			name = Sources;
 			path = Cinequest;
@@ -453,7 +453,7 @@
 			name = DDXMLFiles;
 			sourceTree = "<group>";
 		};
-		C271392E1828A36100BF8DCB /* new_classes */ = {
+		C271392E1828A36100BF8DCB /* FestivalParser */ = {
 			isa = PBXGroup;
 			children = (
 				C2D6DC1B1829771E005A6897 /* Show.h */,
@@ -467,7 +467,7 @@
 				C2D6DC241829773C005A6897 /* FestivalParser.h */,
 				C2D6DC251829773C005A6897 /* FestivalParser.m */,
 			);
-			name = new_classes;
+			name = FestivalParser;
 			sourceTree = "<group>";
 		};
 		C271393B1828E8C900BF8DCB /* List of Shows Tests */ = {

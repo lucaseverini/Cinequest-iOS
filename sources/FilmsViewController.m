@@ -10,6 +10,7 @@
 #import "LoadDataViewController.h"
 #import "NewsViewController.h"
 #import "FilmDetail.h"
+#import "Festival.h"
 
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
@@ -340,7 +341,11 @@
     [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
+	
+	Festival *festival = [(id)[[UIApplication sharedApplication] delegate] festival];
+	NSLog(@"%@", festival);
 }
+
 #pragma mark -
 #pragma mark Private Methods
 - (void)startParsingXML {

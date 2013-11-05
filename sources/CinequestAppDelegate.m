@@ -8,6 +8,7 @@
 
 #import "CinequestAppDelegate.h"
 #import "NewsViewController.h"
+#import "FestivalParser.h"
 
 @interface CinequestAppDelegate (Private)
 - (void)setOffSeason;
@@ -23,7 +24,7 @@
 @synthesize isLoggedInFacebook;
 @synthesize isOffSeason;
 @synthesize newsView;
-
+@synthesize festival;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
@@ -43,7 +44,9 @@
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
 	
-	 return YES;
+	festival = [FestivalParser parseFestival:XML_FEED_URL];
+	
+	return YES;
 }
 
 - (void)setOffSeason {

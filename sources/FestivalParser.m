@@ -25,8 +25,8 @@
     return self;
 }
 
-- (id) parseFestival:(NSString *) url {
-    return @"need to create Festival class";
++ (Festival*) parseFestival:(NSString *) url {
+    return nil; // @"need to create Festival class";
 }
 
 - (void) parseShows:(NSString *) url {
