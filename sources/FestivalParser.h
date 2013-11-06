@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Festival.h"
 
 @interface FestivalParser : NSObject {
     NSMutableArray *shows;
@@ -15,7 +16,6 @@
 @property (strong, nonatomic) NSMutableArray *shows;
 - (NSMutableArray *)getShows;
 - (void) parseShows:(NSString *) url;
-
-+ (Festival*) parseFestival:(NSString *) url;
+- (Festival*) parseFestival:(NSString *) url;
 
 @end

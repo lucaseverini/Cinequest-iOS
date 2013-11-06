@@ -7,7 +7,28 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NewSchedule.h"
+#import "Film.h"
+#import "ProgramItem.h"
 
-@interface Festival : NSObject
+@interface Festival : NSObject {
+    NSMutableArray *programItems;
+    NSMutableArray *films;
+    NSMutableArray *schedules;
+    NSMutableArray *venueLocations;
+    NSString *lastChanged;
+    NSMutableArray *events;
+}
+
+@property (strong, nonatomic) NSMutableArray *programItems;
+@property (strong, nonatomic) NSMutableArray *films;
+@property (strong, nonatomic) NSMutableArray *schedules;
+@property (strong, nonatomic) NSMutableArray *venueLocations;
+@property (strong, nonatomic) NSString *lastChanged;
+@property (strong, nonatomic) NSMutableArray *events;
+
+- (NSMutableArray *) getSchedulesForDay:(NSString *)date;
+- (Film *) getFilmForId:(NSString *)ID;
+- (ProgramItem *) getProgramItemForId:(NSString *)ID;
 
 @end

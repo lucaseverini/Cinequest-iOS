@@ -82,11 +82,17 @@
 		C271393A1828E8C900BF8DCB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38117EBAB3200033D4F /* UIKit.framework */; };
 		C27139401828E8C900BF8DCB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C271393E1828E8C900BF8DCB /* InfoPlist.strings */; };
 		C27139421828E8C900BF8DCB /* List_of_Shows_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */; };
+		C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6D7182A1E26006F7D25 /* VenueLocation.m */; };
+		C27BC6DB182A3734006F7D25 /* NewSchedule.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6DA182A3734006F7D25 /* NewSchedule.m */; };
 		C2D6DC1A182975E5005A6897 /* Festival.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC19182975E5005A6897 /* Festival.m */; };
 		C2D6DC211829771E005A6897 /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1C1829771E005A6897 /* Show.m */; };
 		C2D6DC221829771E005A6897 /* Showing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1E1829771E005A6897 /* Showing.m */; };
 		C2D6DC231829771E005A6897 /* Venue.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC201829771E005A6897 /* Venue.m */; };
 		C2D6DC261829773C005A6897 /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC251829773C005A6897 /* FestivalParser.m */; };
+		C2D6DC291829B8BF005A6897 /* Film.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC281829B8BF005A6897 /* Film.m */; };
+		C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC2B1829E0F7005A6897 /* CinequestItem.m */; };
+		C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC2E1829E1CE005A6897 /* ProgramItem.m */; };
+		C2D6DC311829E999005A6897 /* FestivalParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC301829E999005A6897 /* FestivalParserTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -211,6 +217,10 @@
 		C271393F1828E8C900BF8DCB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = List_of_Shows_Tests.m; sourceTree = "<group>"; };
 		C27139431828E8C900BF8DCB /* List of Shows Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "List of Shows Tests-Prefix.pch"; sourceTree = "<group>"; };
+		C27BC6D6182A1E26006F7D25 /* VenueLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VenueLocation.h; path = sources/VenueLocation.h; sourceTree = SOURCE_ROOT; };
+		C27BC6D7182A1E26006F7D25 /* VenueLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VenueLocation.m; path = sources/VenueLocation.m; sourceTree = SOURCE_ROOT; };
+		C27BC6D9182A3734006F7D25 /* NewSchedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewSchedule.h; path = sources/NewSchedule.h; sourceTree = SOURCE_ROOT; };
+		C27BC6DA182A3734006F7D25 /* NewSchedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewSchedule.m; path = sources/NewSchedule.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC18182975E5005A6897 /* Festival.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Festival.h; path = sources/Festival.h; sourceTree = SOURCE_ROOT; };
 		C2D6DC19182975E5005A6897 /* Festival.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Festival.m; path = sources/Festival.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC1B1829771E005A6897 /* Show.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Show.h; path = sources/Show.h; sourceTree = SOURCE_ROOT; };
@@ -221,6 +231,13 @@
 		C2D6DC201829771E005A6897 /* Venue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Venue.m; path = sources/Venue.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC241829773C005A6897 /* FestivalParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FestivalParser.h; path = sources/FestivalParser.h; sourceTree = SOURCE_ROOT; };
 		C2D6DC251829773C005A6897 /* FestivalParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FestivalParser.m; path = sources/FestivalParser.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC271829B8BF005A6897 /* Film.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Film.h; path = sources/Film.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC281829B8BF005A6897 /* Film.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Film.m; path = sources/Film.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC2A1829E0F7005A6897 /* CinequestItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CinequestItem.h; path = sources/CinequestItem.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC2B1829E0F7005A6897 /* CinequestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CinequestItem.m; path = sources/CinequestItem.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC2D1829E1CE005A6897 /* ProgramItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProgramItem.h; path = sources/ProgramItem.h; sourceTree = SOURCE_ROOT; };
+		C2D6DC2E1829E1CE005A6897 /* ProgramItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProgramItem.m; path = sources/ProgramItem.m; sourceTree = SOURCE_ROOT; };
+		C2D6DC301829E999005A6897 /* FestivalParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FestivalParserTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -456,12 +473,22 @@
 		C271392E1828A36100BF8DCB /* FestivalParser */ = {
 			isa = PBXGroup;
 			children = (
+				C2D6DC2A1829E0F7005A6897 /* CinequestItem.h */,
+				C2D6DC2B1829E0F7005A6897 /* CinequestItem.m */,
+				C2D6DC2D1829E1CE005A6897 /* ProgramItem.h */,
+				C2D6DC2E1829E1CE005A6897 /* ProgramItem.m */,
+				C27BC6D6182A1E26006F7D25 /* VenueLocation.h */,
+				C27BC6D7182A1E26006F7D25 /* VenueLocation.m */,
+				C2D6DC271829B8BF005A6897 /* Film.h */,
+				C2D6DC281829B8BF005A6897 /* Film.m */,
 				C2D6DC1B1829771E005A6897 /* Show.h */,
 				C2D6DC1C1829771E005A6897 /* Show.m */,
 				C2D6DC1D1829771E005A6897 /* Showing.h */,
 				C2D6DC1E1829771E005A6897 /* Showing.m */,
 				C2D6DC1F1829771E005A6897 /* Venue.h */,
 				C2D6DC201829771E005A6897 /* Venue.m */,
+				C27BC6D9182A3734006F7D25 /* NewSchedule.h */,
+				C27BC6DA182A3734006F7D25 /* NewSchedule.m */,
 				C2D6DC18182975E5005A6897 /* Festival.h */,
 				C2D6DC19182975E5005A6897 /* Festival.m */,
 				C2D6DC241829773C005A6897 /* FestivalParser.h */,
@@ -473,6 +500,7 @@
 		C271393B1828E8C900BF8DCB /* List of Shows Tests */ = {
 			isa = PBXGroup;
 			children = (
+				C2D6DC301829E999005A6897 /* FestivalParserTest.m */,
 				C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */,
 				C271393C1828E8C900BF8DCB /* Supporting Files */,
 			);
@@ -621,6 +649,7 @@
 				C2D6DC261829773C005A6897 /* FestivalParser.m in Sources */,
 				81C8B3FC17EBAC6100033D4F /* FBFeedDialog.m in Sources */,
 				81C8B3FD17EBAC6100033D4F /* FBLoginButton.m in Sources */,
+				C27BC6DB182A3734006F7D25 /* NewSchedule.m in Sources */,
 				81C8B3FE17EBAC6100033D4F /* FBLoginDialog.m in Sources */,
 				81C8B3FF17EBAC6100033D4F /* FBPermissionDialog.m in Sources */,
 				81C8B40017EBAC6100033D4F /* FBRequest.m in Sources */,
@@ -630,10 +659,13 @@
 				81745A7517EBAEED008D2C2C /* CinequestAppDelegate.m in Sources */,
 				81745A7617EBAEED008D2C2C /* DDXMLDocument.m in Sources */,
 				81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */,
+				C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */,
 				81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */,
 				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
+				C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */,
 				81745A7A17EBAEED008D2C2C /* DVD.m in Sources */,
 				81745A7B17EBAEED008D2C2C /* DVDsViewController.m in Sources */,
+				C2D6DC291829B8BF005A6897 /* Film.m in Sources */,
 				81745A7C17EBAEED008D2C2C /* EventDetailViewController.m in Sources */,
 				81745A7D17EBAEED008D2C2C /* EventsViewController.m in Sources */,
 				81745A7E17EBAEED008D2C2C /* FilmDetail.m in Sources */,
@@ -646,6 +678,7 @@
 				81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */,
 				81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */,
 				81745A8617EBAEED008D2C2C /* Schedule.m in Sources */,
+				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
 				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,
 				C2D6DC221829771E005A6897 /* Showing.m in Sources */,
 			);
@@ -655,6 +688,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2D6DC311829E999005A6897 /* FestivalParserTest.m in Sources */,
 				C27139421828E8C900BF8DCB /* List_of_Shows_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

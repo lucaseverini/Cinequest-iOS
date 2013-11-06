@@ -44,7 +44,8 @@
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
 	
-	festival = [FestivalParser parseFestival:XML_FEED_URL];
+    FestivalParser *festivalParser = [[FestivalParser alloc] init];
+	festival = [festivalParser parseFestival:XML_FEED_URL];
 	
 	return YES;
 }
