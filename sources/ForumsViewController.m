@@ -45,7 +45,7 @@
 	
 	self.title = @"Forums";
 	
-	delegate = (CinequestAppDelegate*)[UIApplication sharedApplication].delegate;
+	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
 	// Initialize data and days
@@ -580,7 +580,7 @@
 																				andDataObject:forum
 																					   andURL:[NSURL URLWithString:link]];
 	eventDetail.displayAddButton = YES;
-	UIApplication *app = [UIApplication sharedApplication];
+
 	app.networkActivityIndicatorVisible = YES;
 	
 	[self.navigationController pushViewController:eventDetail animated:YES];

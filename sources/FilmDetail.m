@@ -11,11 +11,8 @@
 #import "Schedule.h"
 #import "DVD.h"
 #import "FBConnect.h"
-
 #import "CinequestAppDelegate.h"
 
-#import <SystemConfiguration/SCNetworkReachability.h>
-#include <netinet/in.h>
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:100px;max-width:150px;\"src=\"%@\"/></p><p>%@</p>"
 
@@ -79,7 +76,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 }
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	delegate = (CinequestAppDelegate*)[UIApplication sharedApplication].delegate;
+	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
 	self.tableView.hidden = YES;
@@ -93,7 +90,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 	}
 	
-	if ([delegate connectedToNetwork:[NSURL URLWithString:@"http://www.apple.com"]]) {
+	if ([appDelegate connectedToNetwork]) {
 		[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
 	} else {
 		//alert
@@ -185,7 +182,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
         }
     }
 	
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	app.networkActivityIndicatorVisible = NO;
 	
 	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
 }
@@ -568,7 +565,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 - (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 1) {
 		//NSLog(@"CALL!");
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:TICKET_LINE]];
+		[app openURL:[NSURL URLWithString:TICKET_LINE]];
 	} else {
 		//NSLog(@"cancel");
 	}

@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1552</int>
 		<string key="IBDocument.SystemVersion">12F45</string>
-		<string key="IBDocument.InterfaceBuilderVersion">4510</string>
+		<string key="IBDocument.InterfaceBuilderVersion">4514</string>
 		<string key="IBDocument.AppKitVersion">1187.40</string>
 		<string key="IBDocument.HIToolboxVersion">626.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">3742</string>
+			<string key="NS.object.0">3746</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>IBProxyObject</string>
@@ -62,7 +62,7 @@
 					</object>
 					<object class="IBUIActivityIndicatorView" id="84568286">
 						<reference key="NSNextResponder" ref="67040533"/>
-						<int key="NSvFlags">1316</int>
+						<int key="NSvFlags">-2147482332</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
 						<string key="NSFrame">{{103, 220}, {20, 20}}</string>
 						<reference key="NSSuperview" ref="67040533"/>
@@ -76,7 +76,7 @@
 					</object>
 					<object class="IBUILabel" id="426730867">
 						<reference key="NSNextResponder" ref="67040533"/>
-						<int key="NSvFlags">1316</int>
+						<int key="NSvFlags">-2147482332</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
 						<string key="NSFrame">{{131, 219}, {145, 21}}</string>
 						<reference key="NSSuperview" ref="67040533"/>
@@ -294,6 +294,6 @@
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<string key="IBCocoaTouchPluginVersion">3742</string>
+		<string key="IBCocoaTouchPluginVersion">3746</string>
 	</data>
 </archive>

@@ -27,7 +27,8 @@
     return self;
 }
 
-- (Festival*) parseFestival:(NSString *) url {
+- (Festival*) parseFestival:(NSString *) url
+{	
     [self parseShows:url];
     Festival *festival = [[Festival alloc] init];
     NSMutableDictionary *shortFilms = [[NSMutableDictionary alloc] init];

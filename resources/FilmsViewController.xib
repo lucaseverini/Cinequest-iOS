@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
@@ -7,12 +7,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FilmsViewController">
             <connections>
-                <outlet property="CQIcon" destination="18" id="30"/>
-                <outlet property="SJSUIcon" destination="27" id="29"/>
                 <outlet property="_tableView" destination="4" id="36"/>
                 <outlet property="activity" destination="24" id="26"/>
                 <outlet property="loadingLabel" destination="23" id="25"/>
-                <outlet property="offSeasonLabel" destination="37" id="38"/>
                 <outlet property="view" destination="11" id="20"/>
             </connections>
         </placeholder>
@@ -53,10 +50,6 @@
                         <outlet property="delegate" destination="-1" id="7"/>
                     </connections>
                 </tableView>
-                <imageView autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="cq_logo.png" id="18">
-                    <rect key="frame" x="0.0" y="60" width="320" height="46"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Loading..." lineBreakMode="tailTruncation" minimumFontSize="10" id="23">
                     <rect key="frame" x="130" y="177" width="60" height="16"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -68,17 +61,6 @@
                     <rect key="frame" x="102" y="175" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </activityIndicatorView>
-                <imageView opaque="NO" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="sjsulogo_new_sjsu4.gif" id="27">
-                    <rect key="frame" x="109" y="270" width="101" height="64"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
-                <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Cinequest Film Festival is officially a wrap. Stay tuned on your mobile device and be the first to know more about next year!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="7" minimumFontSize="10" id="37">
-                    <rect key="frame" x="20" y="130" width="280" height="130"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
@@ -86,8 +68,4 @@
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
         </view>
     </objects>
-    <resources>
-        <image name="cq_logo.png" width="450" height="68"/>
-        <image name="sjsulogo_new_sjsu4.gif" width="162" height="93"/>
-    </resources>
 </document>

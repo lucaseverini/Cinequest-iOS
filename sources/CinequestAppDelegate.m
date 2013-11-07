@@ -9,9 +9,14 @@
 #import "CinequestAppDelegate.h"
 #import "NewsViewController.h"
 #import "FestivalParser.h"
+#import "Reachability.h"
+#import "MainViewController.h"
+
 
 @interface CinequestAppDelegate (Private)
+
 - (void)setOffSeason;
+
 @end
 
 
@@ -25,32 +30,37 @@
 @synthesize isOffSeason;
 @synthesize newsView;
 @synthesize festival;
+@synthesize reachability;
+@synthesize networkConnection;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
+	[self startReachability:XML_FEED_URL];
+
 	mySchedule = [[NSMutableArray alloc] init];
 	newsView = [[NewsViewController alloc] init];
-	if ([self connectedToNetwork:[NSURL URLWithString:MODE]])
+	
+	if ([self connectedToNetwork])
 	{
 		[self setOffSeason];
-		//isOffSeason = YES;
-		//NSLog(@"IS OFFSEASON? %@",(isOffSeason) ? @"YES" : @"NO");
+		// isOffSeason = YES;
+		// NSLog(@"IS OFFSEASON? %@",(isOffSeason) ? @"YES" : @"NO");
 	}
 	
-	//NSLog(@"Application has finished launching...");
-    // Add the tab bar controller's current view as a subview of the window
-    // [window addSubview:tabBarController.view];
-    
     FestivalParser *festivalParser = [[FestivalParser alloc] init];
 	festival = [festivalParser parseFestival:XML_FEED_URL];
 	
-    self.window.rootViewController = tabBarController;
+	MainViewController *mainViewController = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+
+    self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
 
 	return YES;
 }
 
-- (void)setOffSeason {
+- (void)setOffSeason
+{
 	NSURL *url = [NSURL URLWithString:MODE];
 	
 	NSXMLParser *parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
@@ -62,61 +72,97 @@
 	
 	[parser parse];
 }
-- (void)jumpToScheduler {
+
+- (void)jumpToScheduler
+{
 	tabBarController.selectedIndex = 4;
 }
-- (BOOL)connectedToNetwork:(NSURL*)URL {
-    // Create zero addy
-    struct sockaddr_in zeroAddress;
-    bzero(&zeroAddress, sizeof(zeroAddress));
-    zeroAddress.sin_len = sizeof(zeroAddress);
-    zeroAddress.sin_family = AF_INET;
-	
-    // Recover reachability flags
-    SCNetworkReachabilityRef defaultRouteReachability = SCNetworkReachabilityCreateWithAddress(NULL, (struct sockaddr *)&zeroAddress);
-    SCNetworkReachabilityFlags flags;
-	
-    BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags);
-    CFRelease(defaultRouteReachability);
-	
-    if (!didRetrieveFlags)
-    {
-        NSLog(@"Error. Could not recover network reachability flags");
-        return NO;
-    }
-	
-    BOOL isReachable = flags & kSCNetworkFlagsReachable;
-    BOOL needsConnection = flags & kSCNetworkFlagsConnectionRequired;
-	BOOL nonWiFi = flags & kSCNetworkReachabilityFlagsTransientConnection;
-	
-	NSURLRequest *testRequest = [NSURLRequest requestWithURL:URL  cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20.0];
-	NSURLConnection *testConnection = [[NSURLConnection alloc] initWithRequest:testRequest delegate:self];
-	
-    return ((isReachable && !needsConnection) || nonWiFi) ? (testConnection ? YES : NO) : NO;
+
+- (BOOL) connectedToNetwork
+{
+	return [self.reachability isReachable];
 }
+
 #pragma mark -
 #pragma mark Mode XML parser delegate
-- (void)parserDidStartDocument:(NSXMLParser *)parser {
+- (void)parserDidStartDocument:(NSXMLParser *)parser
+{
 	NSLog(@"Getting mode...");
 }
-- (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
+
+- (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
+{
 	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %i ).", [parseError code]];
 	NSLog(@"Error parsing XML: %@", errorString);
 	
 	UIAlertView * errorAlert = [[UIAlertView alloc] initWithTitle:@"Error loading content" 
-														  message:errorString 
+												message:errorString
 														 delegate:self 
 												cancelButtonTitle:@"OK" 
 												otherButtonTitles:nil];
 	[errorAlert show];
 
 }
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
+{
 	if ([string isEqualToString:@"home"]) {
 		isOffSeason = NO;
 	} else {
 		isOffSeason = YES;
 	}	
+}
+
+- (void) startReachability:(NSString*)hostName
+{
+	if(hostName == nil)
+	{
+		return;
+	}
+
+	NSRange range = [hostName rangeOfString:@"://"];
+	NSString *cleanHostName = range.location == NSNotFound ? hostName : [hostName substringFromIndex:NSMaxRange(range)];
+	range = [cleanHostName rangeOfString:@"/"];
+	cleanHostName = range.location == NSNotFound ? hostName : [cleanHostName substringToIndex:NSMaxRange(range) - 1];
+	
+	if(reachability != nil)
+	{
+		[reachability stopNotifier];
+	}
+	else
+	{
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityDidChange:) name:kReachabilityChangedNotification object:nil];
+	}
+	
+	reachability = [Reachability reachabilityWithHostname:cleanHostName];
+	[reachability startNotifier];
+}
+
+- (void) reachabilityDidChange:(NSNotification*)note
+{
+    Reachability *reach = [note object];
+	if([reach isReachable])
+	{
+		SCNetworkReachabilityFlags flags = [reach reachabilityFlags];
+		if(kSCNetworkReachabilityFlagsTransientConnection)
+		{
+			networkConnection = NETWORK_CONNECTION_PHONE;
+		}
+		else if(flags & kSCNetworkReachabilityFlagsReachable)
+		{
+			networkConnection = NETWORK_CONNECTION_WIFI;
+		}
+		else
+		{
+			networkConnection = NETWORK_CONNECTION_NONE;
+		}
+	}
+	else
+	{
+		networkConnection = NETWORK_CONNECTION_NONE;
+	}
+	
+	NSLog(@"Network Connection: %s", networkConnection == 1 ? "DialUp" : networkConnection == 2 ? "WiFi" : "None");
 }
 
 @end

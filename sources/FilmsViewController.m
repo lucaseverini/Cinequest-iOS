@@ -11,6 +11,7 @@
 #import "NewsViewController.h"
 #import "FilmDetail.h"
 #import "Festival.h"
+#import "Reachability.h"
 
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
@@ -124,7 +125,9 @@
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	self.navigationItem.leftBarButtonItem.enabled = NO;
 	switchTitle.hidden = YES;
+	
 	[activity startAnimating];
+	
 	SJSUIcon.alpha = 1.0;
 	CQIcon.alpha = 1.0;
 	loadingLabel.hidden = NO;
@@ -301,7 +304,7 @@
 	[[UIAccelerometer sharedAccelerometer] setUpdateInterval:kUpdateInterval];
 	[[UIAccelerometer sharedAccelerometer] setDelegate:self];
 	*/
-	delegate = (CinequestAppDelegate*)[UIApplication sharedApplication].delegate;
+	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
@@ -321,8 +324,10 @@
 	TitlesWithSort	= [[NSMutableDictionary alloc] init];
 	sorts			= [[NSMutableArray alloc] init];
 	
-	if (delegate.isOffSeason) {
+	if (delegate.isOffSeason)
+	{
 		[activity stopAnimating];
+		
 		loadingLabel.hidden = YES;
 		offSeasonLabel.hidden = NO;
 		self.navigationItem.titleView = nil;
@@ -336,13 +341,13 @@
 }
 - (void)viewWillAppear:(BOOL)animated {
 	//NSLog(@"films will appear.");
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	app.networkActivityIndicatorVisible = NO;
     NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
     [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
 	
-	Festival *festival = [(id)[[UIApplication sharedApplication] delegate] festival];
+	Festival *festival = [appDelegate festival];
 	NSLog(@"%@", festival);
 }
 
@@ -461,7 +466,9 @@
 		self.navigationItem.leftBarButtonItem.enabled = YES;
 		SJSUIcon.alpha = 0.2;
 		CQIcon.alpha = 0.2;
+		
 		[activity stopAnimating];
+		
 		self.tableView.hidden = NO;
 		[self.tableView reloadData];
 
@@ -798,7 +805,6 @@
 	int section = [indexPath section];
 	int row		= [indexPath row];
 		
-	UIApplication *app = [UIApplication sharedApplication];
 	app.networkActivityIndicatorVisible = YES;
 
 	switch (switcher) {

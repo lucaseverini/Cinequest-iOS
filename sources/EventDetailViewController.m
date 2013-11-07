@@ -11,15 +11,11 @@
 #import "DDXML.h"
 #import "Schedule.h"
 
-#import <SystemConfiguration/SCNetworkReachability.h>
-#include <netinet/in.h>
-
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p>%@</p>"
 
 
 @interface EventDetailViewController (Private)
 
-- (BOOL)connectedToNetwork;
 - (void)parseData;
 - (IBAction)addAction:(id)sender;
 
@@ -78,7 +74,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		self.navigationItem.rightBarButtonItem = addButton;
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 	}
-	if ([self connectedToNetwork]) {
+	if ([appDelegate connectedToNetwork]) {
 		[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
 	} else {
 		//alert
@@ -86,7 +82,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 	[super viewDidLoad];
 	
-	delegate = (CinequestAppDelegate*)[UIApplication sharedApplication].delegate;
+	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 }
 - (void)viewWillAppear:(BOOL)animated {
@@ -176,7 +172,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
         }
     }
 	
-	UIApplication *app = [UIApplication sharedApplication];
 	app.networkActivityIndicatorVisible = NO;
 	
 	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
@@ -190,40 +185,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	weba = [self htmlEntityDecode:weba];    //Render HTML properly
 	weba = [weba stringByAppendingString:@"<br/>"];
 	[self.webView loadHTMLString:weba baseURL:nil];	
-}
-- (BOOL)connectedToNetwork {
-    // Create zero addy
-    struct sockaddr_in zeroAddress;
-    bzero(&zeroAddress, sizeof(zeroAddress));
-	
-    zeroAddress.sin_len		= sizeof(zeroAddress);
-    zeroAddress.sin_family	= AF_INET;
-	
-    // Recover reachability flags
-    SCNetworkReachabilityRef defaultRouteReachability = SCNetworkReachabilityCreateWithAddress(NULL, (struct sockaddr *)&zeroAddress);
-    SCNetworkReachabilityFlags flags;
-	
-    BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags);
-    CFRelease(defaultRouteReachability);
-	
-    if (!didRetrieveFlags)
-    {
-        NSLog(@"Error. Could not recover network reachability flags");
-        return NO;
-    }
-	
-    BOOL isReachable		= flags & kSCNetworkFlagsReachable;
-    BOOL needsConnection	= flags & kSCNetworkFlagsConnectionRequired;
-	BOOL nonWiFi			= flags & kSCNetworkReachabilityFlagsTransientConnection;
-	
-	NSURL *testURL					= [NSURL URLWithString:@"http://www.apple.com/"];
-	NSURLRequest *testRequest		= [NSURLRequest requestWithURL:testURL  
-												  cachePolicy:NSURLRequestReloadIgnoringLocalCacheData 
-											  timeoutInterval:20.0];
-	
-	NSURLConnection *testConnection = [[NSURLConnection alloc] initWithRequest:testRequest delegate:self];
-	
-    return ((isReachable && !needsConnection) || nonWiFi) ? (testConnection ? YES : NO) : NO;
 }
 
 #pragma mark -
@@ -548,7 +509,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 - (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 1) {
 		//NSLog(@"CALL!");
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:TICKET_LINE]];
+		[app openURL:[NSURL URLWithString:TICKET_LINE]];
 	} else {
 		//NSLog(@"cancel");
 	}

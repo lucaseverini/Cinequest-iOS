@@ -41,7 +41,7 @@
 	
 	[alertView show];
 	
-	//[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://mobile.cinequest.org/isch_reg.php"]];
+	//[[app openURL:[NSURL URLWithString:@"http://mobile.cinequest.org/isch_reg.php"]];
 }
 
 // Button trigger to retrieve the list of films saved on the CQ server
@@ -95,7 +95,7 @@
 -(IBAction)uploadList:(id)sender {
 	
 	// Get mySchedule array
-	CinequestAppDelegate *delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
+	CinequestAppDelegate *delegate = appDelegate;
 	NSMutableArray *mySchedule = delegate.mySchedule;
 	
 	if ( [mySchedule count] > 0 ) {
@@ -174,7 +174,7 @@
 	if (!buttonIndex == [actionSheet cancelButtonIndex]) {
 		
 		// loads registration page into safari
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://mobile.cinequest.org/isch_reg.php"]];
+		[app openURL:[NSURL URLWithString:@"http://mobile.cinequest.org/isch_reg.php"]];
 	}
 }
 
@@ -183,7 +183,7 @@
     if (buttonIndex == 1)
     {
 		// loads registration page into safari
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://mobile.cinequest.org/isch_reg.php"]];
+		[app openURL:[NSURL URLWithString:@"http://mobile.cinequest.org/isch_reg.php"]];
     }
     
     if (buttonIndex == 0)

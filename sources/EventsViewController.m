@@ -46,7 +46,7 @@
 	
 	self.title = @"Events";
 	
-	delegate = (CinequestAppDelegate*)[UIApplication sharedApplication].delegate;
+	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
 	// Initialize data and days
@@ -569,7 +569,7 @@
 																				andDataObject:event
 																					   andURL:[NSURL URLWithString:link]];
 	eventDetail.displayAddButton = YES;
-	UIApplication *app = [UIApplication sharedApplication];
+
 	app.networkActivityIndicatorVisible = YES;
 	
 	[self.navigationController pushViewController:eventDetail animated:YES];

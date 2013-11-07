@@ -56,7 +56,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	app.networkActivityIndicatorVisible = NO;
     NSIndexPath *tableSelection = [_tableView indexPathForSelectedRow];
     [_tableView deselectRowAtIndexPath:tableSelection animated:NO];
 }
@@ -206,7 +206,6 @@
 										   andDataObject:dvd
 												  andURL:[NSURL URLWithString:link]];
 	
-	UIApplication *app = [UIApplication sharedApplication];
 	app.networkActivityIndicatorVisible = YES;
 	
 	[self.navigationController pushViewController:film animated:YES];

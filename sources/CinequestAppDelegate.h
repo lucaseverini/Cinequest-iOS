@@ -23,7 +23,7 @@
 #define DETAILFORITEM	@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id="
 #define MODE			@"http://mobile.cinequest.org/mobileCQ.php?type=mode"
 
-#define XML_FEED_URL             @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
+#define XML_FEED_URL    @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
 
 #define CELL_BUTTON_TAG			1
 #define CELL_TITLE_LABEL_TAG	2
@@ -31,19 +31,26 @@
 #define CELL_VENUE_LABEL_TAG	4
 #define CELL_FACEBOOKBUTTON_TAG	5
 
-#define SCHEDULE_SECTION	0
-#define FACEBOOK_SECTION	1
+#define SCHEDULE_SECTION	 0
+#define FACEBOOK_SECTION	 1
 #define CALL_N_EMAIL_SECTION 2
 
 #define TICKET_LINE @"tel://1-408-295-3378"
 
 #define EMPTY 0
 
+#define NETWORK_CONNECTION_NONE  0
+#define NETWORK_CONNECTION_WIFI  1
+#define NETWORK_CONNECTION_PHONE 2
+
+#define appDelegate (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate]
+#define app [UIApplication sharedApplication]
+
 @class NewsViewController;
 @class Festival;
+@class Reachability;
 
-@interface CinequestAppDelegate : NSObject 
-	<UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
+@interface CinequestAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
 {
     UIWindow *window;
     UITabBarController *tabBarController;
@@ -64,6 +71,11 @@
 
 @property (nonatomic, strong) Festival* festival;
 
-- (void)jumpToScheduler;
-- (BOOL)connectedToNetwork:(NSURL*)URL;
+@property (nonatomic, strong) Reachability *reachability;
+@property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
+
+- (void) jumpToScheduler;
+- (BOOL) connectedToNetwork;
+
 @end
+

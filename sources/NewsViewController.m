@@ -44,11 +44,17 @@
 	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
 	self.tableView.hidden = YES;
 }
-- (void)viewWillAppear:(BOOL)animated {
+
+- (void) viewWillAppear:(BOOL)animated
+{
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
     [self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
 
+	// Don't show the spinning wheel and the "loading" label for now... (Luca 11-6-13)
+	activityIndicator.hidden = YES;
+	loadingLabel.hidden = YES;
 }
+
 - (void)startParsingXML {
 	@autoreleasepool {
 		NSURL *link = [NSURL URLWithString:NEWS];
@@ -151,7 +157,7 @@
 }
 
 - (IBAction)toFestival:(id)sender {
-	CinequestAppDelegate *delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
+	CinequestAppDelegate *delegate = appDelegate;
 	delegate.tabBarController.selectedIndex = 0;
 	delegate.isPresentingModalView = NO;
 	[self dismissViewControllerAnimated:YES completion:nil];
@@ -215,9 +221,7 @@
 	
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:[rowData objectForKey:@"title"]
 																				andDataObject:nil
-																					   andURL:[NSURL URLWithString:link]];
-	
-	UIApplication *app = [UIApplication sharedApplication];
+																					   andURL:[NSURL URLWithString:link]];	
 	app.networkActivityIndicatorVisible = YES;
 	[self.navigationController pushViewController:eventDetail animated:YES];
 }

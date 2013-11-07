@@ -7,12 +7,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EventsViewController">
             <connections>
-                <outlet property="CQIcon" destination="42" id="45"/>
-                <outlet property="SJSUIcon" destination="43" id="46"/>
                 <outlet property="_tableView" destination="4" id="41"/>
                 <outlet property="activity" destination="28" id="31"/>
                 <outlet property="loadingLabel" destination="29" id="30"/>
-                <outlet property="offSeasonLabel" destination="44" id="47"/>
                 <outlet property="view" destination="25" id="26"/>
             </connections>
         </placeholder>
@@ -64,29 +61,10 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="cq_logo.png" id="42">
-                    <rect key="frame" x="0.0" y="60" width="320" height="46"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
-                <imageView opaque="NO" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="sjsulogo_new_sjsu4.gif" id="43">
-                    <rect key="frame" x="109" y="270" width="101" height="64"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
-                <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Cinequest Film Festival is officially a wrap. Stay tuned on your mobile device and be the first to know more about next year!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="7" minimumFontSize="10" id="44">
-                    <rect key="frame" x="20" y="130" width="280" height="130"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
         </view>
     </objects>
-    <resources>
-        <image name="cq_logo.png" width="450" height="68"/>
-        <image name="sjsulogo_new_sjsu4.gif" width="162" height="93"/>
-    </resources>
 </document>

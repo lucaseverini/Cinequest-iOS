@@ -62,7 +62,7 @@ UITableViewCell *previousCell;
 	[super viewDidLoad];
 	
 	// Get mySchedule array
-	delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
+	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
 	// initialize variables
@@ -97,7 +97,7 @@ UITableViewCell *previousCell;
 	MASTERLIST		= [NSArray arrayWithObjects:confirmedList,movedList,removedList,nil];
 }
 - (void)viewWillAppear:(BOOL)animated {
-	delegate = (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate];
+	delegate = appDelegate;
 	if (delegate.isOffSeason) return;
 	
 	
