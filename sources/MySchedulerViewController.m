@@ -877,6 +877,7 @@ UITableViewCell *previousCell;
 {
     // Let's get the default calendar associated with our event store
     self.defaultCalendar = self.eventStore.defaultCalendarForNewEvents;
+    [self checkAndCreateCalendar];
 }
 
 @end
