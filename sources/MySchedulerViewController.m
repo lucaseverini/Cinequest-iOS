@@ -6,6 +6,7 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
+#import <EventKit/EventKit.h>
 #import "MySchedulerViewController.h"
 #import "LoadDataViewController.h"
 #import "FilmDetail.h"
@@ -14,11 +15,22 @@
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
 
+#define CALENDAR_NAME @"Cinequest"
+
 @interface MySchedulerViewController (Private)
 - (void)doneEditing;
 
 @end
 
+@interface MySchedulerViewController ()
+
+@property(nonatomic, strong) EKEventStore *eventStore;
+@property(nonatomic, strong) EKCalendar *defaultCalendar;
+@property(nonatomic, strong) EKCalendar *cinequestCalendar;
+@property(nonatomic,copy) NSString *calendarIdentifier;
+@property(nonatomic,strong) NSMutableArray *arrCalendarItems;
+
+@end
 
 @implementation MySchedulerViewController
 
@@ -95,8 +107,14 @@ UITableViewCell *previousCell;
 	removedList		= [[NSMutableArray alloc] init];	
 	currentColor	= [UIColor blackColor];
 	MASTERLIST		= [NSArray arrayWithObjects:confirmedList,movedList,removedList,nil];
+    
+    [self checkAndCreateCalendar];
 }
+
 - (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
 	delegate = appDelegate;
 	if (delegate.isOffSeason) return;
 	
@@ -140,8 +158,14 @@ UITableViewCell *previousCell;
 	// reload tableView data
 	[self.tableView reloadData];
 	[self doneEditing];
-    [super viewWillAppear:animated];
 }
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    [self checkEventStoreAccessForCalendar];
+}
+
 #pragma mark -
 #pragma mark Actions
 - (void)edit {
@@ -293,6 +317,65 @@ UITableViewCell *previousCell;
 	
 	[parser parse];	
 }
+- (void)addItemToCalendar:(id)sender event:(id)touchEvent {
+	
+	NSSet *touches = [touchEvent allTouches];
+	UITouch *touch = [touches anyObject];
+	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
+	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+	int row = [indexPath row];
+	int section = [indexPath section];
+	
+	if (indexPath != nil)
+	{
+		// get date
+		NSString *dateString = [titleForSection objectAtIndex:section];
+		
+		// get film objects using dateString
+		NSMutableArray *films = [displayData objectForKey:dateString];
+		Schedule *film = [films objectAtIndex:row];
+        
+		NSDate *startDate = [film.date dateByAddingTimeInterval:60*60*24*365];
+        NSDate *endDate = [film.endDate dateByAddingTimeInterval:60*60*24*365];
+        
+        if ([_arrCalendarItems containsObject:film.title]) {
+            
+            
+            NSPredicate *predicateForEvents = [_eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:_cinequestCalendar]];
+            //set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
+            NSArray *events_Array = [_eventStore eventsMatchingPredicate: predicateForEvents];
+            //get array of events from the eventStore
+            
+            for (EKEvent *eventToCheck in events_Array)
+            {
+                if( [eventToCheck.title isEqualToString:film.title] )
+                {
+                    NSError *err;
+                    BOOL success = [_eventStore removeEvent:eventToCheck span:EKSpanThisEvent error:&err];
+                    [_arrCalendarItems removeObject:film.title];
+                    NSLog( @"event deleted success if value = 1 : %d", success );
+                    break;
+                }
+            }
+        }
+        else{
+            EKEvent *newEvent = [EKEvent eventWithEventStore:_eventStore];
+            newEvent.title = [NSString stringWithFormat:@"%@",film.title];
+            newEvent.location = film.venue;
+            newEvent.startDate = startDate;
+            newEvent.endDate = endDate;
+            [newEvent setCalendar:_cinequestCalendar];
+            NSError *error= nil;
+            
+            BOOL result = [_eventStore saveEvent:newEvent span:EKSpanThisEvent error:&error];
+            if (result) {
+                NSLog(@"Succesfully saved event");
+            }
+        }
+	}
+    [self reloadCalendarItems];
+}
+
 #pragma mark Utility Methods
 // This method helps increment the timestamp supplied
 // PRECOND: the format should be similiar to the one used in the CQ XML
@@ -306,13 +389,118 @@ UITableViewCell *previousCell;
 	[CQDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 	
 	NSDate *parsedDate = [CQDateFormat dateFromString:CQdateTime];
-//	parsedDate = [parsedDate addTimeInterval:1];    //DEPRECATED
-    parsedDate = [parsedDate dateByAddingTimeInterval:1];   //New
+    parsedDate = [parsedDate dateByAddingTimeInterval:1];
 	
 	NSString *returnString = [CQDateFormat stringFromDate:parsedDate];	
 	
 	return returnString;
 }
+-(void)checkAndCreateCalendar{
+    
+    if (!_arrCalendarItems) {
+        _arrCalendarItems = [[NSMutableArray alloc] init];
+    }
+    
+    _calendarIdentifier = [[NSUserDefaults standardUserDefaults] stringForKey:@"CalendarID"];
+    _eventStore = [[EKEventStore alloc] init];
+    
+    NSArray *caleandarsArray = [[NSArray alloc] init];
+    caleandarsArray = [_eventStore calendarsForEntityType:EKEntityTypeEvent];
+    BOOL isCalendar = false;
+    
+    for (EKCalendar *iCalendar in caleandarsArray)
+    {
+        if ([iCalendar.title isEqualToString:CALENDAR_NAME] || [iCalendar.calendarIdentifier isEqualToString:_calendarIdentifier]) {
+            isCalendar = true;
+            self.calendarIdentifier = iCalendar.calendarIdentifier;
+            self.cinequestCalendar = iCalendar;
+            [[NSUserDefaults standardUserDefaults] setValue:self.calendarIdentifier forKey:@"CalendarID"];
+            break;
+        }
+    }
+    
+    if (!isCalendar) {
+        
+        // Iterate over all sources in the event store and look for the local source
+        EKSource *theSource = nil;
+        for (EKSource *source in _eventStore.sources) {
+            if (source.sourceType == EKSourceTypeLocal) {
+                theSource = source;
+                break;
+            }
+        }
+        
+        EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:_eventStore];
+        calendar.title = CALENDAR_NAME;
+        if (theSource) {
+            calendar.source = theSource;
+        } else {
+            NSLog(@"Error: Local source not available");
+            return;
+        }
+        
+        
+        NSError *error = nil;
+        BOOL result = [_eventStore saveCalendar:calendar commit:YES error:&error];
+        if (result) {
+            NSLog(@"Saved calendar to event store.");
+            
+            caleandarsArray = [_eventStore calendarsForEntityType:EKEntityTypeEvent];
+            BOOL isCalendar = false;
+            
+            for (EKCalendar *iCalendar in caleandarsArray)
+            {
+                if ([iCalendar.title isEqualToString:CALENDAR_NAME]) {
+                    isCalendar = true;
+                    self.calendarIdentifier = iCalendar.calendarIdentifier;
+                    self.cinequestCalendar = iCalendar;
+                    [[NSUserDefaults standardUserDefaults] setValue:self.calendarIdentifier forKey:@"CalendarID"];
+                    break;
+                }
+            }
+        } else {
+            NSLog(@"Error saving calendar: %@.", error);
+        }
+    }
+    
+    [self reloadCalendarItems];
+}
+-(void)reloadCalendarItems{
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+//    EKCalendar *calendarMain = [_eventStore calendarWithIdentifier:_calendarIdentifier];
+    NSDateComponents *oneDayAgoComponents = [[NSDateComponents alloc] init];
+    oneDayAgoComponents.day = -1;
+    
+    NSDate *oneDayAgo = [calendar dateByAddingComponents:oneDayAgoComponents
+                                                  toDate:[NSDate date]
+                                                 options:0];
+    
+    
+    // Create the end date components
+    NSDateComponents *oneYearFromNowComponents = [[NSDateComponents alloc] init];
+    oneYearFromNowComponents.year = 1;
+    
+    NSDate *oneYearFromNow = [calendar dateByAddingComponents:oneYearFromNowComponents
+                                                       toDate:[NSDate date]
+                                                      options:0];
+    
+    // Create the predicate from the event store's instance method
+    NSPredicate *predicate = [_eventStore predicateForEventsWithStartDate:oneDayAgo
+                                                                  endDate:oneYearFromNow
+                                                                calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
+    
+    // Fetch all events that match the predicate
+    NSArray *list = [_eventStore eventsMatchingPredicate:predicate];
+    for (EKEvent *event in list) {
+        if (![_arrCalendarItems containsObject:event.title]) {
+            [_arrCalendarItems addObject:event.title];
+        }
+    }
+    
+    [_tableView reloadData];
+}
+
 #pragma mark -
 #pragma mark UITableView DataSource
 // There are multiple ways to load this table, one is to load the "scheduler list" of added films
@@ -348,13 +536,13 @@ UITableViewCell *previousCell;
 	UILabel *titleLabel;
 	UILabel *timeLabel;
 	UILabel *venueLabel;
-	
+	UIButton *calendarButton;
 	
 	if (tempCell == nil) {
 		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
 										   reuseIdentifier:CellIdentifier];
 		
-		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10,2,300,20)];
+		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,2,260,20)];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
 		[tempCell.contentView addSubview:titleLabel];
 		
@@ -363,10 +551,19 @@ UITableViewCell *previousCell;
 		[tempCell.contentView addSubview:timeLabel];
 		
 		
-		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(170,21,100,20)];
+		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(165,21,100,20)];
 		
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
 		[tempCell.contentView addSubview:venueLabel];
+        
+        calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [calendarButton addTarget:self
+                           action:@selector(addItemToCalendar:event:)
+                 forControlEvents:UIControlEventTouchDown];
+        [calendarButton setImage:[UIImage imageNamed:@"cal_unselected"] forState:UIControlStateNormal];
+        calendarButton.frame = CGRectMake(265, 6, 32, 32);
+        calendarButton.tag = CELL_BUTTON_CALENDAR;
+        [tempCell.contentView addSubview:calendarButton];
 	}
 	
 	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
@@ -374,17 +571,26 @@ UITableViewCell *previousCell;
 	
 	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
 	
+    calendarButton = (UIButton *)[tempCell viewWithTag:CELL_BUTTON_CALENDAR];
+    
+    if ([_arrCalendarItems containsObject:titleLabel.text]) {
+        [calendarButton setImage:[UIImage imageNamed:@"cal_selected"] forState:UIControlStateNormal];
+    }
+    else{
+        [calendarButton setImage:[UIImage imageNamed:@"cal_unselected"] forState:UIControlStateNormal];
+    }
+    
 	NSString *endTime = @"";	
 	if ( time.endTimeString != nil ) {		
-		endTime = [endTime stringByAppendingString:@" - "];
+		endTime = [endTime stringByAppendingString:@"-"];
 		endTime = [endTime stringByAppendingString:time.endTimeString];
 	}
 	
-	timeLabel.text = [NSString stringWithFormat:@"Time: %@%@",time.timeString,endTime];
+	timeLabel.text = [NSString stringWithFormat:@"Time:%@%@",time.timeString,endTime];
 	timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 	
 	venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
-	venueLabel.text = [NSString stringWithFormat:@"Venue: %@",time.venue];
+	venueLabel.text = [NSString stringWithFormat:@"Venue:%@",time.venue];
 	venueLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 	
 	if(time.fontColor == nil) {
@@ -434,7 +640,27 @@ UITableViewCell *previousCell;
 			[index removeObjectAtIndex:indexPath.section];
 			[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:YES];
 		}
-    }  
+        
+        //Remove Event from Calendar
+        NSDate *startDate = [item.date dateByAddingTimeInterval:60*60*24*365];
+        NSDate *endDate = [item.endDate dateByAddingTimeInterval:60*60*24*365];
+        NSPredicate *predicateForEvents = [_eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:_cinequestCalendar]];
+        //set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
+        NSArray *events_Array = [_eventStore eventsMatchingPredicate: predicateForEvents];
+        //get array of events from the eventStore
+        
+        for (EKEvent *eventToCheck in events_Array)
+        {
+            if( [eventToCheck.title isEqualToString:item.title] )
+            {
+                NSError *err;
+                BOOL success = [_eventStore removeEvent:eventToCheck span:EKSpanThisEvent error:&err];
+                [_arrCalendarItems removeObject:item.title];
+                NSLog( @"event deleted success if value = 1 : %d", success );
+                break;
+            }
+        }
+    }
 	[tableView endUpdates];
     
 }
@@ -593,6 +819,64 @@ UITableViewCell *previousCell;
 		[self processLogin];
 		[self.navigationController popViewControllerAnimated:YES];
     }
+}
+
+#pragma mark -
+#pragma mark Access Calendar
+
+// Check the authorization status of our application for Calendar
+-(void)checkEventStoreAccessForCalendar
+{
+    EKAuthorizationStatus status1 = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+    
+    switch (status1)
+    {
+            // Update our UI if the user has granted access to their Calendar
+        case EKAuthorizationStatusAuthorized: [self accessGrantedForCalendar];
+            break;
+            // Prompt the user for access to Calendar if there is no definitive answer
+        case EKAuthorizationStatusNotDetermined: [self requestCalendarAccess];
+            break;
+            // Display a message if the user has denied or restricted access to Calendar
+        case EKAuthorizationStatusDenied:
+        case EKAuthorizationStatusRestricted:
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning" message:@"Permission was not granted for Calendar"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+
+// Prompt the user for access to their Calendar
+-(void)requestCalendarAccess
+{
+    [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error)
+     {
+         if (granted)
+         {
+             MySchedulerViewController * __weak weakSelf = self;
+             // Let's ensure that our code will be executed from the main queue
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 // The user has granted access to their Calendar; let's populate our UI with all events occuring in the next 24 hours.
+                 [weakSelf accessGrantedForCalendar];
+             });
+         }
+     }];
+}
+
+
+// This method is called when the user has granted permission to Calendar
+-(void)accessGrantedForCalendar
+{
+    // Let's get the default calendar associated with our event store
+    self.defaultCalendar = self.eventStore.defaultCalendarForNewEvents;
 }
 
 @end

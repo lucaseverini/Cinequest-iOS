@@ -46,6 +46,13 @@
 		// isOffSeason = YES;
 		// NSLog(@"IS OFFSEASON? %@",(isOffSeason) ? @"YES" : @"NO");
 	}
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    // saving an NSString
+    if (![prefs stringForKey:@"CalendarID"]) {
+        [prefs setObject:@"" forKey:@"CalendarID"];
+    }
+    
 	
     FestivalParser *festivalParser = [[FestivalParser alloc] init];
 	festival = [festivalParser parseFestival:XML_FEED_URL];

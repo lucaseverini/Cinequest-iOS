@@ -79,6 +79,11 @@
 		81C8B40317EBAC6100033D4F /* FBXMLHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */; };
 		81D1EC3B182B892B003DD8BB /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D1EC39182B892B003DD8BB /* MainViewController.m */; };
 		81D1EC3E182B8990003DD8BB /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81D1EC3D182B8990003DD8BB /* MainViewController.xib */; };
+		93E4E09F182BAFE900515A84 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E4E09E182BAFE900515A84 /* EventKit.framework */; };
+		93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A0182BB1A200515A84 /* cal_selected.png */; };
+		93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */; };
+		93E4E0A6182BB1A200515A84 /* cal_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A2182BB1A200515A84 /* cal_unselected.png */; };
+		93E4E0A7182BB1A200515A84 /* cal_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A3182BB1A200515A84 /* cal_unselected@2x.png */; };
 		93F451D417FDEE6C0091CEE7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F451D317FDEE6C0091CEE7 /* Social.framework */; };
 		C27139381828E8C900BF8DCB /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C27139371828E8C900BF8DCB /* XCTest.framework */; };
 		C27139391828E8C900BF8DCB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38317EBAB3200033D4F /* Foundation.framework */; };
@@ -218,6 +223,11 @@
 		81D1EC38182B892B003DD8BB /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = sources/MainViewController.h; sourceTree = SOURCE_ROOT; };
 		81D1EC39182B892B003DD8BB /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = sources/MainViewController.m; sourceTree = SOURCE_ROOT; };
 		81D1EC3D182B8990003DD8BB /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainViewController.xib; path = sources/MainViewController.xib; sourceTree = SOURCE_ROOT; };
+		93E4E09E182BAFE900515A84 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		93E4E0A0182BB1A200515A84 /* cal_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cal_selected.png; path = images/cal_selected.png; sourceTree = SOURCE_ROOT; };
+		93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cal_selected@2x.png"; path = "images/cal_selected@2x.png"; sourceTree = SOURCE_ROOT; };
+		93E4E0A2182BB1A200515A84 /* cal_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cal_unselected.png; path = images/cal_unselected.png; sourceTree = SOURCE_ROOT; };
+		93E4E0A3182BB1A200515A84 /* cal_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cal_unselected@2x.png"; path = "images/cal_unselected@2x.png"; sourceTree = SOURCE_ROOT; };
 		93F451D317FDEE6C0091CEE7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		C27139361828E8C800BF8DCB /* List of Shows Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "List of Shows Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C27139371828E8C900BF8DCB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -253,6 +263,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93E4E09F182BAFE900515A84 /* EventKit.framework in Frameworks */,
 				93F451D417FDEE6C0091CEE7 /* Social.framework in Frameworks */,
 				81C8B38217EBAB3200033D4F /* UIKit.framework in Frameworks */,
 				81C8B38417EBAB3200033D4F /* Foundation.framework in Frameworks */,
@@ -343,6 +354,7 @@
 		81C8B38017EBAB3200033D4F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93E4E09E182BAFE900515A84 /* EventKit.framework */,
 				93F451D317FDEE6C0091CEE7 /* Social.framework */,
 				81C8B38517EBAB3200033D4F /* CoreGraphics.framework */,
 				81C8B38317EBAB3200033D4F /* Foundation.framework */,
@@ -378,6 +390,10 @@
 		81C8B3B917EBAC1600033D4F /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				93E4E0A0182BB1A200515A84 /* cal_selected.png */,
+				93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */,
+				93E4E0A2182BB1A200515A84 /* cal_unselected.png */,
+				93E4E0A3182BB1A200515A84 /* cal_unselected@2x.png */,
 				81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */,
 				81C8B3BB17EBAC2C00033D4F /* checkbox-pressed.png */,
 				81C8B3BC17EBAC2C00033D4F /* checkbox.png */,
@@ -621,6 +637,7 @@
 				81C8B3D017EBAC2C00033D4F /* checkbox.png in Resources */,
 				81C8B3D117EBAC2C00033D4F /* checked.png in Resources */,
 				81C8B3D217EBAC2C00033D4F /* cq_logo.png in Resources */,
+				93E4E0A6182BB1A200515A84 /* cal_unselected.png in Resources */,
 				81C8B3D317EBAC2C00033D4F /* Default-568h@2x.png in Resources */,
 				81C8B3D417EBAC2C00033D4F /* Default-retina.png in Resources */,
 				81C8B3D517EBAC2C00033D4F /* Default.png in Resources */,
@@ -634,10 +651,13 @@
 				81C8B3DC17EBAC2C00033D4F /* iphone_icon512_512.jpg in Resources */,
 				81C8B3DD17EBAC2C00033D4F /* logo.gif in Resources */,
 				81C8B3DE17EBAC2C00033D4F /* schedule.png in Resources */,
+				93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */,
 				81C8B3DF17EBAC2C00033D4F /* sjsulogo_new_sjsu4.gif in Resources */,
+				93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */,
 				81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */,
 				81C8B3E117EBAC2C00033D4F /* unchecked.png in Resources */,
 				81C8B3F917EBAC6100033D4F /* FBConnect.bundle in Resources */,
+				93E4E0A7182BB1A200515A84 /* cal_unselected@2x.png in Resources */,
 				81B12C65182B759E000D5200 /* EventDetailViewController.xib in Resources */,
 				81B12C66182B759E000D5200 /* EventsViewController.xib in Resources */,
 				81B12C67182B759E000D5200 /* FilmDetail.xib in Resources */,

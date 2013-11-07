@@ -135,7 +135,7 @@
 		}
 	}
 	[self syncTableDataWithScheduler];
-	[self.tableView reloadData];
+	[_tableView reloadData];
 	if (counter != 0) {
 		[delegate jumpToScheduler];
 	}
