@@ -873,11 +873,17 @@ UITableViewCell *previousCell;
 
 
 // This method is called when the user has granted permission to Calendar
--(void)accessGrantedForCalendar
+-(void) accessGrantedForCalendar
 {
+<<<<<<< HEAD
     // Let's get the default calendar associated with our event store
     self.defaultCalendar = self.eventStore.defaultCalendarForNewEvents;
     [self checkAndCreateCalendar];
+=======
+	// Let's get the default calendar associated with our event store
+	self.defaultCalendar = self.eventStore.defaultCalendarForNewEvents;
+	[self checkAndCreateCalendar];
+>>>>>>> f69b3fa198bb8499600f3cf90ad93ffcfc8a6af7
 }
 
 @end
