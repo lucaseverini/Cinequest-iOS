@@ -40,13 +40,13 @@
 	//NSLog(@"Application has finished launching...");
     // Add the tab bar controller's current view as a subview of the window
     // [window addSubview:tabBarController.view];
-	
-    self.window.rootViewController = tabBarController;
-    [self.window makeKeyAndVisible];
-	
+    
     FestivalParser *festivalParser = [[FestivalParser alloc] init];
 	festival = [festivalParser parseFestival:XML_FEED_URL];
 	
+    self.window.rootViewController = tabBarController;
+    [self.window makeKeyAndVisible];
+
 	return YES;
 }
 
