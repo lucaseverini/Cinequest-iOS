@@ -21,6 +21,7 @@
 #define MODE			@"http://mobile.cinequest.org/mobileCQ.php?type=mode"
 
 #define XML_FEED_URL    @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
+#define XML_FEED_FILE   @"XmlFeed.xml"
 
 #define CELL_BUTTON_TAG			1
 #define CELL_TITLE_LABEL_TAG	2
@@ -50,6 +51,8 @@ extern NSString *const kUpdatedXMLFeedNotification;
 @class Festival;
 @class Reachability;
 @class Festival;
+@class DataProvider;
+
 @interface CinequestAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
 {
     UIWindow *window;
@@ -73,12 +76,13 @@ extern NSString *const kUpdatedXMLFeedNotification;
 
 @property (nonatomic, strong) Reachability *reachability;
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
+@property (nonatomic, strong) DataProvider *dataProvider;
 
 - (void) jumpToScheduler;
 - (BOOL) connectedToNetwork;
 
-- (NSData*) getXMLFeed;
-- (BOOL) updatedXMLFeedAvailable;
+- (NSURL*) cachesDirectory;
+- (NSURL*) documentsDirectory;
 
 @end
 

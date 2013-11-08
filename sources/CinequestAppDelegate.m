@@ -11,6 +11,7 @@
 #import "FestivalParser.h"
 #import "Reachability.h"
 #import "MainViewController.h"
+#import "DataProvider.h"
 
 NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 
@@ -33,10 +34,29 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 @synthesize festival;
 @synthesize reachability;
 @synthesize networkConnection;
+@synthesize dataProvider;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
+#if TARGET_IPHONE_SIMULATOR
+	NSLog(@"App folder: %@", NSHomeDirectory());
+#endif // TARGET_IPHONE_SIMULATOR
+		
+	MainViewController *mainViewController = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+	
+    self.window.rootViewController = navController;
+    [self.window makeKeyAndVisible];
+		
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    // saving an NSString
+    if (![prefs stringForKey:@"CalendarID"]) {
+        [prefs setObject:@"" forKey:@"CalendarID"];
+    }
+
 	[self startReachability:XML_FEED_URL];
+	
+	dataProvider = [[DataProvider alloc] init];
 
 	mySchedule = [[NSMutableArray alloc] init];
 	newsView = [[NewsViewController alloc] init];
@@ -48,36 +68,10 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 		// NSLog(@"IS OFFSEASON? %@",(isOffSeason) ? @"YES" : @"NO");
 	}
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    // saving an NSString
-    if (![prefs stringForKey:@"CalendarID"]) {
-        [prefs setObject:@"" forKey:@"CalendarID"];
-    }
-	
     FestivalParser *festivalParser = [[FestivalParser alloc] init];
-	festival = [festivalParser parseFestival:XML_FEED_URL];
+	festival = [festivalParser parseFestival];
 	
-	MainViewController *mainViewController = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
-
-    self.window.rootViewController = navController;
-    [self.window makeKeyAndVisible];
-
 	return YES;
-}
-
-- (void) setOffSeason
-{
-	NSURL *url = [NSURL URLWithString:MODE];
-	
-	NSXMLParser *parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
-	
-	[parser setDelegate: self];
-	[parser setShouldProcessNamespaces: NO];
-	[parser setShouldReportNamespacePrefixes: NO];
-	[parser setShouldResolveExternalEntities: NO];
-	
-	[parser parse];
 }
 
 - (void) jumpToScheduler
@@ -92,6 +86,20 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 
 #pragma mark -
 #pragma mark Mode XML parser delegate
+- (void) setOffSeason
+{
+	NSURL *url = [NSURL URLWithString:MODE];
+	
+	NSXMLParser *parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
+	
+	[parser setDelegate: self];
+	[parser setShouldProcessNamespaces: NO];
+	[parser setShouldReportNamespacePrefixes: NO];
+	[parser setShouldResolveExternalEntities: NO];
+	
+	[parser parse];
+}
+
 - (void) parserDidStartDocument:(NSXMLParser *)parser
 {
 	NSLog(@"Getting mode...");
@@ -172,17 +180,38 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 	NSLog(@"Network Connection: %s", networkConnection == 1 ? "DialUp" : networkConnection == 2 ? "WiFi" : "None");
 }
 
-- (NSData*) getXMLFeed;
+- (NSURL*) cachesDirectory
 {
-	NSURL *url = [NSURL URLWithString:XML_FEED_URL];
-	NSData *data = [NSData dataWithContentsOfURL:url];
-	
-	return data;
+    static NSURL *cachesDir;
+    
+    if(cachesDir == nil)
+    {
+        // Pass back the Caches dir
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        cachesDir = [NSURL fileURLWithPath:[paths objectAtIndex:0] isDirectory:YES];
+    }
+    
+    return cachesDir;
 }
 
-- (BOOL) updatedXMLFeedAvailable
+- (NSURL*) documentsDirectory
 {
-	return YES;
+    static NSURL *docsDir;
+    
+    if(docsDir == nil)
+    {
+        // Pass back the Documents dir
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        docsDir = [NSURL fileURLWithPath:[paths objectAtIndex:0] isDirectory:YES];
+        
+        // Pass back the Documents dir
+        // rootDir = [fsManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+    }
+    
+    return docsDir;
+    
+    // Apple has changed the guidelines regarding the Documents folder
+    // http://stackoverflow.com/questions/8209406/ios-5-does-not-allow-to-store-downloaded-data-in-documents-directory
 }
 
 @end

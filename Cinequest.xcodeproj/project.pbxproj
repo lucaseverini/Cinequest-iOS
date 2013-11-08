@@ -79,6 +79,7 @@
 		81C8B40317EBAC6100033D4F /* FBXMLHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */; };
 		81D1EC3B182B892B003DD8BB /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D1EC39182B892B003DD8BB /* MainViewController.m */; };
 		81D1EC3E182B8990003DD8BB /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81D1EC3D182B8990003DD8BB /* MainViewController.xib */; };
+		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
 		93E4E09F182BAFE900515A84 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E4E09E182BAFE900515A84 /* EventKit.framework */; };
 		93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A0182BB1A200515A84 /* cal_selected.png */; };
 		93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */; };
@@ -223,6 +224,8 @@
 		81D1EC38182B892B003DD8BB /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = sources/MainViewController.h; sourceTree = SOURCE_ROOT; };
 		81D1EC39182B892B003DD8BB /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = sources/MainViewController.m; sourceTree = SOURCE_ROOT; };
 		81D1EC3D182B8990003DD8BB /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainViewController.xib; path = sources/MainViewController.xib; sourceTree = SOURCE_ROOT; };
+		81FBC131182DA37900C01783 /* DataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataProvider.h; path = sources/DataProvider.h; sourceTree = SOURCE_ROOT; };
+		81FBC132182DA37900C01783 /* DataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataProvider.m; path = sources/DataProvider.m; sourceTree = SOURCE_ROOT; };
 		93E4E09E182BAFE900515A84 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		93E4E0A0182BB1A200515A84 /* cal_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cal_selected.png; path = images/cal_selected.png; sourceTree = SOURCE_ROOT; };
 		93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cal_selected@2x.png"; path = "images/cal_selected@2x.png"; sourceTree = SOURCE_ROOT; };
@@ -454,6 +457,8 @@
 			children = (
 				81745A4F17EBAEED008D2C2C /* CinequestAppDelegate.h */,
 				81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */,
+				81FBC131182DA37900C01783 /* DataProvider.h */,
+				81FBC132182DA37900C01783 /* DataProvider.m */,
 				C271392E1828A36100BF8DCB /* FestivalParser */,
 				C271392418279DE300BF8DCB /* DDXMLFiles */,
 				81C52B82182B62D200D2F55D /* Reachability */,
@@ -510,6 +515,8 @@
 		C271392E1828A36100BF8DCB /* FestivalParser */ = {
 			isa = PBXGroup;
 			children = (
+				C2D6DC241829773C005A6897 /* FestivalParser.h */,
+				C2D6DC251829773C005A6897 /* FestivalParser.m */,
 				C2D6DC2A1829E0F7005A6897 /* CinequestItem.h */,
 				C2D6DC2B1829E0F7005A6897 /* CinequestItem.m */,
 				C2D6DC2D1829E1CE005A6897 /* ProgramItem.h */,
@@ -528,8 +535,6 @@
 				C27BC6DA182A3734006F7D25 /* NewSchedule.m */,
 				C2D6DC18182975E5005A6897 /* Festival.h */,
 				C2D6DC19182975E5005A6897 /* Festival.m */,
-				C2D6DC241829773C005A6897 /* FestivalParser.h */,
-				C2D6DC251829773C005A6897 /* FestivalParser.m */,
 			);
 			name = FestivalParser;
 			sourceTree = "<group>";
@@ -722,6 +727,7 @@
 				81C52B85182B62F000D2F55D /* Reachability.m in Sources */,
 				81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */,
 				81745A8617EBAEED008D2C2C /* Schedule.m in Sources */,
+				81FBC133182DA37900C01783 /* DataProvider.m in Sources */,
 				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
 				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,
 				C2D6DC221829771E005A6897 /* Showing.m in Sources */,

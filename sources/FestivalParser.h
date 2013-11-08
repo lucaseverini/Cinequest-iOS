@@ -18,6 +18,6 @@
 
 - (NSMutableArray *)getShows;
 - (void) parseShows;
-- (Festival*) parseFestival:(NSString *) url;
+- (Festival*) parseFestival;
 
 @end
