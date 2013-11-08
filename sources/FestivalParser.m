@@ -29,7 +29,7 @@
 
 - (Festival*) parseFestival:(NSString *) url
 {	
-    [self parseShows:url];
+    [self parseShows];
     Festival *festival = [[Festival alloc] init];
     NSMutableDictionary *shortFilms = [[NSMutableDictionary alloc] init];
 
@@ -85,10 +85,10 @@
     return festival;
 }
 
-- (void) parseShows:(NSString *) url {
+- (void) parseShows
+{
     @autoreleasepool {
-		NSURL *link = [NSURL URLWithString:url];
-		NSData *htmldata = [NSData dataWithContentsOfURL:link];
+		NSData *htmldata = [appDelegate getXMLFeed];
         
         NSString* myString = [[NSString alloc] initWithData:htmldata encoding:NSUTF8StringEncoding];
         myString = [myString stringByReplacingOccurrencesOfString:@"\n" withString:@""];

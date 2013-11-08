@@ -30,7 +30,7 @@
 #define	CELL_TIME_LABEL_TAG		3
 #define CELL_VENUE_LABEL_TAG	4
 #define CELL_FACEBOOKBUTTON_TAG	5
-#define CELL_BUTTON_CALENDAR 6
+#define CELL_BUTTON_CALENDAR	6
 
 #define SCHEDULE_SECTION	 0
 #define FACEBOOK_SECTION	 1
@@ -46,6 +46,8 @@
 
 #define appDelegate (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate]
 #define app [UIApplication sharedApplication]
+
+NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 
 @class NewsViewController;
 @class Festival;
@@ -77,6 +79,9 @@
 
 - (void) jumpToScheduler;
 - (BOOL) connectedToNetwork;
+
+- (NSData*) getXMLFeed;
+- (BOOL) updatedXMLFeedAvailable;
 
 @end
 

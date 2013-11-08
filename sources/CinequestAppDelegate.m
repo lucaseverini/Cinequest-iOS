@@ -172,5 +172,18 @@
 	NSLog(@"Network Connection: %s", networkConnection == 1 ? "DialUp" : networkConnection == 2 ? "WiFi" : "None");
 }
 
+- (NSData*) getXMLFeed;
+{
+	NSURL *url = [NSURL URLWithString:XML_FEED_URL];
+	NSData *data = [NSData dataWithContentsOfURL:url];
+	
+	return data;
+}
+
+- (BOOL) updatedXMLFeedAvailable
+{
+	return YES;
+}
+
 @end
 
