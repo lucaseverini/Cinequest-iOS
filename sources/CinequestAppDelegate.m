@@ -12,10 +12,11 @@
 #import "Reachability.h"
 #import "MainViewController.h"
 
+NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 
 @interface CinequestAppDelegate (Private)
 
-- (void)setOffSeason;
+- (void) setOffSeason;
 
 @end
 
@@ -52,7 +53,6 @@
     if (![prefs stringForKey:@"CalendarID"]) {
         [prefs setObject:@"" forKey:@"CalendarID"];
     }
-    
 	
     FestivalParser *festivalParser = [[FestivalParser alloc] init];
 	festival = [festivalParser parseFestival:XML_FEED_URL];
@@ -66,7 +66,7 @@
 	return YES;
 }
 
-- (void)setOffSeason
+- (void) setOffSeason
 {
 	NSURL *url = [NSURL URLWithString:MODE];
 	
@@ -80,7 +80,7 @@
 	[parser parse];
 }
 
-- (void)jumpToScheduler
+- (void) jumpToScheduler
 {
 	tabBarController.selectedIndex = 4;
 }
@@ -92,26 +92,26 @@
 
 #pragma mark -
 #pragma mark Mode XML parser delegate
-- (void)parserDidStartDocument:(NSXMLParser *)parser
+- (void) parserDidStartDocument:(NSXMLParser *)parser
 {
 	NSLog(@"Getting mode...");
 }
 
-- (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
+- (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
 {
 	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %i ).", [parseError code]];
 	NSLog(@"Error parsing XML: %@", errorString);
 	
 	UIAlertView * errorAlert = [[UIAlertView alloc] initWithTitle:@"Error loading content" 
 												message:errorString
-														 delegate:self 
+												delegate:self
 												cancelButtonTitle:@"OK" 
 												otherButtonTitles:nil];
 	[errorAlert show];
 
 }
 
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
+- (void) parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
 {
 	if ([string isEqualToString:@"home"]) {
 		isOffSeason = NO;

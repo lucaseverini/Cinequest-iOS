@@ -7,9 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FBConnect.h"
-#import <SystemConfiguration/SCNetworkReachability.h>
-#include <netinet/in.h>
 
 #define FILMSBYTIME		@"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone"
 #define FILMSBYTITLE	@"http://mobile.cinequest.org/mobileCQ.php?type=films&iphone"
@@ -47,12 +44,12 @@
 #define appDelegate (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate]
 #define app [UIApplication sharedApplication]
 
-NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
+extern NSString *const kUpdatedXMLFeedNotification;
 
 @class NewsViewController;
 @class Festival;
 @class Reachability;
-
+@class Festival;
 @interface CinequestAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
 {
     UIWindow *window;
