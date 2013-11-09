@@ -292,25 +292,17 @@
 	[self.tableView reloadData];
 
 }
-
 #pragma mark -
 #pragma mark UIViewController Methods
 - (void)viewDidLoad {
 	self.title = @"Films";
 	
     [super viewDidLoad];
-	/*
-	//Configure and start accelerometer
-	[[UIAccelerometer sharedAccelerometer] setUpdateInterval:kUpdateInterval];
-	[[UIAccelerometer sharedAccelerometer] setDelegate:self];
-	*/
+	
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
-	
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
-    [self.navigationController presentViewController:navController animated:YES completion:nil];
-	delegate.isPresentingModalView = YES;
-	
+    [self performSelector:@selector(openNewsViewOn:) withObject:self afterDelay:0.2];
+    
 	// Initialize data
 	data	= [[NSMutableDictionary alloc] init];
 	days	= [[NSMutableArray alloc] init];
@@ -353,6 +345,11 @@
 
 #pragma mark -
 #pragma mark Private Methods
+-(void)openNewsViewOn:(id)viewController{
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
+    [viewController presentViewController:navController animated:YES completion:nil];
+	delegate.isPresentingModalView = YES;
+}
 - (void)startParsingXML {
 	@autoreleasepool {
 	// FILMS BY TIME

@@ -341,13 +341,10 @@
 		SJSUIcon.alpha = 0.2;
 		self.navigationItem.rightBarButtonItem.enabled = YES;
 		self.navigationItem.leftBarButtonItem.enabled = YES;
-		[self.tableView reloadData];
+        
+        [_tableView reloadData];
 		self.tableView.hidden = NO;
-		//Disable "Reload" button
 		self.tableView.tableHeaderView = nil;
-	//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-	//					 atScrollPosition:UITableViewScrollPositionTop
-	//							 animated:NO];
 	}
 }
 - (void)syncTableDataWithScheduler {
