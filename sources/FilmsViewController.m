@@ -294,6 +294,7 @@
 }
 #pragma mark -
 #pragma mark UIViewController Methods
+
 - (void)viewDidLoad {
 	self.title = @"Films";
 	
@@ -301,10 +302,9 @@
 	
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
-    [self performSelector:@selector(openNewsViewOn:) withObject:self afterDelay:0.2];
     
 	// Initialize data
-	data	= [[NSMutableDictionary alloc] init];
+    data	=[NSMutableDictionary dictionary];
 	days	= [[NSMutableArray alloc] init];
 	index	= [[NSMutableArray alloc] init];
 	
@@ -330,6 +330,11 @@
 	switcher = VIEW_BY_DATE;
 	// Load data
 	[self reloadData:nil];
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
+    [self.navigationController presentViewController:navController animated:NO completion:nil];
+	delegate.isPresentingModalView = YES;
+
 }
 - (void)viewWillAppear:(BOOL)animated {
 	//NSLog(@"films will appear.");
@@ -345,11 +350,6 @@
 
 #pragma mark -
 #pragma mark Private Methods
--(void)openNewsViewOn:(id)viewController{
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:delegate.newsView];
-    [viewController presentViewController:navController animated:YES completion:nil];
-	delegate.isPresentingModalView = YES;
-}
 - (void)startParsingXML {
 	@autoreleasepool {
 	// FILMS BY TIME
