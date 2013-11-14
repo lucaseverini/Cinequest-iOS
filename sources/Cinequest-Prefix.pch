@@ -5,4 +5,11 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
+	#import <CoreGraphics/CoreGraphics.h>
+	#import <QuartzCore/QuartzCore.h>
+	#import <EventKit/EventKit.h>
+	#import <EventKit/EKObject.h>
+	#import <EventKit/EventKitDefines.h>
+	#import <MessageUI/MessageUI.h>
+	#import <MessageUI/MFMailComposeViewController.h>
 #endif
