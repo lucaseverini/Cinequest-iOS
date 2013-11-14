@@ -23,10 +23,10 @@
 	CinequestAppDelegate *delegate;
 }
 
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
-@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
-@property (nonatomic, strong) IBOutlet UITableView *filmsTableView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, weak) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, weak) IBOutlet UISegmentedControl *switchTitle;
+@property (nonatomic, weak) IBOutlet UITableView *filmsTableView;
 
 - (IBAction) switchTitle:(id)sender;
 - (IBAction) reloadData:(id)sender;
