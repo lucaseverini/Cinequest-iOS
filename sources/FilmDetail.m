@@ -605,7 +605,16 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
         [faceSheet setInitialText:testString];
         [self presentViewController:faceSheet animated:YES completion:nil];
     }
-        //  NSLog(@"Testing pressToShare...");
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't post on Facebook right now, make sure your device has an internet connection and you have at least one FB account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
 }
 
 - (IBAction)pressToShareToTwitter:(id)sender
@@ -619,7 +628,16 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
         [tweetSheet setInitialText:testString];
         [self presentViewController:tweetSheet animated:YES completion:nil];
     }
-        //  NSLog(@"Testing pressToShare...");
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't send a tweet right now, make sure your device has an internet connection and you have at least one Twitter account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
 }
 
 
