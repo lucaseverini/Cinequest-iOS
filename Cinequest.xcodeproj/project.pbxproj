@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		424040C31831E2A6003C7346 /* facebook-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 424040BD1831E2A6003C7346 /* facebook-pressed.png */; };
+		424040C41831E2A6003C7346 /* facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 424040BE1831E2A6003C7346 /* facebook.png */; };
+		424040C51831E2A6003C7346 /* google-plus-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 424040BF1831E2A6003C7346 /* google-plus-pressed.png */; };
+		424040C61831E2A6003C7346 /* google-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 424040C01831E2A6003C7346 /* google-plus.png */; };
+		424040C71831E2A6003C7346 /* twitter-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 424040C11831E2A6003C7346 /* twitter-pressed.png */; };
+		424040C81831E2A6003C7346 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 424040C21831E2A6003C7346 /* twitter.png */; };
 		8149DFC017EBB2FD0092F8F9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8149DFBF17EBB2FD0092F8F9 /* QuartzCore.framework */; };
 		8149DFC917EBB4F90092F8F9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */; };
 		8149DFCB17EBB5450092F8F9 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8149DFCA17EBB5450092F8F9 /* MessageUI.framework */; };
@@ -115,6 +121,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		424040BD1831E2A6003C7346 /* facebook-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook-pressed.png"; sourceTree = SOURCE_ROOT; };
+		424040BE1831E2A6003C7346 /* facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook.png; sourceTree = SOURCE_ROOT; };
+		424040BF1831E2A6003C7346 /* google-plus-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-plus-pressed.png"; sourceTree = SOURCE_ROOT; };
+		424040C01831E2A6003C7346 /* google-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-plus.png"; sourceTree = SOURCE_ROOT; };
+		424040C11831E2A6003C7346 /* twitter-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-pressed.png"; sourceTree = SOURCE_ROOT; };
+		424040C21831E2A6003C7346 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = SOURCE_ROOT; };
 		8149DFBF17EBB2FD0092F8F9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8149DFCA17EBB5450092F8F9 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -292,6 +304,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		424040BC1831E290003C7346 /* Social Media Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				424040BD1831E2A6003C7346 /* facebook-pressed.png */,
+				424040BE1831E2A6003C7346 /* facebook.png */,
+				424040BF1831E2A6003C7346 /* google-plus-pressed.png */,
+				424040C01831E2A6003C7346 /* google-plus.png */,
+				424040C11831E2A6003C7346 /* twitter-pressed.png */,
+				424040C21831E2A6003C7346 /* twitter.png */,
+			);
+			name = "Social Media Buttons";
+			sourceTree = "<group>";
+		};
 		8149DFC117EBB3280092F8F9 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,6 +418,7 @@
 		81C8B3B917EBAC1600033D4F /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				424040BC1831E290003C7346 /* Social Media Buttons */,
 				93E4E0A0182BB1A200515A84 /* cal_selected.png */,
 				93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */,
 				93E4E0A2182BB1A200515A84 /* cal_unselected.png */,
@@ -634,6 +660,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				424040C81831E2A6003C7346 /* twitter.png in Resources */,
 				81C8B3AC17EBABEE00033D4F /* DVDsViewController.xib in Resources */,
 				81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */,
 				81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */,
@@ -644,6 +671,7 @@
 				81C8B3D217EBAC2C00033D4F /* cq_logo.png in Resources */,
 				93E4E0A6182BB1A200515A84 /* cal_unselected.png in Resources */,
 				81C8B3D317EBAC2C00033D4F /* Default-568h@2x.png in Resources */,
+				424040C41831E2A6003C7346 /* facebook.png in Resources */,
 				81C8B3D417EBAC2C00033D4F /* Default-retina.png in Resources */,
 				81C8B3D517EBAC2C00033D4F /* Default.png in Resources */,
 				81C8B3D617EBAC2C00033D4F /* Default@2x.png in Resources */,
@@ -652,18 +680,22 @@
 				81C8B3D917EBAC2C00033D4F /* film_icon2.png in Resources */,
 				81C8B3DA17EBAC2C00033D4F /* iphone_icon_114_114.png in Resources */,
 				81D1EC3E182B8990003DD8BB /* MainViewController.xib in Resources */,
+				424040C51831E2A6003C7346 /* google-plus-pressed.png in Resources */,
 				81C8B3DB17EBAC2C00033D4F /* iphone_icon57_57.png in Resources */,
 				81C8B3DC17EBAC2C00033D4F /* iphone_icon512_512.jpg in Resources */,
 				81C8B3DD17EBAC2C00033D4F /* logo.gif in Resources */,
 				81C8B3DE17EBAC2C00033D4F /* schedule.png in Resources */,
 				93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */,
 				81C8B3DF17EBAC2C00033D4F /* sjsulogo_new_sjsu4.gif in Resources */,
+				424040C31831E2A6003C7346 /* facebook-pressed.png in Resources */,
+				424040C61831E2A6003C7346 /* google-plus.png in Resources */,
 				93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */,
 				81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */,
 				81C8B3E117EBAC2C00033D4F /* unchecked.png in Resources */,
 				81C8B3F917EBAC6100033D4F /* FBConnect.bundle in Resources */,
 				93E4E0A7182BB1A200515A84 /* cal_unselected@2x.png in Resources */,
 				81B12C65182B759E000D5200 /* EventDetailViewController.xib in Resources */,
+				424040C71831E2A6003C7346 /* twitter-pressed.png in Resources */,
 				81B12C66182B759E000D5200 /* EventsViewController.xib in Resources */,
 				81B12C67182B759E000D5200 /* FilmDetail.xib in Resources */,
 				81B12C68182B759E000D5200 /* FilmsViewController.xib in Resources */,

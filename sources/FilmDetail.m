@@ -326,7 +326,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			result = [array count];
 			break;
 		}
-		case FACEBOOK_SECTION:
+		case SOCIAL_MEDIA_SECTION:
 			break;
 		case CALL_N_EMAIL_SECTION:
 			result = 2;
@@ -342,8 +342,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		case SCHEDULE_SECTION:
 			answer = @"Schedules";
 			break;
-		case FACEBOOK_SECTION:
-			answer = @"Facebook";
+		case SOCIAL_MEDIA_SECTION:
+			answer = @"Share to Social Media";
 			break;
 		case CALL_N_EMAIL_SECTION:
 			answer = @"Actions";
@@ -360,7 +360,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		case SCHEDULE_SECTION:
 			height = 50;
 			break;
-		case FACEBOOK_SECTION:
+		case SOCIAL_MEDIA_SECTION:
 			height = 50;
 			break;
 		case CALL_N_EMAIL_SECTION:
@@ -459,29 +459,37 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			
 			break;
 		}
-		case FACEBOOK_SECTION: {
+		case SOCIAL_MEDIA_SECTION: {
 			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
-			UIButton *postButton;
 			if (cell == nil) {
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FacebookIdentifier];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
-				FBLoginButton *loginButton = [[FBLoginButton alloc] initWithFrame:CGRectMake(40,15,100,20)];
-				loginButton.style = FBLoginButtonStyleWide;
-				[cell.contentView addSubview:loginButton];
-				
-				postButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-				postButton.tag = CELL_FACEBOOKBUTTON_TAG;
-				postButton.frame = CGRectMake(200,10,100,30);
-				[postButton setTitle:@"Post This" forState:UIControlStateNormal];
-				[postButton setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
-				[postButton addTarget:self action:@selector(postToFacebook:) forControlEvents:UIControlEventTouchUpInside];
-				postThisButton = postButton;
-				[cell.contentView addSubview:postButton];
-			}
-			postButton = (UIButton*)[cell.contentView viewWithTag:CELL_FACEBOOKBUTTON_TAG];
-			if (!delegate.isLoggedInFacebook) postButton.enabled = NO; 
-			else postButton.enabled = YES;
+                UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                [fbButton addTarget:self
+                           action:@selector(pressToShareToFacebook:)
+                 forControlEvents:UIControlEventTouchDown];
+                
+                
+                [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
+                [fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
+                [fbButton setBackgroundColor:[UIColor clearColor]];
+                fbButton.frame = CGRectMake(40, 10, 32, 32);
+                [cell.contentView addSubview:fbButton];
+                
+                UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                [twButton addTarget:self
+                             action:@selector(pressToShareToTwitter:)
+                   forControlEvents:UIControlEventTouchDown];
+                
+                
+                [twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
+                [twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
+                [twButton setBackgroundColor:[UIColor clearColor]];
+                twButton.frame = CGRectMake(92, 10, 32, 32);
+                [cell.contentView addSubview:twButton];
+                
+            }
 
 			break;
 		}
@@ -581,6 +589,40 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	delegate.isPresentingModalView = NO;
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+
+#pragma Social Media Sharing
+
+- (IBAction)pressToShareToFacebook:(id)sender
+{
+    NSString *testString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        SLComposeViewController *faceSheet = [SLComposeViewController
+                                              composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [faceSheet setInitialText:testString];
+        [self presentViewController:faceSheet animated:YES completion:nil];
+    }
+        //  NSLog(@"Testing pressToShare...");
+}
+
+- (IBAction)pressToShareToTwitter:(id)sender
+{
+    NSString *testString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    {
+        SLComposeViewController *tweetSheet = [SLComposeViewController
+                                               composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [tweetSheet setInitialText:testString];
+        [self presentViewController:tweetSheet animated:YES completion:nil];
+    }
+        //  NSLog(@"Testing pressToShare...");
+}
+
+
 #pragma mark -
 #pragma mark FBDialog Delegate
 - (void)dialog:(FBDialog*)dialog didFailWithError:(NSError*)error {}

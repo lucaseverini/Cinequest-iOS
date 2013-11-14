@@ -286,7 +286,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			result = [array count];
 			break;
 		}
-		case FACEBOOK_SECTION:
+		case SOCIAL_MEDIA_SECTION:
 			break;
 		case CALL_N_EMAIL_SECTION:
 			result = 2;
@@ -302,7 +302,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		case SCHEDULE_SECTION:
 			answer = @"Schedules";
 			break;
-		case FACEBOOK_SECTION:
+		case SOCIAL_MEDIA_SECTION:
 			answer = @"Facebook";
 			break;
 		case CALL_N_EMAIL_SECTION:
@@ -404,7 +404,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			
 			break;
 		}
-		case FACEBOOK_SECTION: {
+		case SOCIAL_MEDIA_SECTION: {
 			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
 			UIButton *postButton;
 			if (cell == nil) {

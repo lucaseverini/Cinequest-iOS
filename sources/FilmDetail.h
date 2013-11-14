@@ -10,6 +10,7 @@
 #import "FBConnect.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import <Social/Social.h>
 #import "CinequestAppDelegate.h"
 
 @class Schedule;
