@@ -21,7 +21,7 @@
 
 @implementation NewsViewController
 
-@synthesize tableView = _tableView;
+@synthesize newsTableView;
 @synthesize activityIndicator;
 @synthesize loadingLabel;
 
@@ -42,13 +42,13 @@
 																			 action:@selector(toFestival:)];
 	
 	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
-	self.tableView.hidden = YES;
+	self.newsTableView.hidden = YES;
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
-	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-    [self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
+	NSIndexPath *tableSelection = [self.newsTableView indexPathForSelectedRow];
+    [self.newsTableView deselectRowAtIndexPath:tableSelection animated:YES];
 
 	// Don't show the spinning wheel and the "loading" label for now... (Luca 11-6-13)
 	activityIndicator.hidden = YES;
@@ -147,11 +147,11 @@
         UIImage *image = [UIImage imageWithData:imageData];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
         imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [self.tableView setTableHeaderView:imageView];
+        [self.newsTableView setTableHeaderView:imageView];
         loadingLabel.hidden = YES;
         [activityIndicator stopAnimating];
-        self.tableView.hidden = NO;
-        [self.tableView reloadData];
+        self.newsTableView.hidden = NO;
+        [self.newsTableView reloadData];
         
     }
 }

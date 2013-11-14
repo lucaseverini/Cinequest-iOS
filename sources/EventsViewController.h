@@ -21,19 +21,11 @@
 	
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
-	
-	IBOutlet UITableView *_tableView;
-	IBOutlet UIActivityIndicatorView *activity;
-	IBOutlet UILabel *loadingLabel;
-	IBOutlet UIImageView *CQIcon;
-	IBOutlet UIImageView *SJSUIcon;
-	IBOutlet UILabel *offSeasonLabel;
-
 }
 
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, weak) IBOutlet UITableView *eventsTableView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, weak) IBOutlet UILabel *loadingLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *CQIcon;
 @property (nonatomic, strong) IBOutlet UIImageView *SJSUIcon;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;

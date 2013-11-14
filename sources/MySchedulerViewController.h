@@ -13,14 +13,8 @@
 <UITableViewDelegate, UITableViewDataSource, NSXMLParserDelegate>
 {
 @public
-	IBOutlet UITableView *_tableView;	
-	IBOutlet UIImageView *CQIcon;
-	IBOutlet UIImageView *SJSUIcon;
-	IBOutlet UILabel *offSeasonLabel;
 	NSString *username, *password, *retrievedTimeStamp, *status, *xmlStatus;
-	
 	//BOOL xmlSuccess;	
-	
 	
 @private
 	NSMutableArray *index;
@@ -31,10 +25,10 @@
 	CinequestAppDelegate* delegate;
 }
 
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) IBOutlet UIImageView *CQIcon;
-@property (nonatomic, strong) IBOutlet UIImageView *SJSUIcon;
-@property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
+@property (nonatomic, weak) IBOutlet UITableView *scheduleTableView;
+@property (nonatomic, weak) IBOutlet UIImageView *CQIcon;
+@property (nonatomic, weak) IBOutlet UIImageView *SJSUIcon;
+@property (nonatomic, weak) IBOutlet UILabel *offSeasonLabel;
 @property (nonatomic, strong) NSString *username, *password, *retrievedTimeStamp, *status, *xmlStatus;
 //@property (readwrite) BOOL xmlSuccess;
 

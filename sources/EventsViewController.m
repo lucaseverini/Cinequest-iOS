@@ -28,7 +28,7 @@
 #pragma mark Memory Management
 @synthesize data;
 @synthesize days;
-@synthesize tableView = _tableView;
+@synthesize eventsTableView;
 @synthesize index;
 @synthesize loadingLabel;
 @synthesize activity;
@@ -61,7 +61,7 @@
 		[activity stopAnimating];
 		loadingLabel.hidden = YES;
 		offSeasonLabel.hidden = NO;
-		self.tableView.hidden = YES;
+		self.eventsTableView.hidden = YES;
 		return;
 	}
 	
@@ -80,15 +80,15 @@
 	[self reloadData:nil];
 }
 - (void)viewWillAppear:(BOOL)animated {
-    NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-    [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
+    NSIndexPath *tableSelection = [self.eventsTableView indexPathForSelectedRow];
+    [self.eventsTableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
 }
 #pragma mark -
 #pragma mark Actions
 - (IBAction)reloadData:(id)sender {
-	self.tableView.hidden = YES;
+	self.eventsTableView.hidden = YES;
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	self.navigationItem.leftBarButtonItem.enabled = NO;
 	[activity startAnimating];
@@ -135,7 +135,7 @@
 		}
 	}
 	[self syncTableDataWithScheduler];
-	[_tableView reloadData];
+	[self.eventsTableView reloadData];
 	if (counter != 0) {
 		[delegate jumpToScheduler];
 	}
@@ -191,23 +191,23 @@
 	[index removeObjectsAtIndexes:indexSet];
 	
 	// Start updating table
-	[self.tableView beginUpdates];
+	[self.eventsTableView beginUpdates];
 	
-	[self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
+	[self.eventsTableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
 	
-	[self.tableView deleteSections:indexSet withRowAnimation:NO];
+	[self.eventsTableView deleteSections:indexSet withRowAnimation:NO];
 	
-	[self.tableView endUpdates];
+	[self.eventsTableView endUpdates];
 	
 	// add push animation
 	CATransition *transition = [CATransition animation];
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromTop;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.eventsTableView layer] addAnimation:transition forKey:nil];
 	
 	// reload data
-	[self.tableView reloadData];
+	[self.eventsTableView reloadData];
 }
 - (void)back:(id)sender {
 	// Refine button
@@ -241,10 +241,10 @@
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromBottom;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.eventsTableView layer] addAnimation:transition forKey:nil];
 	
 	// reload table data
-	[self.tableView reloadData];
+	[self.eventsTableView reloadData];
 	
 }
 #pragma mark -
@@ -342,9 +342,9 @@
 		self.navigationItem.rightBarButtonItem.enabled = YES;
 		self.navigationItem.leftBarButtonItem.enabled = YES;
         
-        [self.tableView reloadData];
-		self.tableView.hidden = NO;
-		self.tableView.tableHeaderView = nil;
+        [self.eventsTableView reloadData];
+		self.eventsTableView.hidden = NO;
+		self.eventsTableView.tableHeaderView = nil;
 	}
 }
 - (void)syncTableDataWithScheduler {
@@ -509,8 +509,8 @@
 	
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
-	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:self.eventsTableView];
+	NSIndexPath *indexPath = [self.eventsTableView indexPathForRowAtPoint:currentTouchPosition];
 	int row = [indexPath row];
 	int section = [indexPath section];
 	
@@ -528,7 +528,7 @@
 		event.isSelected = !checked;
 		
 		// get the current cell and the checkbox button 
-		UITableViewCell *currentCell = [self.tableView cellForRowAtIndexPath:indexPath];
+		UITableViewCell *currentCell = [self.eventsTableView cellForRowAtIndexPath:indexPath];
 		UIButton *checkBoxButton = (UIButton*)[currentCell viewWithTag:CELL_BUTTON_TAG];
 		
 		// set button's image

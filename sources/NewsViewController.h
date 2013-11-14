@@ -10,9 +10,6 @@
 
 @interface NewsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
-	IBOutlet UITableView *_tableView;
-	IBOutlet UIActivityIndicatorView *activityIndicator;
-	IBOutlet UILabel *loadingLabel;
 	//Stores a list of name
 	NSMutableArray *sections;
 	
@@ -20,9 +17,9 @@
 	//		 object: array of rows
 	NSMutableDictionary *data;
 }
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) UILabel *loadingLabel;
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, weak) IBOutlet UITableView *newsTableView;
+@property (nonatomic, weak) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
 		   
 
 @end

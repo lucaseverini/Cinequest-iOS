@@ -37,11 +37,12 @@
 - (void)removeDeletedObjects;
 
 @end
+
 @implementation FilmsViewController
 #pragma mark -
 #pragma mark Memory Management
 @synthesize switchTitle;
-@synthesize tableView = _tableView;
+@synthesize filmsTableView;
 @synthesize loadingLabel;
 @synthesize activity;
 @synthesize SJSUIcon;
@@ -97,7 +98,7 @@
 		default:
 			break;
 	}
-	[self.tableView reloadData];
+	[self.filmsTableView reloadData];
 }
 - (IBAction)reloadData:(id)sender {
 	if (switcher == VIEW_BY_DATE) {
@@ -121,7 +122,7 @@
 	}
 
 	//Hide everything, display activity indicator
-	self.tableView.hidden = YES;
+	self.filmsTableView.hidden = YES;
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	self.navigationItem.leftBarButtonItem.enabled = NO;
 	switchTitle.hidden = YES;
@@ -174,7 +175,7 @@
 		}
 	}
 	[self syncTableDataWithScheduler];
-	[self.tableView reloadData];
+	[self.filmsTableView reloadData];
 	
 	if (counter != 0) {
 		//jump to Scheduler after add
@@ -235,23 +236,23 @@
 	[index removeObjectsAtIndexes:indexSet];
 	
 	// Start updating table
-	[self.tableView beginUpdates];
+	[self.filmsTableView beginUpdates];
 	
-	[self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
+	[self.filmsTableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
 	
-	[self.tableView deleteSections:indexSet withRowAnimation:NO];
+	[self.filmsTableView deleteSections:indexSet withRowAnimation:NO];
 	
-	[self.tableView endUpdates];
+	[self.filmsTableView endUpdates];
 	
 	// add push animation
 	CATransition *transition = [CATransition animation];
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromTop;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.filmsTableView layer] addAnimation:transition forKey:nil];
 	
 	// reload data
-	[self.tableView reloadData];
+	[self.filmsTableView reloadData];
 
 }
 - (void)back:(id)sender {
@@ -286,10 +287,10 @@
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromBottom;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.filmsTableView layer] addAnimation:transition forKey:nil];
 	  
 	// reload table data
-	[self.tableView reloadData];
+	[self.filmsTableView reloadData];
 
 }
 #pragma mark -
@@ -323,7 +324,7 @@
 		loadingLabel.hidden = YES;
 		offSeasonLabel.hidden = NO;
 		self.navigationItem.titleView = nil;
-		self.tableView.hidden = YES;
+		self.filmsTableView.hidden = YES;
 		return;
 	}
 	
@@ -339,8 +340,8 @@
 - (void)viewWillAppear:(BOOL)animated {
 	//NSLog(@"films will appear.");
 	app.networkActivityIndicatorVisible = NO;
-    NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-    [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
+    NSIndexPath *tableSelection = [self.filmsTableView indexPathForSelectedRow];
+    [self.filmsTableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
 	
@@ -466,8 +467,8 @@
 		
 		[activity stopAnimating];
 		
-		self.tableView.hidden = NO;
-		[self.tableView reloadData];
+		self.filmsTableView.hidden = NO;
+		[self.filmsTableView reloadData];
 
 		// back up current data
 		backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
@@ -477,8 +478,8 @@
 		[self syncTableDataWithScheduler];
 		
 		//Disable "Reload" button
-		self.tableView.tableHeaderView = nil;
-	//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] 
+		self.filmsTableView.tableHeaderView = nil;
+	//[self.filmsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] 
 	//				 atScrollPosition:UITableViewScrollPositionTop 
 	//						 animated:NO];
 	}
@@ -568,8 +569,8 @@
 	
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
-	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
+	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
 	int row = [indexPath row];
 	int section = [indexPath section];
 	
@@ -587,7 +588,7 @@
 		film.isSelected = !checked;
 		
 		// get the current cell and the checkbox button 
-		UITableViewCell *currentCell = [self.tableView cellForRowAtIndexPath:indexPath];
+		UITableViewCell *currentCell = [self.filmsTableView cellForRowAtIndexPath:indexPath];
 		UIButton *checkBoxButton = (UIButton*)[currentCell viewWithTag:CELL_BUTTON_TAG];
 		
 		// set button's image

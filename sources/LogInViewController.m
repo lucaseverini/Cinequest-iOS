@@ -53,7 +53,7 @@
 		parentsView.password = passwordLabel.text;
 		parentsView.username = usernameLabel.text;
 		[parentsView processLogin];
-		[parentsView.tableView reloadData];	
+		[parentsView.scheduleTableView reloadData];
 		
 		
 		if ( [parentsView.xmlStatus isEqualToString:@"good"] ) {

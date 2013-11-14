@@ -37,7 +37,7 @@
 #pragma mark -
 #pragma mark Memory Management
 
-@synthesize tableView = _tableView; 
+@synthesize scheduleTableView;
 @synthesize username;
 @synthesize password;
 @synthesize retrievedTimeStamp;
@@ -84,7 +84,7 @@ UITableViewCell *previousCell;
 
 	if (delegate.isOffSeason) {
 		offSeasonLabel.hidden = NO;
-		self.tableView.hidden = YES;
+		self.scheduleTableView.hidden = YES;
 		return;
 	}
 	
@@ -156,7 +156,7 @@ UITableViewCell *previousCell;
 	
 	
 	// reload tableView data
-	[self.tableView reloadData];
+	[self.scheduleTableView reloadData];
 	[self doneEditing];
 }
 
@@ -169,13 +169,13 @@ UITableViewCell *previousCell;
 #pragma mark -
 #pragma mark Actions
 - (void)edit {
-	[self.tableView setEditing:YES animated:YES];
+	[self.scheduleTableView setEditing:YES animated:YES];
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 																							target:self
 																							action:@selector(doneEditing)];
 }
 - (void)doneEditing {
-	[self.tableView setEditing:NO animated:YES];
+	[self.scheduleTableView setEditing:NO animated:YES];
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
 																							target:self
 																							action:@selector(edit)];
@@ -321,8 +321,8 @@ UITableViewCell *previousCell;
 	
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
-	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:self.scheduleTableView];
+	NSIndexPath *indexPath = [self.scheduleTableView indexPathForRowAtPoint:currentTouchPosition];
 	int row = [indexPath row];
 	int section = [indexPath section];
 	
@@ -498,7 +498,7 @@ UITableViewCell *previousCell;
         }
     }
     
-    [_tableView reloadData];
+    [self.scheduleTableView reloadData];
 }
 
 #pragma mark -
