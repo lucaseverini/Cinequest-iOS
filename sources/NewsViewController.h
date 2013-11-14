@@ -16,8 +16,8 @@
 	NSMutableDictionary *data;
 }
 
-@property (nonatomic, strong) UITableView *newsTableView;
-@property (nonatomic, strong) UILabel *loadingLabel;
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, weak) UITableView *newsTableView;
+@property (nonatomic, weak) UILabel *loadingLabel;
+@property (nonatomic, weak) UIActivityIndicatorView *activityIndicator;
 
 @end
