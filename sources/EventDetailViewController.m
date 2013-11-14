@@ -42,7 +42,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (id) initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andURL:(NSURL*)link
 {
-    if (self = [super init]) 
+	self = [super init];
+	if(self != nil)
 	{
 		self.title = @"Event Detail";
 		dataLink = link;
@@ -54,12 +55,14 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		myData.prog_id = dataObject.prog_id;
 		
     }
+	
     return self;
 }
 
 - (id) initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSString*)eventID;
 {
-    if (self = [super init])
+	self = [super init];
+	if(self != nil)
 	{
 		self.title = @"Event Detail";
 		eventId = eventID;
@@ -74,7 +77,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
     return self;
 }
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
 	self.tableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
@@ -95,12 +98,12 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	mySchedule = delegate.mySchedule;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void) viewWillAppear:(BOOL)animated
 {
 	[self.tableView reloadData];
 }
 
-- (void)parseData
+- (void )parseData
 {
 	NSData *data = [[appDelegate dataProvider] eventDetail:eventId];
 	
@@ -185,7 +188,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
 }
 
-- (void)loadData {
+- (void) loadData
+{
 	NSString *weba = [NSString stringWithFormat:web,[dataDictionary objectForKey:@"Title"]
 					  ,[dataDictionary objectForKey:@"Description"]];
 	
@@ -199,8 +203,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark UIWebView delegate
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-	
+- (void) webViewDidFinishLoad:(UIWebView *)webView
+{
 	UIWebView *webview = (UIWebView*) self.tableView.tableHeaderView;
 	//NSLog(@"BEFORE: %f",webview.frame.origin.x);
 	
@@ -280,40 +284,54 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark UITableView Datasource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	if (displayAddButton) return 3;
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
+	if (displayAddButton)
+	{
+		return 3;
+	}
+	
     return 0;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
 	int result = 1;
-	switch (section) {
+	switch (section)
+	{
 		case SCHEDULE_SECTION:
 		{
 			NSMutableArray *array = [dataDictionary objectForKey:@"Schedules"];
 			result = [array count];
 			break;
 		}
+			
 		case SOCIAL_MEDIA_SECTION:
 			break;
+			
 		case CALL_N_EMAIL_SECTION:
 			result = 2;
 			break;
 			
 	}
+	
 	return result;
 }
 
-- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
+- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+{
 	NSString *answer;
 	
-	switch (section) {
+	switch (section)
+	{
 		case SCHEDULE_SECTION:
 			answer = @"Schedules";
 			break;
+			
 		case SOCIAL_MEDIA_SECTION:
 			answer = @"Facebook";
 			break;
+			
 		case CALL_N_EMAIL_SECTION:
 			answer = @"Actions";
 			break;
@@ -322,11 +340,13 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
     return answer;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
 	return 50;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
 	static NSString *ScheduleCellID		= @"ScheduleCell";
 	static NSString *FacebookIdentifier = @"FBCell";
 	static NSString *ActionsIdentifier	= @"ActCell";
@@ -334,8 +354,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	int section = [indexPath section];
 	
 	UITableViewCell *cell;
-	switch (section) {
-		case SCHEDULE_SECTION: {
+	switch (section)
+	{
+		case SCHEDULE_SECTION:
+		{
 			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
 			
 			// get row number
@@ -350,9 +372,11 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			
 			NSUInteger i, count = [mySchedule count];
 			
-			for (i = 0; i < count; i++) {
+			for (i = 0; i < count; i++)
+			{
 				Schedule *obj = [mySchedule objectAtIndex:i];
-				if (obj.ID == time.ID) {
+				if (obj.ID == time.ID)
+				{
 					textColor = [UIColor blueColor];
 					userInteraction = NO;
 					time.isSelected = YES;
@@ -367,7 +391,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			BOOL checked = time.isSelected;
 				  
 			UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"];
-			if (cell == nil) {
+			if (cell == nil)
+			{
 				// init cell
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ScheduleCell"];
 				cell.accessoryType = UITableViewCellAccessoryNone;
@@ -392,6 +417,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 				checkButton.tag = CELL_BUTTON_TAG;
 				[cell.contentView addSubview:checkButton];
 			}
+			
 			// set the cell's text
 			label = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
 			label.text = [NSString stringWithFormat:@"Date: %@",time.dateString];
@@ -415,7 +441,9 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			
 			break;
 		}
-		case SOCIAL_MEDIA_SECTION: {
+			
+		case SOCIAL_MEDIA_SECTION:
+		{
 			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
 			if (cell == nil) {
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FacebookIdentifier];
@@ -448,26 +476,35 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 			break;
 		}
-		case CALL_N_EMAIL_SECTION: {
+			
+		case CALL_N_EMAIL_SECTION:
+		{
 			cell = [tableView dequeueReusableCellWithIdentifier:ActionsIdentifier];
 			if (cell == nil) {
+				
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
 			}
-			switch (indexPath.row) {
+			
+			switch (indexPath.row)
+			{
 				case 0:
 					cell.textLabel.text = @"Call Cinequest Ticketing Line";
 					break;
+					
 				case 1:
 					cell.textLabel.text = @"Email Film Detail";
 					break;
+					
 				default:
 					break;
 			}
 		}
 			break;
+			
 		default:
 			break;
 	}
+	
 	cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
     return cell;
 }
@@ -475,11 +512,13 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark UITableView delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
 	int section = [indexPath section];
 	int row = [indexPath row];
 	
-	if (section == SCHEDULE_SECTION) {
+	if (section == SCHEDULE_SECTION)
+	{
 		UITableViewCell *oldCell = [tableView cellForRowAtIndexPath:indexPath];
 		
 		NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
@@ -499,18 +538,23 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		[tableView deselectRowAtIndexPath:indexPath animated:NO];
 	}
 	
-	if (section == CALL_N_EMAIL_SECTION) {
-		switch (row) {
-			case 0: {
+	if (section == CALL_N_EMAIL_SECTION)
+	{
+		switch (row)
+		{
+			case 0:
+			{
 				UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Application will now exit."
-																message:@"Are you sure?"
-															   delegate:self
-													  cancelButtonTitle:@"Cancel"
-													  otherButtonTitles:@"OK",nil];
+															message:@"Are you sure?"
+															delegate:self
+															cancelButtonTitle:@"Cancel"
+															otherButtonTitles:@"OK",nil];
 				[alert show];
 				break;
 			}
-			case 1: {
+				
+			case 1:
+			{
 				MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
 				NSString *friendlyMessage = @"Hey, I found an interesting film from Cinequest. Check it out!";
 				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%d",friendlyMessage,myData.prog_id];
@@ -518,9 +562,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 				[controller setSubject:myData.title];
 				[controller setMessageBody:messageBody isHTML:NO]; 
 				delegate.isPresentingModalView = YES;
-				    [self.navigationController presentViewController:controller animated:YES completion:nil];
+				[self.navigationController presentViewController:controller animated:YES completion:nil];
 				break;
 			}
+				
 			default:
 				break;
 		}
@@ -530,13 +575,18 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark UIAlertView Delegate
 
-- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 1) {
-		//NSLog(@"CALL!");
+- (void) alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (buttonIndex == 1)
+	{
+		// NSLog(@"CALL!");
 		[app openURL:[NSURL URLWithString:TICKET_LINE]];
-	} else {
-		//NSLog(@"cancel");
 	}
+	else
+	{
+		// NSLog(@"cancel");
+	}
+	
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
     [self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
 }
@@ -544,10 +594,13 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark MFMailComposeViewController Delegate
 
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error; {
-	if (result == MFMailComposeResultSent) {
-		//NSLog(@"It's away!");
+- (void) mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error;
+{
+	if (result == MFMailComposeResultSent)
+	{
+		// NSLog(@"It's away!");
 	}
+	
 	delegate.isPresentingModalView = NO;
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -555,7 +608,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark Social Media Sharing
 
-- (IBAction)pressToShareToFacebook:(id)sender
+- (IBAction) pressToShareToFacebook:(id)sender
 {
     NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@", myData.title];
     
@@ -578,7 +631,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
     }
 }
 
-- (IBAction)pressToShareToTwitter:(id)sender
+- (IBAction) pressToShareToTwitter:(id)sender
 {
     NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@", myData.title];
     
@@ -604,10 +657,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark Decode NSString for HTML
 
--(NSString *)htmlEntityDecode:(NSString *)string
+-(NSString *) htmlEntityDecode:(NSString *)string
 {
-//    string = [string stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
-//    string = [string stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
+	// string = [string stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+	// string = [string stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
     string = [string stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
     string = [string stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     string = [string stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];

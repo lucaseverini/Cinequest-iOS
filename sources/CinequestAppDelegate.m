@@ -13,6 +13,7 @@
 #import "MainViewController.h"
 #import "DataProvider.h"
 
+
 @interface CinequestAppDelegate (Private)
 
 - (void) setOffSeason;
@@ -62,6 +63,7 @@
 
 #pragma mark -
 #pragma mark Mode XML parser delegate
+
 - (void) setOffSeason
 {
 	NSData *data = [[self dataProvider] mode];	

@@ -21,9 +21,9 @@
 @property (nonatomic, strong) NSMutableArray *index;
 @property (nonatomic, strong) NSMutableDictionary *data;
 
-@property (nonatomic, weak) IBOutlet UITableView *forumsTableView;
-@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, weak) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, strong) IBOutlet UITableView *forumsTableView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
 
 - (IBAction)reloadData:(id)sender;

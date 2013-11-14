@@ -44,7 +44,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (id) initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSUInteger)filmID
 {
-	if (self = [super init]) 
+	self = [super init];
+	if(self != nil)
 	{
 		self.navigationItem.title = name;
 		filmId = filmID;
@@ -68,12 +69,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	
 	self.tableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
-
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
-																				style:UIBarButtonItemStyleDone
-																				target:self
-																				action:@selector(addAction:)];
-	self.navigationItem.rightBarButtonItem.enabled = NO;
 	
 	[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
 }
@@ -280,7 +275,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	[self.tableView reloadData];
 	[activityIndicator stopAnimating];
 	self.tableView.hidden = NO;
-	self.navigationItem.rightBarButtonItem.enabled = YES;
 	self.view.userInteractionEnabled = YES;
 }
 
@@ -304,6 +298,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			result = [array count];
 			break;
 		}
+			
 		case SOCIAL_MEDIA_SECTION:
 			break;
 			

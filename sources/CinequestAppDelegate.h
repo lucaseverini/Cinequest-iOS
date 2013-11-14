@@ -49,26 +49,19 @@
 @class DataProvider;
 
 @interface CinequestAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
-{
-    UIWindow *window;
-	BOOL isPresentingModalView;
-	BOOL isLoggedInFacebook;
-	BOOL isOffSeason;
-}
 
 @property (nonatomic, strong) NewsViewController *newsView;
 @property (nonatomic, strong) NSMutableArray *mySchedule;
-@property (nonatomic, strong) IBOutlet UIWindow *window;
-@property (nonatomic, strong) IBOutlet UITabBarController *tabBarController;
 @property (readwrite) BOOL isPresentingModalView;
 @property (readwrite) BOOL isLoggedInFacebook;
 @property (readwrite) BOOL isOffSeason;
-
 @property (nonatomic, strong) Festival* festival;
-
 @property (nonatomic, strong) Reachability *reachability;
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
 @property (nonatomic, strong) DataProvider *dataProvider;
+
+@property (nonatomic, strong) IBOutlet UIWindow *window;
+@property (nonatomic, strong) IBOutlet UITabBarController *tabBarController;
 
 - (void) setOffSeason;
 - (void) jumpToScheduler;

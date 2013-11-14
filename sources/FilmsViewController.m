@@ -533,7 +533,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			{
 				tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDateCellIdentifier];
 				
-				titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 2.0, 250.0, 20.0)];
+				UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 2.0, 290.0, 20.0)];
 				titleLabel.tag = CELL_TITLE_LABEL_TAG;
 				titleLabel.font = [UIFont boldSystemFontOfSize:labelFontSize];
 				titleLabel.textColor = textColor;
@@ -595,7 +595,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 				[[tempCell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 			}
 			
-			UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 2.0, 250.0, 20.0)];
+			UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 2.0, 290.0, 20.0)];
 			titleLabel.tag = CELL_TITLE_LABEL_TAG;
 			titleLabel.text = displayString;
 			titleLabel.textColor = textColor;

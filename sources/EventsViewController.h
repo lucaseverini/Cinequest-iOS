@@ -17,9 +17,9 @@
 	NSMutableArray *mySchedule;
 }
 
-@property (nonatomic, weak) IBOutlet UITableView *eventsTableView;
-@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, weak) IBOutlet UILabel *loadingLabel;
+@property (nonatomic, strong) IBOutlet UITableView *eventsTableView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
 @property (nonatomic, strong) NSMutableArray *index;
 @property (nonatomic, strong) NSMutableArray *days;
