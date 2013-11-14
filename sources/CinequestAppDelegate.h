@@ -6,8 +6,6 @@
 //  Copyright __MyCompanyName__ 2010. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #define FILMSBYTIME		@"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone"
 #define FILMSBYTITLE	@"http://mobile.cinequest.org/mobileCQ.php?type=films&iphone"
 #define NEWS			@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ihome"
@@ -21,9 +19,8 @@
 #define MODE			@"http://mobile.cinequest.org/mobileCQ.php?type=mode"
 
 #define XML_FEED_URL    @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
-#define XML_FEED_FILE   @"XmlFeed.xml"
 
-#define CELL_BUTTON_TAG			1
+#define CELL_BUTTON_TAG			100
 #define CELL_TITLE_LABEL_TAG	2
 #define	CELL_TIME_LABEL_TAG		3
 #define CELL_VENUE_LABEL_TAG	4
@@ -45,8 +42,6 @@
 #define appDelegate (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate]
 #define app [UIApplication sharedApplication]
 
-extern NSString *const kUpdatedXMLFeedNotification;
-
 @class NewsViewController;
 @class Festival;
 @class Reachability;
@@ -56,9 +51,6 @@ extern NSString *const kUpdatedXMLFeedNotification;
 @interface CinequestAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
 {
     UIWindow *window;
-    UITabBarController *tabBarController;
-	NewsViewController *newsView;
-	NSMutableArray *mySchedule;
 	BOOL isPresentingModalView;
 	BOOL isLoggedInFacebook;
 	BOOL isOffSeason;
@@ -78,8 +70,10 @@ extern NSString *const kUpdatedXMLFeedNotification;
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
 @property (nonatomic, strong) DataProvider *dataProvider;
 
+- (void) setOffSeason;
 - (void) jumpToScheduler;
 - (BOOL) connectedToNetwork;
+- (void) startReachability:(NSString*)hostName;
 
 - (NSURL*) cachesDirectory;
 - (NSURL*) documentsDirectory;
