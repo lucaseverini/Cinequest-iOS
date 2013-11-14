@@ -13,8 +13,6 @@
 #import "MainViewController.h"
 #import "DataProvider.h"
 
-NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
-
 @interface CinequestAppDelegate (Private)
 
 - (void) setOffSeason;
@@ -41,35 +39,13 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 #if TARGET_IPHONE_SIMULATOR
 	NSLog(@"App folder: %@", NSHomeDirectory());
 #endif // TARGET_IPHONE_SIMULATOR
-		
+
 	MainViewController *mainViewController = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+	[navController setNavigationBarHidden:YES animated:NO];
 	
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
-		
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    // saving an NSString
-    if (![prefs stringForKey:@"CalendarID"]) {
-        [prefs setObject:@"" forKey:@"CalendarID"];
-    }
-
-	[self startReachability:XML_FEED_URL];
-	
-	dataProvider = [[DataProvider alloc] init];
-
-	mySchedule = [[NSMutableArray alloc] init];
-	newsView = [[NewsViewController alloc] init];
-	
-	if ([self connectedToNetwork])
-	{
-		[self setOffSeason];
-		// isOffSeason = YES;
-		// NSLog(@"IS OFFSEASON? %@",(isOffSeason) ? @"YES" : @"NO");
-	}
-    
-    FestivalParser *festivalParser = [[FestivalParser alloc] init];
-	festival = [festivalParser parseFestival];
 	
 	return YES;
 }
@@ -88,9 +64,8 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 #pragma mark Mode XML parser delegate
 - (void) setOffSeason
 {
-	NSURL *url = [NSURL URLWithString:MODE];
-	
-	NSXMLParser *parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
+	NSData *data = [[self dataProvider] mode];	
+	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
 	
 	[parser setDelegate: self];
 	[parser setShouldProcessNamespaces: NO];
@@ -102,7 +77,6 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 
 - (void) parserDidStartDocument:(NSXMLParser *)parser
 {
-	NSLog(@"Getting mode...");
 }
 
 - (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
@@ -134,6 +108,8 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 	{
 		return;
 	}
+	
+	networkConnection = -1;
 
 	NSRange range = [hostName rangeOfString:@"://"];
 	NSString *cleanHostName = range.location == NSNotFound ? hostName : [hostName substringFromIndex:NSMaxRange(range)];
@@ -151,11 +127,18 @@ NSString *const kUpdatedXMLFeedNotification = @"UpdatedXMLFeedNotification";
 	
 	reachability = [Reachability reachabilityWithHostname:cleanHostName];
 	[reachability startNotifier];
+	
+	// Wait for the networkConnection value to be set...
+	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+	while(networkConnection < 0)
+	{
+		[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+	}
 }
 
 - (void) reachabilityDidChange:(NSNotification*)note
 {
-    Reachability *reach = [note object];
+    Reachability *reach = note != nil ? [note object] : reachability;
 	if([reach isReachable])
 	{
 		SCNetworkReachabilityFlags flags = [reach reachabilityFlags];

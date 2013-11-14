@@ -6,20 +6,40 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+extern NSString *const kUpdatedXMLFeedNotification;
 
 @interface DataProvider : NSObject
 {
+	NSInteger connectionError;
 	BOOL keepRunning;
 	BOOL xmlFeedTimeStampChecked;
 	NSMutableData *feedData;
 	NSUInteger feedDataLen;
-	BOOL updatedXmlFeed;
-	NSDate *xmlFeedDate;
+	BOOL xmlFeedHasBeenUpdated;
+	BOOL xmlFeedHasBeenDownloaded;
 	NSURL *cacheDir;
+	NSTimer *checkFeedTimer;
+	BOOL justChecking;
+	BOOL gettingXmlFeed;
+	NSURLConnection *checkConnection;
+	NSFileManager *fileMgr;
+	NSURL *queryDatesUrl;
+	NSMutableDictionary *queryDates;
 }
 
-- (NSData*) getXMLFeed;
-- (BOOL) updatedXMLFeedAvailable;
+@property (atomic, assign) BOOL xmlFeedUpdated;
+@property (atomic, strong) NSDate *xmlFeedDate;
+
+- (NSData*) xmlFeed;
+- (void) reset;
+- (NSData*) filmsByTime;
+- (NSData*) filmsByTitle;
+- (NSData*) news;
+- (NSData*) events;
+- (NSData*) forums;
+- (NSData*) mode;
+- (NSData*) image:(NSURL*)imageUrl expiration:(NSDate*)expirationDate;
+- (NSData*) filmDetail:(NSUInteger)filmId;
+- (NSData*) eventDetail:(NSString*)eventId;
 
 @end

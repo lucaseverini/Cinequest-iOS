@@ -6,16 +6,9 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "Venue.h"
 
-@interface Showing : NSObject {
-    NSString *ID;
-    NSString *startDate;
-    NSString *endDate;
-    NSString *shortDescription;
-    Venue *venue;
-}
+@interface Showing : NSObject
 
 @property (strong, nonatomic) NSString *ID;
 @property (strong, nonatomic) NSString *startDate;

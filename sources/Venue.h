@@ -6,13 +6,7 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-@interface Venue : NSObject {
-    NSString *ID;
-    NSString *name;
-    NSString *address;
-}
+@interface Venue : NSObject
 
 @property (strong, nonatomic) NSString *ID;
 @property (strong, nonatomic) NSString *name;

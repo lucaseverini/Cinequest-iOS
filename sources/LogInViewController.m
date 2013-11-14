@@ -160,15 +160,13 @@
 	return YES;
 }
 
-
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
 
-
-
 #pragma mark UIActionSheet
+
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
 	if (!buttonIndex == [actionSheet cancelButtonIndex]) {
@@ -192,5 +190,6 @@
     }
 }
 
-
 @end
+
+

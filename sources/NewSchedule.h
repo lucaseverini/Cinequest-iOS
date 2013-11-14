@@ -6,16 +6,7 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-@interface NewSchedule : NSObject {
-    NSString *ID;
-    NSString *title;
-    NSString *itemID;
-    NSString *venue;
-    NSString *startTime;
-    NSString *endTime;
-}
+@interface NewSchedule : NSObject
 
 @property (strong, nonatomic) NSString *ID;
 @property (strong, nonatomic) NSString *title;

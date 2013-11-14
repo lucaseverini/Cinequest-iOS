@@ -23,7 +23,8 @@
 @synthesize language;
 @synthesize filmInfo;
 
-- (id)init {
+- (id)init
+{
     schedules = [[NSMutableArray alloc] init];
     return self;
 }

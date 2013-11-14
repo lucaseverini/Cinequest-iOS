@@ -10,9 +10,13 @@
 #import "CinequestAppDelegate.h"
 #import "DDXML.h"
 #import "Schedule.h"
+#import "DataProvider.h"
+
+static NSString *kGetSessionProxy = nil;
+static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
+static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p>%@</p>"
-
 
 @interface EventDetailViewController (Private)
 
@@ -22,9 +26,6 @@
 @end
 
 @implementation EventDetailViewController
-
-#pragma mark -
-#pragma mark Memory Management
 
 @synthesize tableView = _tableView;
 @synthesize webView = _webView;
@@ -37,11 +38,9 @@
 
 #pragma mark -
 #pragma mark UIViewController
-static NSString *kGetSessionProxy = nil;
-static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
-static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
-- (id)initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andURL:(NSURL*)link {
+- (id)initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andURL:(NSURL*)link
+{
     if (self = [super init]) 
 	{
 		self.title = @"Event Detail";
@@ -63,6 +62,31 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
     }
     return self;
 }
+
+- (id)initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSString*)eventID;
+{
+    if (self = [super init])
+	{
+		self.title = @"Event Detail";
+		eventId = eventID;
+		dataDictionary = [[NSMutableDictionary  alloc] init];
+		
+		myData = [[Schedule alloc] init];
+		myData.ID = dataObject.ID;
+		myData.title = dataObject.title;
+		myData.prog_id = dataObject.prog_id;
+		
+		if (kGetSessionProxy) {
+			_session = [FBSession sessionForApplication:kApiKey
+										getSessionProxy:kGetSessionProxy
+											   delegate:self];
+		} else {
+			_session = [FBSession sessionForApplication:kApiKey secret:kApiSecret delegate:self];
+		}
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
 	self.tableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
@@ -74,108 +98,103 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		self.navigationItem.rightBarButtonItem = addButton;
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 	}
-	if ([appDelegate connectedToNetwork]) {
-		[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
-	} else {
-		//alert
-	}
+
+	[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
 
 	[super viewDidLoad];
 	
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 }
+
 - (void)viewWillAppear:(BOOL)animated {
 	[self.tableView reloadData];
 }
-- (void)parseData {
-    
-	@autoreleasepool {
-        
-        NSData *data = [NSData dataWithContentsOfURL:dataLink];
-        DDXMLDocument *xmlDocument = [[DDXMLDocument alloc] initWithData:data
-                                                                 options:0
-                                                                   error:nil];
-        
-        DDXMLNode *rootElement = [xmlDocument rootElement];
-        //NSLog(@"%d",[rootElement childCount]);
-        
-        for (int i=0;i<[rootElement childCount]; i++) {
-            DDXMLNode *element = [rootElement childAtIndex:i];
-            NSString *elementName = [element name];
-            //NSLog(@"elementName: %@",elementName);
-            if ([elementName isEqualToString:@"title"]) {
-                NSString *theTitle = [element stringValue];
-                [dataDictionary setObject:theTitle forKey:@"Title"];
-                continue;
-            }
-            if ([elementName isEqualToString:@"schedules"]) {
-                NSMutableArray *schedules	= [[NSMutableArray alloc] init];
-                for (int j=0;j<[element childCount]; j++) {
-                    DDXMLElement *scheduleNode = (DDXMLElement*)[element childAtIndex:j];
-                    if([[scheduleNode name] isEqualToString:@"schedule"])
-                    {
-                        NSDictionary *atts = [scheduleNode attributesAsDictionary];
-                        
-                        NSString *ID			= [atts objectForKey:@"id"];
-                        NSString *prg_item_id	= [atts objectForKey:@"program_item_id"];
-                        NSString *start_time	= [atts objectForKey:@"start_time"];
-                        NSString *end_time		= [atts objectForKey:@"end_time"];
-                        NSString *venue			= [atts objectForKey:@"venue"];
-                        
-                        Schedule *event = [[Schedule alloc] init];
-                        event.title		= [dataDictionary objectForKey:@"Title"];
-                        event.ID		= [ID integerValue];
-                        event.prog_id	= [prg_item_id integerValue];
-                        event.type		= @"event";
-                        event.venue		= venue;
-                        
-                        //Start Time
-                        NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
-                        [inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-                        NSDate *formatterDate = [inputFormatter dateFromString:start_time];
-                        event.date = formatterDate;
-                        [inputFormatter setDateFormat:@"hh:mm a"];
-                        event.timeString = [inputFormatter stringFromDate:formatterDate];
-                        //Date
-                        [inputFormatter setDateFormat:@"EEEE, MMMM d"];
-                        event.dateString = [inputFormatter stringFromDate:formatterDate];
-                        
-                        //End Time
-                        [inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-                        formatterDate = [inputFormatter dateFromString:end_time];
-                        event.endDate = formatterDate;
-                        [inputFormatter setDateFormat:@"hh:mm a"];
-                        event.endTimeString = [inputFormatter stringFromDate:formatterDate];
-                        
-                        [schedules addObject:event];
-                    }
-                }
-                [dataDictionary setObject:schedules forKey:@"Schedules"];
-                continue;
-            }
-            if ([elementName isEqualToString:@"description"] 
-                && ![[element stringValue] isEqualToString:@""]) {
-                NSString *description = [element stringValue];
-                [dataDictionary setObject:description forKey:@"Description"];
-                continue;
-            }
-            if ([elementName isEqualToString:@"film"]) {
-                for (int j=0; j<[element childCount]; j++) {
-                    DDXMLNode *childOfElement = [element childAtIndex:j];
-                    if ([[childOfElement name] isEqualToString:@"description"]) {
-                        NSString *description = [childOfElement stringValue];
-                        [dataDictionary setObject:description forKey:@"Description"];
-                    }
-                }
-            }
-        }
-    }
+
+- (void)parseData
+{
+	NSData *data = [[appDelegate dataProvider] eventDetail:eventId];
 	
-	app.networkActivityIndicatorVisible = NO;
+	DDXMLDocument *xmlDocument = [[DDXMLDocument alloc] initWithData:data
+															 options:0
+															   error:nil];
+	DDXMLNode *rootElement = [xmlDocument rootElement];
+	//NSLog(@"%d",[rootElement childCount]);
+	
+	for (int i=0;i<[rootElement childCount]; i++) {
+		DDXMLNode *element = [rootElement childAtIndex:i];
+		NSString *elementName = [element name];
+		//NSLog(@"elementName: %@",elementName);
+		if ([elementName isEqualToString:@"title"]) {
+			NSString *theTitle = [element stringValue];
+			[dataDictionary setObject:theTitle forKey:@"Title"];
+			continue;
+		}
+		if ([elementName isEqualToString:@"schedules"]) {
+			NSMutableArray *schedules	= [[NSMutableArray alloc] init];
+			for (int j=0;j<[element childCount]; j++) {
+				DDXMLElement *scheduleNode = (DDXMLElement*)[element childAtIndex:j];
+				if([[scheduleNode name] isEqualToString:@"schedule"])
+				{
+					NSDictionary *atts = [scheduleNode attributesAsDictionary];
+					
+					NSString *ID			= [atts objectForKey:@"id"];
+					NSString *prg_item_id	= [atts objectForKey:@"program_item_id"];
+					NSString *start_time	= [atts objectForKey:@"start_time"];
+					NSString *end_time		= [atts objectForKey:@"end_time"];
+					NSString *venue			= [atts objectForKey:@"venue"];
+					
+					Schedule *event = [[Schedule alloc] init];
+					event.title		= [dataDictionary objectForKey:@"Title"];
+					event.ID		= [ID integerValue];
+					event.prog_id	= [prg_item_id integerValue];
+					event.type		= @"event";
+					event.venue		= venue;
+					
+					//Start Time
+					NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
+					[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+					NSDate *formatterDate = [inputFormatter dateFromString:start_time];
+					event.date = formatterDate;
+					[inputFormatter setDateFormat:@"hh:mm a"];
+					event.timeString = [inputFormatter stringFromDate:formatterDate];
+					//Date
+					[inputFormatter setDateFormat:@"EEEE, MMMM d"];
+					event.dateString = [inputFormatter stringFromDate:formatterDate];
+					
+					//End Time
+					[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+					formatterDate = [inputFormatter dateFromString:end_time];
+					event.endDate = formatterDate;
+					[inputFormatter setDateFormat:@"hh:mm a"];
+					event.endTimeString = [inputFormatter stringFromDate:formatterDate];
+					
+					[schedules addObject:event];
+				}
+			}
+			[dataDictionary setObject:schedules forKey:@"Schedules"];
+			continue;
+		}
+		if ([elementName isEqualToString:@"description"] 
+			&& ![[element stringValue] isEqualToString:@""]) {
+			NSString *description = [element stringValue];
+			[dataDictionary setObject:description forKey:@"Description"];
+			continue;
+		}
+		if ([elementName isEqualToString:@"film"]) {
+			for (int j=0; j<[element childCount]; j++) {
+				DDXMLNode *childOfElement = [element childAtIndex:j];
+				if ([[childOfElement name] isEqualToString:@"description"]) {
+					NSString *description = [childOfElement stringValue];
+					[dataDictionary setObject:description forKey:@"Description"];
+				}
+			}
+		}
+	}
 	
 	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
 }
+
 - (void)loadData {
 	NSString *weba = [NSString stringWithFormat:web,[dataDictionary objectForKey:@"Title"]
 					  ,[dataDictionary objectForKey:@"Description"]];
@@ -189,6 +208,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 #pragma mark -
 #pragma mark UIWebView delegate
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
 	
 	UIWebView *webview = (UIWebView*) self.tableView.tableHeaderView;
@@ -208,14 +228,18 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	self.tableView.hidden = NO;
 	self.view.userInteractionEnabled = YES;
 }
+
 #pragma mark -
 #pragma mark Actions
-- (void)postToFacebook:(id)sender {
+
+- (void)postToFacebook:(id)sender
+{
 	postThisButton.enabled = NO;
 	[self session:_session didLogin:facebookID];
 }
-- (IBAction)addAction:(id)sender {
-	
+
+- (IBAction)addAction:(id)sender
+{
 	// get all schedules that has checked items
 	NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
 	
@@ -226,7 +250,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		Schedule *currentCheckedItem = [schedules objectAtIndex:i];
 		if (currentCheckedItem.isSelected) 
 		{
-			
 			BOOL isAlreadyAdded = NO;
 			NSUInteger j, count2 = [mySchedule count];
 			for (j = 0; j < count2; j++) 
@@ -244,28 +267,27 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 				[mySchedule addObject:currentCheckedItem];
 				addedCount++;
 				//NSLog(@"ADDED schedule id: %d",currentCheckedItem.ID);
-				
 			}
 		}
 	}
+	
 	[self.tableView reloadData];
 	
 	UIAlertView *alert;
 	if (addedCount > 0) 
 	{
 		alert = [[UIAlertView alloc] initWithTitle:@"Attention!"
-										   message:[NSString stringWithFormat:@"%@ is added to your schedule.",myData.title]
-										  delegate:nil
-								 cancelButtonTitle:@"OK"
-								 otherButtonTitles:nil];
-	}
-	
+											message:[NSString stringWithFormat:@"%@ is added to your schedule.",myData.title]
+											delegate:nil
+											cancelButtonTitle:@"OK"
+											otherButtonTitles:nil];
+	}	
 	else {
 		alert = [[UIAlertView alloc] initWithTitle:@"Attention!"
-										   message:[NSString stringWithFormat:@"Nothing is added. Please choose a time."]
-										  delegate:nil
-								 cancelButtonTitle:@"OK"
-								 otherButtonTitles:nil];
+											message:[NSString stringWithFormat:@"Nothing is added. Please choose a time."]
+											delegate:nil
+											cancelButtonTitle:@"OK"
+											otherButtonTitles:nil];
 	}
 	
 	[alert show];
@@ -273,10 +295,12 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 #pragma mark -
 #pragma mark UITableView Datasource
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if (displayAddButton) return 3;
     return 0;
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	int result = 1;
 	switch (section) {
@@ -295,6 +319,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	}
 	return result;
 }
+
 - (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
 	NSString *answer;
 	
@@ -312,9 +337,11 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	
     return answer;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	return 50;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *ScheduleCellID		= @"ScheduleCell";
 	static NSString *FacebookIdentifier = @"FBCell";
@@ -452,8 +479,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
     return cell;
 }
+
 #pragma mark -
 #pragma mark UITableView delegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	int section = [indexPath section];
 	int row = [indexPath row];
@@ -477,6 +506,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		
 		[tableView deselectRowAtIndexPath:indexPath animated:NO];
 	}
+	
 	if (section == CALL_N_EMAIL_SECTION) {
 		switch (row) {
 			case 0: {
@@ -504,8 +534,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		}
 	}
 }
+
 #pragma mark -
 #pragma mark UIAlertView Delegate
+
 - (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 1) {
 		//NSLog(@"CALL!");
@@ -516,8 +548,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
     [self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
 }
+
 #pragma mark -
 #pragma mark MFMailComposeViewController Delegate
+
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error; {
 	if (result == MFMailComposeResultSent) {
 		//NSLog(@"It's away!");
@@ -525,8 +559,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	delegate.isPresentingModalView = NO;
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
+
 #pragma mark -
 #pragma mark FBSession Delegate
+
 - (void)session:(FBSession*)session didLogin:(FBUID)uid {
 	delegate.isLoggedInFacebook = YES;
 	facebookID = uid;
@@ -536,8 +572,10 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	NSDictionary* params = [NSDictionary dictionaryWithObject:fql forKey:@"query"];
 	[[FBRequest requestWithDelegate:self] call:@"facebook.fql.query" params:params];
 }
+
 #pragma mark -
 #pragma mark FBRequest Delegate
+
 - (void)request:(FBRequest*)request didLoad:(id)result {
 	postThisButton.enabled = YES;
 	NSString *attachment = [NSString stringWithFormat:@"{\"name\":\"%@\",\"href\":\"http://mobile.cinequest.org/event_view.php?eid=%d\",\"description\":\"Hey, I found an interesting film from Cinequest. Check it out!\"}",myData.title,myData.prog_id];
@@ -547,6 +585,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	dialog.attachment = attachment;
 	[dialog show];
 }
+
 - (void)sessionDidLogout:(FBSession*)session {
 	postThisButton.enabled = NO;
 	delegate.isLoggedInFacebook = NO;

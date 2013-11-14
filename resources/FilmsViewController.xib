@@ -7,9 +7,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FilmsViewController">
             <connections>
-                <outlet property="_tableView" destination="4" id="36"/>
                 <outlet property="activity" destination="24" id="26"/>
                 <outlet property="loadingLabel" destination="23" id="25"/>
+                <outlet property="table" destination="4" id="rM1-Rd-gXV"/>
                 <outlet property="view" destination="11" id="20"/>
             </connections>
         </placeholder>

@@ -7,17 +7,17 @@
 //
 
 #import "ForumsViewController.h"
-#import "LoadDataViewController.h"
 #import "EventDetailViewController.h"
 #import "Schedule.h"
 #import "CinequestAppDelegate.h"
-#import <CoreGraphics/CoreGraphics.h>
-#import <QuartzCore/QuartzCore.h>
 #import "DDXML.h"
+#import "DataProvider.h"
 
 @interface ForumsViewController (Private)
+
 - (void)loadDataFromDatabase;
 - (void)syncTableDataWithScheduler;
+
 @end
 
 @implementation ForumsViewController
@@ -38,8 +38,10 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+
 #pragma mark -
 #pragma mark UIViewController
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
@@ -64,29 +66,25 @@
 		return;
 	}
 	
-	// Create add button 
+	// Add button
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
 																			   style:UIBarButtonItemStyleDone
 																			  target:self
 																			  action:@selector(addEvents:)];
-	
-	// Refine button
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refine"
-																			  style:UIBarButtonItemStylePlain
-																			 target:self
-																			 action:@selector(refine:)];
-	
 	[self reloadData:nil];
 	
 }
+
 - (void)viewWillAppear:(BOOL)animated {
     NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
     [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
 	[self syncTableDataWithScheduler];
 	[self.tableView reloadData];
 }
+
 #pragma mark -
 #pragma mark Private Methods
+
 - (void)syncTableDataWithScheduler {
 	NSUInteger i, count = [mySchedule count];
 	
@@ -137,103 +135,101 @@
 		}
 	}
 }
-- (void)startParsingXML {
-	@autoreleasepool {
-		NSURL *link = [NSURL URLWithString:FORUMS];
-		NSData *xmldata = [NSData dataWithContentsOfURL:link];
-		
-		DDXMLDocument *forumsxmlDoc = [[DDXMLDocument alloc] initWithData:xmldata options:0 error:nil];
-		DDXMLNode *rootElement = [forumsxmlDoc rootElement];
-		
-		int childCount = [rootElement childCount];
-		NSString *previousDay = @"empty";
-		NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-		//NSLog(@"%d",childCount);
-		for (int i = 0; i < childCount; i++) {
-			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
-			NSDictionary *attributes;
-			if ([child respondsToSelector:@selector(attributesAsDictionary)]) {
-				attributes = [child attributesAsDictionary];
-			} else {
-				continue;
-			}
-			
-			NSString *ID		= [attributes objectForKey:@"schedule_id"];
-			NSString *prg_id	= [attributes objectForKey:@"program_item_id"];
-			NSString *type		= [attributes objectForKey:@"type"];
-			NSString *title		= [attributes objectForKey:@"title"];
-			NSString *start		= [attributes objectForKey:@"start_time"];
-			NSString *end		= [attributes objectForKey:@"end_time"];
-			NSString *venue		= [attributes objectForKey:@"venue"];
-			
-			Schedule *forum		= [[Schedule alloc] init];
-			
-			forum.ID			= [ID intValue];
-			forum.prog_id		= [prg_id intValue];
-			
-			forum.type		= type;
-			forum.title		= title;
-			forum.venue		= venue;
-			
-			//Start time
-			NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-			NSDate *date = [dateFormatter dateFromString:start];
-			forum.date = date;
-			[dateFormatter setDateFormat:@"hh:mm a"];
-			forum.timeString = [dateFormatter stringFromDate:date];
-			//Date
-			[dateFormatter setDateFormat:@"EEEE, MMMM d"];
-			NSString *dateString = [dateFormatter stringFromDate:date];
-			forum.dateString = dateString;
-			//End Time
-			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-			date = [dateFormatter dateFromString:end];
-			forum.endDate = date;
-			[dateFormatter setDateFormat:@"hh:mm a"];
-			forum.endTimeString = [dateFormatter stringFromDate:date];
-			
-			if (![previousDay isEqualToString:dateString]) 
-			{
-				[data setObject:tempArray forKey:previousDay];
-				previousDay = [[NSString alloc] initWithString:dateString];
-				[days addObject:previousDay];
-				
-				[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
-				
-				//NSLog(@"%@", [[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]);
-				
-				tempArray = [[NSMutableArray alloc] init];
-				[tempArray addObject:forum];
-			} else {
-				[tempArray addObject:forum];
-			}
-			
-			
-		}
-		[data setObject:tempArray forKey:previousDay];
-		
-		// back up current data
-		backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
-		backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
-		backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES]; 
-		
-		[self.tableView reloadData];
-		self.tableView.hidden = NO;
-		CQIcon.alpha = 0.2;
-		SJSUIcon.alpha = 0.2;
-		loadingLabel.hidden = YES;
-		[activity stopAnimating];
-		self.navigationItem.leftBarButtonItem.enabled = YES;
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-		
-		self.tableView.tableHeaderView = nil; // To enable "Reload button", remove this line and uncomment 3 lines below
-	//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-	//					 atScrollPosition:UITableViewScrollPositionTop
-	//							 animated:NO];
+
+- (void)startParsingXML
+{
+	NSData *xmldata = [[appDelegate dataProvider] forums];
 	
+	DDXMLDocument *forumsxmlDoc = [[DDXMLDocument alloc] initWithData:xmldata options:0 error:nil];
+	DDXMLNode *rootElement = [forumsxmlDoc rootElement];
+	
+	int childCount = [rootElement childCount];
+	NSString *previousDay = @"empty";
+	NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+	//NSLog(@"%d",childCount);
+	for (int i = 0; i < childCount; i++) {
+		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
+		NSDictionary *attributes;
+		if ([child respondsToSelector:@selector(attributesAsDictionary)]) {
+			attributes = [child attributesAsDictionary];
+		} else {
+			continue;
+		}
+		
+		NSString *ID		= [attributes objectForKey:@"schedule_id"];
+		NSString *prg_id	= [attributes objectForKey:@"program_item_id"];
+		NSString *type		= [attributes objectForKey:@"type"];
+		NSString *title		= [attributes objectForKey:@"title"];
+		NSString *start		= [attributes objectForKey:@"start_time"];
+		NSString *end		= [attributes objectForKey:@"end_time"];
+		NSString *venue		= [attributes objectForKey:@"venue"];
+		
+		Schedule *forum		= [[Schedule alloc] init];
+		
+		forum.ID			= [ID intValue];
+		forum.prog_id		= [prg_id intValue];
+		
+		forum.type		= type;
+		forum.title		= title;
+		forum.venue		= venue;
+		
+		//Start time
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+		NSDate *date = [dateFormatter dateFromString:start];
+		forum.date = date;
+		[dateFormatter setDateFormat:@"hh:mm a"];
+		forum.timeString = [dateFormatter stringFromDate:date];
+		//Date
+		[dateFormatter setDateFormat:@"EEEE, MMMM d"];
+		NSString *dateString = [dateFormatter stringFromDate:date];
+		forum.dateString = dateString;
+		//End Time
+		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+		date = [dateFormatter dateFromString:end];
+		forum.endDate = date;
+		[dateFormatter setDateFormat:@"hh:mm a"];
+		forum.endTimeString = [dateFormatter stringFromDate:date];
+		
+		if (![previousDay isEqualToString:dateString]) 
+		{
+			[data setObject:tempArray forKey:previousDay];
+			previousDay = [[NSString alloc] initWithString:dateString];
+			[days addObject:previousDay];
+			
+			[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
+			
+			//NSLog(@"%@", [[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]);
+			
+			tempArray = [[NSMutableArray alloc] init];
+			[tempArray addObject:forum];
+		} else {
+			[tempArray addObject:forum];
+		}
 	}
+	
+	[data setObject:tempArray forKey:previousDay];
+	
+	// back up current data
+	backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
+	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
+	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES]; 
+	
+	[self.tableView reloadData];
+	self.tableView.hidden = NO;
+	CQIcon.alpha = 0.2;
+	SJSUIcon.alpha = 0.2;
+	loadingLabel.hidden = YES;
+	[activity stopAnimating];
+	self.navigationItem.leftBarButtonItem.enabled = YES;
+	self.navigationItem.rightBarButtonItem.enabled = YES;
+	
+	self.tableView.tableHeaderView = nil; // To enable "Reload button", remove this line and uncomment 3 lines below
+//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+//					 atScrollPosition:UITableViewScrollPositionTop
+//							 animated:NO];
 }
+
 - (void)checkBoxButtonTapped:(id)sender event:(id)touchEvent {
 	
 	NSSet *touches = [touchEvent allTouches];
@@ -278,30 +274,27 @@
 			}
 		}
 	}
-	
 }
+
 #pragma mark -
 #pragma mark Actions
-- (IBAction)reloadData:(id)sender {
-	if (self.navigationItem.leftBarButtonItem.style == UIBarButtonItemStyleDone) {
-		self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refine"
-																				  style:UIBarButtonItemStylePlain
-																				 target:self
-																				 action:@selector(refine:)];
-	}
-	
+
+- (IBAction)reloadData:(id)sender
+{
 	[days removeAllObjects];
 	[data removeAllObjects];
 	[index removeAllObjects];
 	
 	self.tableView.hidden = YES;
 	[activity startAnimating];
-	loadingLabel.hidden = NO;
+	// loadingLabel.hidden = NO;
 	self.navigationItem.leftBarButtonItem.enabled = NO;
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	
-	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
+	// [NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
+	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:YES];
 }
+
 - (void)addEvents:(id)sender {
 	int counter = 0;
 	for (int section = 0; section < [days count]; section++) 
@@ -338,13 +331,13 @@
 		[delegate jumpToScheduler];
 	}
 }
+
 - (void)refine:(id)sender {
 	// Back button
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
 																			  style:UIBarButtonItemStyleDone
 																			 target:self
 																			 action:@selector(back:)];
-	
 	// Remove rows
 	NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
 	NSMutableArray *itemsBeingDeleted = [[NSMutableArray alloc] init];
@@ -407,13 +400,9 @@
 	// reload data
 	[self.tableView reloadData];
 }
-- (void)back:(id)sender {
-	// Refine button
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refine"
-																			  style:UIBarButtonItemStylePlain
-																			 target:self
-																			 action:@selector(refine:)];
-	
+
+- (void)back:(id)sender
+{
 	// reload data
 	[days removeAllObjects];
 	[index removeAllObjects];
@@ -445,11 +434,14 @@
 	[self.tableView reloadData];
 	
 }
+
 #pragma mark -
 #pragma mark UITableView Datasource
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [days count];
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	
 	NSString *day = [days objectAtIndex:section];
@@ -457,6 +449,7 @@
 	
     return [forums count];
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Cell";
@@ -533,12 +526,12 @@
 	titleLabel.textColor = textColor;
 	
 	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-	timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",event.timeString,event.endTimeString];
+	timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@", event.timeString, event.endTimeString];
 	timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 	timeLabel.textColor = textColor;
 	
 	venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
-	venueLabel.text = [NSString stringWithFormat:@"Venue: %@",event.venue];
+	venueLabel.text = [NSString stringWithFormat:@"Venue: %@", event.venue];
 	venueLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 	venueLabel.textColor = textColor;
 	
@@ -553,15 +546,19 @@
 	
     return tempCell;
 }
+
 - (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
 	NSString *day = [days objectAtIndex:section];
 	return day;
 }
+
 - (NSArray*)sectionIndexTitlesForTableView:(UITableView*)tableView {
 	return index;
 }
+
 #pragma mark -
 #pragma mark UITableView Delegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 	
@@ -573,15 +570,12 @@
 	NSMutableArray *forums = [data objectForKey:date];
 	
 	Schedule *forum = [forums objectAtIndex:row];
-	
-	NSString *link = [NSString stringWithFormat:@"%@%d",DETAILFORITEM, forum.prog_id];
-	
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:forum.title
-																				andDataObject:forum
-																					   andURL:[NSURL URLWithString:link]];
-	eventDetail.displayAddButton = YES;
 
-	app.networkActivityIndicatorVisible = YES;
+	NSString *eventId = [NSString stringWithFormat:@"%d", forum.prog_id];
+	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:forum.title
+																						andDataObject:forum
+																						andId:eventId];
+	eventDetail.displayAddButton = YES;
 	
 	[self.navigationController pushViewController:eventDetail animated:YES];
 	

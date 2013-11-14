@@ -88,7 +88,7 @@
 
 - (void) parseShows
 {
-	NSData *htmldata = [[appDelegate dataProvider] getXMLFeed];
+	NSData *htmldata = [[appDelegate dataProvider] xmlFeed];
 	
 	NSString* myString = [[NSString alloc] initWithData:htmldata encoding:NSUTF8StringEncoding];
 	myString = [myString stringByReplacingOccurrencesOfString:@"\n" withString:@""];

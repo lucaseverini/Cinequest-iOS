@@ -16,7 +16,8 @@
 @synthesize shortDescription;
 @synthesize venue;
 
-- (id)init {
+- (id)init
+{
     venue = [[Venue alloc] init];
     return self;
 }

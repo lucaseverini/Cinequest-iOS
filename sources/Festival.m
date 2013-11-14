@@ -18,7 +18,8 @@
 @synthesize lastChanged;
 @synthesize events;
 
-- (id)init {
+- (id)init
+{
     programItems = [[NSMutableArray alloc] init];
     films = [[NSMutableArray alloc] init];
     schedules = [[NSMutableArray alloc] init];
@@ -59,6 +60,5 @@
     }
     return nil;
 }
-
 
 @end

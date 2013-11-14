@@ -19,10 +19,10 @@
 @synthesize ID;
 @synthesize prog_id;
 @synthesize dateString;
+@synthesize longDateString;
 @synthesize timeString;
 @synthesize isSelected;
 @synthesize fontColor;
 @synthesize endTimeString;
-
 
 @end

@@ -14,5 +14,4 @@
 @synthesize name;
 @synthesize address;
 
-
 @end

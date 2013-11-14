@@ -6,19 +6,11 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "NewSchedule.h"
 #import "Film.h"
 #import "ProgramItem.h"
 
-@interface Festival : NSObject {
-    NSMutableArray *programItems;
-    NSMutableArray *films;
-    NSMutableArray *schedules;
-    NSMutableArray *venueLocations;
-    NSString *lastChanged;
-    NSMutableArray *events;
-}
+@interface Festival : NSObject
 
 @property (strong, nonatomic) NSMutableArray *programItems;
 @property (strong, nonatomic) NSMutableArray *films;

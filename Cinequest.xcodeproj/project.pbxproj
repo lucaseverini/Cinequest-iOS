@@ -16,15 +16,11 @@
 		81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5517EBAEED008D2C2C /* DDXMLElement.m */; };
 		81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5717EBAEED008D2C2C /* DDXMLElementAdditions.m */; };
 		81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5917EBAEED008D2C2C /* DDXMLNode.m */; };
-		81745A7A17EBAEED008D2C2C /* DVD.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5C17EBAEED008D2C2C /* DVD.m */; };
-		81745A7B17EBAEED008D2C2C /* DVDsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A5E17EBAEED008D2C2C /* DVDsViewController.m */; };
 		81745A7C17EBAEED008D2C2C /* EventDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6017EBAEED008D2C2C /* EventDetailViewController.m */; };
 		81745A7D17EBAEED008D2C2C /* EventsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6217EBAEED008D2C2C /* EventsViewController.m */; };
 		81745A7E17EBAEED008D2C2C /* FilmDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6417EBAEED008D2C2C /* FilmDetail.m */; };
 		81745A7F17EBAEED008D2C2C /* FilmsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6617EBAEED008D2C2C /* FilmsViewController.m */; };
 		81745A8017EBAEED008D2C2C /* ForumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6817EBAEED008D2C2C /* ForumsViewController.m */; };
-		81745A8117EBAEED008D2C2C /* LoadDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6A17EBAEED008D2C2C /* LoadDataViewController.m */; };
-		81745A8217EBAEED008D2C2C /* LogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6C17EBAEED008D2C2C /* LogInViewController.m */; };
 		81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */; };
 		81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7017EBAEED008D2C2C /* NewsViewController.m */; };
 		81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7217EBAEED008D2C2C /* NSStringAdditions.m */; };
@@ -43,7 +39,6 @@
 		81C8B38217EBAB3200033D4F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38117EBAB3200033D4F /* UIKit.framework */; };
 		81C8B38417EBAB3200033D4F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38317EBAB3200033D4F /* Foundation.framework */; };
 		81C8B38617EBAB3200033D4F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38517EBAB3200033D4F /* CoreGraphics.framework */; };
-		81C8B3AC17EBABEE00033D4F /* DVDsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A117EBABEE00033D4F /* DVDsViewController.xib */; };
 		81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A917EBABEE00033D4F /* MainWindow.xib */; };
 		81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */; };
 		81C8B3CE17EBAC2C00033D4F /* checkbox-checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */; };
@@ -55,7 +50,7 @@
 		81C8B3D417EBAC2C00033D4F /* Default-retina.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C017EBAC2C00033D4F /* Default-retina.png */; };
 		81C8B3D517EBAC2C00033D4F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C117EBAC2C00033D4F /* Default.png */; };
 		81C8B3D617EBAC2C00033D4F /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C217EBAC2C00033D4F /* Default@2x.png */; };
-		81C8B3D717EBAC2C00033D4F /* dvd_icon_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C317EBAC2C00033D4F /* dvd_icon_small.png */; };
+		81C8B3D717EBAC2C00033D4F /* News.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C317EBAC2C00033D4F /* News.png */; };
 		81C8B3D817EBAC2C00033D4F /* events_icon_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C417EBAC2C00033D4F /* events_icon_small.png */; };
 		81C8B3D917EBAC2C00033D4F /* film_icon2.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C517EBAC2C00033D4F /* film_icon2.png */; };
 		81C8B3DA17EBAC2C00033D4F /* iphone_icon_114_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C617EBAC2C00033D4F /* iphone_icon_114_114.png */; };
@@ -79,6 +74,7 @@
 		81C8B40317EBAC6100033D4F /* FBXMLHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C8B3F817EBAC6100033D4F /* FBXMLHandler.m */; };
 		81D1EC3B182B892B003DD8BB /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D1EC39182B892B003DD8BB /* MainViewController.m */; };
 		81D1EC3E182B8990003DD8BB /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81D1EC3D182B8990003DD8BB /* MainViewController.xib */; };
+		81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC251829773C005A6897 /* FestivalParser.m */; };
 		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
 		93E4E09F182BAFE900515A84 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E4E09E182BAFE900515A84 /* EventKit.framework */; };
 		93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A0182BB1A200515A84 /* cal_selected.png */; };
@@ -97,7 +93,6 @@
 		C2D6DC211829771E005A6897 /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1C1829771E005A6897 /* Show.m */; };
 		C2D6DC221829771E005A6897 /* Showing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1E1829771E005A6897 /* Showing.m */; };
 		C2D6DC231829771E005A6897 /* Venue.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC201829771E005A6897 /* Venue.m */; };
-		C2D6DC261829773C005A6897 /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC251829773C005A6897 /* FestivalParser.m */; };
 		C2D6DC291829B8BF005A6897 /* Film.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC281829B8BF005A6897 /* Film.m */; };
 		C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC2B1829E0F7005A6897 /* CinequestItem.m */; };
 		C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC2E1829E1CE005A6897 /* ProgramItem.m */; };
@@ -187,7 +182,7 @@
 		81C8B3C017EBAC2C00033D4F /* Default-retina.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-retina.png"; path = "images/Default-retina.png"; sourceTree = SOURCE_ROOT; };
 		81C8B3C117EBAC2C00033D4F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = images/Default.png; sourceTree = SOURCE_ROOT; };
 		81C8B3C217EBAC2C00033D4F /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "images/Default@2x.png"; sourceTree = SOURCE_ROOT; };
-		81C8B3C317EBAC2C00033D4F /* dvd_icon_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dvd_icon_small.png; path = images/dvd_icon_small.png; sourceTree = SOURCE_ROOT; };
+		81C8B3C317EBAC2C00033D4F /* News.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = News.png; path = images/News.png; sourceTree = SOURCE_ROOT; };
 		81C8B3C417EBAC2C00033D4F /* events_icon_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = events_icon_small.png; path = images/events_icon_small.png; sourceTree = SOURCE_ROOT; };
 		81C8B3C517EBAC2C00033D4F /* film_icon2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = film_icon2.png; path = images/film_icon2.png; sourceTree = SOURCE_ROOT; };
 		81C8B3C617EBAC2C00033D4F /* iphone_icon_114_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_icon_114_114.png; path = images/iphone_icon_114_114.png; sourceTree = SOURCE_ROOT; };
@@ -320,6 +315,23 @@
 			path = Cinequest;
 			sourceTree = "<group>";
 		};
+		8199E788182F623F001BCC36 /* Unused */ = {
+			isa = PBXGroup;
+			children = (
+				81745A6B17EBAEED008D2C2C /* LogInViewController.h */,
+				81745A6C17EBAEED008D2C2C /* LogInViewController.m */,
+				81745A5B17EBAEED008D2C2C /* DVD.h */,
+				81745A5C17EBAEED008D2C2C /* DVD.m */,
+				81745A5D17EBAEED008D2C2C /* DVDsViewController.h */,
+				81745A5E17EBAEED008D2C2C /* DVDsViewController.m */,
+				81C8B3A117EBABEE00033D4F /* DVDsViewController.xib */,
+				81745A6917EBAEED008D2C2C /* LoadDataViewController.h */,
+				81745A6A17EBAEED008D2C2C /* LoadDataViewController.m */,
+			);
+			name = Unused;
+			path = Cinequest;
+			sourceTree = "<group>";
+		};
 		81C52B82182B62D200D2F55D /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,6 +350,7 @@
 				81C8B3B917EBAC1600033D4F /* Images */,
 				81C8B3A017EBABAA00033D4F /* Resources */,
 				81745A8717EBAFAE008D2C2C /* Supporting Files */,
+				8199E788182F623F001BCC36 /* Unused */,
 				8149DFC117EBB3280092F8F9 /* Libraries */,
 				C271393B1828E8C900BF8DCB /* List of Shows Tests */,
 				81C8B38017EBAB3200033D4F /* Frameworks */,
@@ -374,7 +387,7 @@
 			isa = PBXGroup;
 			children = (
 				81D1EC3D182B8990003DD8BB /* MainViewController.xib */,
-				81C8B3A117EBABEE00033D4F /* DVDsViewController.xib */,
+				81C8B3A917EBABEE00033D4F /* MainWindow.xib */,
 				81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */,
 				81C8B3A317EBABEE00033D4F /* EventsViewController.xib */,
 				81C8B3A417EBABEE00033D4F /* FilmDetail.xib */,
@@ -382,7 +395,6 @@
 				81C8B3A617EBABEE00033D4F /* ForumsViewController.xib */,
 				81C8B3A717EBABEE00033D4F /* LoadDataViewController.xib */,
 				81C8B3A817EBABEE00033D4F /* LogInViewController.xib */,
-				81C8B3A917EBABEE00033D4F /* MainWindow.xib */,
 				81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */,
 				81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */,
 			);
@@ -393,6 +405,7 @@
 		81C8B3B917EBAC1600033D4F /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				81C8B3C317EBAC2C00033D4F /* News.png */,
 				93E4E0A0182BB1A200515A84 /* cal_selected.png */,
 				93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */,
 				93E4E0A2182BB1A200515A84 /* cal_unselected.png */,
@@ -406,7 +419,6 @@
 				81C8B3C017EBAC2C00033D4F /* Default-retina.png */,
 				81C8B3C117EBAC2C00033D4F /* Default.png */,
 				81C8B3C217EBAC2C00033D4F /* Default@2x.png */,
-				81C8B3C317EBAC2C00033D4F /* dvd_icon_small.png */,
 				81C8B3C417EBAC2C00033D4F /* events_icon_small.png */,
 				81C8B3C517EBAC2C00033D4F /* film_icon2.png */,
 				81C8B3C617EBAC2C00033D4F /* iphone_icon_114_114.png */,
@@ -464,24 +476,16 @@
 				81C52B82182B62D200D2F55D /* Reachability */,
 				81D1EC38182B892B003DD8BB /* MainViewController.h */,
 				81D1EC39182B892B003DD8BB /* MainViewController.m */,
-				81745A5B17EBAEED008D2C2C /* DVD.h */,
-				81745A5C17EBAEED008D2C2C /* DVD.m */,
-				81745A5D17EBAEED008D2C2C /* DVDsViewController.h */,
-				81745A5E17EBAEED008D2C2C /* DVDsViewController.m */,
-				81745A5F17EBAEED008D2C2C /* EventDetailViewController.h */,
-				81745A6017EBAEED008D2C2C /* EventDetailViewController.m */,
 				81745A6117EBAEED008D2C2C /* EventsViewController.h */,
 				81745A6217EBAEED008D2C2C /* EventsViewController.m */,
+				81745A5F17EBAEED008D2C2C /* EventDetailViewController.h */,
+				81745A6017EBAEED008D2C2C /* EventDetailViewController.m */,
 				81745A6317EBAEED008D2C2C /* FilmDetail.h */,
 				81745A6417EBAEED008D2C2C /* FilmDetail.m */,
 				81745A6517EBAEED008D2C2C /* FilmsViewController.h */,
 				81745A6617EBAEED008D2C2C /* FilmsViewController.m */,
 				81745A6717EBAEED008D2C2C /* ForumsViewController.h */,
 				81745A6817EBAEED008D2C2C /* ForumsViewController.m */,
-				81745A6917EBAEED008D2C2C /* LoadDataViewController.h */,
-				81745A6A17EBAEED008D2C2C /* LoadDataViewController.m */,
-				81745A6B17EBAEED008D2C2C /* LogInViewController.h */,
-				81745A6C17EBAEED008D2C2C /* LogInViewController.m */,
 				81745A6D17EBAEED008D2C2C /* MySchedulerViewController.h */,
 				81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */,
 				81745A6F17EBAEED008D2C2C /* NewsViewController.h */,
@@ -634,7 +638,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81C8B3AC17EBABEE00033D4F /* DVDsViewController.xib in Resources */,
 				81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */,
 				81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */,
 				81C8B3CE17EBAC2C00033D4F /* checkbox-checked.png in Resources */,
@@ -647,7 +650,7 @@
 				81C8B3D417EBAC2C00033D4F /* Default-retina.png in Resources */,
 				81C8B3D517EBAC2C00033D4F /* Default.png in Resources */,
 				81C8B3D617EBAC2C00033D4F /* Default@2x.png in Resources */,
-				81C8B3D717EBAC2C00033D4F /* dvd_icon_small.png in Resources */,
+				81C8B3D717EBAC2C00033D4F /* News.png in Resources */,
 				81C8B3D817EBAC2C00033D4F /* events_icon_small.png in Resources */,
 				81C8B3D917EBAC2C00033D4F /* film_icon2.png in Resources */,
 				81C8B3DA17EBAC2C00033D4F /* iphone_icon_114_114.png in Resources */,
@@ -693,7 +696,6 @@
 				C2D6DC1A182975E5005A6897 /* Festival.m in Sources */,
 				81C8B3FA17EBAC6100033D4F /* FBConnectGlobal.m in Sources */,
 				81C8B3FB17EBAC6100033D4F /* FBDialog.m in Sources */,
-				C2D6DC261829773C005A6897 /* FestivalParser.m in Sources */,
 				81C8B3FC17EBAC6100033D4F /* FBFeedDialog.m in Sources */,
 				81C8B3FD17EBAC6100033D4F /* FBLoginButton.m in Sources */,
 				C27BC6DB182A3734006F7D25 /* NewSchedule.m in Sources */,
@@ -710,8 +712,6 @@
 				81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */,
 				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
 				C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */,
-				81745A7A17EBAEED008D2C2C /* DVD.m in Sources */,
-				81745A7B17EBAEED008D2C2C /* DVDsViewController.m in Sources */,
 				C2D6DC291829B8BF005A6897 /* Film.m in Sources */,
 				81745A7C17EBAEED008D2C2C /* EventDetailViewController.m in Sources */,
 				81D1EC3B182B892B003DD8BB /* MainViewController.m in Sources */,
@@ -719,9 +719,7 @@
 				81745A7E17EBAEED008D2C2C /* FilmDetail.m in Sources */,
 				81745A7F17EBAEED008D2C2C /* FilmsViewController.m in Sources */,
 				81745A8017EBAEED008D2C2C /* ForumsViewController.m in Sources */,
-				81745A8117EBAEED008D2C2C /* LoadDataViewController.m in Sources */,
 				C2D6DC231829771E005A6897 /* Venue.m in Sources */,
-				81745A8217EBAEED008D2C2C /* LogInViewController.m in Sources */,
 				81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */,
 				81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */,
 				81C52B85182B62F000D2F55D /* Reachability.m in Sources */,
@@ -729,6 +727,7 @@
 				81745A8617EBAEED008D2C2C /* Schedule.m in Sources */,
 				81FBC133182DA37900C01783 /* DataProvider.m in Sources */,
 				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
+				81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */,
 				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,
 				C2D6DC221829771E005A6897 /* Showing.m in Sources */,
 			);

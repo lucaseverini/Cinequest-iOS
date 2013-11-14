@@ -10,9 +10,7 @@
 #import "CineQuestAppDelegate.h"
 #import "NewsViewController.h"
 #import "DDXML.h"
-
-#include <netinet/in.h>
-
+#import "DataProvider.h"
 
 #pragma mark -
 
@@ -24,7 +22,6 @@
 - (void)loadFORUMS;
 - (void)loadEVENTS;
 - (void)loadNEWS;
-
 
 - (void)setOffSeason;
 
@@ -48,8 +45,10 @@
 #pragma mark -
 #pragma mark UIViewController 
 
-- (void)viewDidLoad {
+- (void) viewDidLoad
+{
     [super viewDidLoad];
+	
 	[activity startAnimating];	
 		
 	//Open Database
@@ -58,7 +57,6 @@
 	NSString *dataFile = [documentsDirectory stringByAppendingPathComponent:@"database.sql"];
 	
 	int result = sqlite3_open([dataFile UTF8String], &database);
-	
 	
 	if(result == SQLITE_OK)
 	{
@@ -120,71 +118,67 @@
 #pragma mark -
 #pragma mark Private Methods
 
-- (BOOL)checkNetWorkAndLoadData {
-	@autoreleasepool {
-        
-        statusLabel.text = @"Loading...";
-        
-        if ([appDelegate connectedToNetwork]) {
-            NSLog(@"Checking connectivity... COMPLETE!");
-            
-            [self setOffSeason];
-            NSLog(@"Is OffSeason? %d",offSeason);
-            
-            NSLog(@"Loading... new data....");
-            
-            if (!offSeason)
-            {
-                // Load online data to database
-                
-                // NSString *NEWS = @"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=home&iphone";
-                
-                // FILMSBYTIME = @"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone";
-                [self loadFILMSBYTIME];
-                
-                // Films by Title: http://mobile.cinequest.org/mobileCQ.php?type=films&iphone
-                [self loadFILMSBYTITLE];
-                
-                // Events: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ievents&iphone
-                [self loadEVENTS];
-                
-                // Forums: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=iforums&iphone
-                [self loadFORUMS];
-                
-                // DVD List: http://mobile.cinequest.org/mobileCQ.php?type=dvds&distribution=none&iphone
-                [self loadDVDs];
-                
-                [self loadNEWS];
-                // DVD New Release: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&release
-                // DVD Pick Of The Week: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&pick
-                //
-                //
-                // Detail for Film Id: http://mobile.cinequest.org/mobileCQ.php?type=film&iphone&id=
-                // Detail for DVD Id: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&id=
-                //
-                // Detail for Program Item: http://mobile.cinequest.org/mobileCQ.php?type=program_item&iphone&id=
-                // Detail for Item: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id=
-                
-                // Done Loading Data... return.
-                [activity stopAnimating];
-                NSLog(@"Done.");
-                statusLabel.text = @"Done.";
-            }
-            
-            
-        }
-        else 
-        {
-            // alert
-        }
-        sqlite3_close(database);
-        
-    }
+- (BOOL) checkNetWorkAndLoadData
+{
+	if ([appDelegate connectedToNetwork])
+	{
+		[self setOffSeason];
+		NSLog(@"Is OffSeason? %d",offSeason);
+		
+		NSLog(@"Loading... new data....");
+		
+		if (!offSeason)
+		{
+			// Load online data to database
+			
+			// NSString *NEWS = @"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=home&iphone";
+			
+			// FILMSBYTIME = @"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone";
+			[self loadFILMSBYTIME];
+			
+			// Films by Title: http://mobile.cinequest.org/mobileCQ.php?type=films&iphone
+			[self loadFILMSBYTITLE];
+			
+			// Events: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ievents&iphone
+			[self loadEVENTS];
+			
+			// Forums: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=iforums&iphone
+			[self loadFORUMS];
+			
+			// DVD List: http://mobile.cinequest.org/mobileCQ.php?type=dvds&distribution=none&iphone
+			[self loadDVDs];
+			
+			[self loadNEWS];
+			// DVD New Release: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&release
+			// DVD Pick Of The Week: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&pick
+			//
+			//
+			// Detail for Film Id: http://mobile.cinequest.org/mobileCQ.php?type=film&iphone&id=
+			// Detail for DVD Id: http://mobile.cinequest.org/mobileCQ.php?type=dvd&iphone&id=
+			//
+			// Detail for Program Item: http://mobile.cinequest.org/mobileCQ.php?type=program_item&iphone&id=
+			// Detail for Item: http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id=
+			
+			// Done Loading Data... return.
+			[activity stopAnimating];
+			NSLog(@"Done.");
+			statusLabel.text = @"Done.";
+		}
+	}
+	else 
+	{
+		// alert
+	}
+	sqlite3_close(database);
+
 	//CinequestAppDelegate *delegate = appDelegate;
 	//[delegate loadTabBarController];
+	
 	return YES;
 }
-- (void)loadEVENTS {
+
+- (void)loadEVENTS
+{
 	NSURL *link = [NSURL URLWithString:EVENTS];
 	NSData *data = [NSData dataWithContentsOfURL:link];
 	
@@ -233,7 +227,9 @@
 		
 	}
 }
-- (void)loadFORUMS {
+
+- (void)loadFORUMS
+{
 	NSURL *link = [NSURL URLWithString:FORUMS];
 	NSData *data = [NSData dataWithContentsOfURL:link];
 	
@@ -281,7 +277,9 @@
 		
 	}
 }
-- (void)loadDVDs {
+
+- (void)loadDVDs
+{
 	NSURL *link = [NSURL URLWithString:DVDs];
 	NSData *data = [NSData dataWithContentsOfURL:link];
 	
@@ -328,7 +326,9 @@
 		
 	}
 }
-- (void)loadFILMSBYTITLE {
+
+- (void)loadFILMSBYTITLE
+{
 	NSURL *link = [NSURL URLWithString:FILMSBYTITLE];
 	NSData *data = [NSData dataWithContentsOfURL:link];
 	
@@ -376,7 +376,9 @@
 	}
 	
 }
-- (void)loadFILMSBYTIME {
+
+- (void)loadFILMSBYTIME
+{
 	NSURL *link = [NSURL URLWithString:FILMSBYTIME];
 	NSData *data = [NSData dataWithContentsOfURL:link];
 	
@@ -423,15 +425,15 @@
 		
 	}
 }
-- (void)loadNEWS {
-	NSURL *link = [NSURL URLWithString:NEWS];
-	NSData *data = [NSData dataWithContentsOfURL:link];
+
+- (void)loadNEWS
+{
+	NSData *data = [[appDelegate dataProvider] news];
 	
 	DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:data options:0 error:nil];
 	DDXMLElement *rootElement = [xmlDoc rootElement];
 	
-	NSLog(@"Loading news...");
-	
+	NSLog(@"Loading news...");	
 	
 	NSString *delete = @"DELETE FROM News;";
 	char *error;
@@ -498,7 +500,8 @@
 	
 }
 
-- (void)setOffSeason {
+- (void)setOffSeason
+{
 	NSURL *url = [NSURL URLWithString:MODE];
 	
 	NSXMLParser *parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
@@ -514,14 +517,17 @@
 #pragma mark -
 #pragma mark ActionSheet delegate
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
 	switch (buttonIndex) {
 		case 0:
 			NSLog(@"0");
 			break;
+			
 		case 1:
 			NSLog(@"1");
 			break;
+			
 		default:
 			break;
 	}

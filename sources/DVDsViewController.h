@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "CinequestAppDelegate.h"
 
-
 @interface DVDsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 {
 	

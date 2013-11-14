@@ -13,7 +13,8 @@
 
 @synthesize films;
 
-- (id)init {
+- (id)init
+{
     films = [[NSMutableArray alloc] init];
     return self;
 }
@@ -22,8 +23,10 @@
 {
     NSString *url = [super imageURL];
     if (url != nil) return url;
-    if ([films count] > 0) {
-        for (int i = 0; i < [films count]; i++) {
+    if ([films count] > 0)
+	{
+        for (int i = 0; i < [films count]; i++)
+		{
             Film *film = (Film *) [films objectAtIndex:i];
             url = [film imageURL];
             if (url != nil) return url;

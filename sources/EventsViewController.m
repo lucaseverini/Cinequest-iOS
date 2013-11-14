@@ -8,24 +8,21 @@
 
 #import "EventsViewController.h"
 #import "EventDetailViewController.h"
-
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
-
 #import "NewsViewController.h"
-#import "LoadDataViewController.h"
 #import "DDXML.h"
-#import <CoreGraphics/CoreGraphics.h>
-#import <QuartzCore/QuartzCore.h>
+#import "DataProvider.h"
 
 @interface EventsViewController (Private)
+
 - (void)loadDataFromDatabase;
 - (void)syncTableDataWithScheduler;
+
 @end
 
 @implementation EventsViewController
-#pragma mark -
-#pragma mark Memory Management
+
 @synthesize data;
 @synthesize days;
 @synthesize tableView = _tableView;
@@ -39,8 +36,10 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+
 #pragma mark -
 #pragma mark UIViewController Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
@@ -65,63 +64,61 @@
 		return;
 	}
 	
-	// Create add button 
+	// Add button
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
-																			   style:UIBarButtonItemStyleDone
-																			  target:self
-																			  action:@selector(addEvents:)];
-	
-	// Refine button
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refine"
-																			  style:UIBarButtonItemStylePlain
-																			 target:self
-																			 action:@selector(refine:)];
-	
+																				style:UIBarButtonItemStyleDone
+																				target:self
+																				action:@selector(addEvents:)];
 	[self reloadData:nil];
 }
+
 - (void)viewWillAppear:(BOOL)animated {
     NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
     [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
 }
+
 #pragma mark -
 #pragma mark Actions
+
 - (IBAction)reloadData:(id)sender {
 	self.tableView.hidden = YES;
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	self.navigationItem.leftBarButtonItem.enabled = NO;
 	[activity startAnimating];
-	loadingLabel.hidden = NO;
+	// loadingLabel.hidden = NO;
 	
-	@autoreleasepool {
-		[data removeAllObjects];
-		[days removeAllObjects];
-		[index removeAllObjects];
-		//[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:YES];
-		[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
-	}
-	//[pool release];
+	[data removeAllObjects];
+	[days removeAllObjects];
+	[index removeAllObjects];
+	
+	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:YES];
+	// [NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
 }
-- (void)addEvents:(id)sender {
+
+- (void)addEvents:(id)sender
+{
 	int counter = 0;
 	for (int section = 0; section < [days count]; section++) 
 	{
 		NSString *day = [days objectAtIndex:section];
 		NSMutableArray *rows = [data objectForKey:day];
-		for (int row = 0; row < [rows count];row++ ) {
+		for (int row = 0; row < [rows count];row++ )
+		{
 			Schedule *item = [rows objectAtIndex:row];
-			if (item.isSelected) 
+			if(item.isSelected)
 			{
-				//NSLog(@"%@",item.title);
+				// NSLog(@"%@",item.title);
 				Schedule *schedule = item;
 				
 				BOOL isAlreadyAdded = NO;
-				for (int i=0; i < [mySchedule count]; i++) {
+				for(int i=0; i < [mySchedule count]; i++) {
 					Schedule *obj = [mySchedule objectAtIndex:i];
-					if (obj.ID == schedule.ID) {
+					if (obj.ID == schedule.ID)
+					{
 						isAlreadyAdded = YES;
-						//NSLog(@"%@ ID: %d",schedule.title,schedule.ID);
+						// NSLog(@"%@ ID: %d",schedule.title,schedule.ID);
 						break;
 					}
 				}
@@ -130,23 +127,25 @@
 					[mySchedule addObject:schedule];
 					counter++;
 				}
-				//[schedule release];
 			}
 		}
 	}
-	[self syncTableDataWithScheduler];
-	[_tableView reloadData];
-	if (counter != 0) {
+		
+	if (counter != 0)
+	{
+		[self syncTableDataWithScheduler];
+		[self.tableView reloadData];
+
 		[delegate jumpToScheduler];
 	}
 }
+
 - (void)refine:(id)sender {
 	// Back button
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
 																			  style:UIBarButtonItemStyleDone
 																			 target:self
 																			 action:@selector(back:)];
-	
 	// Remove rows
 	NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
 	NSMutableArray *itemsBeingDeleted = [[NSMutableArray alloc] init];
@@ -209,13 +208,9 @@
 	// reload data
 	[self.tableView reloadData];
 }
-- (void)back:(id)sender {
-	// Refine button
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refine"
-																			  style:UIBarButtonItemStylePlain
-																			 target:self
-																			 action:@selector(refine:)];
-	
+
+- (void)back:(id)sender
+{
 	// reload data
 	[days removeAllObjects];
 	[index removeAllObjects];
@@ -245,111 +240,117 @@
 	
 	// reload table data
 	[self.tableView reloadData];
-	
 }
+
 #pragma mark -
 #pragma mark Private Methods
-- (void)startParsingXML {
-	@autoreleasepool {
+
+- (void) startParsingXML
+{
+	NSData *xmlDocData = [[appDelegate dataProvider] events];
 	
-		NSURL *link = [[NSURL alloc] initWithString:EVENTS];
-		
-		NSData *xmlDocData = [NSData dataWithContentsOfURL:link];
-		DDXMLDocument *eventXMLDoc = [[DDXMLDocument alloc] initWithData:xmlDocData
-																 options:0
-																   error:nil];
-		DDXMLNode *rootElement = [eventXMLDoc rootElement];
-		if ([rootElement childCount] == 2) {
-			rootElement = [rootElement childAtIndex:1];
-		} else {
-			rootElement = [rootElement childAtIndex:3];
-		}
-		
-		NSString *previousDay = @"empty";
-		NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-		//NSLog(@"Child count: %d",[rootElement childCount]);
-		for (int i = 0; i < [rootElement childCount]; i++) {
-			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
-			NSDictionary *attributes;
-			if ([child respondsToSelector:@selector(attributesAsDictionary)]) {
-				attributes = [child attributesAsDictionary];
-			} else {
-				continue;
-			}
-			
-			NSString *ID		= [attributes objectForKey:@"schedule_id"];
-			NSString *prg_id	= [attributes objectForKey:@"program_item_id"];
-			NSString *type		= [attributes objectForKey:@"type"];
-			NSString *title		= [attributes objectForKey:@"title"];
-			NSString *start		= [attributes objectForKey:@"start_time"];
-			NSString *end		= [attributes objectForKey:@"end_time"];
-			NSString *venue		= [attributes objectForKey:@"venue"];
-					
-			Schedule *event	= [[Schedule alloc] init];
-			
-			event.ID		= [ID intValue];
-			event.prog_id	= [prg_id intValue];
-			event.type		= type;
-			event.title		= title;
-			event.venue		= venue;
-			
-			//Start Time
-			NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [dateFormatter setLocale:usLocale];
-			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-			NSDate *date = [dateFormatter dateFromString:start];
-			event.date = date;
-			[dateFormatter setDateFormat:@"hh:mm a"];
-			event.timeString = [dateFormatter stringFromDate:date];
-			//Date
-			[dateFormatter setDateFormat:@"EEEE, MMMM d"];
-			NSString *dateString = [dateFormatter stringFromDate:date];
-			event.dateString = dateString;
-			//End Time
-			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-			date = [dateFormatter dateFromString:end];
-			event.endDate = date;
-			[dateFormatter setDateFormat:@"hh:mm a"];
-			event.endTimeString = [dateFormatter stringFromDate:date];
-			if (![previousDay isEqualToString:dateString]) 
-			{
-				[data setObject:tempArray forKey:previousDay];
-				previousDay = [[NSString alloc] initWithString:dateString];
-				[days addObject:previousDay];
-				
-				[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
-				
-				tempArray = [[NSMutableArray alloc] init];
-				[tempArray addObject:event];
-			} else {
-				[tempArray addObject:event];
-			}
-			
-			
-		}
-		[data setObject:tempArray forKey:previousDay];
-		
-		// back up current data
-		backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
-		backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
-		backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
-		
-		[activity stopAnimating];
-		loadingLabel.hidden = YES;
-		CQIcon.alpha = 0.2;
-		SJSUIcon.alpha = 0.2;
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-		self.navigationItem.leftBarButtonItem.enabled = YES;
-		[self.tableView reloadData];
-		self.tableView.hidden = NO;
-		//Disable "Reload" button
-		self.tableView.tableHeaderView = nil;
-	//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-	//					 atScrollPosition:UITableViewScrollPositionTop
-	//							 animated:NO];
+	DDXMLDocument *eventXMLDoc = [[DDXMLDocument alloc] initWithData:xmlDocData options:0 error:nil];
+	DDXMLNode *rootElement = [eventXMLDoc rootElement];
+	if ([rootElement childCount] == 2)
+	{
+		rootElement = [rootElement childAtIndex:1];
 	}
+	else
+	{
+		rootElement = [rootElement childAtIndex:3];
+	}
+	
+	NSString *previousDay = @"empty";
+	NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+	//NSLog(@"Child count: %d",[rootElement childCount]);
+	for (int i = 0; i < [rootElement childCount]; i++)
+	{
+		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
+		NSDictionary *attributes;
+		if ([child respondsToSelector:@selector(attributesAsDictionary)])
+		{
+			attributes = [child attributesAsDictionary];
+		}
+		else
+		{
+			continue;
+		}
+		
+		NSString *ID		= [attributes objectForKey:@"schedule_id"];
+		NSString *prg_id	= [attributes objectForKey:@"program_item_id"];
+		NSString *type		= [attributes objectForKey:@"type"];
+		NSString *title		= [attributes objectForKey:@"title"];
+		NSString *start		= [attributes objectForKey:@"start_time"];
+		NSString *end		= [attributes objectForKey:@"end_time"];
+		NSString *venue		= [attributes objectForKey:@"venue"];
+				
+		Schedule *event	= [[Schedule alloc] init];
+		
+		event.ID		= [ID intValue];
+		event.prog_id	= [prg_id intValue];
+		event.type		= type;
+		event.title		= title;
+		event.venue		= venue;
+		
+		//Start Time
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+		NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+		[dateFormatter setLocale:usLocale];
+		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+		NSDate *date = [dateFormatter dateFromString:start];
+		event.date = date;
+		[dateFormatter setDateFormat:@"hh:mm a"];
+		event.timeString = [dateFormatter stringFromDate:date];
+		//Date
+		[dateFormatter setDateFormat:@"EEEE, MMMM d"];
+		NSString *dateString = [dateFormatter stringFromDate:date];
+		event.dateString = dateString;
+		//End Time
+		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+		date = [dateFormatter dateFromString:end];
+		event.endDate = date;
+		[dateFormatter setDateFormat:@"hh:mm a"];
+		event.endTimeString = [dateFormatter stringFromDate:date];
+		if (![previousDay isEqualToString:dateString]) 
+		{
+			[data setObject:tempArray forKey:previousDay];
+			previousDay = [[NSString alloc] initWithString:dateString];
+			[days addObject:previousDay];
+			
+			[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
+			
+			tempArray = [[NSMutableArray alloc] init];
+			[tempArray addObject:event];
+		}
+		else
+		{
+			[tempArray addObject:event];
+		}
+		
+		
+	}
+	[data setObject:tempArray forKey:previousDay];
+	
+	// back up current data
+	backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
+	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
+	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
+	
+	[activity stopAnimating];
+	loadingLabel.hidden = YES;
+	CQIcon.alpha = 0.2;
+	SJSUIcon.alpha = 0.2;
+	self.navigationItem.rightBarButtonItem.enabled = YES;
+	self.navigationItem.leftBarButtonItem.enabled = YES;
+	[self.tableView reloadData];
+	self.tableView.hidden = NO;
+	//Disable "Reload" button
+	self.tableView.tableHeaderView = nil;
+//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+//					 atScrollPosition:UITableViewScrollPositionTop
+//							 animated:NO];
 }
+
 - (void)syncTableDataWithScheduler {
 	NSUInteger i, count = [mySchedule count];
 	
@@ -400,19 +401,23 @@
 		}
 	}
 }
+
 #pragma mark -
 #pragma mark UITableView DataSource
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [days count];
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     NSString *day = [days objectAtIndex:section];
 	NSMutableArray *events = [data objectForKey:day];
 	
     return [events count];
 }
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *CellIdentifier = @"Cell";
 	
 	NSUInteger section = [indexPath section];
@@ -429,14 +434,14 @@
 	// check if current cell is already added to mySchedule
 	// if it is, display it as blue
 	NSUInteger i, count = [mySchedule count];
-	for (i = 0; i < count; i++) {
+	for (i = 0; i < count; i++)
+	{
 		Schedule *obj = [mySchedule objectAtIndex:i];
 		
 		if (obj.ID == event.ID) 
 		{
-			//NSLog(@"%@ was added.",obj.title);
+			// NSLog(@"%@ was added.",obj.title);
 			textColor = [UIColor blueColor];
-			event.isSelected = YES;
 			break;
 		}
 	}
@@ -451,10 +456,9 @@
 	UIButton *checkButton;
 	
 	UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	
-    if (tempCell == nil) {
-		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-										   reuseIdentifier:CellIdentifier];
+    if (tempCell == nil)
+	{
+		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		
 		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,2,230,20)];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
@@ -472,14 +476,11 @@
 		checkButton.frame = CGRectMake(0,0,50,50);
 		[checkButton setImage:buttonImage forState:UIControlStateNormal];
 		
-		[checkButton addTarget:self 
-						action:@selector(checkBoxButtonTapped:event:)
-			  forControlEvents:UIControlEventTouchUpInside];
+		[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 		
 		checkButton.backgroundColor = [UIColor clearColor];
 		checkButton.tag = CELL_BUTTON_TAG;
 		[tempCell.contentView addSubview:checkButton];
-		
 	}
 	
 	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
@@ -498,18 +499,18 @@
 	
 	checkButton = (UIButton*)[tempCell viewWithTag:CELL_BUTTON_TAG];
 	[checkButton setImage:buttonImage forState:UIControlStateNormal];
-	
-	
+		
 	if (textColor == [UIColor blueColor]) {
-		checkButton.userInteractionEnabled = NO;
+		checkButton.userInteractionEnabled = YES;
 	} else {
 		checkButton.userInteractionEnabled = YES;
 	}
 	
     return tempCell;
 }
-- (void)checkBoxButtonTapped:(id)sender event:(id)touchEvent {
-	
+
+- (void)checkBoxButtonTapped:(id)sender event:(id)touchEvent
+{
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
@@ -537,40 +538,40 @@
 		// set button's image
 		UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"];
 		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-        
 	}
-	
 }
+
 - (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
 	NSString *day = [days objectAtIndex:section];
 	return day;
 }
+
 - (NSArray*)sectionIndexTitlesForTableView:(UITableView*)tableView {
 	return index;
 }
+
 #pragma mark -
 #pragma mark UITableView delegate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
-	
 	NSString *date = [days objectAtIndex:section];
 	
 	NSMutableArray *events = [data objectForKey:date];
-	
 	Schedule *event = [events objectAtIndex:row];
-	
+/*
 	NSString *link = [NSString stringWithFormat:@"%@%d",DETAILFORITEM, event.prog_id];
-	
-	//NSLog(@"%@",link);
-	
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:event.title
 																				andDataObject:event
-																					   andURL:[NSURL URLWithString:link]];
+																				andURL:[NSURL URLWithString:link]];
+*/
+	NSString *eventId = [NSString stringWithFormat:@"%d", event.prog_id];
+	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:event.title
+																				andDataObject:event
+																				andId:eventId];
 	eventDetail.displayAddButton = YES;
-
-	app.networkActivityIndicatorVisible = YES;
 	
 	[self.navigationController pushViewController:eventDetail animated:YES];
 }

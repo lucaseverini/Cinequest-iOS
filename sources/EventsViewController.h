@@ -6,11 +6,10 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "CinequestAppDelegate.h"
+
 @interface EventsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>	
 {
-	
 	NSMutableDictionary *data;
 	NSMutableArray *days;
 	NSMutableArray *index;
@@ -21,14 +20,6 @@
 	
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
-	
-	IBOutlet UITableView *_tableView;
-	IBOutlet UIActivityIndicatorView *activity;
-	IBOutlet UILabel *loadingLabel;
-	IBOutlet UIImageView *CQIcon;
-	IBOutlet UIImageView *SJSUIcon;
-	IBOutlet UILabel *offSeasonLabel;
-
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *tableView;

@@ -7,7 +7,6 @@
 //
 
 #import "DVDsViewController.h"
-#import "LoadDataViewController.h"
 #import "FilmDetail.h"
 #import "DVD.h"
 #import "DDXML.h"
@@ -56,7 +55,6 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	app.networkActivityIndicatorVisible = NO;
     NSIndexPath *tableSelection = [_tableView indexPathForSelectedRow];
     [_tableView deselectRowAtIndexPath:tableSelection animated:NO];
 }
@@ -76,14 +74,14 @@
 - (void)pickOfTheWeek:(id)sender {
 	NSURL *url = [NSURL URLWithString:PICKOFTHEWEEK];
 	DVD *temp = [[DVD alloc] init];
-	FilmDetail *detail = [[FilmDetail alloc] initWithTitle:@"" andDataObject:temp andURL:url];
-	[self.navigationController pushViewController:detail animated:YES];
+	//FilmDetail *detail = [[FilmDetail alloc] initWithTitle:@"" andDataObject:temp andURL:url];
+	//[self.navigationController pushViewController:detail animated:YES];
 }
 - (void)newRelease:(id)sender {
 	NSURL *url = [NSURL URLWithString:NEWRELEASE];
 	DVD *temp = [[DVD alloc] init];
-	FilmDetail *detail = [[FilmDetail alloc] initWithTitle:@"" andDataObject:temp andURL:url];
-	[self.navigationController pushViewController:detail animated:YES];
+	//FilmDetail *detail = [[FilmDetail alloc] initWithTitle:@"" andDataObject:temp andURL:url];
+	//[self.navigationController pushViewController:detail animated:YES];
 }
 
 #pragma mark -
@@ -201,16 +199,13 @@
 	DVD *dvd = [dvds objectAtIndex:row];
 	
 	NSString *link = [NSString stringWithFormat:@"%@%d",DETAILFORDVDID,dvd.ID];
-	
+/*
 	FilmDetail *film = [[FilmDetail alloc] initWithTitle:dvd.title
-										   andDataObject:dvd
-												  andURL:[NSURL URLWithString:link]];
-	
-	app.networkActivityIndicatorVisible = YES;
+													andDataObject:dvd
+													andURL:[NSURL URLWithString:link]];
 	
 	[self.navigationController pushViewController:film animated:YES];
-	
-	
+*/
 	//NSLog(@"%@%d",DETAILFORDVDID, dvd.ID);
 	
 }

@@ -6,43 +6,34 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "CinequestAppDelegate.h"
+@class CinequestAppDelegate;
+@class EKEventStore;
+@class EKCalendar;
 
-@interface MySchedulerViewController : UIViewController 
-<UITableViewDelegate, UITableViewDataSource, NSXMLParserDelegate>
+@interface MySchedulerViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSXMLParserDelegate>
 {
-@public
-	IBOutlet UITableView *_tableView;	
-	IBOutlet UIImageView *CQIcon;
-	IBOutlet UIImageView *SJSUIcon;
-	IBOutlet UILabel *offSeasonLabel;
-	NSString *username, *password, *retrievedTimeStamp, *status, *xmlStatus;
-	
-	//BOOL xmlSuccess;	
-	
-	
-@private
 	NSMutableArray *index;
 	NSMutableArray *titleForSection;
 	NSMutableArray *mySchedule;
 	NSMutableDictionary *displayData;
-	
 	CinequestAppDelegate* delegate;
+	NSMutableArray *confirmedList;
+	NSMutableArray *movedList;
+	NSMutableArray *removedList;
+	NSMutableArray *currentList;
+	NSArray *masterList;			// contains all the lists (confirmed, moved, removed)
+	UIColor *currentColor;			// used to help color code the removed,confirmed,moved state of films (NSXMLPARSER Delegate)
+	NSDate *previousEndDate;		// a pointer to a previous date to compare schedule conflicts
+	UITableViewCell *previousCell;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) IBOutlet UIImageView *CQIcon;
-@property (nonatomic, strong) IBOutlet UIImageView *SJSUIcon;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
-@property (nonatomic, strong) NSString *username, *password, *retrievedTimeStamp, *status, *xmlStatus;
-//@property (readwrite) BOOL xmlSuccess;
+@property (nonatomic, strong) NSString *username;
+@property (nonatomic, strong) NSString *password;
+@property (nonatomic, strong) NSString *retrievedTimeStamp;
+@property (nonatomic, strong) NSString *status;
 
-
-- (IBAction)processLogin;
-- (IBAction)saveFilms;
-+(NSString *)incrementCQTime:(NSString *)CQdateTime;
-- (IBAction)logIn:(id)sender;
-
++ (NSString*) incrementCQTime:(NSString*)CQdateTime;
 
 @end

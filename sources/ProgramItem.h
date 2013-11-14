@@ -8,9 +8,7 @@
 
 #import "CinequestItem.h"
 
-@interface ProgramItem : CinequestItem {
-    NSMutableArray *films;
-}
+@interface ProgramItem : CinequestItem
 
 @property (strong, nonatomic) NSMutableArray *films;
 

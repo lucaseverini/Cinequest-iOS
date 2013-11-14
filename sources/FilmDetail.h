@@ -6,12 +6,9 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "FBConnect.h"
-#import <MessageUI/MessageUI.h>
-#import <MessageUI/MFMailComposeViewController.h>
-#import "CinequestAppDelegate.h"
 
+@class CinequestAppDelegate;
 @class Schedule;
 @class FBSession;
 
@@ -19,7 +16,7 @@
 						FBDialogDelegate, FBSessionDelegate, FBRequestDelegate, 
 						MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
 {
-	NSURL								*myLink;
+	NSUInteger							filmId;
 	Schedule							*myFilmData;
 	NSMutableDictionary					*dataDictionary;
 	
@@ -44,6 +41,6 @@
 @property (nonatomic, strong) NSMutableDictionary				*dataDictionary;
 
 
-- (id)initWithTitle:(NSString*)name andDataObject:(id)dataObject andURL:(NSURL*)link;
+- (id)initWithTitle:(NSString*)name andDataObject:(id)dataObject andId:(NSUInteger)id;
 
 @end

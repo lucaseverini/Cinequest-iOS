@@ -8,11 +8,7 @@
 
 #import "CinequestItem.h"
 
-@interface VenueLocation : CinequestItem {
-    NSString *venueAbbreviation;
-    NSString *location;
-    NSString *directionsURL;
-}
+@interface VenueLocation : CinequestItem
 
 @property (strong, nonatomic) NSString *venueAbbreviation;
 @property (strong, nonatomic) NSString *location;

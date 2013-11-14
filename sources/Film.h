@@ -6,23 +6,9 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "CinequestItem.h"
 
-@interface Film : CinequestItem {
-    NSMutableArray *schedules;
-    NSString *tagline;
-    NSString *genre;
-    NSString *director;
-    NSString *producer;
-    NSString *writer;
-    NSString *cinematographer;
-    NSString *editor;
-    NSString *cast;
-    NSString *country;
-    NSString *language;
-    NSString *filmInfo;
-}
+@interface Film : CinequestItem
 
 @property (strong, nonatomic) NSMutableArray *schedules;
 @property (strong, nonatomic) NSString *tagline;

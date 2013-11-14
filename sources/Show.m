@@ -23,7 +23,8 @@
 @synthesize currentShowings;
 
 
-- (id)init {
+- (id)init
+{
     customProperties = [[NSMutableDictionary alloc] init];
     currentShowings = [[NSMutableArray alloc] init];
     return self;

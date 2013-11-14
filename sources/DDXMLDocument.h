@@ -1,4 +1,3 @@
-#import <Foundation/Foundation.h>
 #import "DDXMLElement.h"
 #import "DDXMLNode.h"
 

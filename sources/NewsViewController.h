@@ -6,7 +6,7 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "DataProvider.h"
 
 @interface NewsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
@@ -20,9 +20,9 @@
 	//		 object: array of rows
 	NSMutableDictionary *data;
 }
+
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *loadingLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 		   
-
 @end

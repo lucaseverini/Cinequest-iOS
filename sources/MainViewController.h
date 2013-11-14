@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 @interface MainViewController : UIViewController
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityView;
