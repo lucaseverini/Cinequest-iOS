@@ -342,7 +342,7 @@
 		self.navigationItem.rightBarButtonItem.enabled = YES;
 		self.navigationItem.leftBarButtonItem.enabled = YES;
         
-        [_tableView reloadData];
+        [self.tableView reloadData];
 		self.tableView.hidden = NO;
 		self.tableView.tableHeaderView = nil;
 	}

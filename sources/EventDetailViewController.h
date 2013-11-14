@@ -9,14 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "CinequestAppDelegate.h"
 
-#import "FBConnect.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import <Social/Social.h>
 
 @class Schedule;
 
 @interface EventDetailViewController : UIViewController 
-	<UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate, FBDialogDelegate, FBSessionDelegate, FBRequestDelegate>
+	<UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
 {
 	IBOutlet UIWebView *_webView;
 	IBOutlet UITableView *_tableView;
@@ -32,8 +32,6 @@
 	
 	BOOL displayAddButton;
 	
-	FBSession *_session;
-	FBUID facebookID;
 	UIButton *postThisButton;
 }
 

@@ -53,13 +53,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		myData.title = dataObject.title;
 		myData.prog_id = dataObject.prog_id;
 		
-		if (kGetSessionProxy) {
-			_session = [FBSession sessionForApplication:kApiKey 
-										 getSessionProxy:kGetSessionProxy
-												delegate:self];
-		} else {
-			_session = [FBSession sessionForApplication:kApiKey secret:kApiSecret delegate:self];
-		}
     }
     return self;
 }
@@ -210,10 +203,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 }
 #pragma mark -
 #pragma mark Actions
-- (void)postToFacebook:(id)sender {
-	postThisButton.enabled = NO;
-	[self session:_session didLogin:facebookID];
-}
+
 - (IBAction)addAction:(id)sender {
 	
 	// get all schedules that has checked items
@@ -406,27 +396,35 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		}
 		case SOCIAL_MEDIA_SECTION: {
 			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
-			UIButton *postButton;
 			if (cell == nil) {
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FacebookIdentifier];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
-				FBLoginButton *loginButton = [[FBLoginButton alloc] initWithFrame:CGRectMake(40,15,100,20)];
-				loginButton.style = FBLoginButtonStyleWide;
-				[cell.contentView addSubview:loginButton];
-				
-				postButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-				postButton.tag = CELL_FACEBOOKBUTTON_TAG;
-				postButton.frame = CGRectMake(200,10,100,30);
-				[postButton setTitle:@"Post This" forState:UIControlStateNormal];
-				[postButton setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
-				[postButton addTarget:self action:@selector(postToFacebook:) forControlEvents:UIControlEventTouchUpInside];
-				postThisButton = postButton;
-				[cell.contentView addSubview:postButton];
+                UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                [fbButton addTarget:self
+                             action:@selector(pressToShareToFacebook:)
+                   forControlEvents:UIControlEventTouchDown];
+                
+                
+                [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
+                [fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
+                [fbButton setBackgroundColor:[UIColor clearColor]];
+                fbButton.frame = CGRectMake(40, 10, 32, 32);
+                [cell.contentView addSubview:fbButton];
+                
+                UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                [twButton addTarget:self
+                             action:@selector(pressToShareToTwitter:)
+                   forControlEvents:UIControlEventTouchDown];
+                
+                
+                [twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
+                [twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
+                [twButton setBackgroundColor:[UIColor clearColor]];
+                twButton.frame = CGRectMake(92, 10, 32, 32);
+                [cell.contentView addSubview:twButton];
 			}
-			postButton = (UIButton*)[cell.contentView viewWithTag:CELL_FACEBOOKBUTTON_TAG];
-			if (!delegate.isLoggedInFacebook) postButton.enabled = NO;
-			else postButton.enabled = YES;
+
 			break;
 		}
 		case CALL_N_EMAIL_SECTION: {
@@ -525,33 +523,56 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	delegate.isPresentingModalView = NO;
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
+
 #pragma mark -
-#pragma mark FBSession Delegate
-- (void)session:(FBSession*)session didLogin:(FBUID)uid {
-	delegate.isLoggedInFacebook = YES;
-	facebookID = uid;
-	NSString *fql = [NSString stringWithFormat:
-					 @"select uid,name from user where uid == %lld", session.uid];
-	
-	NSDictionary* params = [NSDictionary dictionaryWithObject:fql forKey:@"query"];
-	[[FBRequest requestWithDelegate:self] call:@"facebook.fql.query" params:params];
+#pragma mark Social Media Sharing
+
+- (IBAction)pressToShareToFacebook:(id)sender
+{
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@", myData.title];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        SLComposeViewController *faceSheet = [SLComposeViewController
+                                              composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [faceSheet setInitialText:postString];
+        [self presentViewController:faceSheet animated:YES completion:nil];
+    }
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't post on Facebook right now, make sure your device has an internet connection and you have at least one FB account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
 }
-#pragma mark -
-#pragma mark FBRequest Delegate
-- (void)request:(FBRequest*)request didLoad:(id)result {
-	postThisButton.enabled = YES;
-	NSString *attachment = [NSString stringWithFormat:@"{\"name\":\"%@\",\"href\":\"http://mobile.cinequest.org/event_view.php?eid=%d\",\"description\":\"Hey, I found an interesting film from Cinequest. Check it out!\"}",myData.title,myData.prog_id];
-	FBStreamDialog* dialog = [[FBStreamDialog alloc] init];
-	dialog.delegate = self;
-	dialog.userMessagePrompt = @"I'm going to see this awesome movie. Check it out!";
-	dialog.attachment = attachment;
-	[dialog show];
+
+- (IBAction)pressToShareToTwitter:(id)sender
+{
+    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@", myData.title];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    {
+        SLComposeViewController *tweetSheet = [SLComposeViewController
+                                               composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [tweetSheet setInitialText:tweetString];
+        [self presentViewController:tweetSheet animated:YES completion:nil];
+    }
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't send a tweet right now, make sure your device has an internet connection and you have at least one Twitter account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
 }
-- (void)sessionDidLogout:(FBSession*)session {
-	postThisButton.enabled = NO;
-	delegate.isLoggedInFacebook = NO;
-	[self.tableView reloadData];
-}
+
 
 #pragma mark -
 #pragma mark Decode NSString for HTML

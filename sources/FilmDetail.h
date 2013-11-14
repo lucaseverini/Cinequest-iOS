@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FBConnect.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
 #import <Social/Social.h>
@@ -17,7 +16,6 @@
 @class FBSession;
 
 @interface FilmDetail : UIViewController <UIWebViewDelegate,
-						FBDialogDelegate, FBSessionDelegate, FBRequestDelegate, 
 						MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
 {
 	NSURL								*myLink;
@@ -31,7 +29,6 @@
 	BOOL isDVD;
 	
 	FBSession *_session;
-	FBUID facebookID;
 	UIButton *postThisButton;
 	
 	CinequestAppDelegate *delegate;

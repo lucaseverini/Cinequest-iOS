@@ -10,7 +10,6 @@
 #import "DDXML.h"
 #import "Schedule.h"
 #import "DVD.h"
-#import "FBConnect.h"
 #import "CinequestAppDelegate.h"
 
 
@@ -62,13 +61,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			myFilmData.ID = dataObject.ID;
 			myFilmData.prog_id = dataObject.prog_id;
 			isDVD = NO;
-		}
-		if (kGetSessionProxy) {
-			_session = [FBSession sessionForApplication:kApiKey 
-										 getSessionProxy:kGetSessionProxy
-												delegate:self];
-		} else {
-			_session = [FBSession sessionForApplication:kApiKey secret:kApiSecret delegate:self];
 		}
 
 	}
@@ -230,10 +222,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 }
 #pragma mark -
 #pragma mark Actions
-- (void)postToFacebook:(id)sender {
-	postThisButton.enabled = NO;
-	[self session:_session didLogin:facebookID];
-}
+
 - (IBAction)addAction:(id)sender {
 	
 	// get all schedules that has checked items
@@ -591,18 +580,18 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 }
 
 
-
-#pragma Social Media Sharing
+#pragma mark -
+#pragma mark Social Media Sharing
 
 - (IBAction)pressToShareToFacebook:(id)sender
 {
-    NSString *testString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
         SLComposeViewController *faceSheet = [SLComposeViewController
                                               composeViewControllerForServiceType:SLServiceTypeFacebook];
-        [faceSheet setInitialText:testString];
+        [faceSheet setInitialText:postString];
         [self presentViewController:faceSheet animated:YES completion:nil];
     }
     else
@@ -619,13 +608,13 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (IBAction)pressToShareToTwitter:(id)sender
 {
-    NSString *testString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
         SLComposeViewController *tweetSheet = [SLComposeViewController
                                                composeViewControllerForServiceType:SLServiceTypeTwitter];
-        [tweetSheet setInitialText:testString];
+        [tweetSheet setInitialText:tweetString];
         [self presentViewController:tweetSheet animated:YES completion:nil];
     }
     else
@@ -640,35 +629,4 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
     }
 }
 
-
-#pragma mark -
-#pragma mark FBDialog Delegate
-- (void)dialog:(FBDialog*)dialog didFailWithError:(NSError*)error {}
-#pragma mark -
-#pragma mark FBSession Delegate
-- (void)session:(FBSession*)session didLogin:(FBUID)uid {
-	delegate.isLoggedInFacebook = YES;
-	facebookID = uid;
-	NSString *fql = [NSString stringWithFormat:
-					 @"select uid,name from user where uid == %lld", session.uid];
-	
-	NSDictionary* params = [NSDictionary dictionaryWithObject:fql forKey:@"query"];
-	[[FBRequest requestWithDelegate:self] call:@"facebook.fql.query" params:params];
-}
-#pragma mark -
-#pragma mark FBRequest Delegate
-- (void)request:(FBRequest*)request didLoad:(id)result {
-	postThisButton.enabled = YES;
-	NSString *attachment = [NSString stringWithFormat:@"{\"name\":\"%@\",\"href\":\"http://mobile.cinequest.org/event_view.php?eid=%d\",\"description\":\"Hey, I found an interesting film from Cinequest. Check it out!\"}",myFilmData.title,myFilmData.prog_id];
-	FBStreamDialog* dialog = [[FBStreamDialog alloc] init];
-	dialog.delegate = self;
-	dialog.userMessagePrompt = @"I'm going to see this awesome movie. Check it out!";
-	dialog.attachment = attachment;
-	[dialog show];
-}
-- (void)sessionDidLogout:(FBSession*)session {
-	postThisButton.enabled = NO;
-	delegate.isLoggedInFacebook = NO;
-	[self.tableView reloadData];
-}
 @end
