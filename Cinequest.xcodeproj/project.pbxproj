@@ -106,12 +106,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		424040BD1831E2A6003C7346 /* facebook-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook-pressed.png"; sourceTree = SOURCE_ROOT; };
-		424040BE1831E2A6003C7346 /* facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook.png; sourceTree = SOURCE_ROOT; };
-		424040BF1831E2A6003C7346 /* google-plus-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-plus-pressed.png"; sourceTree = SOURCE_ROOT; };
-		424040C01831E2A6003C7346 /* google-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-plus.png"; sourceTree = SOURCE_ROOT; };
-		424040C11831E2A6003C7346 /* twitter-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-pressed.png"; sourceTree = SOURCE_ROOT; };
-		424040C21831E2A6003C7346 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = SOURCE_ROOT; };
+		424040BD1831E2A6003C7346 /* facebook-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "facebook-pressed.png"; path = "images/facebook-pressed.png"; sourceTree = SOURCE_ROOT; };
+		424040BE1831E2A6003C7346 /* facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = facebook.png; path = images/facebook.png; sourceTree = SOURCE_ROOT; };
+		424040BF1831E2A6003C7346 /* google-plus-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "google-plus-pressed.png"; path = "images/google-plus-pressed.png"; sourceTree = SOURCE_ROOT; };
+		424040C01831E2A6003C7346 /* google-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "google-plus.png"; path = "images/google-plus.png"; sourceTree = SOURCE_ROOT; };
+		424040C11831E2A6003C7346 /* twitter-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "twitter-pressed.png"; path = "images/twitter-pressed.png"; sourceTree = SOURCE_ROOT; };
+		424040C21831E2A6003C7346 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = twitter.png; path = images/twitter.png; sourceTree = SOURCE_ROOT; };
 		8149DFBF17EBB2FD0092F8F9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8149DFCA17EBB5450092F8F9 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
