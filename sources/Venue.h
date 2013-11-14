@@ -11,5 +11,6 @@
 @property (strong, nonatomic) NSString *ID;
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *address;
+@property (strong, nonatomic) NSString *map;
 
 @end

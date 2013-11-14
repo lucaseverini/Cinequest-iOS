@@ -13,5 +13,6 @@
 @synthesize ID;
 @synthesize name;
 @synthesize address;
+@synthesize map;
 
 @end
