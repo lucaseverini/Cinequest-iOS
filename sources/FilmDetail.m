@@ -10,7 +10,6 @@
 #import "DDXML.h"
 #import "Schedule.h"
 #import "DVD.h"
-#import "FBConnect.h"
 #import "CinequestAppDelegate.h"
 #import "DataProvider.h"
 
@@ -26,13 +25,13 @@
 
 @implementation FilmDetail
 
-@synthesize isDVD;
 @synthesize tableView = _tableView;
 @synthesize webView;
 @synthesize dataDictionary;
 @synthesize activityIndicator;
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
 }
 
@@ -43,7 +42,7 @@ static NSString *kGetSessionProxy = nil;
 static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
 static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
-- (id)initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSUInteger)filmID
+- (id) initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSUInteger)filmID
 {
 	if (self = [super init]) 
 	{
@@ -56,21 +55,13 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		myFilmData.title = dataObject.title;
 		myFilmData.ID = dataObject.ID;
 		myFilmData.prog_id = dataObject.prog_id;
-		isDVD = NO;
-
-		if (kGetSessionProxy) {
-			_session = [FBSession sessionForApplication:kApiKey 
-										 getSessionProxy:kGetSessionProxy
-												delegate:self];
-		} else {
-			_session = [FBSession sessionForApplication:kApiKey secret:kApiSecret delegate:self];
-		}
-
 	}
+	
 	return self;
 }
 
-- (void)viewDidLoad {
+- (void) viewDidLoad
+{
 	[super viewDidLoad];
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
@@ -78,22 +69,21 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	self.tableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
 
-	if (!isDVD) {
-		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
-																				   style:UIBarButtonItemStyleDone
-																				  target:self
-																				  action:@selector(addAction:)];
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
+																				style:UIBarButtonItemStyleDone
+																				target:self
+																				action:@selector(addAction:)];
+	self.navigationItem.rightBarButtonItem.enabled = NO;
 	
 	[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void) viewWillAppear:(BOOL)animated
+{
 	[self.tableView reloadData];
 }
 
-- (void)parseData
+- (void) parseData
 {
 	NSData *data = [[appDelegate dataProvider] filmDetail:filmId];
 	if (data == nil)
@@ -117,7 +107,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		NSString *value = [[NSString alloc] initWithString:[node stringValue]];
 		NSString *name = [[NSString alloc] initWithString:[node name]];
 		//NSLog(@"%@ %@",name, value);
-		if (!isDVD && [name isEqualToString:@"schedules"]) {
+		if ([name isEqualToString:@"schedules"])
+		{
 			DDXMLNode *scheduleNodes = node;
 			NSMutableArray *schedules	= [[NSMutableArray alloc] init];
 			for (int i=0; i<[scheduleNodes childCount]; i++) {
@@ -168,7 +159,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
 }
    
-- (void)loadData {
+- (void)loadData
+{
 	NSString *weba = [NSString stringWithFormat:web,[dataDictionary objectForKey:@"title"]
 					  ,[dataDictionary objectForKey:@"imageURL"]
 					  ,[dataDictionary objectForKey:@"description"]];
@@ -207,19 +199,15 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		if ([key isEqualToString:@"language"])			weba = [weba stringByAppendingFormat:@"Director: %@<br/>",obj];
 		if ([key isEqualToString:@"film_info"])			weba = [weba stringByAppendingFormat:@"Film Info: %@<br/>",obj];
 	}
+	
 	[webView loadHTMLString:weba baseURL:nil];
 }
 
 #pragma mark -
 #pragma mark Actions
 
-- (void)postToFacebook:(id)sender {
-	postThisButton.enabled = NO;
-	[self session:_session didLogin:facebookID];
-}
-
-- (IBAction)addAction:(id)sender {
-	
+- (IBAction) addAction:(id)sender
+{
 	// get all schedules that has checked items
 	NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
 	
@@ -278,12 +266,13 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark UIWebView delegate
 
-- (void)webViewDidFinishLoad:(UIWebView *)_webView {
+- (void) webViewDidFinishLoad:(UIWebView *)_webView
+{
 	UIWebView *webview = (UIWebView*) self.tableView.tableHeaderView;
 
 	[webview sizeToFit];
 	double height = webview.frame.size.height + 30.0f;
-	if(isDVD) height+=30;
+
 	double width = webview.frame.size.width;
 	[webview setFrame:CGRectMake(0,0,width,height)];
 	
@@ -294,42 +283,48 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	self.navigationItem.rightBarButtonItem.enabled = YES;
 	self.view.userInteractionEnabled = YES;
 }
+
 #pragma mark -
 #pragma mark UITableView Datasource
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	if (isDVD) {
-		return 0;
-	} else {
-		return 3;
-	}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 3;
 }
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
 	int result = 1;
-	switch (section) {
+	
+	switch (section)
+	{
 		case SCHEDULE_SECTION:
 		{
 			NSMutableArray *array = [dataDictionary objectForKey:@"Schedules"];
 			result = [array count];
 			break;
 		}
-		case FACEBOOK_SECTION:
+		case SOCIAL_MEDIA_SECTION:
 			break;
+			
 		case CALL_N_EMAIL_SECTION:
 			result = 2;
 			break;
-
 	}
+	
 	return result;
 }
-- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
+
+- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+{
 	NSString *answer;
 	
 	switch (section) {
 		case SCHEDULE_SECTION:
 			answer = @"Schedules";
 			break;
-		case FACEBOOK_SECTION:
-			answer = @"Facebook";
+		case SOCIAL_MEDIA_SECTION:
+			answer = @"Share to Social Media";
 			break;
 		case CALL_N_EMAIL_SECTION:
 			answer = @"Actions";
@@ -346,7 +341,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		case SCHEDULE_SECTION:
 			height = 50;
 			break;
-		case FACEBOOK_SECTION:
+		case SOCIAL_MEDIA_SECTION:
 			height = 50;
 			break;
 		case CALL_N_EMAIL_SECTION:
@@ -445,29 +440,37 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			
 			break;
 		}
-		case FACEBOOK_SECTION: {
+		case SOCIAL_MEDIA_SECTION: {
 			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
-			UIButton *postButton;
 			if (cell == nil) {
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FacebookIdentifier];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
-				FBLoginButton *loginButton = [[FBLoginButton alloc] initWithFrame:CGRectMake(40,15,100,20)];
-				loginButton.style = FBLoginButtonStyleWide;
-				[cell.contentView addSubview:loginButton];
-				
-				postButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-				postButton.tag = CELL_FACEBOOKBUTTON_TAG;
-				postButton.frame = CGRectMake(200,10,100,30);
-				[postButton setTitle:@"Post This" forState:UIControlStateNormal];
-				[postButton setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
-				[postButton addTarget:self action:@selector(postToFacebook:) forControlEvents:UIControlEventTouchUpInside];
-				postThisButton = postButton;
-				[cell.contentView addSubview:postButton];
-			}
-			postButton = (UIButton*)[cell.contentView viewWithTag:CELL_FACEBOOKBUTTON_TAG];
-			if (!delegate.isLoggedInFacebook) postButton.enabled = NO; 
-			else postButton.enabled = YES;
+                UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                [fbButton addTarget:self
+                           action:@selector(pressToShareToFacebook:)
+                 forControlEvents:UIControlEventTouchDown];
+                
+                
+                [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
+                [fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
+                [fbButton setBackgroundColor:[UIColor clearColor]];
+                fbButton.frame = CGRectMake(40, 10, 32, 32);
+                [cell.contentView addSubview:fbButton];
+                
+                UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                [twButton addTarget:self
+                             action:@selector(pressToShareToTwitter:)
+                   forControlEvents:UIControlEventTouchDown];
+                
+                
+                [twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
+                [twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
+                [twButton setBackgroundColor:[UIColor clearColor]];
+                twButton.frame = CGRectMake(92, 10, 32, 32);
+                [cell.contentView addSubview:twButton];
+                
+            }
 
 			break;
 		}
@@ -569,34 +572,55 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	delegate.isPresentingModalView = NO;
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
+
+
 #pragma mark -
-#pragma mark FBDialog Delegate
-- (void)dialog:(FBDialog*)dialog didFailWithError:(NSError*)error {}
-#pragma mark -
-#pragma mark FBSession Delegate
-- (void)session:(FBSession*)session didLogin:(FBUID)uid {
-	delegate.isLoggedInFacebook = YES;
-	facebookID = uid;
-	NSString *fql = [NSString stringWithFormat:
-					 @"select uid,name from user where uid == %lld", session.uid];
-	
-	NSDictionary* params = [NSDictionary dictionaryWithObject:fql forKey:@"query"];
-	[[FBRequest requestWithDelegate:self] call:@"facebook.fql.query" params:params];
+#pragma mark Social Media Sharing
+
+- (IBAction)pressToShareToFacebook:(id)sender
+{
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        SLComposeViewController *faceSheet = [SLComposeViewController
+                                              composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [faceSheet setInitialText:postString];
+        [self presentViewController:faceSheet animated:YES completion:nil];
+    }
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't post on Facebook right now, make sure your device has an internet connection and you have at least one FB account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
 }
-#pragma mark -
-#pragma mark FBRequest Delegate
-- (void)request:(FBRequest*)request didLoad:(id)result {
-	postThisButton.enabled = YES;
-	NSString *attachment = [NSString stringWithFormat:@"{\"name\":\"%@\",\"href\":\"http://mobile.cinequest.org/event_view.php?eid=%d\",\"description\":\"Hey, I found an interesting film from Cinequest. Check it out!\"}",myFilmData.title,myFilmData.prog_id];
-	FBStreamDialog* dialog = [[FBStreamDialog alloc] init];
-	dialog.delegate = self;
-	dialog.userMessagePrompt = @"I'm going to see this awesome movie. Check it out!";
-	dialog.attachment = attachment;
-	[dialog show];
+
+- (IBAction)pressToShareToTwitter:(id)sender
+{
+    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    {
+        SLComposeViewController *tweetSheet = [SLComposeViewController
+                                               composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [tweetSheet setInitialText:tweetString];
+        [self presentViewController:tweetSheet animated:YES completion:nil];
+    }
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't send a tweet right now, make sure your device has an internet connection and you have at least one Twitter account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
 }
-- (void)sessionDidLogout:(FBSession*)session {
-	postThisButton.enabled = NO;
-	delegate.isLoggedInFacebook = NO;
-	[self.tableView reloadData];
-}
+
 @end

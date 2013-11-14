@@ -6,13 +6,8 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "DataProvider.h"
-
 @interface NewsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
-	IBOutlet UITableView *_tableView;
-	IBOutlet UIActivityIndicatorView *activityIndicator;
-	IBOutlet UILabel *loadingLabel;
 	//Stores a list of name
 	NSMutableArray *sections;
 	
@@ -21,8 +16,8 @@
 	NSMutableDictionary *data;
 }
 
-@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UITableView *newsTableView;
 @property (nonatomic, strong) UILabel *loadingLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-		   
+
 @end

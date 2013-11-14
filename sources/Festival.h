@@ -6,9 +6,8 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import "NewSchedule.h"
-#import "Film.h"
-#import "ProgramItem.h"
+@class ProgramItem;
+@class Film;
 
 @interface Festival : NSObject
 

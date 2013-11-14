@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import "CinequestItem.h"
+@class CinequestItem;
 
 @interface VenueLocation : CinequestItem
 

@@ -6,7 +6,7 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "CinequestAppDelegate.h"
+@class CinequestAppDelegate;
 
 @interface FilmsViewController : UIViewController < UITableViewDelegate, UITableViewDataSource >
 {
@@ -26,9 +26,9 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
 @property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
-@property (nonatomic, strong) IBOutlet UITableView *table;
+@property (nonatomic, strong) IBOutlet UITableView *filmsTableView;
 
-- (IBAction)switchTitle:(id)sender;
-- (IBAction)reloadData:(id)sender;
+- (IBAction) switchTitle:(id)sender;
+- (IBAction) reloadData:(id)sender;
 
 @end

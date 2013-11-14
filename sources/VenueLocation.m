@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
+#import "CinequestItem.h"
 #import "VenueLocation.h"
 
 @implementation VenueLocation

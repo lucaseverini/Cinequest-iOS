@@ -27,11 +27,9 @@
 @synthesize days;
 @synthesize index;
 @synthesize data;
-@synthesize tableView = _tableView;
+@synthesize forumsTableView;
 @synthesize activity;
 @synthesize loadingLabel;
-@synthesize SJSUIcon;
-@synthesize CQIcon;
 @synthesize offSeasonLabel;
 
 
@@ -62,7 +60,7 @@
 		[activity stopAnimating];
 		loadingLabel.hidden = YES;
 		offSeasonLabel.hidden = NO;
-		self.tableView.hidden = YES;
+		self.forumsTableView.hidden = YES;
 		return;
 	}
 	
@@ -76,10 +74,10 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-    [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
+    NSIndexPath *tableSelection = [self.forumsTableView indexPathForSelectedRow];
+    [self.forumsTableView deselectRowAtIndexPath:tableSelection animated:NO];
+    
 	[self syncTableDataWithScheduler];
-	[self.tableView reloadData];
 }
 
 #pragma mark -
@@ -203,7 +201,9 @@
 			
 			tempArray = [[NSMutableArray alloc] init];
 			[tempArray addObject:forum];
-		} else {
+		}
+		else
+		{
 			[tempArray addObject:forum];
 		}
 	}
@@ -215,17 +215,15 @@
 	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
 	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES]; 
 	
-	[self.tableView reloadData];
-	self.tableView.hidden = NO;
-	CQIcon.alpha = 0.2;
-	SJSUIcon.alpha = 0.2;
+	[self.forumsTableView reloadData];
+	self.forumsTableView.hidden = NO;
 	loadingLabel.hidden = YES;
 	[activity stopAnimating];
 	self.navigationItem.leftBarButtonItem.enabled = YES;
 	self.navigationItem.rightBarButtonItem.enabled = YES;
 	
-	self.tableView.tableHeaderView = nil; // To enable "Reload button", remove this line and uncomment 3 lines below
-//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+	self.forumsTableView.tableHeaderView = nil; // To enable "Reload button", remove this line and uncomment 3 lines below
+//[self.forumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
 //					 atScrollPosition:UITableViewScrollPositionTop
 //							 animated:NO];
 }
@@ -234,8 +232,8 @@
 	
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
-	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:self.forumsTableView];
+	NSIndexPath *indexPath = [self.forumsTableView indexPathForRowAtPoint:currentTouchPosition];
 	int row = [indexPath row];
 	int section = [indexPath section];
 	
@@ -253,7 +251,7 @@
 		event.isSelected = !checked;
 		
 		// get the current cell and the checkbox button 
-		UITableViewCell *currentCell = [self.tableView cellForRowAtIndexPath:indexPath];
+		UITableViewCell *currentCell = [self.forumsTableView cellForRowAtIndexPath:indexPath];
 		UIButton *checkBoxButton = (UIButton*)[currentCell viewWithTag:CELL_BUTTON_TAG];
 		
 		// set button's image
@@ -285,7 +283,7 @@
 	[data removeAllObjects];
 	[index removeAllObjects];
 	
-	self.tableView.hidden = YES;
+	self.forumsTableView.hidden = YES;
 	[activity startAnimating];
 	// loadingLabel.hidden = NO;
 	self.navigationItem.leftBarButtonItem.enabled = NO;
@@ -326,7 +324,7 @@
 		}
 	}
 	[self syncTableDataWithScheduler];
-	[self.tableView reloadData];
+	[self.forumsTableView reloadData];
 	if (counter != 0) {
 		[delegate jumpToScheduler];
 	}
@@ -382,23 +380,23 @@
 	[index removeObjectsAtIndexes:indexSet];
 	
 	// Start updating table
-	[self.tableView beginUpdates];
+	[self.forumsTableView beginUpdates];
 	
-	[self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
+	[self.forumsTableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
 	
-	[self.tableView deleteSections:indexSet withRowAnimation:NO];
+	[self.forumsTableView deleteSections:indexSet withRowAnimation:NO];
 	
-	[self.tableView endUpdates];
+	[self.forumsTableView endUpdates];
 	
 	// add push animation
 	CATransition *transition = [CATransition animation];
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromTop;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.forumsTableView layer] addAnimation:transition forKey:nil];
 	
 	// reload data
-	[self.tableView reloadData];
+	[self.forumsTableView reloadData];
 }
 
 - (void)back:(id)sender
@@ -428,10 +426,10 @@
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromBottom;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.forumsTableView layer] addAnimation:transition forKey:nil];
 	
 	// reload table data
-	[self.tableView reloadData];
+	[self.forumsTableView reloadData];
 	
 }
 

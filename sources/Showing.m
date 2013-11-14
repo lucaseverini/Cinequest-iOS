@@ -7,6 +7,8 @@
 //
 
 #import "Showing.h"
+#import "Venue.h"
+
 
 @implementation Showing
 
@@ -16,9 +18,14 @@
 @synthesize shortDescription;
 @synthesize venue;
 
-- (id)init
+- (id) init
 {
-    venue = [[Venue alloc] init];
+ 	self = [super init];
+	if(self != nil)
+	{
+		venue = [[Venue alloc] init];
+	}
+	
     return self;
 }
 

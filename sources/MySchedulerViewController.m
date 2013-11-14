@@ -13,6 +13,7 @@
 #import "Schedule.h"
 
 #define CALENDAR_NAME @"Cinequest"
+#define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
 
 static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
@@ -29,7 +30,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 @implementation MySchedulerViewController
 
-@synthesize tableView = _tableView; 
+@synthesize scheduleTableView;
 @synthesize username;
 @synthesize password;
 @synthesize retrievedTimeStamp;
@@ -71,7 +72,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	if(delegate.isOffSeason)
 	{
 		offSeasonLabel.hidden = NO;
-		self.tableView.hidden = YES;
+		self.scheduleTableView.hidden = YES;
 		return;
 	}
 	
@@ -133,7 +134,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	[displayData setObject:tempArray forKey:lastDateString];
 		
 	// reload tableView data
-	[self.tableView reloadData];
+	[self.scheduleTableView reloadData];
 	[self doneEditing];
 
 	if(mySchedule.count == 0)
@@ -154,8 +155,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) edit
 {
-	[self.tableView setEditing:YES animated:YES];
-	
+	[self.scheduleTableView setEditing:YES animated:YES];
+
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 																							target:self
 																							action:@selector(doneEditing)];
@@ -163,7 +164,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) doneEditing
 {
-	[self.tableView setEditing:NO animated:YES];
+	[self.scheduleTableView setEditing:NO animated:YES];
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
 																							target:self
@@ -178,8 +179,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 {
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
-	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:self.scheduleTableView];
+	NSIndexPath *indexPath = [self.scheduleTableView indexPathForRowAtPoint:currentTouchPosition];
 	int row = [indexPath row];
 	int section = [indexPath section];
 	
@@ -192,8 +193,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		NSMutableArray *films = [displayData objectForKey:dateString];
 		Schedule *film = [films objectAtIndex:row];
         
-		NSDate *startDate = [film.date dateByAddingTimeInterval:60*60*24*365];
-        NSDate *endDate = [film.endDate dateByAddingTimeInterval:60*60*24*365];
+		NSDate *startDate = [film.date dateByAddingTimeInterval:ONE_YEAR];
+        NSDate *endDate = [film.endDate dateByAddingTimeInterval:ONE_YEAR];
         
         if ([_arrCalendarItems containsObject:film.title])
 		{
@@ -371,7 +372,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
         }
     }
     
-    [_tableView reloadData];
+    [self.scheduleTableView reloadData];
 }
 
 #pragma mark -
@@ -408,7 +409,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	// Loading Schedule into the TabelViewCells
 	NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
 	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];		
-	Schedule *time = [rowsData objectAtIndex:indexPath.row];
+	Schedule *film = [rowsData objectAtIndex:indexPath.row];
 
 	CGFloat labelFontSize = [UIFont labelFontSize];
 	CGFloat fontSize = [UIFont systemFontSize];
@@ -422,8 +423,10 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
  	if (tempCell == nil)
 	{
 		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kScheduleCellIdentifier];
-		
-		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 2.0, 260.0, 20.0)];
+			 	
+		// tempCell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 2.0, 290.0, 20.0)];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
 		titleLabel.font = [UIFont boldSystemFontOfSize:labelFontSize];
 		[tempCell.contentView addSubview:titleLabel];
@@ -440,17 +443,17 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
         
         calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [calendarButton addTarget:self action:@selector(addItemToCalendar:event:) forControlEvents:UIControlEventTouchDown];
-        calendarButton.frame = CGRectMake(274.0, 6.0, 32.0, 32.0);
+        calendarButton.frame = CGRectMake(266.0, 16.0, 48.0, 48.0);
         calendarButton.tag = CELL_BUTTON_CALENDAR;
         [tempCell.contentView addSubview:calendarButton];
 	}
 	
 	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
-	titleLabel.text = time.title;
+	titleLabel.text = film.title;
 	
     calendarButton = (UIButton *)[tempCell viewWithTag:CELL_BUTTON_CALENDAR];
     
-    if([_arrCalendarItems containsObject:time.title])
+    if([_arrCalendarItems containsObject:film.title])
 	{
         [calendarButton setImage:[UIImage imageNamed:@"cal_selected"] forState:UIControlStateNormal];
     }
@@ -459,21 +462,14 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
         [calendarButton setImage:[UIImage imageNamed:@"cal_unselected"] forState:UIControlStateNormal];
     }
     
-	NSString *endTime = @"";	
-	if(time.endTimeString != nil)
-	{
-		endTime = [endTime stringByAppendingString:@"-"];
-		endTime = [endTime stringByAppendingString:time.endTimeString];
-	}
-		
 	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-	timeLabel.text = [NSString stringWithFormat:@"Time:%@%@",time.timeString,endTime];
+	timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", film.dateString, film.timeString, film.endTimeString];
 	
 	venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
-	venueLabel.text = [NSString stringWithFormat:@"Venue:%@", time.venue];
+	venueLabel.text = [NSString stringWithFormat:@"Venue:%@", film.venue];
 	
 #pragma message "For what is this for?"
-	if(time.fontColor == nil)
+	if(film.fontColor == nil)
 	{
 		titleLabel.textColor = [UIColor blackColor];
 		timeLabel.textColor = [UIColor blackColor];
@@ -481,26 +477,34 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	}
 	else
 	{
-		titleLabel.textColor = time.fontColor;
-		timeLabel.textColor = time.fontColor;
-		venueLabel.textColor = time.fontColor;
+		titleLabel.textColor = film.fontColor;
+		timeLabel.textColor = film.fontColor;
+		venueLabel.textColor = film.fontColor;
 	}
 
 #pragma message "For what is this for?"
-	if(time.fontColor == [UIColor blueColor])
+	if(film.fontColor == [UIColor blueColor])
 	{
 		timeLabel.textColor = [UIColor grayColor];
 		venueLabel.textColor = [UIColor blackColor];
 		timeLabel.font = [UIFont italicSystemFontOfSize:[UIFont smallSystemFontSize]];
 	}
-	 	
-	tempCell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     return tempCell;
 }
 
 #pragma mark -
 #pragma mark UITableView Delegate
+
+- (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
+{
+	int section = [indexPath section];
+	int row = [indexPath row];
+	
+	[self launchCalendar];
+	
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
 - (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -512,7 +516,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     [tableView beginUpdates];
     if (editingStyle == UITableViewCellEditingStyleDelete) 
 	{
-		
 		NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
 		NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
 		
@@ -533,8 +536,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		}
         
         //Remove Event from Calendar
-        NSDate *startDate = [item.date dateByAddingTimeInterval:60*60*24*365];
-        NSDate *endDate = [item.endDate dateByAddingTimeInterval:60*60*24*365];
+        NSDate *startDate = [item.date dateByAddingTimeInterval:ONE_YEAR];
+        NSDate *endDate = [item.endDate dateByAddingTimeInterval:ONE_YEAR];
         NSPredicate *predicateForEvents = [_eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:_cinequestCalendar]];
         //set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
         NSArray *events_Array = [_eventStore eventsMatchingPredicate: predicateForEvents];
@@ -554,6 +557,11 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     }
 	
 	[tableView endUpdates];
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 62.0;
 }
 
 #pragma mark -
@@ -592,7 +600,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     }
 }
 
-
 // Prompt the user for access to their Calendar
 - (void) requestCalendarAccess
 {
@@ -612,13 +619,67 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
      }];
 }
 
-
 // This method is called when the user has granted permission to Calendar
 - (void) accessGrantedForCalendar
 {
     // Let's get the default calendar associated with our event store
     self.defaultCalendar = self.eventStore.defaultCalendarForNewEvents;
     [self checkAndCreateCalendar];
+}
+
+- (void) launchCalendar
+{
+    EKEventStore *store = [[EKEventStore alloc] init];
+	
+	[store requestAccessToEntityType:EKEntityTypeEvent completion:
+	^(BOOL granted, NSError *error)
+	{
+		if (granted)
+		{
+			dispatch_async(dispatch_get_main_queue(),
+			^{
+				[self createEventAndPresentViewController:store];
+			});
+		}
+	}];
+}
+
+- (void) createEventAndPresentViewController:(EKEventStore *)store
+{
+    EKEvent *event = [self findOrCreateEvent:store];
+	
+    EKEventEditViewController *controller = [[EKEventEditViewController alloc] init];
+    controller.event = event;
+    controller.eventStore = store;
+    controller.editViewDelegate = self;
+	
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (void) eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (EKEvent*) findOrCreateEvent:(EKEventStore*)store
+{
+    EKEvent *event = [EKEvent eventWithEventStore:store];
+    event.title = @"My event title";
+    event.notes = @"My event notes";
+    event.location = @"My event location";
+    event.calendar = [store defaultCalendarForNewEvents];
+	
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    components.hour = 4;
+    event.startDate = [calendar dateByAddingComponents:components
+                                                toDate:[NSDate date]
+												options:0];
+    components.hour = 1;
+    event.endDate = [calendar dateByAddingComponents:components
+												toDate:event.startDate
+												options:0];
+    return event;
 }
 
 @end

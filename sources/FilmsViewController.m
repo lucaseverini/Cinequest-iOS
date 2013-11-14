@@ -24,7 +24,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 @implementation FilmsViewController
 
 @synthesize switchTitle;
-@synthesize table;
+@synthesize filmsTableView;
 @synthesize loadingLabel;
 @synthesize activity;
 
@@ -46,23 +46,23 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			
 		case VIEW_BY_TITLE:
 			break;
-
+			
 		default:
 			break;
 	}
 	
-	[self.table reloadData];
+	[self.filmsTableView reloadData];
 }
 
 - (IBAction) reloadData:(id)sender
 {
 	// Hide everything, display activity indicator
-	self.table.hidden = YES;
+	self.filmsTableView.hidden = YES;
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	switchTitle.hidden = YES;
 	
 	[activity startAnimating];
-		
+	
 	// Start parsing data
 	[data removeAllObjects];
 	[days removeAllObjects];
@@ -123,7 +123,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	self.title = @"Films";
 	
     [super viewDidLoad];
-
+	
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
@@ -139,14 +139,14 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	// Inialize titles and sorts
 	titlesWithSort = [[NSMutableDictionary alloc] init];
 	sorts = [[NSMutableArray alloc] init];
-
+	
 	if (delegate.isOffSeason)
 	{
 		[activity stopAnimating];
 		
 		loadingLabel.hidden = YES;
 		self.navigationItem.titleView = nil;
-		self.table.hidden = YES;
+		self.filmsTableView.hidden = YES;
 		return;
 	}
 	
@@ -157,8 +157,8 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 
 - (void) viewWillAppear:(BOOL)animated
 {
-    NSIndexPath *tableSelection = [self.table indexPathForSelectedRow];
-    [self.table deselectRowAtIndexPath:tableSelection animated:NO];
+    NSIndexPath *tableSelection = [self.filmsTableView indexPathForSelectedRow];
+    [self.filmsTableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
 }
@@ -244,12 +244,12 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
 	// FILMS BY TITLES
 	htmldata = [[appDelegate dataProvider] filmsByTitle];
-
+	
 	DDXMLDocument *titleXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
 	rootElement = [titleXMLDoc rootElement];
 	NSString *pre = @"empty";
 	NSMutableArray *temp = [[NSMutableArray alloc] init];
-
+	
 	chilCount = [rootElement childCount];
 	for (NSInteger idx = 0; idx < chilCount; idx++)
 	{
@@ -265,7 +265,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSLog(@"***** Schedule %@ in ListByTitle is not present in ListByTime *****", ID);
 			continue;
 		}
-
+		
 		NSString *sortString = sort;
 		if(![pre isEqualToString:sortString])
 		{
@@ -292,9 +292,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
 	[activity stopAnimating];
 	
-	self.table.hidden = NO;
-	[self.table reloadData];
-
+	self.filmsTableView.hidden = NO;
+	[self.filmsTableView reloadData];
+	
 	// back up current data
 	backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
 	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
@@ -303,10 +303,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	[self syncTableDataWithScheduler];
 	
 	// Disable "Reload" button
-	self.table.tableHeaderView = nil;
-	// [self.table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-	//							atScrollPosition:UITableViewScrollPositionTop
-	//							animated:NO];
+	self.filmsTableView.tableHeaderView = nil;
 }
 
 - (NSArray*) getSchedulesFromListByTime:(NSArray*)films withProgId:(NSUInteger)progId
@@ -334,14 +331,14 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		NSString *day = [days objectAtIndex:section];
 		NSMutableArray *rows = [data objectForKey:day];
-		for (int row = 0; row < [rows count]; row++) 
+		for (int row = 0; row < [rows count]; row++)
 		{
 			Schedule *film = [rows objectAtIndex:row];
 			// film.isSelected = NO;
 			for (NSUInteger idx = 0; idx < count; idx++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if (obj.ID == film.ID) 
+				if (obj.ID == film.ID)
 				{
 					//NSLog(@"Current Data ... Already Added: %@. Time: %@",obj.title,obj.timeString);
 					film.isSelected = YES;
@@ -355,14 +352,14 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		NSString *day = [days objectAtIndex:section];
 		NSArray *rows = [backedUpData objectForKey:day];
-		for (int row = 0; row < [rows count]; row++) 
+		for (int row = 0; row < [rows count]; row++)
 		{
 			Schedule *film = [rows objectAtIndex:row];
 			//film.isSelected = NO;
 			for (NSUInteger idx = 0; idx < count; idx++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if (obj.ID == film.ID) 
+				if (obj.ID == film.ID)
 				{
 					//NSLog(@"BackedUp Data ... Already Added: %@.",obj.title);
 					film.isSelected = YES;
@@ -377,11 +374,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	NSUInteger i, count = [mySchedule count];
 	//NSLog(@"Scheduler count: %d",count);
 	// Sync current data
-	for (int section = 0; section < [days count]; section++) 
+	for (int section = 0; section < [days count]; section++)
 	{
 		NSString *day = [days objectAtIndex:section];
 		NSMutableArray *rows = [data objectForKey:day];
-		for (int row = 0; row < [rows count]; row++) 
+		for (int row = 0; row < [rows count]; row++)
 		{
 			Schedule *film = [rows objectAtIndex:row];
 			//film.isSelected = NO;
@@ -406,8 +403,8 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 {
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.table];
-	NSIndexPath *indexPath = [self.table indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
+	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
 	int row = [indexPath row];
 	int section = [indexPath section];
 	
@@ -474,7 +471,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			count = [[data objectForKey:day] count];
 		}
 			break;
-		
+			
 		case VIEW_BY_TITLE:
 		{
 			NSString *sort = [sorts objectAtIndex:section];
@@ -504,7 +501,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			// get film objects using date
 			NSString *dateString = [days objectAtIndex:section];
 			Schedule *film = [[data objectForKey:dateString] objectAtIndex:row];
-
+			
 			UIColor *textColor = [UIColor blackColor];
 			NSString *displayString = [NSString stringWithFormat:@"%@", film.title];
 			
@@ -573,7 +570,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			
 			checkButton = (UIButton*)[tempCell viewWithTag:CELL_BUTTON_TAG];
 			[checkButton setImage:buttonImage forState:UIControlStateNormal];
-
+			
 			cell = tempCell;
 		}
 			break;
@@ -584,7 +581,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:row];
 			NSInteger filmIdx = 0;
 			Schedule *film = [schedules objectAtIndex:filmIdx];
-
+			
 			UIColor *textColor = [UIColor blackColor];
 			NSString *displayString = [NSString stringWithFormat:@"%@", film.title];
 			
@@ -597,14 +594,14 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			{
 				[[tempCell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 			}
-				
+			
 			UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 2.0, 250.0, 20.0)];
 			titleLabel.tag = CELL_TITLE_LABEL_TAG;
 			titleLabel.text = displayString;
 			titleLabel.textColor = textColor;
 			titleLabel.font = [UIFont boldSystemFontOfSize:labelFontSize];
 			[tempCell.contentView addSubview:titleLabel];
-
+			
 			CGFloat hPos = 22.0;
 			for(Schedule *schedule in schedules)
 			{
@@ -635,11 +632,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 				[checkButton setImage:buttonImage forState:UIControlStateNormal];
 				[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				[tempCell.contentView addSubview:checkButton];
-
+				
 				hPos += 38.0;
 				filmIdx++;
 			}
-
+			
 			cell = tempCell;
 		}
 			break;
@@ -664,7 +661,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		case VIEW_BY_TITLE:
 			result = [sorts objectAtIndex:section];
 			break;
-
+			
 		default:
 			break;
 	}
@@ -676,7 +673,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 {
 	NSArray *result;
 	
-	switch (switcher) 
+	switch (switcher)
 	{
 		case VIEW_BY_DATE:
 			result = index;
@@ -685,7 +682,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		case VIEW_BY_TITLE:
 			result = sorts;
 			break;
-
+			
 		default:
 			break;
 	}
@@ -700,7 +697,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 {
 	int section = [indexPath section];
 	int row = [indexPath row];
-
+	
 	switch (switcher)
 	{
 		case VIEW_BY_DATE:
@@ -724,7 +721,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			[[self navigationController] pushViewController:filmDetail animated:YES];
 		}
 			break;
-
+			
 		default:
 			break;
 	}
@@ -740,7 +737,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		NSString *sort = [sorts objectAtIndex:[indexPath section]];
 		NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:[indexPath row]];
-			
+		
 		return 24.0 + (38 * schedules.count);
 	}
 }

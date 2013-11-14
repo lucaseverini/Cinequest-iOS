@@ -6,27 +6,20 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "CinequestAppDelegate.h"
+@class CinequestAppDelegate;
 
 @interface EventsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>	
 {
-	NSMutableDictionary *data;
-	NSMutableArray *days;
-	NSMutableArray *index;
-	
 	NSMutableDictionary *backedUpData;
 	NSMutableArray *backedUpDays;
 	NSMutableArray *backedUpIndex;
-	
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
 }
 
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
-@property (nonatomic, strong) IBOutlet UIImageView *CQIcon;
-@property (nonatomic, strong) IBOutlet UIImageView *SJSUIcon;
+@property (nonatomic, weak) IBOutlet UITableView *eventsTableView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, weak) IBOutlet UILabel *loadingLabel;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
 @property (nonatomic, strong) NSMutableArray *index;
 @property (nonatomic, strong) NSMutableArray *days;

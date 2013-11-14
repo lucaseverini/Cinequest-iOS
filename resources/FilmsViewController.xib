@@ -2,14 +2,14 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FilmsViewController">
             <connections>
                 <outlet property="activity" destination="24" id="26"/>
+                <outlet property="filmsTableView" destination="4" id="7by-zA-F4y"/>
                 <outlet property="loadingLabel" destination="23" id="25"/>
-                <outlet property="table" destination="4" id="rM1-Rd-gXV"/>
                 <outlet property="view" destination="11" id="20"/>
             </connections>
         </placeholder>

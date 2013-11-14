@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
+#import "CinequestItem.h"
 #import "ProgramItem.h"
 #import "Film.h"
 
@@ -13,9 +14,14 @@
 
 @synthesize films;
 
-- (id)init
+- (id) init
 {
-    films = [[NSMutableArray alloc] init];
+	self = [super init];
+	if(self != nil)
+	{
+		films = [[NSMutableArray alloc] init];
+	}
+	
     return self;
 }
 

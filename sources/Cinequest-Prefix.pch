@@ -8,8 +8,10 @@
 	#import <CoreGraphics/CoreGraphics.h>
 	#import <QuartzCore/QuartzCore.h>
 	#import <EventKit/EventKit.h>
+	#import <EventKitUI/EventKitUI.h>
 	#import <EventKit/EKObject.h>
 	#import <EventKit/EventKitDefines.h>
 	#import <MessageUI/MessageUI.h>
 	#import <MessageUI/MFMailComposeViewController.h>
+	#import <Social/Social.h>
 #endif

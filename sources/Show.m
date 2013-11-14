@@ -17,16 +17,19 @@
 @synthesize thumbImageURL;
 @synthesize eventImageURL;
 @synthesize infoLink;
-// Map<String, ArrayList<String>>
 @synthesize customProperties;
-// List<Showing>
 @synthesize currentShowings;
 
 
-- (id)init
+- (id) init
 {
-    customProperties = [[NSMutableDictionary alloc] init];
-    currentShowings = [[NSMutableArray alloc] init];
+	self = [super init];
+	if(self != nil)
+	{
+		customProperties = [[NSMutableDictionary alloc] init];
+		currentShowings = [[NSMutableArray alloc] init];
+	}
+	
     return self;
 }
 

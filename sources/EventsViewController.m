@@ -25,22 +25,22 @@
 
 @synthesize data;
 @synthesize days;
-@synthesize tableView = _tableView;
+@synthesize eventsTableView;
 @synthesize index;
 @synthesize loadingLabel;
 @synthesize activity;
-@synthesize CQIcon;
-@synthesize SJSUIcon;
 @synthesize offSeasonLabel;
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
 }
 
 #pragma mark -
 #pragma mark UIViewController Methods
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 	
 	self.title = @"Events";
@@ -56,11 +56,12 @@
 	backedUpIndex	= [[NSMutableArray alloc] init];
 	backedUpData	= [[NSMutableDictionary alloc] init];
 
-	if (delegate.isOffSeason) {
+	if (delegate.isOffSeason)
+	{
 		[activity stopAnimating];
 		loadingLabel.hidden = YES;
 		offSeasonLabel.hidden = NO;
-		self.tableView.hidden = YES;
+		self.eventsTableView.hidden = YES;
 		return;
 	}
 	
@@ -72,9 +73,10 @@
 	[self reloadData:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-    [self.tableView deselectRowAtIndexPath:tableSelection animated:NO];
+- (void) viewWillAppear:(BOOL)animated
+{
+    NSIndexPath *tableSelection = [self.eventsTableView indexPathForSelectedRow];
+    [self.eventsTableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
 }
@@ -82,8 +84,9 @@
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)reloadData:(id)sender {
-	self.tableView.hidden = YES;
+- (IBAction)reloadData:(id)sender
+{
+	self.eventsTableView.hidden = YES;
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	self.navigationItem.leftBarButtonItem.enabled = NO;
 	[activity startAnimating];
@@ -134,18 +137,19 @@
 	if (counter != 0)
 	{
 		[self syncTableDataWithScheduler];
-		[self.tableView reloadData];
+		[self.eventsTableView reloadData];
 
 		[delegate jumpToScheduler];
 	}
 }
 
-- (void)refine:(id)sender {
+- (void)refine:(id)sender
+{
 	// Back button
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-																			  style:UIBarButtonItemStyleDone
-																			 target:self
-																			 action:@selector(back:)];
+																				style:UIBarButtonItemStyleDone
+																				target:self
+																				action:@selector(back:)];
 	// Remove rows
 	NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
 	NSMutableArray *itemsBeingDeleted = [[NSMutableArray alloc] init];
@@ -163,11 +167,13 @@
 				[indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
 				[itemsBeingDeleted addObject:item];
 			}
-			else {
+			else
+			{
 				//NSLog(@"%@ - %@",item.time,item.title);
 			}
 			
 		}
+		
 		[rows removeObjectsInArray:itemsBeingDeleted];
 		[itemsBeingDeleted removeAllObjects];
 	}
@@ -190,23 +196,23 @@
 	[index removeObjectsAtIndexes:indexSet];
 	
 	// Start updating table
-	[self.tableView beginUpdates];
+	[self.eventsTableView beginUpdates];
 	
-	[self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
+	[self.eventsTableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
 	
-	[self.tableView deleteSections:indexSet withRowAnimation:NO];
+	[self.eventsTableView deleteSections:indexSet withRowAnimation:NO];
 	
-	[self.tableView endUpdates];
+	[self.eventsTableView endUpdates];
 	
 	// add push animation
 	CATransition *transition = [CATransition animation];
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromTop;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.eventsTableView layer] addAnimation:transition forKey:nil];
 	
 	// reload data
-	[self.tableView reloadData];
+	[self.eventsTableView reloadData];
 }
 
 - (void)back:(id)sender
@@ -236,10 +242,10 @@
 	transition.type = kCATransitionPush;
 	transition.subtype = kCATransitionFromBottom;
 	transition.duration = 0.3;
-	[[self.tableView layer] addAnimation:transition forKey:nil];
+	[[self.eventsTableView layer] addAnimation:transition forKey:nil];
 	
 	// reload table data
-	[self.tableView reloadData];
+	[self.eventsTableView reloadData];
 }
 
 #pragma mark -
@@ -328,7 +334,17 @@
 		}
 		
 		
+		[activity stopAnimating];
+		loadingLabel.hidden = YES;
+
+		self.navigationItem.rightBarButtonItem.enabled = YES;
+		self.navigationItem.leftBarButtonItem.enabled = YES;
+        
+        [self.eventsTableView reloadData];
+		self.eventsTableView.hidden = NO;
+		self.eventsTableView.tableHeaderView = nil;
 	}
+	
 	[data setObject:tempArray forKey:previousDay];
 	
 	// back up current data
@@ -338,20 +354,17 @@
 	
 	[activity stopAnimating];
 	loadingLabel.hidden = YES;
-	CQIcon.alpha = 0.2;
-	SJSUIcon.alpha = 0.2;
+
 	self.navigationItem.rightBarButtonItem.enabled = YES;
 	self.navigationItem.leftBarButtonItem.enabled = YES;
-	[self.tableView reloadData];
-	self.tableView.hidden = NO;
-	//Disable "Reload" button
-	self.tableView.tableHeaderView = nil;
-//[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-//					 atScrollPosition:UITableViewScrollPositionTop
-//							 animated:NO];
+
+	[self.eventsTableView reloadData];
+	self.eventsTableView.hidden = NO;
+	self.eventsTableView.tableHeaderView = nil;
 }
 
-- (void)syncTableDataWithScheduler {
+- (void) syncTableDataWithScheduler
+{
 	NSUInteger i, count = [mySchedule count];
 	
 	// Sync current data
@@ -372,9 +385,7 @@
 					//NSLog(@"Added: %@. Time: %@",obj.title,obj.timeString);
 					event.isSelected = YES;
 				}
-				
 			}
-			
 		}
 	}
 	
@@ -394,10 +405,8 @@
 				{
 					//NSLog(@"Added: %@.",obj.title);
 					event.isSelected = YES;
-					
 				}
 			}
-			
 		}
 	}
 }
@@ -405,11 +414,13 @@
 #pragma mark -
 #pragma mark UITableView DataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
     return [days count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     NSString *day = [days objectAtIndex:section];
 	NSMutableArray *events = [data objectForKey:day];
 	
@@ -513,8 +524,8 @@
 {
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.tableView];
-	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:self.eventsTableView];
+	NSIndexPath *indexPath = [self.eventsTableView indexPathForRowAtPoint:currentTouchPosition];
 	int row = [indexPath row];
 	int section = [indexPath section];
 	
@@ -532,7 +543,7 @@
 		event.isSelected = !checked;
 		
 		// get the current cell and the checkbox button 
-		UITableViewCell *currentCell = [self.tableView cellForRowAtIndexPath:indexPath];
+		UITableViewCell *currentCell = [self.eventsTableView cellForRowAtIndexPath:indexPath];
 		UIButton *checkBoxButton = (UIButton*)[currentCell viewWithTag:CELL_BUTTON_TAG];
 		
 		// set button's image
@@ -541,12 +552,14 @@
 	}
 }
 
-- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
+- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+{
 	NSString *day = [days objectAtIndex:section];
 	return day;
 }
 
-- (NSArray*)sectionIndexTitlesForTableView:(UITableView*)tableView {
+- (NSArray*)sectionIndexTitlesForTableView:(UITableView*)tableView
+{
 	return index;
 }
 

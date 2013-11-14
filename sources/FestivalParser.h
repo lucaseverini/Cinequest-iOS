@@ -7,6 +7,7 @@
 //
 
 @class Festival;
+
 @interface FestivalParser : NSObject
 
 @property (strong, nonatomic) NSMutableArray *shows;

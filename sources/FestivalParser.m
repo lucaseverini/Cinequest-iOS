@@ -23,8 +23,14 @@
 
 @synthesize shows;
 
-- (id)init {
-    shows = [[NSMutableArray alloc] init];
+- (id) init
+{
+ 	self = [super init];
+	if(self != nil)
+	{
+		shows = [[NSMutableArray alloc] init];
+	}
+	
     return self;
 }
 

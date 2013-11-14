@@ -6,25 +6,17 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "FBConnect.h"
-
 @class Schedule;
 @class CinequestAppDelegate;
 
-@interface EventDetailViewController : UIViewController 
-	<UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate, FBDialogDelegate, FBSessionDelegate, FBRequestDelegate>
+@interface EventDetailViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
 {
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
 	Schedule *myData;
-	
 	NSString *eventId;
 	NSURL *dataLink;
-	
 	NSMutableDictionary *dataDictionary;
-	BOOL displayAddButton;	
-	FBSession *_session;
-	FBUID facebookID;
 	UIButton *postThisButton;
 }
 

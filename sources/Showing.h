@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import "Venue.h"
+@class Venue;
 
 @interface Showing : NSObject
 

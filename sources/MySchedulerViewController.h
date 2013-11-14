@@ -10,7 +10,7 @@
 @class EKEventStore;
 @class EKCalendar;
 
-@interface MySchedulerViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSXMLParserDelegate>
+@interface MySchedulerViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, EKEventEditViewDelegate>
 {
 	NSMutableArray *index;
 	NSMutableArray *titleForSection;
@@ -27,7 +27,7 @@
 	UITableViewCell *previousCell;
 }
 
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UITableView *scheduleTableView;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *password;
