@@ -8,7 +8,7 @@
 
 #import "FilmsViewController.h"
 #import "NewsViewController.h"
-#import "FilmDetail.h"
+#import "FilmDetailController.h"
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
 #import "DDXML.h"
@@ -19,6 +19,7 @@
 
 static NSString *const kDateCellIdentifier = @"DateCell";
 static NSString *const kTitleCellIdentifier = @"TitleCell";
+static char *const kAssociatedScheduleKey = "Schedule";
 
 
 @implementation FilmsViewController
@@ -36,15 +37,97 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 #pragma mark -
 #pragma mark Actions
 
+- (void) leftButtonTapped:(id)sender event:(id)touchEvent
+{
+	NSSet *touches = [touchEvent allTouches];
+	UITouch *touch = [touches anyObject];
+	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
+	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
+	int row = [indexPath row];
+	int section = [indexPath section];
+	
+	if(indexPath != nil)
+	{
+		Schedule *film = nil;
+		
+		if(switcher == VIEW_BY_DATE)
+		{
+			NSString *longDateString = [days objectAtIndex:section];
+			film = [[data objectForKey:longDateString] objectAtIndex:row];
+		}
+		else // VIEW_BY_TITLE
+		{
+			NSString *sort = [sorts objectAtIndex:section];
+			NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:row];
+			NSInteger filmIdx = [sender tag] - CELL_LEFTBUTTON_TAG;
+			film = [schedules objectAtIndex:filmIdx];
+		}
+		
+		film.isSelected ^= YES;
+		[self actionForFilm:film];
+		
+		UIButton *checkBoxButton = (UIButton*)sender;
+		UIImage *buttonImage = (film.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
+	}
+}
+
+- (void) rightButtonTapped:(id)sender event:(id)touchEvent
+{
+	NSSet *touches = [touchEvent allTouches];
+	UITouch *touch = [touches anyObject];
+	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
+	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
+	int section = [indexPath section];
+	int row = [indexPath row];
+
+	switch(switcher)
+	{
+		case VIEW_BY_DATE:
+		{
+			NSString *date = [days objectAtIndex:section];
+			NSMutableArray *films = [data objectForKey:date];
+			Schedule *film = [films objectAtIndex:row];
+			[self showFilmDetails:film];
+		}
+			break;
+			
+		case VIEW_BY_TITLE:
+		{
+			NSString *sort = [sorts objectAtIndex:section];
+			NSMutableArray *films = [titlesWithSort objectForKey:sort];
+			Schedule *film = [[films objectAtIndex:row] objectAtIndex:0];
+			[self showFilmDetails:film];
+		}
+			break;
+	}
+}
+
+- (void) launchMaps
+{
+	// Create an MKMapItem to pass to the Maps app
+	CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(16.775, -3.009);
+	MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate addressDictionary:nil];
+	MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+	[mapItem setName:@"Cinequest - Venue C12"];
+	
+	// Pass the map item to the Maps app
+	[mapItem openInMapsWithLaunchOptions:nil];
+}
+
 - (IBAction) switchTitle:(id)sender
 {
 	switcher = [sender selectedSegmentIndex];
 	switch (switcher)
 	{
 		case VIEW_BY_DATE:
+			listByTitleOffset = [self.filmsTableView contentOffset].y;
+			[self.filmsTableView setContentOffset:CGPointMake(0.0, listByDateOffset) animated:NO];
 			break;
 			
 		case VIEW_BY_TITLE:
+			listByDateOffset = [self.filmsTableView contentOffset].y;
+			[self.filmsTableView setContentOffset:CGPointMake(0.0, listByTitleOffset) animated:NO];
 			break;
 			
 		default:
@@ -71,6 +154,85 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	[sorts removeAllObjects];
 	
 	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
+}
+
+- (void) actionForFilm:(Schedule*)film
+{
+	film.presentInScheduler = !film.isSelected;
+	film.presentInCalendar = !film.isSelected;
+	
+	NSString *choice1 = nil;
+	NSString *choice2 = nil;
+	NSString *choice3 = nil;
+	NSString *choice4 = nil;
+	NSString *choice5 = nil;
+
+	if(film.presentInScheduler)
+	{
+		choice1 = film.presentInCalendar ? @"Remove from My Schedule & Calendar" : @"Remove from My Schedule";
+		choice2 = film.presentInCalendar ? @"Show in Calendar" : @"Add to Calendar";
+		choice3 = @"Show Venue location in Maps";
+		choice4 = @"Film Detail";
+	}
+	else
+	{
+		choice1 = @"Add to My Schedule";
+		choice2 = @"Add to My Schedule and Calendar";
+		choice3 = @"Show in Calendar";
+		choice4 = @"Show Venue location in Maps";
+		choice5 = @"Film Detail";
+	}
+	
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self
+												cancelButtonTitle:@"Cancel"
+												otherButtonTitles:choice1, choice2, choice3, choice4, choice5, nil];
+	
+	objc_setAssociatedObject(alert, kAssociatedScheduleKey, film, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	
+	[alert show];
+}
+
+- (void) alertView:(UIAlertView*)alert clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	Schedule *film = objc_getAssociatedObject(alert, kAssociatedScheduleKey);
+
+	switch(buttonIndex)
+	{
+		case 1:			// choice1
+			break;
+
+		case 2:			// choice2
+			break;
+
+		case 3:			// choice3
+			if(film.presentInScheduler)
+			{
+				[self launchMaps];
+			}
+			else
+			{
+				// Open calendar
+			}
+			break;
+
+		case 4:			// choice4
+			if(film.presentInScheduler)
+			{
+				[self showFilmDetails:film];
+			}
+			else
+			{
+				[self launchMaps];
+			}
+			break;
+
+		case 5:			// choice5
+			[self showFilmDetails:film];
+			break;
+
+		default:		// Cancel
+			break;
+	}
 }
 
 - (void) addOrRemoveFilm:(Schedule*)film
@@ -150,8 +312,12 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		return;
 	}
 	
+	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	venueFont = timeFont;
+	
 	switcher = VIEW_BY_DATE;
-	// Load data
+
 	[self reloadData:nil];
 }
 
@@ -369,72 +535,6 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	}
 }
 
-- (void) removeDeletedObjects
-{
-	NSUInteger i, count = [mySchedule count];
-	//NSLog(@"Scheduler count: %d",count);
-	// Sync current data
-	for (int section = 0; section < [days count]; section++)
-	{
-		NSString *day = [days objectAtIndex:section];
-		NSMutableArray *rows = [data objectForKey:day];
-		for (int row = 0; row < [rows count]; row++)
-		{
-			Schedule *film = [rows objectAtIndex:row];
-			//film.isSelected = NO;
-			for(i = 0; i < count; i++)
-			{
-				Schedule *obj = [mySchedule objectAtIndex:i];
-				if((obj.ID == film.ID) && [obj.title isEqualToString:film.title] && [obj.date compare:film.date] == NSOrderedSame)
-				{
-					//NSLog(@"Current Data ... Already Added: %@. Time: %@",obj.title,obj.timeString);
-					film.isSelected = YES;
-				}
-				else
-				{
-					[rows removeObjectAtIndex:row];
-				}
-			}
-		}
-	}
-}
-
-- (void) checkBoxButtonTapped:(id)sender event:(id)touchEvent
-{
-	NSSet *touches = [touchEvent allTouches];
-	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
-	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
-	int row = [indexPath row];
-	int section = [indexPath section];
-	
-	if(indexPath != nil)
-	{
-		Schedule *film = nil;
-		
-		if(switcher == VIEW_BY_DATE)
-		{
-			NSString *longDateString = [days objectAtIndex:section];
-			film = [[data objectForKey:longDateString] objectAtIndex:row];
-		}
-		else
-		{
-			NSString *sort = [sorts objectAtIndex:section];
-			NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:row];
-			NSInteger filmIdx = [sender tag] - CELL_BUTTON_TAG;
-			film = [schedules objectAtIndex:filmIdx];
-		}
-		
-		// Set checkBox's status
-		film.isSelected ^= YES;
-		[self addOrRemoveFilm:film];
-		
-		UIButton *checkBoxButton = (UIButton*)sender;
-		UIImage *buttonImage = (film.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-	}
-}
-
 #pragma mark -
 #pragma mark Table View Datasource methods
 
@@ -487,13 +587,8 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 {
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
-	CGRect rowRect = [tableView rectForRowAtIndexPath:indexPath];
 	UITableViewCell *cell = nil;
-	
-	CGFloat labelFontSize = [UIFont labelFontSize];
-	CGFloat fontSize = [UIFont systemFontSize];
-	CGFloat smallFontSize = [UIFont smallSystemFontSize];
-    
+	   
 	switch(switcher)
 	{
 		case VIEW_BY_DATE:
@@ -502,9 +597,6 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSString *dateString = [days objectAtIndex:section];
 			Schedule *film = [[data objectForKey:dateString] objectAtIndex:row];
 			
-			UIColor *textColor = [UIColor blackColor];
-			NSString *displayString = [NSString stringWithFormat:@"%@", film.title];
-			
 			// check if current cell is already added to mySchedule
 			NSUInteger idx, count = [mySchedule count];
 			for(idx = 0; idx < count; idx++)
@@ -512,66 +604,108 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 				Schedule *obj = [mySchedule objectAtIndex:idx];
 				if(obj.ID == film.ID)//&& [obj.title isEqualToString:film.title] && [obj.date compare:film.date] == NSOrderedSame
 				{
-					//NSLog(@"%@ was added.",obj.title);
-					// textColor = [UIColor blueColor];
 					film.isSelected = YES;
 					break;
 				}
 			}
 			
-			// get reusable cell
-			UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:kDateCellIdentifier];
-			UILabel *titleLabel;
-			UILabel *timeLabel;
-			UILabel *venueLabel;
-			UIButton *checkButton;
+			UILabel *titleLabel, *timeLabel, *venueLabel;
+			UIButton *calButton, *infoButton;
 			
 			// Get checkbox status
 			UIImage *buttonImage = (film.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+			NSInteger titleNumLines = 1;
 			
-			if(tempCell == nil)
+			cell = [tableView dequeueReusableCellWithIdentifier:kDateCellIdentifier];
+			if(cell == nil)
 			{
-				tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDateCellIdentifier];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDateCellIdentifier];
 				
-				UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 2.0, 290.0, 20.0)];
+				UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
 				titleLabel.tag = CELL_TITLE_LABEL_TAG;
-				titleLabel.font = [UIFont boldSystemFontOfSize:labelFontSize];
-				titleLabel.textColor = textColor;
-				[tempCell.contentView addSubview:titleLabel];
+				titleLabel.font = titleFont;
+				[cell.contentView addSubview:titleLabel];
 				
-				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 22.0, 250.0, 20.0)];
+				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
-				timeLabel.font = [UIFont systemFontOfSize:fontSize];
-				timeLabel.textColor = textColor;
-				[tempCell.contentView addSubview:timeLabel];
+				timeLabel.font = timeFont;
+				[cell.contentView addSubview:timeLabel];
 				
-				venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 40.0, 250.0, 20.0)];
+				venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
 				venueLabel.tag = CELL_VENUE_LABEL_TAG;
-				venueLabel.font = [UIFont systemFontOfSize:fontSize];
-				venueLabel.textColor = textColor;
-				[tempCell.contentView addSubview:venueLabel];
+				venueLabel.font = venueFont;
+				[cell.contentView addSubview:venueLabel];
 				
-				checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				checkButton.frame = CGRectMake(4.0, 16.0, 48.0, 48.0);
-				[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
-				checkButton.backgroundColor = [UIColor clearColor];
-				checkButton.tag = CELL_BUTTON_TAG;
-				[tempCell.contentView addSubview:checkButton];
+				infoButton = [UIButton buttonWithType: [appDelegate OSVersion] < 7.0 ? UIButtonTypeInfoDark : UIButtonTypeInfoLight];
+				infoButton.frame = CGRectMake(15.0, 4.0, 24.0, 24.0);
+				[infoButton addTarget:self action:@selector(rightButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+				infoButton.tag = CELL_RIGHTBUTTON_TAG;
+				[cell.contentView addSubview:infoButton];
+
+				calButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				calButton.frame = CGRectMake(11.0, 32.0, 32.0, 32.0);
+				[calButton addTarget:self action:@selector(leftButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+				calButton.tag = CELL_LEFTBUTTON_TAG;
+				[cell.contentView addSubview:calButton];
 			}
 			
-			titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
-			titleLabel.text = displayString;
+			titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
+			CGSize size = [film.title sizeWithFont:titleFont];
+			if(size.width < 256.0)
+			{
+				[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
+			}
+			else
+			{
+				[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 42.0)];
+				titleNumLines = 2;
+			}
 			
-			timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
+			[titleLabel setNumberOfLines:titleNumLines];
+			titleLabel.text = film.title;
+			
+			timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
+			if(titleNumLines == 1)
+			{
+				[timeLabel setFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
+			}
+			else
+			{
+				[timeLabel setFrame:CGRectMake(52.0, 50.0, 250.0, 20.0)];
+			}
 			timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", film.dateString, film.timeString, film.endTimeString];
 			
-			venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
+			venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
+			if(titleNumLines == 1)
+			{
+				[venueLabel setFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
+			}
+			else
+			{
+				[venueLabel setFrame:CGRectMake(52.0, 68.0, 250.0, 20.0)];
+			}
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",film.venue];
 			
-			checkButton = (UIButton*)[tempCell viewWithTag:CELL_BUTTON_TAG];
-			[checkButton setImage:buttonImage forState:UIControlStateNormal];
-			
-			cell = tempCell;
+			infoButton = (UIButton*)[cell viewWithTag:CELL_RIGHTBUTTON_TAG];
+			if(titleNumLines == 1)
+			{
+				[infoButton setFrame:CGRectMake(15.0, 4.0, 24.0, 24.0)];
+			}
+			else
+			{
+				[infoButton setFrame:CGRectMake(15.0, 15.0, 24.0, 24.0)];
+			}
+
+			calButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
+			if(titleNumLines == 1)
+			{
+				[calButton setFrame:CGRectMake(11.0, 32.0, 32.0, 32.0)];
+			}
+			else
+			{
+				[calButton setFrame:CGRectMake(11.0, 54.0, 32.0, 32.0)];
+			}
+			[calButton setImage:buttonImage forState:UIControlStateNormal];
 		}
 			break;
 			
@@ -582,27 +716,44 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSInteger filmIdx = 0;
 			Schedule *film = [schedules objectAtIndex:filmIdx];
 			
-			UIColor *textColor = [UIColor blackColor];
-			NSString *displayString = [NSString stringWithFormat:@"%@", film.title];
-			
-			UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:kTitleCellIdentifier];
-			if(tempCell == nil)
+			cell = [tableView dequeueReusableCellWithIdentifier:kTitleCellIdentifier];
+			if(cell == nil)
 			{
-				tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kTitleCellIdentifier];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kTitleCellIdentifier];
 			}
 			else
 			{
-				[[tempCell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+				[[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+			}
+	
+			NSInteger titleNumLines = 1;
+			CGSize size = [film.title sizeWithFont:titleFont];
+			if(size.width >= 256.0)
+			{
+				titleNumLines = 2;
 			}
 			
-			UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 2.0, 290.0, 20.0)];
+			UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleNumLines == 1 ? CGRectMake(52.0, 6.0, 256.0, 20.0) : CGRectMake(52.0, 6.0, 256.0, 42.0)];
 			titleLabel.tag = CELL_TITLE_LABEL_TAG;
-			titleLabel.text = displayString;
-			titleLabel.textColor = textColor;
-			titleLabel.font = [UIFont boldSystemFontOfSize:labelFontSize];
-			[tempCell.contentView addSubview:titleLabel];
+			[titleLabel setNumberOfLines:titleNumLines];
+			titleLabel.font = titleFont;
+			titleLabel.text = film.title;
+			[cell.contentView addSubview:titleLabel];
 			
-			CGFloat hPos = 22.0;
+			UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+			if(titleNumLines == 1)
+			{
+				[infoButton setFrame:CGRectMake(15.0, 4.0, 24.0, 24.0)];
+			}
+			else
+			{
+				[infoButton setFrame:CGRectMake(15.0, 15.0, 24.0, 24.0)];
+			}
+			[infoButton addTarget:self action:@selector(rightButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+			infoButton.tag = CELL_RIGHTBUTTON_TAG;
+			[cell.contentView addSubview:infoButton];
+
+			CGFloat hPos = titleNumLines == 1 ? 28.0 : 50.0;
 			for(Schedule *schedule in schedules)
 			{
 				if(filmIdx > 0)
@@ -612,36 +763,28 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 				
 				UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, hPos, 250.0, 20.0)];
 				timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.timeString, schedule.endTimeString];
-				timeLabel.font = [UIFont systemFontOfSize:fontSize];
-				timeLabel.textColor = textColor;
+				timeLabel.font = timeFont;
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
-				[tempCell.contentView addSubview:timeLabel];
+				[cell.contentView addSubview:timeLabel];
 				
 				UILabel *venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, hPos + 18.0, 250.0, 20.0)];
 				venueLabel.text = [NSString stringWithFormat:@"Venue: %@", schedule.venue];
-				venueLabel.font = [UIFont systemFontOfSize:fontSize];
-				venueLabel.textColor = textColor;
+				venueLabel.font = venueFont;
 				venueLabel.tag = CELL_VENUE_LABEL_TAG;
-				[tempCell.contentView addSubview:venueLabel];
+				[cell.contentView addSubview:venueLabel];
 				
-				UIButton *checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				checkButton.frame = CGRectMake(4.0, hPos - 6.0, 48.0, 48.0);
-				checkButton.backgroundColor = [UIColor clearColor];
-				checkButton.tag = CELL_BUTTON_TAG + filmIdx;
+				UIButton *calButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				calButton.frame = CGRectMake(11.0, hPos + 4, 32.0, 32.0);
+				calButton.tag = CELL_LEFTBUTTON_TAG + filmIdx;
 				UIImage *buttonImage = (film.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-				[checkButton setImage:buttonImage forState:UIControlStateNormal];
-				[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
-				[tempCell.contentView addSubview:checkButton];
+				[calButton setImage:buttonImage forState:UIControlStateNormal];
+				[calButton addTarget:self action:@selector(leftButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+				[cell.contentView addSubview:calButton];
 				
 				hPos += 38.0;
 				filmIdx++;
 			}
-			
-			cell = tempCell;
 		}
-			break;
-			
-		default:
 			break;
 	}
 	
@@ -705,9 +848,8 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSString *date = [days objectAtIndex:section];
 			NSMutableArray *films = [data objectForKey:date];
 			Schedule *film = [films objectAtIndex:row];
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film andId:film.prog_id];
 			
-			[[self navigationController] pushViewController:filmDetail animated:YES];
+			[self actionForFilm:film];
 		}
 			break;
 			
@@ -716,29 +858,60 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSString *sort = [sorts objectAtIndex:section];
 			NSMutableArray *films = [titlesWithSort objectForKey:sort];
 			Schedule *film = [[films objectAtIndex:row] objectAtIndex:0];
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film  andId:film.prog_id];
 			
-			[[self navigationController] pushViewController:filmDetail animated:YES];
+			[self actionForFilm:film];
 		}
 			break;
 			
 		default:
 			break;
 	}
+	
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void) showFilmDetails:(Schedule*)film
+{
+	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Film Detail" andDataObject:film  andId:film.prog_id];
+	
+	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	NSUInteger section = [indexPath section];
+	NSUInteger row = [indexPath row];
+
 	if(switcher == VIEW_BY_DATE)
 	{
-		return 62.0;
+		NSString *dateString = [days objectAtIndex:section];
+		Schedule *film = [[data objectForKey:dateString] objectAtIndex:row];
+		
+		CGSize size = [film.title sizeWithFont:titleFont];
+		if(size.width >= 256.0)
+		{
+			return 88.0;
+		}
+		else
+		{
+			return 66.0;
+		}
 	}
-	else
+	else // VIEW_BY_TITLE
 	{
 		NSString *sort = [sorts objectAtIndex:[indexPath section]];
 		NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:[indexPath row]];
+		Schedule *film = [schedules objectAtIndex:0];
 		
-		return 24.0 + (38 * schedules.count);
+		CGSize size = [film.title sizeWithFont:titleFont];
+		if(size.width >= 256.0)
+		{
+			return 50.0 + (38 * schedules.count);
+		}
+		else
+		{
+			return 28.0 + (38 * schedules.count);
+		}
 	}
 }
 
