@@ -21,11 +21,6 @@
 	NSMutableArray *mySchedule;
 	NSInteger switcher;
 	CinequestAppDelegate *delegate;
-	CGFloat listByDateOffset;
-	CGFloat listByTitleOffset;
-	UIFont *titleFont;
-	UIFont *timeFont;
-	UIFont *venueFont;
 }
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;

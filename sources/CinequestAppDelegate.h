@@ -20,6 +20,8 @@
 
 #define XML_FEED_URL    @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
 
+#define VENUE_FEED_URL  @"http://www.cinequest.org/venuelist.php"
+
 #define CELL_BUTTON_TAG			100
 #define CELL_TITLE_LABEL_TAG	2
 #define	CELL_TIME_LABEL_TAG		3
@@ -55,7 +57,7 @@
 @property (readwrite) BOOL isPresentingModalView;
 @property (readwrite) BOOL isLoggedInFacebook;
 @property (readwrite) BOOL isOffSeason;
-@property (nonatomic, strong) Festival* festival;
+@property (nonatomic, strong) Festival *festival;
 @property (nonatomic, strong) Reachability *reachability;
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
 @property (nonatomic, strong) DataProvider *dataProvider;
