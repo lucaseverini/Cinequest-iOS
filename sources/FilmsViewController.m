@@ -47,9 +47,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	days = [[NSMutableArray alloc] init];
 	index = [[NSMutableArray alloc] init];
 	
-	backedUpDays = [[NSMutableArray alloc] init];
-	backedUpIndex = [[NSMutableArray alloc] init];
-	backedUpData = [[NSMutableDictionary alloc] init];
+	//backedUpDays = [[NSMutableArray alloc] init];
+	//backedUpIndex = [[NSMutableArray alloc] init];
+	//backedUpData = [[NSMutableDictionary alloc] init];
 	
 	// Inialize titles and sorts
 	titlesWithSort = [[NSMutableDictionary alloc] init];
@@ -67,6 +67,8 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
 	switcher = VIEW_BY_DATE;
 	// Load data
+    // Disable "Reload" button
+    self.filmsTableView.tableHeaderView = nil;
 	[self reloadData:nil];
 }
 
@@ -76,6 +78,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
     [self.filmsTableView deselectRowAtIndexPath:tableSelection animated:NO];
 	
 	[self syncTableDataWithScheduler];
+    
 }
 
 - (void) didReceiveMemoryWarning
@@ -98,11 +101,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		// Add the selected film
 		BOOL alreadyAdded = NO;
-		NSInteger scheduleCount = [mySchedule count];
-		for(NSInteger idx = 0; idx < scheduleCount; idx++)
+		for(Schedule *schedule in mySchedule)
 		{
-			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == film.ID)
+			if ([schedule.ID isEqualToString: film.ID])
 			{
 				alreadyAdded = YES;
 				break;
@@ -117,14 +118,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	else
 	{
 		// Remove the un-selected film
-		NSInteger scheduleCount = [mySchedule count];
-		for(NSInteger idx = 0; idx < scheduleCount; idx++)
+		for(Schedule *schedule in mySchedule)
 		{
-			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == film.ID)
+			if ([schedule.ID isEqualToString: film.ID])
 			{
 				[mySchedule removeObject:film];
-				
 				NSLog(@"%@ : %@ %@ removed from my schedule", film.title, film.dateString, film.startTime);
 				break;
 			}
@@ -162,7 +160,6 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
     [delegate.festival.schedules sortUsingDescriptors:[NSArray arrayWithObjects:
                                                        [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES],nil]];
     NSString *previousDay = @"empty";
-	NSMutableArray *films = [NSMutableArray arrayWithCapacity:1000]; // fimls
 	NSMutableArray *tempArray = [NSMutableArray array];
     
 	for (Schedule *schedule in delegate.festival.schedules)
@@ -197,13 +194,6 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
 	for (Film *film in delegate.festival.films)
 	{
-		//NSArray *schedule = [self getSchedulesFromListByTime:films withProgId:[ID integerValue]];
-		//if(schedule.count == 0)
-		//{
-		//	NSLog(@"***** Schedule %@ in ListByTitle is not present in ListByTime *****", ID);
-		//	continue;
-		//}
-		
 		NSString *sortString = [film.name substringToIndex:1];
 		if(![pre isEqualToString:sortString])
 		{
@@ -234,14 +224,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	[self.filmsTableView reloadData];
 	
 	// back up current data
-	//backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
-	//backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
-	//backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
+    backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
+	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
+	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
 	
 	[self syncTableDataWithScheduler];
-	
-	// Disable "Reload" button
-	self.filmsTableView.tableHeaderView = nil;
     
 }
 
@@ -251,7 +238,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
 	for(Schedule *schedule in films)
 	{
-		if([schedule.itemID isEqualToString: progId])
+		if([schedule.itemID isEqualToString:progId])
 		{
 			[schedules addObject:schedule];
 		}
@@ -278,7 +265,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			for (NSUInteger idx = 0; idx < count; idx++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if (obj.ID == film.ID)
+				if ([obj.ID isEqualToString:film.ID])
 				{
 					//NSLog(@"Current Data ... Already Added: %@. Time: %@",obj.title,obj.timeString);
 					film.isSelected = YES;
@@ -299,7 +286,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			for (NSUInteger idx = 0; idx < count; idx++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if (obj.ID == film.ID)
+				if ([obj.ID isEqualToString:film.ID])
 				{
 					//NSLog(@"BackedUp Data ... Already Added: %@.",obj.title);
 					film.isSelected = YES;
@@ -325,7 +312,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			for(i = 0; i < count; i++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:i];
-				if((obj.ID == film.ID) && [obj.title isEqualToString:film.title] && [obj.startDate compare:film.startDate] == NSOrderedSame)
+				if(([obj.ID isEqualToString:film.ID]) && [obj.title isEqualToString:film.title] && [obj.startDate compare:film.startDate] == NSOrderedSame)
 				{
 					//NSLog(@"Current Data ... Already Added: %@. Time: %@",obj.title,obj.startTime);
 					film.isSelected = YES;
@@ -517,12 +504,10 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		case VIEW_BY_TITLE:
 		{
 			NSString *sort = [sorts objectAtIndex:section];
-			NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:row];
-			NSInteger filmIdx = 0;
-			Schedule *film = [schedules objectAtIndex:filmIdx];
+			Film *film = [[titlesWithSort objectForKey:sort] objectAtIndex:row];
 			
 			UIColor *textColor = [UIColor blackColor];
-			NSString *displayString = [NSString stringWithFormat:@"%@", film.title];
+			NSString *displayString = [NSString stringWithFormat:@"%@", film.name];
 			
 			UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:kTitleCellIdentifier];
 			if(tempCell == nil)
@@ -540,15 +525,12 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			titleLabel.textColor = textColor;
 			titleLabel.font = [UIFont boldSystemFontOfSize:labelFontSize];
 			[tempCell.contentView addSubview:titleLabel];
-			
+            
+			// Each film has an array of Schedules, so I just use film.schedules here. Okay?
 			CGFloat hPos = 22.0;
-			for(Schedule *schedule in schedules)
+            int filmIdx = 0;
+			for(Schedule *schedule in film.schedules)
 			{
-				if(filmIdx > 0)
-				{
-					film = [schedules objectAtIndex:filmIdx];
-				}
-				
 				UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, hPos, 250.0, 20.0)];
 				timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime];
 				timeLabel.font = [UIFont systemFontOfSize:fontSize];
@@ -567,14 +549,14 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 				checkButton.frame = CGRectMake(4.0, hPos - 6.0, 48.0, 48.0);
 				checkButton.backgroundColor = [UIColor clearColor];
 				checkButton.tag = CELL_BUTTON_TAG + filmIdx;
-				UIImage *buttonImage = (film.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+				UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
 				[checkButton setImage:buttonImage forState:UIControlStateNormal];
 				[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				[tempCell.contentView addSubview:checkButton];
 				
 				hPos += 38.0;
 				filmIdx++;
-			}
+			} 
 			
 			cell = tempCell;
 		}
@@ -665,7 +647,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	}
 }
 
-- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+ - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	if(switcher == VIEW_BY_DATE)
 	{
@@ -674,9 +656,10 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	else
 	{
 		NSString *sort = [sorts objectAtIndex:[indexPath section]];
-		NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:[indexPath row]];
+        Film *film = [[titlesWithSort objectForKey:sort] objectAtIndex:[indexPath row]];
+		NSArray *schedules = film.schedules;
 		
-		return 24.0 + (38 * schedules.count);
+		return 24.0 + 38 * schedules.count;
 	}
 }
 
