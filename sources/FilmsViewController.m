@@ -337,27 +337,34 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
 	if(indexPath != nil)
 	{
-		Schedule *film = nil;
+		Schedule *schedule = nil;
 		
 		if(switcher == VIEW_BY_DATE)
 		{
 			NSString *longDateString = [days objectAtIndex:section];
-			film = [[data objectForKey:longDateString] objectAtIndex:row];
+			schedule = [[data objectForKey:longDateString] objectAtIndex:row];
 		}
 		else
 		{
+            // Get section
 			NSString *sort = [sorts objectAtIndex:section];
-			NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:row];
+            // Get list of Films in each section
+            NSArray *films = [titlesWithSort objectForKey:sort];
+            // Get Film from that list of Film
+			Film *film = [films objectAtIndex:row];
+            // Get list of schedules of that Film
+            NSArray *schedules = film.schedules;
+            
 			NSInteger filmIdx = [sender tag] - CELL_BUTTON_TAG;
-			film = [schedules objectAtIndex:filmIdx];
+			schedule = [schedules objectAtIndex:filmIdx];
 		}
 		
 		// Set checkBox's status
-		film.isSelected ^= YES;
-		[self addOrRemoveFilm:film];
+		schedule.isSelected ^= YES;
+		[self addOrRemoveFilm:schedule];
 		
 		UIButton *checkBoxButton = (UIButton*)sender;
-		UIImage *buttonImage = (film.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+		UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
 		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
 	}
 }
@@ -623,9 +630,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		case VIEW_BY_DATE:
 		{
 			NSString *date = [days objectAtIndex:section];
-			NSMutableArray *films = [data objectForKey:date];
-			Schedule *film = [films objectAtIndex:row];
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film andId:film.itemID];
+			NSMutableArray *schedules = [data objectForKey:date];
+			Schedule *schedule = [schedules objectAtIndex:row];
+			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andId:schedule.itemID];
 			
 			[[self navigationController] pushViewController:filmDetail animated:YES];
 		}
@@ -633,10 +640,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			
 		case VIEW_BY_TITLE:
 		{
-			NSString *sort = [sorts objectAtIndex:section];
-			NSMutableArray *films = [titlesWithSort objectForKey:sort];
-			Schedule *film = [[films objectAtIndex:row] objectAtIndex:0];
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film  andId:film.itemID];
+            NSString *sort = [sorts objectAtIndex:section];
+            NSMutableArray *films = [titlesWithSort objectForKey:sort];
+			Film *film = [films objectAtIndex:row];
+        
+			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andId:film.ID];
 			
 			[[self navigationController] pushViewController:filmDetail animated:YES];
 		}

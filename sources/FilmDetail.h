@@ -25,6 +25,6 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) NSMutableDictionary *dataDictionary;
 
-- (id) initWithTitle:(NSString*)name andDataObject:(id)dataObject andId:(NSString *)Id;
+- (id) initWithTitle:(NSString*)name andId:(NSString *)Id;
 
 @end
