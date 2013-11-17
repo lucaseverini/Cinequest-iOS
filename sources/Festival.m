@@ -7,7 +7,7 @@
 //
 
 #import "Festival.h"
-#import "NewSchedule.h"
+#import "Schedule.h"
 #import "Film.h"
 #import "ProgramItem.h"
 
@@ -42,7 +42,7 @@
     NSMutableArray *result = [[NSMutableArray alloc] init];
     for (int i = 0; i < [schedules count]; i++)
 	{
-        NewSchedule *schedule = (NewSchedule *) [schedules objectAtIndex:i];
+        Schedule *schedule = (Schedule *) [schedules objectAtIndex:i];
         if ([schedule.startTime hasPrefix:date])
 		{
             [result addObject:schedule];

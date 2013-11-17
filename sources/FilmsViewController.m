@@ -15,7 +15,7 @@
 #import "DataProvider.h"
 #import "Schedule.h"
 #import "Festival.h"
-#import "NewSchedule.h"
+#import "Film.h"
 
 #define VIEW_BY_DATE	0
 #define VIEW_BY_TITLE	1
@@ -31,95 +31,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 @synthesize loadingLabel;
 @synthesize activity;
 
-- (void) didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-#pragma mark -
-#pragma mark Actions
-
-- (IBAction) switchTitle:(id)sender
-{
-	switcher = [sender selectedSegmentIndex];
-	switch (switcher)
-	{
-		case VIEW_BY_DATE:
-			break;
-			
-		case VIEW_BY_TITLE:
-			break;
-			
-		default:
-			break;
-	}
-	
-	[self.filmsTableView reloadData];
-}
-
-- (IBAction) reloadData:(id)sender
-{
-	// Hide everything, display activity indicator
-	self.filmsTableView.hidden = YES;
-	self.navigationItem.rightBarButtonItem.enabled = NO;
-	switchTitle.hidden = YES;
-	
-	[activity startAnimating];
-	
-	// Start parsing data
-	[data removeAllObjects];
-	[days removeAllObjects];
-	[index removeAllObjects];
-	[titlesWithSort removeAllObjects];
-	[sorts removeAllObjects];
-	
-	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
-}
-
-- (void) addOrRemoveFilm:(Schedule*)film
-{
-	if(film.isSelected)
-	{
-		// Add the selected film
-		BOOL alreadyAdded = NO;
-		NSInteger scheduleCount = [mySchedule count];
-		for(NSInteger idx = 0; idx < scheduleCount; idx++)
-		{
-			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == film.ID)
-			{
-				alreadyAdded = YES;
-				break;
-			}
-		}
-		if(!alreadyAdded)
-		{
-			[mySchedule addObject:film];
-			NSLog(@"%@ : %@ %@ added to my schedule", film.title, film.dateString, film.timeString);
-		}
-	}
-	else
-	{
-		// Remove the un-selected film
-		NSInteger scheduleCount = [mySchedule count];
-		for(NSInteger idx = 0; idx < scheduleCount; idx++)
-		{
-			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == film.ID)
-			{
-				[mySchedule removeObject:film];
-				
-				NSLog(@"%@ : %@ %@ removed from my schedule", film.title, film.dateString, film.timeString);
-				break;
-			}
-		}
-	}
-	
-	[self syncTableDataWithScheduler];
-}
-
-#pragma mark -
-#pragma mark UIViewController Methods
+#pragma mark - UIViewController Methods
 
 - (void) viewDidLoad
 {
@@ -166,10 +78,85 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	[self syncTableDataWithScheduler];
 }
 
-#pragma mark -
-#pragma mark Private Methods
+- (void) didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
 
-- (void) startParsingXML
+#pragma mark - Actions
+
+- (IBAction) switchTitle:(id)sender
+{
+	switcher = [sender selectedSegmentIndex];
+	[self.filmsTableView reloadData];
+}
+
+
+- (void) addOrRemoveFilm:(Schedule*)film
+{
+	if(film.isSelected)
+	{
+		// Add the selected film
+		BOOL alreadyAdded = NO;
+		NSInteger scheduleCount = [mySchedule count];
+		for(NSInteger idx = 0; idx < scheduleCount; idx++)
+		{
+			Schedule *obj = [mySchedule objectAtIndex:idx];
+			if (obj.ID == film.ID)
+			{
+				alreadyAdded = YES;
+				break;
+			}
+		}
+		if(!alreadyAdded)
+		{
+			[mySchedule addObject:film];
+			NSLog(@"%@ : %@ %@ added to my schedule", film.title, film.dateString, film.startTime);
+		}
+	}
+	else
+	{
+		// Remove the un-selected film
+		NSInteger scheduleCount = [mySchedule count];
+		for(NSInteger idx = 0; idx < scheduleCount; idx++)
+		{
+			Schedule *obj = [mySchedule objectAtIndex:idx];
+			if (obj.ID == film.ID)
+			{
+				[mySchedule removeObject:film];
+				
+				NSLog(@"%@ : %@ %@ removed from my schedule", film.title, film.dateString, film.startTime);
+				break;
+			}
+		}
+	}
+	
+	[self syncTableDataWithScheduler];
+}
+
+#pragma message "Do We really need this method?"
+- (IBAction) reloadData:(id)sender
+{
+	// Hide everything, display activity indicator
+	self.filmsTableView.hidden = YES;
+	self.navigationItem.rightBarButtonItem.enabled = NO;
+	switchTitle.hidden = YES;
+	
+	[activity startAnimating];
+	
+	// Start parsing data
+	[data removeAllObjects];
+	[days removeAllObjects];
+	[index removeAllObjects];
+	[titlesWithSort removeAllObjects];
+	[sorts removeAllObjects];
+	
+	[NSThread detachNewThreadSelector:@selector(prepareData) toTarget:self withObject:nil];
+}
+
+#pragma mark - Private Methods
+
+- (void) prepareData
 {
 	// FILMS BY TIME
     [delegate.festival.schedules sortUsingDescriptors:[NSArray arrayWithObjects:
@@ -178,7 +165,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	NSMutableArray *films = [NSMutableArray arrayWithCapacity:1000]; // fimls
 	NSMutableArray *tempArray = [NSMutableArray array];
     
-	for (NewSchedule *schedule in delegate.festival.schedules)
+	for (Schedule *schedule in delegate.festival.schedules)
 	{
 		//[films addObject:film];
 		
@@ -202,36 +189,22 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	[data setObject:tempArray forKey:previousDay];
     
 	// FILMS BY TITLES
-    NSData *htmldata = [[appDelegate dataProvider] filmsByTime];
-	
-	DDXMLDocument *filmsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
-	DDXMLNode *rootElement = [filmsXMLDoc rootElement];
     
-    NSInteger chilCount = [rootElement childCount];
-	htmldata = [[appDelegate dataProvider] filmsByTitle];
-	
-	DDXMLDocument *titleXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
-	rootElement = [titleXMLDoc rootElement];
+    [delegate.festival.films sortUsingDescriptors:[NSArray arrayWithObjects:
+                                                       [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES],nil]];
 	NSString *pre = @"empty";
 	NSMutableArray *temp = [[NSMutableArray alloc] init];
 	
-	chilCount = [rootElement childCount];
-	for (NSInteger idx = 0; idx < chilCount; idx++)
+	for (Film *film in delegate.festival.films)
 	{
-		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:idx];
-		NSDictionary *attributes = [child attributesAsDictionary];
-		
-		NSString *sort = [attributes objectForKey:@"sort"];
-		NSString *ID = [attributes objectForKey:@"id"];
-		
-		NSArray *schedule = [self getSchedulesFromListByTime:films withProgId:[ID integerValue]];
+		//NSArray *schedule = [self getSchedulesFromListByTime:films withProgId:[ID integerValue]];
 		//if(schedule.count == 0)
 		//{
 		//	NSLog(@"***** Schedule %@ in ListByTitle is not present in ListByTime *****", ID);
 		//	continue;
 		//}
 		
-		NSString *sortString = sort;
+		NSString *sortString = [film.name substringToIndex:1];
 		if(![pre isEqualToString:sortString])
 		{
 			[titlesWithSort setObject:temp forKey:pre];
@@ -240,17 +213,17 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			[sorts addObject:pre];
 			
 			temp = [[NSMutableArray alloc] init];
-			[temp addObject:schedule];
+			[temp addObject:film];
 		}
 		else
 		{
-			[temp addObject:schedule];
+			[temp addObject:film];
 		}
 	}
 	
 	[titlesWithSort setObject:temp forKey:pre];
-	
-	// Display everything, hide activity indicator
+    
+    // Display everything, hide activity indicator
 	switchTitle.hidden = NO;
 	loadingLabel.hidden = YES;
 	self.navigationItem.rightBarButtonItem.enabled = YES;
@@ -272,13 +245,13 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
     
 }
 
-- (NSArray*) getSchedulesFromListByTime:(NSArray*)films withProgId:(NSUInteger)progId
+- (NSArray *) getSchedulesFromListByTime:(NSArray*)films withProgId:(NSString*)progId
 {
 	NSMutableArray *schedules = [NSMutableArray array];
 	
 	for(Schedule *schedule in films)
 	{
-		if(schedule.prog_id == progId)
+		if([schedule.itemID isEqualToString: progId])
 		{
 			[schedules addObject:schedule];
 		}
@@ -352,9 +325,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			for(i = 0; i < count; i++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:i];
-				if((obj.ID == film.ID) && [obj.title isEqualToString:film.title] && [obj.date compare:film.date] == NSOrderedSame)
+				if((obj.ID == film.ID) && [obj.title isEqualToString:film.title] && [obj.startDate compare:film.startDate] == NSOrderedSame)
 				{
-					//NSLog(@"Current Data ... Already Added: %@. Time: %@",obj.title,obj.timeString);
+					//NSLog(@"Current Data ... Already Added: %@. Time: %@",obj.title,obj.startTime);
 					film.isSelected = YES;
 				}
 				else
@@ -402,8 +375,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	}
 }
 
-#pragma mark -
-#pragma mark Table View Datasource methods
+#pragma mark - Table View Datasource methods
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView*)tableView
 {
@@ -467,7 +439,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		{
 			// get film objects using date
 			NSString *dateString = [days objectAtIndex:section];
-			NewSchedule *film = [[data objectForKey:dateString] objectAtIndex:row];
+			Schedule *film = [[data objectForKey:dateString] objectAtIndex:row];
 			
 			UIColor *textColor = [UIColor blackColor];
 			NSString *displayString = [NSString stringWithFormat:@"%@", film.title];
@@ -476,7 +448,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSUInteger idx, count = [mySchedule count];
 			for(idx = 0; idx < count; idx++)
 			{
-				NewSchedule *obj = [mySchedule objectAtIndex:idx];
+				Schedule *obj = [mySchedule objectAtIndex:idx];
 				if([obj.ID isEqualToString:film.ID])//&& [obj.title isEqualToString:film.title] && [obj.date compare:film.date] == NSOrderedSame
 				{
 					//NSLog(@"%@ was added.",obj.title);
@@ -578,7 +550,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 				}
 				
 				UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, hPos, 250.0, 20.0)];
-				timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.timeString, schedule.endTimeString];
+				timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime];
 				timeLabel.font = [UIFont systemFontOfSize:fontSize];
 				timeLabel.textColor = textColor;
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
@@ -657,8 +629,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	return result;
 }
 
-#pragma mark -
-#pragma mark UITableView Delegate
+#pragma mark - UITableView Delegate
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
@@ -672,7 +643,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSString *date = [days objectAtIndex:section];
 			NSMutableArray *films = [data objectForKey:date];
 			Schedule *film = [films objectAtIndex:row];
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film andId:film.prog_id];
+			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film andId:film.itemID];
 			
 			[[self navigationController] pushViewController:filmDetail animated:YES];
 		}
@@ -683,7 +654,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSString *sort = [sorts objectAtIndex:section];
 			NSMutableArray *films = [titlesWithSort objectForKey:sort];
 			Schedule *film = [[films objectAtIndex:row] objectAtIndex:0];
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film  andId:film.prog_id];
+			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andDataObject:film  andId:film.itemID];
 			
 			[[self navigationController] pushViewController:filmDetail animated:YES];
 		}

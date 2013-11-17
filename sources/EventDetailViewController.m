@@ -52,7 +52,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		myData = [[Schedule alloc] init];
 		myData.ID = dataObject.ID;
 		myData.title = dataObject.title;
-		myData.prog_id = dataObject.prog_id;
+		myData.itemID = dataObject.itemID;
 		
     }
 	
@@ -71,7 +71,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		myData = [[Schedule alloc] init];
 		myData.ID = dataObject.ID;
 		myData.title = dataObject.title;
-		myData.prog_id = dataObject.prog_id;
+		myData.itemID = dataObject.itemID;
     }
 	
     return self;
@@ -139,8 +139,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 					
 					Schedule *event = [[Schedule alloc] init];
 					event.title		= [dataDictionary objectForKey:@"Title"];
-					event.ID		= [ID integerValue];
-					event.prog_id	= [prg_item_id integerValue];
+					event.ID		= ID;
+					event.itemID	= prg_item_id;
 					event.type		= @"event";
 					event.venue		= venue;
 					
@@ -148,9 +148,9 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 					NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
 					[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 					NSDate *formatterDate = [inputFormatter dateFromString:start_time];
-					event.date = formatterDate;
+					event.startDate = formatterDate;
 					[inputFormatter setDateFormat:@"hh:mm a"];
-					event.timeString = [inputFormatter stringFromDate:formatterDate];
+					event.startTime = [inputFormatter stringFromDate:formatterDate];
 					//Date
 					[inputFormatter setDateFormat:@"EEEE, MMMM d"];
 					event.dateString = [inputFormatter stringFromDate:formatterDate];
@@ -160,7 +160,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 					formatterDate = [inputFormatter dateFromString:end_time];
 					event.endDate = formatterDate;
 					[inputFormatter setDateFormat:@"hh:mm a"];
-					event.endTimeString = [inputFormatter stringFromDate:formatterDate];
+					event.endTime = [inputFormatter stringFromDate:formatterDate];
 					
 					[schedules addObject:event];
 				}
@@ -425,7 +425,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			label.font = [UIFont systemFontOfSize:14.0f];
 			
 			timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
-			timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",time.timeString,time.endTimeString];
+			timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",time.startTime,time.endTime];
 			timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 			timeLabel.textColor = textColor;
 			
@@ -557,7 +557,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			{
 				MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
 				NSString *friendlyMessage = @"Hey, I found an interesting film from Cinequest. Check it out!";
-				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%d",friendlyMessage,myData.prog_id];
+				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@",friendlyMessage,myData.itemID];
 				controller.mailComposeDelegate = self;
 				[controller setSubject:myData.title];
 				[controller setMessageBody:messageBody isHTML:NO]; 

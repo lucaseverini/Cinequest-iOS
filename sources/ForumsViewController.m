@@ -164,8 +164,8 @@
 		
 		Schedule *forum		= [[Schedule alloc] init];
 		
-		forum.ID			= [ID intValue];
-		forum.prog_id		= [prg_id intValue];
+		forum.ID			= ID;
+		forum.itemID		= prg_id;
 		
 		forum.type		= type;
 		forum.title		= title;
@@ -175,9 +175,9 @@
 		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 		NSDate *date = [dateFormatter dateFromString:start];
-		forum.date = date;
+		forum.startDate = date;
 		[dateFormatter setDateFormat:@"hh:mm a"];
-		forum.timeString = [dateFormatter stringFromDate:date];
+		forum.startTime = [dateFormatter stringFromDate:date];
 		//Date
 		[dateFormatter setDateFormat:@"EEEE, MMMM d"];
 		NSString *dateString = [dateFormatter stringFromDate:date];
@@ -187,7 +187,7 @@
 		date = [dateFormatter dateFromString:end];
 		forum.endDate = date;
 		[dateFormatter setDateFormat:@"hh:mm a"];
-		forum.endTimeString = [dateFormatter stringFromDate:date];
+		forum.endTime = [dateFormatter stringFromDate:date];
 		
 		if (![previousDay isEqualToString:dateString]) 
 		{
@@ -524,7 +524,7 @@
 	titleLabel.textColor = textColor;
 	
 	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-	timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@", event.timeString, event.endTimeString];
+	timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@", event.startTime, event.endTime];
 	timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 	timeLabel.textColor = textColor;
 	
@@ -569,7 +569,7 @@
 	
 	Schedule *forum = [forums objectAtIndex:row];
 
-	NSString *eventId = [NSString stringWithFormat:@"%d", forum.prog_id];
+	NSString *eventId = [NSString stringWithFormat:@"%@", forum.itemID];
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:forum.title
 																						andDataObject:forum
 																						andId:eventId];

@@ -12,7 +12,7 @@
 
 @interface FilmDetail : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
 {
-	NSUInteger filmId;
+	NSString *filmId;
 	Schedule *myFilmData;
 	FBSession *_session;
 	UIButton *postThisButton;
@@ -25,6 +25,6 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) NSMutableDictionary *dataDictionary;
 
-- (id) initWithTitle:(NSString*)name andDataObject:(id)dataObject andId:(NSUInteger)id;
+- (id) initWithTitle:(NSString*)name andDataObject:(id)dataObject andId:(NSString *)Id;
 
 @end

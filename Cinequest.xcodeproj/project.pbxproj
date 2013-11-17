@@ -31,7 +31,6 @@
 		81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */; };
 		81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7017EBAEED008D2C2C /* NewsViewController.m */; };
 		81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7217EBAEED008D2C2C /* NSStringAdditions.m */; };
-		81745A8617EBAEED008D2C2C /* Schedule.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7417EBAEED008D2C2C /* Schedule.m */; };
 		8192CC6217EBC91D00DBE036 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8192CC6117EBC91D00DBE036 /* libxml2.dylib */; };
 		8192CC6417EBC92D00DBE036 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */; };
 		81B12C65182B759E000D5200 /* EventDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */; };
@@ -84,7 +83,7 @@
 		C27139401828E8C900BF8DCB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C271393E1828E8C900BF8DCB /* InfoPlist.strings */; };
 		C27139421828E8C900BF8DCB /* List_of_Shows_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */; };
 		C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6D7182A1E26006F7D25 /* VenueLocation.m */; };
-		C27BC6DB182A3734006F7D25 /* NewSchedule.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6DA182A3734006F7D25 /* NewSchedule.m */; };
+		C27BC6DB182A3734006F7D25 /* Schedule.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6DA182A3734006F7D25 /* Schedule.m */; };
 		C2D6DC1A182975E5005A6897 /* Festival.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC19182975E5005A6897 /* Festival.m */; };
 		C2D6DC211829771E005A6897 /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1C1829771E005A6897 /* Show.m */; };
 		C2D6DC221829771E005A6897 /* Showing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1E1829771E005A6897 /* Showing.m */; };
@@ -155,8 +154,8 @@
 		81745A7017EBAEED008D2C2C /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewsViewController.m; path = sources/NewsViewController.m; sourceTree = SOURCE_ROOT; };
 		81745A7117EBAEED008D2C2C /* NSStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSStringAdditions.h; path = sources/NSStringAdditions.h; sourceTree = SOURCE_ROOT; };
 		81745A7217EBAEED008D2C2C /* NSStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSStringAdditions.m; path = sources/NSStringAdditions.m; sourceTree = SOURCE_ROOT; };
-		81745A7317EBAEED008D2C2C /* Schedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Schedule.h; path = sources/Schedule.h; sourceTree = SOURCE_ROOT; };
-		81745A7417EBAEED008D2C2C /* Schedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Schedule.m; path = sources/Schedule.m; sourceTree = SOURCE_ROOT; };
+		81745A7317EBAEED008D2C2C /* OldSchedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OldSchedule.h; path = sources/OldSchedule.h; sourceTree = SOURCE_ROOT; };
+		81745A7417EBAEED008D2C2C /* OldSchedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldSchedule.m; path = sources/OldSchedule.m; sourceTree = SOURCE_ROOT; };
 		8192CC6117EBC91D00DBE036 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		81C52B83182B62F000D2F55D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = sources/Reachability.h; sourceTree = SOURCE_ROOT; };
@@ -216,8 +215,8 @@
 		C27139431828E8C900BF8DCB /* List of Shows Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "List of Shows Tests-Prefix.pch"; sourceTree = "<group>"; };
 		C27BC6D6182A1E26006F7D25 /* VenueLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VenueLocation.h; path = sources/VenueLocation.h; sourceTree = SOURCE_ROOT; };
 		C27BC6D7182A1E26006F7D25 /* VenueLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VenueLocation.m; path = sources/VenueLocation.m; sourceTree = SOURCE_ROOT; };
-		C27BC6D9182A3734006F7D25 /* NewSchedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewSchedule.h; path = sources/NewSchedule.h; sourceTree = SOURCE_ROOT; };
-		C27BC6DA182A3734006F7D25 /* NewSchedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewSchedule.m; path = sources/NewSchedule.m; sourceTree = SOURCE_ROOT; };
+		C27BC6D9182A3734006F7D25 /* Schedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Schedule.h; path = sources/Schedule.h; sourceTree = SOURCE_ROOT; };
+		C27BC6DA182A3734006F7D25 /* Schedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Schedule.m; path = sources/Schedule.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC18182975E5005A6897 /* Festival.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Festival.h; path = sources/Festival.h; sourceTree = SOURCE_ROOT; };
 		C2D6DC19182975E5005A6897 /* Festival.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Festival.m; path = sources/Festival.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC1B1829771E005A6897 /* Show.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Show.h; path = sources/Show.h; sourceTree = SOURCE_ROOT; };
@@ -313,6 +312,8 @@
 		8199E788182F623F001BCC36 /* Unused */ = {
 			isa = PBXGroup;
 			children = (
+				81745A7317EBAEED008D2C2C /* OldSchedule.h */,
+				81745A7417EBAEED008D2C2C /* OldSchedule.m */,
 				81745A6B17EBAEED008D2C2C /* LogInViewController.h */,
 				81745A6C17EBAEED008D2C2C /* LogInViewController.m */,
 				81745A5B17EBAEED008D2C2C /* DVD.h */,
@@ -458,8 +459,6 @@
 				81745A7017EBAEED008D2C2C /* NewsViewController.m */,
 				81745A7117EBAEED008D2C2C /* NSStringAdditions.h */,
 				81745A7217EBAEED008D2C2C /* NSStringAdditions.m */,
-				81745A7317EBAEED008D2C2C /* Schedule.h */,
-				81745A7417EBAEED008D2C2C /* Schedule.m */,
 			);
 			name = Sources;
 			path = Cinequest;
@@ -501,8 +500,8 @@
 				C2D6DC1E1829771E005A6897 /* Showing.m */,
 				C2D6DC1F1829771E005A6897 /* Venue.h */,
 				C2D6DC201829771E005A6897 /* Venue.m */,
-				C27BC6D9182A3734006F7D25 /* NewSchedule.h */,
-				C27BC6DA182A3734006F7D25 /* NewSchedule.m */,
+				C27BC6D9182A3734006F7D25 /* Schedule.h */,
+				C27BC6DA182A3734006F7D25 /* Schedule.m */,
 				C2D6DC18182975E5005A6897 /* Festival.h */,
 				C2D6DC19182975E5005A6897 /* Festival.m */,
 			);
@@ -665,7 +664,7 @@
 			files = (
 				C2D6DC211829771E005A6897 /* Show.m in Sources */,
 				C2D6DC1A182975E5005A6897 /* Festival.m in Sources */,
-				C27BC6DB182A3734006F7D25 /* NewSchedule.m in Sources */,
+				C27BC6DB182A3734006F7D25 /* Schedule.m in Sources */,
 				81745A7517EBAEED008D2C2C /* CinequestAppDelegate.m in Sources */,
 				81745A7617EBAEED008D2C2C /* DDXMLDocument.m in Sources */,
 				81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */,
@@ -685,7 +684,6 @@
 				81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */,
 				81C52B85182B62F000D2F55D /* Reachability.m in Sources */,
 				81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */,
-				81745A8617EBAEED008D2C2C /* Schedule.m in Sources */,
 				81FBC133182DA37900C01783 /* DataProvider.m in Sources */,
 				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
 				81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */,

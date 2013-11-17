@@ -292,8 +292,8 @@
 				
 		Schedule *event	= [[Schedule alloc] init];
 		
-		event.ID		= [ID intValue];
-		event.prog_id	= [prg_id intValue];
+		event.ID		= ID;
+		event.itemID	= prg_id;
 		event.type		= type;
 		event.title		= title;
 		event.venue		= venue;
@@ -304,9 +304,9 @@
 		[dateFormatter setLocale:usLocale];
 		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 		NSDate *date = [dateFormatter dateFromString:start];
-		event.date = date;
+		event.startDate = date;
 		[dateFormatter setDateFormat:@"hh:mm a"];
-		event.timeString = [dateFormatter stringFromDate:date];
+		event.startTime = [dateFormatter stringFromDate:date];
 		//Date
 		[dateFormatter setDateFormat:@"EEEE, MMMM d"];
 		NSString *dateString = [dateFormatter stringFromDate:date];
@@ -316,7 +316,7 @@
 		date = [dateFormatter dateFromString:end];
 		event.endDate = date;
 		[dateFormatter setDateFormat:@"hh:mm a"];
-		event.endTimeString = [dateFormatter stringFromDate:date];
+		event.endTime = [dateFormatter stringFromDate:date];
 		if (![previousDay isEqualToString:dateString]) 
 		{
 			[data setObject:tempArray forKey:previousDay];
@@ -499,7 +499,7 @@
 	titleLabel.textColor = textColor;
 	
 	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-	timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",event.timeString,event.endTimeString];
+	timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",event.startTime,event.endTime];
 	timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 	timeLabel.textColor = textColor;
 	
@@ -580,7 +580,7 @@
 																				andDataObject:event
 																				andURL:[NSURL URLWithString:link]];
 */
-	NSString *eventId = [NSString stringWithFormat:@"%d", event.prog_id];
+	NSString *eventId = [NSString stringWithFormat:@"%@", event.itemID];
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:event.title
 																				andDataObject:event
 																				andId:eventId];
