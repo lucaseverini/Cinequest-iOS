@@ -44,6 +44,8 @@
 	MainViewController *mainViewController = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
 	[navController setNavigationBarHidden:YES animated:NO];
+    
+    self.festival = [[[FestivalParser alloc] init] parseFestival];
 	
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];

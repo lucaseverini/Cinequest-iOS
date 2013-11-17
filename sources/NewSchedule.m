@@ -16,5 +16,11 @@
 @synthesize venue;
 @synthesize startTime;
 @synthesize endTime;
+@synthesize startDate;
+@synthesize endDate;
+@synthesize dateString;
+@synthesize longDateString;
+
+@synthesize isSelected;
 
 @end

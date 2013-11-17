@@ -222,8 +222,30 @@
     schedule.ID = showing.ID;
     schedule.itemID = item.ID;
     schedule.title = item.name;
-    schedule.startTime = showing.startDate;
-    schedule.endTime = showing.endDate;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    NSDate *date = [dateFormatter dateFromString:showing.startDate];
+    schedule.startDate = date;
+    
+    [dateFormatter setDateFormat:@"h:mm a"];
+    schedule.startTime = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"EEE, MMM d"];
+    schedule.dateString = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"EEEE, MMMM d"];
+    schedule.longDateString = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    date = [dateFormatter dateFromString:showing.endDate];
+    schedule.endDate = date;
+    
+    [dateFormatter setDateFormat:@"h:mm a"];
+    schedule.endTime = [dateFormatter stringFromDate:date];
+
+    
     schedule.venue = [self venueAbbr:showing.venue.name];
     return schedule;
 }

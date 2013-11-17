@@ -13,6 +13,9 @@
 #import "Schedule.h"
 #import "DDXML.h"
 #import "DataProvider.h"
+#import "Schedule.h"
+#import "Festival.h"
+#import "NewSchedule.h"
 
 #define VIEW_BY_DATE	0
 #define VIEW_BY_TITLE	1
@@ -169,80 +172,42 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 - (void) startParsingXML
 {
 	// FILMS BY TIME
-	NSData *htmldata = [[appDelegate dataProvider] filmsByTime];
-	
-	DDXMLDocument *filmsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
-	DDXMLNode *rootElement = [filmsXMLDoc rootElement];
-	NSString *previousDay = @"empty";
-	NSMutableArray *films = [NSMutableArray arrayWithCapacity:1000];
+    [delegate.festival.schedules sortUsingDescriptors:[NSArray arrayWithObjects:
+                                                       [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES],nil]];
+    NSString *previousDay = @"empty";
+	NSMutableArray *films = [NSMutableArray arrayWithCapacity:1000]; // fimls
 	NSMutableArray *tempArray = [NSMutableArray array];
-	
-	NSInteger chilCount = [rootElement childCount];
-	for (NSInteger idx = 0; idx < chilCount; idx++)
+    
+	for (NewSchedule *schedule in delegate.festival.schedules)
 	{
-		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:idx];
-		NSDictionary *attributes = [child attributesAsDictionary];
+		//[films addObject:film];
 		
-		NSString *ID = [attributes objectForKey:@"id"];
-		NSString *prg_id = [attributes objectForKey:@"program_item_id"];
-		NSString *type = [attributes objectForKey:@"type"];
-		NSString *title = [attributes objectForKey:@"title"];
-		NSString *start = [attributes objectForKey:@"start_time"];
-		NSString *end = [attributes objectForKey:@"end_time"];
-		NSString *venue = [attributes objectForKey:@"venue"];
-		
-		Schedule *film	= [[Schedule alloc] init];
-		film.ID	= [ID intValue];
-		film.type = type;
-		film.prog_id = [prg_id intValue];
-		film.title = title;
-		film.venue = venue;
-		
-		// Start Time
-		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-		NSDate *date = [dateFormatter dateFromString:start];
-		film.date = date;
-		[dateFormatter setDateFormat:@"h:mm a"];
-		film.timeString = [dateFormatter stringFromDate:date];
-		// Date
-		[dateFormatter setDateFormat:@"EEE, MMM d"];
-		NSString *dateString = [dateFormatter stringFromDate:date];
-		film.dateString = dateString;
-		// Long Date
-		[dateFormatter setDateFormat:@"EEEE, MMMM d"];
-		NSString *longDateString = [dateFormatter stringFromDate:date];
-		film.longDateString = longDateString;
-		// End Time
-		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-		date = [dateFormatter dateFromString:end];
-		film.endDate = date;
-		[dateFormatter setDateFormat:@"h:mm a"];
-		film.endTimeString = [dateFormatter stringFromDate:date];
-		
-		[films addObject:film];
-		
-		if (![previousDay isEqualToString:longDateString])
+		if (![previousDay isEqualToString:schedule.longDateString])
 		{
 			[data setObject:tempArray forKey:previousDay];
 			
-			previousDay = [[NSString alloc] initWithString:longDateString];
+			previousDay = [[NSString alloc] initWithString:schedule.longDateString];
 			[days addObject:previousDay];
 			
 			[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
 			
 			tempArray = [[NSMutableArray alloc] init];
-			[tempArray addObject:film];
-			
+			[tempArray addObject:schedule];
 		}
 		else
 		{
-			[tempArray addObject:film];
+			[tempArray addObject:schedule];
 		}
 	}
 	[data setObject:tempArray forKey:previousDay];
-	
+    
 	// FILMS BY TITLES
+    NSData *htmldata = [[appDelegate dataProvider] filmsByTime];
+	
+	DDXMLDocument *filmsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
+	DDXMLNode *rootElement = [filmsXMLDoc rootElement];
+    
+    NSInteger chilCount = [rootElement childCount];
 	htmldata = [[appDelegate dataProvider] filmsByTitle];
 	
 	DDXMLDocument *titleXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
@@ -260,11 +225,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		NSString *ID = [attributes objectForKey:@"id"];
 		
 		NSArray *schedule = [self getSchedulesFromListByTime:films withProgId:[ID integerValue]];
-		if(schedule.count == 0)
-		{
-			NSLog(@"***** Schedule %@ in ListByTitle is not present in ListByTime *****", ID);
-			continue;
-		}
+		//if(schedule.count == 0)
+		//{
+		//	NSLog(@"***** Schedule %@ in ListByTitle is not present in ListByTime *****", ID);
+		//	continue;
+		//}
 		
 		NSString *sortString = sort;
 		if(![pre isEqualToString:sortString])
@@ -296,14 +261,15 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	[self.filmsTableView reloadData];
 	
 	// back up current data
-	backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
-	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
-	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
+	//backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
+	//backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
+	//backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
 	
 	[self syncTableDataWithScheduler];
 	
 	// Disable "Reload" button
 	self.filmsTableView.tableHeaderView = nil;
+    
 }
 
 - (NSArray*) getSchedulesFromListByTime:(NSArray*)films withProgId:(NSUInteger)progId
@@ -331,6 +297,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		NSString *day = [days objectAtIndex:section];
 		NSMutableArray *rows = [data objectForKey:day];
+        
 		for (int row = 0; row < [rows count]; row++)
 		{
 			Schedule *film = [rows objectAtIndex:row];
@@ -374,7 +341,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	NSUInteger i, count = [mySchedule count];
 	//NSLog(@"Scheduler count: %d",count);
 	// Sync current data
-	for (int section = 0; section < [days count]; section++)
+    for (int section = 0; section < [days count]; section++)
 	{
 		NSString *day = [days objectAtIndex:section];
 		NSMutableArray *rows = [data objectForKey:day];
@@ -467,7 +434,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		case VIEW_BY_DATE:
 		{
-			NSString *day = [days objectAtIndex:section];
+            NSString *day = [days objectAtIndex:section];
 			count = [[data objectForKey:day] count];
 		}
 			break;
@@ -500,7 +467,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		{
 			// get film objects using date
 			NSString *dateString = [days objectAtIndex:section];
-			Schedule *film = [[data objectForKey:dateString] objectAtIndex:row];
+			NewSchedule *film = [[data objectForKey:dateString] objectAtIndex:row];
 			
 			UIColor *textColor = [UIColor blackColor];
 			NSString *displayString = [NSString stringWithFormat:@"%@", film.title];
@@ -509,8 +476,8 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSUInteger idx, count = [mySchedule count];
 			for(idx = 0; idx < count; idx++)
 			{
-				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if(obj.ID == film.ID)//&& [obj.title isEqualToString:film.title] && [obj.date compare:film.date] == NSOrderedSame
+				NewSchedule *obj = [mySchedule objectAtIndex:idx];
+				if([obj.ID isEqualToString:film.ID])//&& [obj.title isEqualToString:film.title] && [obj.date compare:film.date] == NSOrderedSame
 				{
 					//NSLog(@"%@ was added.",obj.title);
 					// textColor = [UIColor blueColor];
@@ -563,7 +530,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			titleLabel.text = displayString;
 			
 			timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-			timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", film.dateString, film.timeString, film.endTimeString];
+			timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", film.dateString, film.startTime, film.endTime];
 			
 			venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",film.venue];
