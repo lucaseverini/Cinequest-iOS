@@ -20,6 +20,8 @@
 @property (nonatomic, strong) NSString *longDateString;
 @property (nonatomic, strong) NSString *timeString;
 @property (nonatomic, strong) NSString *endTimeString;
-@property (readwrite) BOOL isSelected;
+@property (nonatomic, assign) BOOL isSelected;
+@property (nonatomic, assign) BOOL presentInScheduler;
+@property (nonatomic, assign) BOOL presentInCalendar;
 
 @end

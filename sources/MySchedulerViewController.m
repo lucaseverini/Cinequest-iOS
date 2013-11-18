@@ -7,7 +7,7 @@
 //
 
 #import "MySchedulerViewController.h"
-#import "FilmDetail.h"
+#import "FilmDetailController.h"
 #import "EventDetailViewController.h"
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
@@ -444,14 +444,14 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
         calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [calendarButton addTarget:self action:@selector(addItemToCalendar:event:) forControlEvents:UIControlEventTouchDown];
         calendarButton.frame = CGRectMake(266.0, 16.0, 48.0, 48.0);
-        calendarButton.tag = CELL_BUTTON_CALENDAR;
+        calendarButton.tag = CELL_LEFTBUTTON_TAG;
         [tempCell.contentView addSubview:calendarButton];
 	}
 	
 	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
 	titleLabel.text = film.title;
 	
-    calendarButton = (UIButton *)[tempCell viewWithTag:CELL_BUTTON_CALENDAR];
+    calendarButton = (UIButton *)[tempCell viewWithTag:CELL_LEFTBUTTON_TAG];
     
     if([_arrCalendarItems containsObject:film.title])
 	{
@@ -498,6 +498,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
+	// Just for testing
 	int section = [indexPath section];
 	int row = [indexPath row];
 	
@@ -634,7 +635,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	[store requestAccessToEntityType:EKEntityTypeEvent completion:
 	^(BOOL granted, NSError *error)
 	{
-		if (granted)
+		if(granted)
 		{
 			dispatch_async(dispatch_get_main_queue(),
 			^{
@@ -683,3 +684,5 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 }
 
 @end
+
+

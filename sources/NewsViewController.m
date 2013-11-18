@@ -25,11 +25,13 @@
 @synthesize activityIndicator;
 @synthesize loadingLabel;
 
-- (void)didReceiveMemoryWarning {
+- (void) didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
 }
 
-- (void)viewDidLoad {
+- (void) viewDidLoad
+{
     [super viewDidLoad];
 	
 	self.title = @"News";
@@ -52,7 +54,7 @@
 	loadingLabel.hidden = YES;
 }
 
-- (void)startParsingXML
+- (void) startParsingXML
 {
 	NSData *htmldata = [[appDelegate dataProvider] news];
 	
@@ -65,8 +67,10 @@
 	DDXMLElement *rootElement = [newsXMLDoc rootElement];
 	NSString *preSection	= @"empty";
 	NSMutableArray *temp	= [[NSMutableArray alloc] init];
-	if ([rootElement childCount] == 3) {
-		for (int i=0; i<[rootElement childCount]; i++) {
+	if ([rootElement childCount] == 3)
+	{
+		for (int i=0; i<[rootElement childCount]; i++)
+		{
 			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
 			NSDictionary *attributes = [child attributesAsDictionary];
 			
@@ -77,36 +81,46 @@
 			NSString *link = @"";
 			NSString *imgurl = @"";
 						
-			for (int j=0; j<[item childCount]; j++) {
+			for (int j=0; j<[item childCount]; j++)
+			{
 				DDXMLElement *node = (DDXMLElement*)[item childAtIndex:j];
-				if ([[node name] isEqualToString:@"title"]) {
+				
+				if ([[node name] isEqualToString:@"title"])
+				{
 					title = [node stringValue];
 				}
-				if ([[node name] isEqualToString:@"date"]) {
+				
+				if ([[node name] isEqualToString:@"date"])
+				{
 					date = [node stringValue];
 				}
-				if ([[node name] isEqualToString:@"imageURL"]) {
+				
+				if ([[node name] isEqualToString:@"imageURL"])
+				{
 					imgurl = [node stringValue];
-					
 				}
-				if ([[node name] isEqualToString:@"link"]) {
+				
+				if ([[node name] isEqualToString:@"link"])
+				{
 					NSDictionary *nodeAttributes = [node attributesAsDictionary];
 					link = [nodeAttributes objectForKey:@"id"];
 				}
 			}
 			
-			if ([section isEqualToString:@"Header"]) {
+			if ([section isEqualToString:@"Header"])
+			{
 				DDXMLElement *node = (DDXMLElement*)[item childAtIndex:0];
 				imgurl = [node stringValue];
 			}
+			
 			NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
 			[info setObject:title forKey:@"title"];
 			[info setObject:date forKey:@"date"];
 			[info setObject:link forKey:@"link"];
 			[info setObject:imgurl	forKey:@"image"];
 			
-			if (![preSection isEqualToString:section]) {
-				
+			if (![preSection isEqualToString:section])
+			{
 				[data setObject:temp forKey:preSection];
 				
 				preSection = [[NSString alloc] initWithString:section];
@@ -115,12 +129,16 @@
 				
 				temp = [[NSMutableArray alloc] init];
 				[temp addObject:info];
-			} else {
+			}
+			else
+			{
 				[temp addObject:info];
 			}
 			
 		}
-	} else {
+	}
+	else
+	{
 		//NSLog(@"child count: %d",[rootElement childCount]);
 		loadingLabel.text = @"Error parsing XML.";
 		return;
@@ -149,7 +167,7 @@
 	[self.newsTableView reloadData];
 }
 
-- (IBAction)toFestival:(id)sender
+- (IBAction) toFestival:(id)sender
 {
 	CinequestAppDelegate *delegate = appDelegate;
 	delegate.tabBarController.selectedIndex = 0;
@@ -160,18 +178,20 @@
 #pragma mark -
 #pragma mark UITableView Data Source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
     return [sections count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
 	NSString *sectionString = [sections objectAtIndex:section];
 	NSMutableArray *rows = [data objectForKey:sectionString];
 	return [rows count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *CellIdentifier = @"Cell";
 	
 	NSUInteger section = [indexPath section];
@@ -194,7 +214,7 @@
     return cell;
 }
 
-- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
 	return [sections objectAtIndex:section];
 }
@@ -202,11 +222,11 @@
 #pragma mark -
 #pragma mark UITableView Delegate
 
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-	
+- (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];

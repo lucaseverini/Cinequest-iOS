@@ -24,5 +24,7 @@
 @synthesize isSelected;
 @synthesize fontColor;
 @synthesize endTimeString;
+@synthesize presentInScheduler;
+@synthesize presentInCalendar;
 
 @end

@@ -10,7 +10,7 @@
 #import "NewsViewController.h"
 #import "FestivalParser.h"
 #import "Reachability.h"
-#import "MainViewController.h"
+#import "StartupViewController.h"
 #import "DataProvider.h"
 
 
@@ -34,15 +34,18 @@
 @synthesize reachability;
 @synthesize networkConnection;
 @synthesize dataProvider;
+@synthesize OSVersion;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
 #if TARGET_IPHONE_SIMULATOR
 	NSLog(@"App folder: %@", NSHomeDirectory());
 #endif // TARGET_IPHONE_SIMULATOR
+	
+	OSVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
 
-	MainViewController *mainViewController = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+	StartupViewController *startupViewController = [[StartupViewController alloc] initWithNibName:@"StartupViewController" bundle:nil];
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:startupViewController];
 	[navController setNavigationBarHidden:YES animated:NO];
 	
     self.window.rootViewController = navController;

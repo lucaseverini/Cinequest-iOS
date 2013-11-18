@@ -490,7 +490,7 @@
 		[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 		
 		checkButton.backgroundColor = [UIColor clearColor];
-		checkButton.tag = CELL_BUTTON_TAG;
+		checkButton.tag = CELL_LEFTBUTTON_TAG;
 		[tempCell.contentView addSubview:checkButton];
 	}
 	
@@ -508,7 +508,7 @@
 	venueLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 	venueLabel.textColor = textColor;
 	
-	checkButton = (UIButton*)[tempCell viewWithTag:CELL_BUTTON_TAG];
+	checkButton = (UIButton*)[tempCell viewWithTag:CELL_LEFTBUTTON_TAG];
 	[checkButton setImage:buttonImage forState:UIControlStateNormal];
 		
 	if (textColor == [UIColor blueColor]) {
@@ -544,7 +544,7 @@
 		
 		// get the current cell and the checkbox button 
 		UITableViewCell *currentCell = [self.eventsTableView cellForRowAtIndexPath:indexPath];
-		UIButton *checkBoxButton = (UIButton*)[currentCell viewWithTag:CELL_BUTTON_TAG];
+		UIButton *checkBoxButton = (UIButton*)[currentCell viewWithTag:CELL_LEFTBUTTON_TAG];
 		
 		// set button's image
 		UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"];

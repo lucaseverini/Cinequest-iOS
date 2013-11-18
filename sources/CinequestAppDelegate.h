@@ -20,12 +20,12 @@
 
 #define XML_FEED_URL    @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
 
-#define CELL_BUTTON_TAG			100
-#define CELL_TITLE_LABEL_TAG	2
-#define	CELL_TIME_LABEL_TAG		3
-#define CELL_VENUE_LABEL_TAG	4
-#define CELL_FACEBOOKBUTTON_TAG	5
-#define CELL_BUTTON_CALENDAR	6
+#define CELL_TITLE_LABEL_TAG	1
+#define	CELL_TIME_LABEL_TAG		2
+#define CELL_VENUE_LABEL_TAG	3
+#define CELL_FACEBOOKBUTTON_TAG	4
+#define CELL_RIGHTBUTTON_TAG	5
+#define CELL_LEFTBUTTON_TAG		100
 
 #define SCHEDULE_SECTION         0
 #define SOCIAL_MEDIA_SECTION	 1
@@ -59,6 +59,7 @@
 @property (nonatomic, strong) Reachability *reachability;
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
 @property (nonatomic, strong) DataProvider *dataProvider;
+@property (nonatomic, assign) float OSVersion;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UITabBarController *tabBarController;

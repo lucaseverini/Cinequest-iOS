@@ -3,6 +3,7 @@
 //
 
 #ifdef __OBJC__
+	#import <objc/runtime.h>
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
 	#import <CoreGraphics/CoreGraphics.h>
@@ -14,4 +15,7 @@
 	#import <MessageUI/MessageUI.h>
 	#import <MessageUI/MFMailComposeViewController.h>
 	#import <Social/Social.h>
+	#import <MapKit/MKFoundation.h>
+	#import <MapKit/MKPlacemark.h>
+	#import <MapKit/MKMapItem.h>
 #endif
