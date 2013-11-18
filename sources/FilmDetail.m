@@ -32,7 +32,6 @@
 
 @synthesize tableView = _tableView;
 @synthesize webView;
-@synthesize dataDictionary;
 @synthesize activityIndicator;
 @synthesize film;
 
@@ -60,16 +59,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
         } else { // I use this generic approach for now, will change it later.
             film = [delegate.festival getFilmForId:ID];
         }
-		
-        /* filmId = filmID;
-		
-		dataDictionary	= [[NSMutableDictionary alloc] init];
-
-		myFilmData = [[Schedule alloc] init];
-		myFilmData.title = dataObject.title;
-		myFilmData.ID = dataObject.ID;
-		myFilmData.itemID = dataObject.itemID; */
-	}
+    }
 	
 	return self;
 }
@@ -82,7 +72,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	self.tableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
 	
-	//[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
     [self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
 }
 
@@ -91,119 +80,30 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	[self.tableView reloadData];
 }
 
-/* - (void) parseData
-{
-	NSData *data = [[appDelegate dataProvider] filmDetail:filmId];
-	if (data == nil)
-	{
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention!"
-														message:@"Please connect to the internet."
-														delegate:nil
-														cancelButtonTitle:@"OK"
-														otherButtonTitles:nil];
-		[alert show];
-		return;
-	}
-	
-	DDXMLDocument *xmlDocument = [[DDXMLDocument alloc] initWithData:data
-															 options:0
-															   error:nil];
-	DDXMLNode *rootElement = [xmlDocument rootElement];
-	NSString *titleString = [NSString stringWithString:[[rootElement childAtIndex:0] stringValue]];
-	NSArray *infoArray = [rootElement children];
-	for (DDXMLNode *node in infoArray) {
-		NSString *value = [[NSString alloc] initWithString:[node stringValue]];
-		NSString *name = [[NSString alloc] initWithString:[node name]];
-		//NSLog(@"%@ %@",name, value);
-		if ([name isEqualToString:@"schedules"])
-		{
-			DDXMLNode *scheduleNodes = node;
-			NSMutableArray *schedules	= [[NSMutableArray alloc] init];
-			for (int i=0; i<[scheduleNodes childCount]; i++) {
-				DDXMLElement *scheduleNode = (DDXMLElement*)[scheduleNodes childAtIndex:i];
-				NSDictionary *atts = [scheduleNode attributesAsDictionary];
-				
-				NSString *ID			= [atts objectForKey:@"id"];
-				NSString *prg_item_id	= [atts objectForKey:@"program_item_id"];
-				NSString *start_time	= [atts objectForKey:@"start_time"];
-				NSString *end_time		= [atts objectForKey:@"end_time"];
-				NSString *venue			= [atts objectForKey:@"venue"];
-				
-				Schedule *event = [[Schedule alloc] init];
-				event.title		= titleString;
-				event.ID		= ID;
-				event.itemID	= prg_item_id;
-				event.type		= @"film";
-				event.venue		= venue;
-				
-				if (event.ID == myFilmData.ID) {
-					myFilmData.itemID = event.itemID;
-				}
-				//Start Time
-				NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
-				[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-				NSDate *formatterDate = [inputFormatter dateFromString:start_time];
-				event.startDate = formatterDate;
-				[inputFormatter setDateFormat:@"hh:mm a"];
-				event.startTime = [inputFormatter stringFromDate:formatterDate];
-				//Date
-				[inputFormatter setDateFormat:@"EEEE, MMMM d"];
-				event.dateString = [inputFormatter stringFromDate:formatterDate];
-				//End Time
-				[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-				formatterDate = [inputFormatter dateFromString:end_time];
-				event.endDate = formatterDate;
-				[inputFormatter setDateFormat:@"hh:mm a"];
-				event.endTime = [inputFormatter stringFromDate:formatterDate];
-				
-				
-				[schedules addObject:event];
-			}
-			[dataDictionary setObject:schedules forKey:@"Schedules"];
-		}
-		[dataDictionary setObject:value forKey:name];
-	}
-
-	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
-} */
    
 - (void)loadData
 {
 	NSString *weba = [NSString stringWithFormat:web,[film name],[film imageURL],[film description]];
-    
-    /*
-     @property (strong, nonatomic) NSMutableArray *schedules;
-     @property (strong, nonatomic) NSString *tagline;
-     @property (strong, nonatomic) NSString *genre;
-     @property (strong, nonatomic) NSString *director;
-     @property (strong, nonatomic) NSString *producer;
-     @property (strong, nonatomic) NSString *writer;
-     @property (strong, nonatomic) NSString *cinematographer;
-     @property (strong, nonatomic) NSString *editor;
-     @property (strong, nonatomic) NSString *cast;
-     @property (strong, nonatomic) NSString *country;
-     @property (strong, nonatomic) NSString *language;
-     @property (strong, nonatomic) NSString *filmInfo; */
 
-    if ([film respondsToSelector:@selector(genre)])
+    if (film.genre != nil)
         weba = [weba stringByAppendingFormat:@"Genre: %@<br/>",film.genre];
-    if ([film respondsToSelector:@selector(director)])
+    if (film.director != nil)
         weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.director];
-    if ([film respondsToSelector:@selector(producer)])
+    if (film.producer != nil)
         weba = [weba stringByAppendingFormat:@"Producer: %@<br/>",film.producer];
-    if ([film respondsToSelector:@selector(writer)])
+    if (film.writer != nil)
         weba = [weba stringByAppendingFormat:@"Writer: %@<br/>",film.writer];
-    if ([film respondsToSelector:@selector(cinematographer)])
+    if (film.cinematographer != nil)
         weba = [weba stringByAppendingFormat:@"Cinematographer: %@<br/>",film.cinematographer];
-    if ([film respondsToSelector:@selector(editor)])
+    if (film.editor != nil)
         weba = [weba stringByAppendingFormat:@"Editor: %@<br/>",film.editor];
-    if ([film respondsToSelector:@selector(cast)])
+    if (film.cast != nil)
         weba = [weba stringByAppendingFormat:@"Cast: %@<br/>",film.cast];
-    if ([film respondsToSelector:@selector(country)])
+    if (film.country != nil)
         weba = [weba stringByAppendingFormat:@"Country: %@<br/>",film.country];
-    if ([film respondsToSelector:@selector(language)])
+    if (film.language != nil)
         weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.language];
-    if ([film respondsToSelector:@selector(filmInfo)])
+    if (film.filmInfo != nil)
         weba = [weba stringByAppendingFormat:@"Film Info: %@<br/>",film.filmInfo];
 	
 	[webView loadHTMLString:weba baseURL:nil];
@@ -509,7 +409,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	{
 		UITableViewCell *oldCell = [atableView cellForRowAtIndexPath:indexPath];
 		
-		NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
+		NSMutableArray *schedules = [film schedules];
 		Schedule *time = [schedules objectAtIndex:row];
 		
 		// set checkBox's status
