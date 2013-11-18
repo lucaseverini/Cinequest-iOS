@@ -12,8 +12,13 @@
 #import "DVD.h"
 #import "CinequestAppDelegate.h"
 #import "DataProvider.h"
+#import "Festival.h"
+#import "Film.h"
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:100px;max-width:150px;\"src=\"%@\"/></p><p>%@</p>"
+
+#define VIEW_BY_DATE	0
+#define VIEW_BY_TITLE	1
 
 @interface FilmDetail (Private)
 
@@ -29,33 +34,41 @@
 @synthesize webView;
 @synthesize dataDictionary;
 @synthesize activityIndicator;
+@synthesize film;
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark -
-#pragma mark UIViewController Methods
+#pragma mark - UIViewController Methods
 
 static NSString *kGetSessionProxy = nil;
 static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
 static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
-- (id) initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSString *)filmID
+- (id) initWithTitle:(NSString*)name from:(NSUInteger)viewBy andId:(NSString *)ID
 {
 	self = [super init];
 	if(self != nil)
 	{
 		self.navigationItem.title = name;
-		filmId = filmID;
+        delegate = appDelegate;
+        if (viewBy == VIEW_BY_DATE) {
+            // A Film already has an array of Schedules with it
+            film = [delegate.festival getFilmForId:ID];
+        } else { // I use this generic approach for now, will change it later.
+            film = [delegate.festival getFilmForId:ID];
+        }
+		
+        /* filmId = filmID;
 		
 		dataDictionary	= [[NSMutableDictionary alloc] init];
 
 		myFilmData = [[Schedule alloc] init];
 		myFilmData.title = dataObject.title;
 		myFilmData.ID = dataObject.ID;
-		myFilmData.itemID = dataObject.itemID;
+		myFilmData.itemID = dataObject.itemID; */
 	}
 	
 	return self;
@@ -64,13 +77,13 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
 	self.tableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
 	
-	[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
+	//[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
+    [self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -78,7 +91,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	[self.tableView reloadData];
 }
 
-- (void) parseData
+/* - (void) parseData
 {
 	NSData *data = [[appDelegate dataProvider] filmDetail:filmId];
 	if (data == nil)
@@ -152,59 +165,56 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	}
 
 	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
-}
+} */
    
 - (void)loadData
 {
-	NSString *weba = [NSString stringWithFormat:web,[dataDictionary objectForKey:@"title"]
-					  ,[dataDictionary objectForKey:@"imageURL"]
-					  ,[dataDictionary objectForKey:@"description"]];
-	
-	NSArray *keys = [dataDictionary allKeys];
-	for (NSString *key in keys) {
-		NSString *obj = [dataDictionary objectForKey:key];
-		if (![obj isKindOfClass:[NSString class]] 
-			|| [obj isEqualToString:@""] || [key isEqualToString:@"imageURL"]
-			|| [key isEqualToString:@"description"] || [key isEqualToString:@"title"])
-		{
-			continue;
-		}
-		else if ([key isEqualToString:@"trailer"]) {
-			NSString *youtubeLink = [dataDictionary objectForKey:@"trailer"];
-			NSString *htmlString = @"";
-			htmlString = [htmlString stringByAppendingString:@"<div><object width=\"50\" height=\"50\">"];
-			htmlString = [htmlString stringByAppendingString:@"<param name=\"movie\" value=\"%@\"></param>"];
-			htmlString = [htmlString stringByAppendingString:@"<param name=\"wmode\" value=\"transparent\"></param>"];
-			htmlString = [htmlString stringByAppendingFormat:@"<embed src=\"%@\"",youtubeLink];
-			htmlString = [htmlString stringByAppendingString:@"type=\"application/x-shockwave-flash\" wmode=\"transparent\" width=\"50\" height=\"50\"></embed>"];
-			htmlString = [htmlString stringByAppendingString:@"</object></div>"];
-			
-			weba = [weba stringByAppendingFormat:@"Trailer: %@ <br/>",htmlString];
-			continue;
-		}
-		
-		if ([key isEqualToString:@"genre"])				weba = [weba stringByAppendingFormat:@"Genre: %@<br/>",obj];
-		if ([key isEqualToString:@"director"])			weba = [weba stringByAppendingFormat:@"Director: %@<br/>",obj];
-		if ([key isEqualToString:@"producer"])			weba = [weba stringByAppendingFormat:@"Producer: %@<br/>",obj];
-		if ([key isEqualToString:@"writer"])			weba = [weba stringByAppendingFormat:@"Writer: %@<br/>",obj];
-		if ([key isEqualToString:@"cinematographer"])	weba = [weba stringByAppendingFormat:@"Cinematographer: %@<br/>",obj];
-		if ([key isEqualToString:@"editor"])			weba = [weba stringByAppendingFormat:@"Editor: %@<br/>",obj];
-		if ([key isEqualToString:@"cast"])				weba = [weba stringByAppendingFormat:@"Cast: %@<br/>",obj];
-		if ([key isEqualToString:@"country"])			weba = [weba stringByAppendingFormat:@"Country: %@<br/>",obj];
-		if ([key isEqualToString:@"language"])			weba = [weba stringByAppendingFormat:@"Director: %@<br/>",obj];
-		if ([key isEqualToString:@"film_info"])			weba = [weba stringByAppendingFormat:@"Film Info: %@<br/>",obj];
-	}
+	NSString *weba = [NSString stringWithFormat:web,[film name],[film imageURL],[film description]];
+    
+    /*
+     @property (strong, nonatomic) NSMutableArray *schedules;
+     @property (strong, nonatomic) NSString *tagline;
+     @property (strong, nonatomic) NSString *genre;
+     @property (strong, nonatomic) NSString *director;
+     @property (strong, nonatomic) NSString *producer;
+     @property (strong, nonatomic) NSString *writer;
+     @property (strong, nonatomic) NSString *cinematographer;
+     @property (strong, nonatomic) NSString *editor;
+     @property (strong, nonatomic) NSString *cast;
+     @property (strong, nonatomic) NSString *country;
+     @property (strong, nonatomic) NSString *language;
+     @property (strong, nonatomic) NSString *filmInfo; */
+
+    if ([film respondsToSelector:@selector(genre)])
+        weba = [weba stringByAppendingFormat:@"Genre: %@<br/>",film.genre];
+    if ([film respondsToSelector:@selector(director)])
+        weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.director];
+    if ([film respondsToSelector:@selector(producer)])
+        weba = [weba stringByAppendingFormat:@"Producer: %@<br/>",film.producer];
+    if ([film respondsToSelector:@selector(writer)])
+        weba = [weba stringByAppendingFormat:@"Writer: %@<br/>",film.writer];
+    if ([film respondsToSelector:@selector(cinematographer)])
+        weba = [weba stringByAppendingFormat:@"Cinematographer: %@<br/>",film.cinematographer];
+    if ([film respondsToSelector:@selector(editor)])
+        weba = [weba stringByAppendingFormat:@"Editor: %@<br/>",film.editor];
+    if ([film respondsToSelector:@selector(cast)])
+        weba = [weba stringByAppendingFormat:@"Cast: %@<br/>",film.cast];
+    if ([film respondsToSelector:@selector(country)])
+        weba = [weba stringByAppendingFormat:@"Country: %@<br/>",film.country];
+    if ([film respondsToSelector:@selector(language)])
+        weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.language];
+    if ([film respondsToSelector:@selector(filmInfo)])
+        weba = [weba stringByAppendingFormat:@"Film Info: %@<br/>",film.filmInfo];
 	
 	[webView loadHTMLString:weba baseURL:nil];
 }
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - Actions
 
 - (IBAction) addAction:(id)sender
 {
 	// get all schedules that has checked items
-	NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
+	NSMutableArray *schedules = [film schedules];
 	
 	int addedCount = 0;
 	NSUInteger i, count = [schedules count];
@@ -241,7 +251,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	if (addedCount > 0) 
 	{
 		alert = [[UIAlertView alloc] initWithTitle:@"Attention!"
-										   message:[NSString stringWithFormat:@"%@ is added to your schedule.",myFilmData.title]
+										   message:[NSString stringWithFormat:@"%@ is added to your schedule.",[film name]]
 										  delegate:nil
 								 cancelButtonTitle:@"OK"
 								 otherButtonTitles:nil];
@@ -258,8 +268,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	[alert show];
 }
 
-#pragma mark -
-#pragma mark UIWebView delegate
+#pragma mark - UIWebView delegate
 
 - (void) webViewDidFinishLoad:(UIWebView *)_webView
 {
@@ -278,8 +287,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	self.view.userInteractionEnabled = YES;
 }
 
-#pragma mark -
-#pragma mark UITableView Datasource
+#pragma mark - UITableView Datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -294,8 +302,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	{
 		case SCHEDULE_SECTION:
 		{
-			NSMutableArray *array = [dataDictionary objectForKey:@"Schedules"];
-			result = [array count];
+			result = [[film schedules] count];
 			break;
 		}
 			
@@ -363,7 +370,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			int row = [indexPath row];
 			
 			// get all schedules
-			NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
+			NSMutableArray *schedules = [film schedules];
 			Schedule *time = [schedules objectAtIndex:row];
 			
 			UIColor *textColor = [UIColor blackColor];
@@ -373,7 +380,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			
 			for (i = 0; i < count; i++) {
 				Schedule *obj = [mySchedule objectAtIndex:i];
-				if (obj.ID == time.ID) {
+				if ([obj.ID isEqualToString:time.ID]) {
 					textColor = [UIColor blueColor];
 					userInteraction = NO;
 					time.isSelected = YES;
@@ -492,8 +499,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
     return cell;
 }
-#pragma mark -
-#pragma mark UITableView delegate
+#pragma mark - UITableView delegate
 - (void)tableView:(UITableView *)atableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	int section = [indexPath section];
@@ -533,9 +539,9 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			case 1: {
 				MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
 				NSString *friendlyMessage = @"Hey, I found an interesting film from Cinequest. Check it out!";
-				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@",friendlyMessage,myFilmData.itemID];
+				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@",friendlyMessage,[film ID]];
 				controller.mailComposeDelegate = self;
-				[controller setSubject:myFilmData.title];
+				[controller setSubject:[film name]];
 				[controller setMessageBody:messageBody isHTML:NO]; 
 				delegate.isPresentingModalView = YES;
 				    [self.navigationController presentViewController:controller animated:YES completion:nil];
@@ -546,8 +552,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		}
 	}
 }
-#pragma mark -
-#pragma mark UIAlertView Delegate
+#pragma mark - UIAlertView Delegate
 - (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 1) {
 		//NSLog(@"CALL!");
@@ -558,8 +563,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
     [self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
 }
-#pragma mark -
-#pragma mark MFMailComposeViewController Delegate
+
+#pragma mark - MFMailComposeViewController Delegate
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error; {
 	if (result == MFMailComposeResultSent) {
 		//NSLog(@"It's away!");
@@ -569,12 +574,11 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 }
 
 
-#pragma mark -
-#pragma mark Social Media Sharing
+#pragma mark - Social Media Sharing
 
 - (IBAction)pressToShareToFacebook:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@", [film name]];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
@@ -597,7 +601,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (IBAction)pressToShareToTwitter:(id)sender
 {
-    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@", myFilmData.title];
+    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@", [film name]];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {

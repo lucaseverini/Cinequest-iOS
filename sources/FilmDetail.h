@@ -9,6 +9,8 @@
 @class CinequestAppDelegate;
 @class Schedule;
 @class FBSession;
+@class Film;
+@class ProgramItem;
 
 @interface FilmDetail : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
 {
@@ -24,7 +26,8 @@
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) NSMutableDictionary *dataDictionary;
+@property (nonatomic, strong) Film *film;
 
-- (id) initWithTitle:(NSString*)name andId:(NSString *)Id;
+- (id) initWithTitle:(NSString*)name from:(NSUInteger)viewBy andId:(NSString *)Id;
 
 @end

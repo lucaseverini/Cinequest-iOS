@@ -632,8 +632,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSString *date = [days objectAtIndex:section];
 			NSMutableArray *schedules = [data objectForKey:date];
 			Schedule *schedule = [schedules objectAtIndex:row];
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andId:schedule.itemID];
+			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" from:VIEW_BY_DATE andId:schedule.itemID];
 			
+            
 			[[self navigationController] pushViewController:filmDetail animated:YES];
 		}
 			break;
@@ -644,7 +645,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
             NSMutableArray *films = [titlesWithSort objectForKey:sort];
 			Film *film = [films objectAtIndex:row];
         
-			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" andId:film.ID];
+			FilmDetail *filmDetail = [[FilmDetail alloc] initWithTitle:@"Film Detail" from:VIEW_BY_TITLE andId:film.ID];
 			
 			[[self navigationController] pushViewController:filmDetail animated:YES];
 		}
