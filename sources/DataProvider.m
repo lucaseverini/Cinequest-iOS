@@ -782,13 +782,13 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 }
 
-- (NSData*) filmDetail:(NSUInteger)filmId
+- (NSData*) filmDetail:(NSString *)filmId
 {
-	NSLog(@"Getting detail for film %d...", filmId);
+	NSLog(@"Getting detail for film %@...", filmId);
 	
-	NSString *url = [NSString stringWithFormat:@"%@%d", DETAILFORFILMID, filmId];
-	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:[NSString stringWithFormat:FILMDETAIL_FILE, filmId]];
-	NSString *key = [NSString stringWithFormat:@"FilmDetail.%d", filmId];
+	NSString *url = [NSString stringWithFormat:@"%@%@", DETAILFORFILMID, filmId];
+	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",FILMDETAIL_FILE, filmId]];
+	NSString *key = [NSString stringWithFormat:@"FilmDetail.%@", filmId];
 	NSDate *queryDate = [queryDates objectForKey:key];
 	
 	if(![appDelegate connectedToNetwork])

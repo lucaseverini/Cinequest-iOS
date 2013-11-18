@@ -15,7 +15,7 @@
 #import "Film.h"
 #import "Festival.h"
 #import "ProgramItem.h"
-#import "NewSchedule.h"
+#import "Schedule.h"
 #import "VenueLocation.h"
 #import "DataProvider.h"
 
@@ -67,6 +67,10 @@
             [festival.films addObject:film];
         }
         
+        // Shows that include only Short Films are not included in festival.films
+        // festival.films contains only feature films and short films
+        // 
+        
         NSMutableArray *shortIDs = [show.customProperties objectForKey:@"ShortID"];
         if (shortIDs != nil) {
             for (NSString *ID in shortIDs) {
@@ -76,7 +80,7 @@
         }
         
         for (Showing *showing in show.currentShowings) {
-            NewSchedule *schedule = [self getSchedule:showing forItem:item];
+            Schedule *schedule = [self getSchedule:showing forItem:item];
             [festival.schedules addObject:schedule];
             if (![uniqueVenues containsObject:schedule.venue]) {
                 [uniqueVenues addObject:schedule.venue];
@@ -216,14 +220,36 @@
     return loc;
 }
 
-- (NewSchedule *) getSchedule:(Showing *) showing forItem:(ProgramItem *)item
+- (Schedule *) getSchedule:(Showing *) showing forItem:(ProgramItem *)item
 {
-    NewSchedule *schedule = [[NewSchedule alloc] init];
+    Schedule *schedule = [[Schedule alloc] init];
     schedule.ID = showing.ID;
     schedule.itemID = item.ID;
     schedule.title = item.name;
-    schedule.startTime = showing.startDate;
-    schedule.endTime = showing.endDate;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    NSDate *date = [dateFormatter dateFromString:showing.startDate];
+    schedule.startDate = date;
+    
+    [dateFormatter setDateFormat:@"h:mm a"];
+    schedule.startTime = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"EEE, MMM d"];
+    schedule.dateString = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"EEEE, MMMM d"];
+    schedule.longDateString = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    date = [dateFormatter dateFromString:showing.endDate];
+    schedule.endDate = date;
+    
+    [dateFormatter setDateFormat:@"h:mm a"];
+    schedule.endTime = [dateFormatter stringFromDate:date];
+
+    
     schedule.venue = [self venueAbbr:showing.venue.name];
     return schedule;
 }

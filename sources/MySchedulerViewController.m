@@ -193,7 +193,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		NSMutableArray *films = [displayData objectForKey:dateString];
 		Schedule *film = [films objectAtIndex:row];
         
-		NSDate *startDate = [film.date dateByAddingTimeInterval:ONE_YEAR];
+		NSDate *startDate = [film.startDate dateByAddingTimeInterval:ONE_YEAR];
         NSDate *endDate = [film.endDate dateByAddingTimeInterval:ONE_YEAR];
         
         if ([_arrCalendarItems containsObject:film.title])
@@ -463,7 +463,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     }
     
 	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-	timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", film.dateString, film.timeString, film.endTimeString];
+	timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", film.dateString, film.startTime, film.endTime];
 	
 	venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
 	venueLabel.text = [NSString stringWithFormat:@"Venue:%@", film.venue];
@@ -537,7 +537,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		}
         
         //Remove Event from Calendar
-        NSDate *startDate = [item.date dateByAddingTimeInterval:ONE_YEAR];
+        NSDate *startDate = [item.startDate dateByAddingTimeInterval:ONE_YEAR];
         NSDate *endDate = [item.endDate dateByAddingTimeInterval:ONE_YEAR];
         NSPredicate *predicateForEvents = [_eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:_cinequestCalendar]];
         //set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)

@@ -1,27 +1,25 @@
 //
-//  Schedule.m
-//  CineQuest
+//  NewSchedule.m
+//  Cinequest
 //
-//  Created by Loc Phan on 10/23/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Hai Nguyen on 11/6/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "Schedule.h"
 
-
 @implementation Schedule
 
-@synthesize title;
-@synthesize type;
-@synthesize venue;
-@synthesize date;
-@synthesize endDate;
 @synthesize ID;
-@synthesize prog_id;
+@synthesize title;
+@synthesize itemID;
+@synthesize venue;
+@synthesize startTime;
+@synthesize endTime;
+@synthesize startDate;
+@synthesize endDate;
 @synthesize dateString;
 @synthesize longDateString;
-@synthesize timeString;
-@synthesize isSelected;
 @synthesize fontColor;
 @synthesize endTimeString;
 @synthesize presentInScheduler;
