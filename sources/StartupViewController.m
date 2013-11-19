@@ -60,6 +60,22 @@
 	[super viewWillAppear: animated];
 }
 
+- (void) viewDidLayoutSubviews
+{
+	if(appDelegate.iPhone4Display)
+	{
+		// Set the position correctly to compensate the shorter screen on iPhone 4
+		[self.cinequestImage setFrame:CGRectOffset(self.cinequestImage.frame, 0.0, -44.0)];
+		[self.activityView setFrame:CGRectOffset(self.activityView.frame, 0.0, -80.0)];		
+		[self.sjsuImage setFrame:CGRectOffset(self.sjsuImage.frame, 0.0, -80.0)];
+	}
+	else
+	{
+		// Load the correct image for taller screen on iPhone 5
+		[self.cinequestImage setImage:[UIImage imageNamed:@"Splash5.png"]];
+	}
+}
+
 - (BOOL) prefersStatusBarHidden
 {
     return YES;
@@ -68,15 +84,8 @@
 - (void) viewDidAppear:(BOOL)animated
 {
 	CFTimeInterval startTime = CFAbsoluteTimeGetCurrent();
-
+	
     [super viewDidAppear:animated];
-
-	if(appDelegate.iPhone4Display)
-	{
-		[self.activityView setFrame:CGRectOffset(self.activityView.frame, 0.0, -80.0)];
-		[self.sjsuImage setFrame:CGRectOffset(self.sjsuImage.frame, 0.0, -80.0)];
-		[self.cinequestImage setFrame:CGRectOffset(self.cinequestImage.frame, 0.0, -80.0)];
-	}
 
 	[activityView startAnimating];
 		

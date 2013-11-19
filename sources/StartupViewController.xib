@@ -18,11 +18,11 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" fixedFrame="YES" image="iPhoneSplash_640x1136.png" translatesAutoresizingMaskIntoConstraints="NO" id="oZg-pM-bkW">
+                <imageView opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleAspectFit" fixedFrame="YES" image="Splash4.png" translatesAutoresizingMaskIntoConstraints="NO" id="oZg-pM-bkW">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <autoresizingMask key="autoresizingMask"/>
                 </imageView>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="sjsulogo_new_sjsu4.gif" translatesAutoresizingMaskIntoConstraints="NO" id="MkU-tR-wfz">
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" fixedFrame="YES" image="logoSJSU.png" translatesAutoresizingMaskIntoConstraints="NO" id="MkU-tR-wfz">
                     <rect key="frame" x="79" y="428" width="162" height="93"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -38,7 +38,7 @@
         </view>
     </objects>
     <resources>
-        <image name="iPhoneSplash_640x1136.png" width="640" height="1136"/>
-        <image name="sjsulogo_new_sjsu4.gif" width="162" height="93"/>
+        <image name="Splash4.png" width="640" height="960"/>
+        <image name="logoSJSU.png" width="350" height="250"/>
     </resources>
 </document>
