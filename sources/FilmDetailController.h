@@ -20,10 +20,12 @@
 	UIButton *postThisButton;
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
+	UIFont *timeFont;
+	UIFont *venueFont;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UITableView *detailsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) Film *film;
 

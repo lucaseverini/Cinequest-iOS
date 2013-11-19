@@ -18,21 +18,14 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p>%@</p>"
 
-@interface EventDetailViewController (Private)
-
-- (void)parseData;
-- (IBAction)addAction:(id)sender;
-
-@end
 
 @implementation EventDetailViewController
 
-@synthesize tableView = _tableView;
-@synthesize webView = _webView;
-@synthesize activity;
-@synthesize displayAddButton;
+@synthesize detailsTableView;
+@synthesize webView;
+@synthesize activityIndicator;
 
-- (void)didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
@@ -46,6 +39,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	if(self != nil)
 	{
 		self.title = @"Event Detail";
+		
 		dataLink = link;
 		dataDictionary = [[NSMutableDictionary  alloc] init];
 		
@@ -53,7 +47,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		myData.ID = dataObject.ID;
 		myData.title = dataObject.title;
 		myData.itemID = dataObject.itemID;
-		
     }
 	
     return self;
@@ -79,37 +72,35 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (void) viewDidLoad
 {
-	self.tableView.hidden = YES;
-	self.view.userInteractionEnabled = NO;
-	if (displayAddButton) {
-		UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add"
-																		style:UIBarButtonItemStyleDone
-																		target:self
-																		action:@selector(addAction:)];
-		self.navigationItem.rightBarButtonItem = addButton;
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
-
-	[NSThread detachNewThreadSelector:@selector(parseData) toTarget:self withObject:nil];
-
 	[super viewDidLoad];
-	
+
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
+
+	self.detailsTableView.hidden = YES;
+	self.view.userInteractionEnabled = NO;
+
+	self.activityIndicator.color = [UIColor grayColor];
+	
+	[(UIWebView*)self.detailsTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
+
+	[self.activityIndicator startAnimating];
+
+	[self performSelectorOnMainThread:@selector(parseData) withObject:nil waitUntilDone:NO];
+	
+	[self.detailsTableView reloadData];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
-	[self.tableView reloadData];
+	[super viewWillAppear:animated];
 }
 
-- (void )parseData
+- (void) parseData
 {
 	NSData *data = [[appDelegate dataProvider] eventDetail:eventId];
 	
-	DDXMLDocument *xmlDocument = [[DDXMLDocument alloc] initWithData:data
-															 options:0
-															   error:nil];
+	DDXMLDocument *xmlDocument = [[DDXMLDocument alloc] initWithData:data options:0 error:nil];
 	DDXMLNode *rootElement = [xmlDocument rootElement];
 	//NSLog(@"%d",[rootElement childCount]);
 	
@@ -185,18 +176,15 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		}
 	}
 	
-	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
+	[self loadData];
 }
 
 - (void) loadData
 {
-	NSString *weba = [NSString stringWithFormat:web,[dataDictionary objectForKey:@"Title"]
-					  ,[dataDictionary objectForKey:@"Description"]];
+	NSString *weba = [NSString stringWithFormat:web,[dataDictionary objectForKey:@"Title"],[dataDictionary objectForKey:@"Description"]];
 	
-	//NSLog(@"%@",weba);
-    
-	weba = [self htmlEntityDecode:weba];    //Render HTML properly
-	weba = [weba stringByAppendingString:@"<br/>"];
+	weba = [self htmlEntityDecode:weba]; // Render HTML properly
+	
 	[self.webView loadHTMLString:weba baseURL:nil];	
 }
 
@@ -205,22 +193,14 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (void) webViewDidFinishLoad:(UIWebView *)webView
 {
-	UIWebView *webview = (UIWebView*) self.tableView.tableHeaderView;
-	//NSLog(@"BEFORE: %f",webview.frame.origin.x);
+	// Updates the WebView and force it to redisplay correctly
+	[self.detailsTableView.tableHeaderView sizeToFit];
+	[self.detailsTableView setTableHeaderView:self.detailsTableView.tableHeaderView];
 	
-	[webview sizeToFit];
-	double height = webview.frame.size.height;
-	double width = webview.frame.size.width;
-	[webview setFrame:CGRectMake(0,0,width,height)];
+	[self.activityIndicator stopAnimating];
 	
-	//NSLog(@"AFTER: %f Wanted: %f",webview.frame.size.height,height);
-	
-	[self.tableView setTableHeaderView:webview];
-	[activity stopAnimating];
-	[self.tableView reloadData];
-	self.navigationItem.rightBarButtonItem.enabled = YES;
-	self.tableView.hidden = NO;
 	self.view.userInteractionEnabled = YES;
+	self.detailsTableView.hidden = NO;
 }
 
 #pragma mark -
@@ -259,7 +239,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		}
 	}
 	
-	[self.tableView reloadData];
+	[self.detailsTableView reloadData];
 	
 	UIAlertView *alert;
 	if (addedCount > 0) 
@@ -270,7 +250,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 											cancelButtonTitle:@"OK"
 											otherButtonTitles:nil];
 	}	
-	else {
+	else
+	{
 		alert = [[UIAlertView alloc] initWithTitle:@"Attention!"
 											message:[NSString stringWithFormat:@"Nothing is added. Please choose a time."]
 											delegate:nil
@@ -286,50 +267,43 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-	if (displayAddButton)
-	{
-		return 3;
-	}
-	
-    return 0;
+	return 3;
 }
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	int result = 1;
 	switch (section)
 	{
-		case SCHEDULE_SECTION:
-		{
-			NSMutableArray *array = [dataDictionary objectForKey:@"Schedules"];
-			result = [array count];
+		default:
+			return 1;
 			break;
-		}
+			
+		case SCHEDULE_SECTION:
+			return [[dataDictionary objectForKey:@"Schedules"] count];
+			break;
 			
 		case SOCIAL_MEDIA_SECTION:
+			return 1;
 			break;
 			
 		case CALL_N_EMAIL_SECTION:
-			result = 2;
+			return 2;
 			break;
-			
 	}
-	
-	return result;
 }
 
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
-	NSString *answer;
+	NSString *answer = nil;
 	
-	switch (section)
+	switch(section)
 	{
 		case SCHEDULE_SECTION:
 			answer = @"Schedules";
 			break;
 			
 		case SOCIAL_MEDIA_SECTION:
-			answer = @"Facebook";
+			answer = @"Share to Social Media";
 			break;
 			
 		case CALL_N_EMAIL_SECTION:
@@ -342,7 +316,25 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 50;
+	int section = [indexPath section];
+	switch (section)
+	{
+		case SCHEDULE_SECTION:
+			return 50.0;
+			break;
+			
+		case SOCIAL_MEDIA_SECTION:
+			return 50.0;
+			break;
+			
+		case CALL_N_EMAIL_SECTION:
+			return 50.0;
+			break;
+			
+		default:
+			return 50.0;
+			break;
+	}
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -492,7 +484,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 					break;
 					
 				case 1:
-					cell.textLabel.text = @"Email Film Detail";
+					cell.textLabel.text = @"Email Event Detail";
 					break;
 					
 				default:
@@ -587,8 +579,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		// NSLog(@"cancel");
 	}
 	
-	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-    [self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
+	NSIndexPath *tableSelection = [self.detailsTableView indexPathForSelectedRow];
+    [self.detailsTableView deselectRowAtIndexPath:tableSelection animated:YES];
 }
 
 #pragma mark -

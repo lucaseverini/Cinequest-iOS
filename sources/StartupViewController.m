@@ -19,7 +19,12 @@
 @synthesize sjsuImage;
 @synthesize activityView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (void) didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
+
+- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
@@ -29,21 +34,35 @@
     return self;
 }
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
+	[app setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+	
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 }
 
-- (void)didReceiveMemoryWarning
+- (void) viewDidDisappear:(BOOL)animated
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [super viewDidDisappear:animated];
+	
+	[activityView stopAnimating];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[app setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+
+	[super viewWillDisappear: animated];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear: animated];
+}
+
+- (BOOL) prefersStatusBarHidden
+{
+    return YES;
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -92,7 +111,7 @@
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delayTime), dispatch_get_main_queue(),
 	^{
 		UIWindow *window = [appDelegate window];
-		[UIView transitionWithView:window duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve animations:
+		[UIView transitionWithView:window duration:0.5 options:UIViewAnimationOptionTransitionCrossDissolve animations:
 		^{
 			window.rootViewController = [appDelegate tabBarController];
 		}
@@ -100,11 +119,6 @@
 	});
 }
 
-- (void) viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-	
-	[activityView stopAnimating];
-}
-
 @end
+
+

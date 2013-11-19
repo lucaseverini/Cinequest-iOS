@@ -23,7 +23,6 @@
 
 @synthesize newsTableView;
 @synthesize activityIndicator;
-@synthesize loadingLabel;
 
 - (void) didReceiveMemoryWarning
 {
@@ -35,41 +34,50 @@
     [super viewDidLoad];
 	
 	self.title = @"News";
-
-	// Initialize
+	
 	data = [[NSMutableDictionary alloc] init];
 	sections = [[NSMutableArray alloc] init];
-	
-	[appDelegate.tabBarController.view setHidden:YES];
+
+	tabBarAnimation = YES;
 
 	self.newsTableView.tableHeaderView = nil;
 	self.newsTableView.tableFooterView = nil;
 	
-	[self startParsingXML];
-}
-
-- (void) viewDidAppear:(BOOL)animated
-{
-	[super viewDidAppear: animated];
-
-	[UIView transitionWithView:appDelegate.tabBarController.view duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve
-	animations:^
-	{
-		[appDelegate.tabBarController.view setHidden:NO];
-	}
-	completion:nil];
+	// Initialize
+	[data removeAllObjects];
+	[sections removeAllObjects];
+	
+	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear: animated];
 	
-	NSIndexPath *tableSelection = [self.newsTableView indexPathForSelectedRow];
-    [self.newsTableView deselectRowAtIndexPath:tableSelection animated:YES];
-
-	// Don't show the spinning wheel and the "loading" label for now... (Luca 11-6-13)
 	activityIndicator.hidden = YES;
-	loadingLabel.hidden = YES;
+	
+	if(tabBarAnimation)
+	{
+		[appDelegate.tabBarController.view setHidden:YES];
+	}
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear: animated];
+
+	if(tabBarAnimation)
+	{
+		// Don't show an ugly jerk while the bottom tabbar is drawed
+		[UIView transitionWithView:appDelegate.tabBarController.view duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve
+		animations:^
+		{
+			[appDelegate.tabBarController.view setHidden:NO];
+		}
+		completion:nil];
+		
+		tabBarAnimation = NO;
+	}
 }
 
 - (void) startParsingXML
@@ -157,7 +165,7 @@
 	}
 	else
 	{
-		NSLog(@"Error parsing XML.");;
+		NSLog(@"Error parsing XML");
 		return;
 	}
 
@@ -165,7 +173,7 @@
 	
 	[sections removeObjectAtIndex:0];
 	
-	// [NSThread detachNewThreadSelector:@selector(loadImage) toTarget:self withObject:nil];
+	// [self loadImage];
 
 	[self.newsTableView reloadData];
 }
@@ -182,7 +190,6 @@
 	imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.newsTableView setTableHeaderView:imageView];
 
-	loadingLabel.hidden = YES;
 	[activityIndicator stopAnimating];
 	self.newsTableView.hidden = NO;
 	[self.newsTableView reloadData];
@@ -219,7 +226,8 @@
 	NSUInteger row = [indexPath row];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    if(cell == nil)
+	{
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
@@ -242,10 +250,6 @@
 
 #pragma mark -
 #pragma mark UITableView Delegate
-
-- (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
-{
-}
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

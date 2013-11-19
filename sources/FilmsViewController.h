@@ -29,7 +29,6 @@
 }
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, weak) IBOutlet UILabel *loadingLabel;
 @property (nonatomic, weak) IBOutlet UISegmentedControl *switchTitle;
 @property (nonatomic, weak) IBOutlet UITableView *filmsTableView;
 

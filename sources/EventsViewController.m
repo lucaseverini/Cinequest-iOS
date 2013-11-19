@@ -14,12 +14,6 @@
 #import "DDXML.h"
 #import "DataProvider.h"
 
-@interface EventsViewController (Private)
-
-- (void)loadDataFromDatabase;
-- (void)syncTableDataWithScheduler;
-
-@end
 
 @implementation EventsViewController
 
@@ -27,9 +21,7 @@
 @synthesize days;
 @synthesize eventsTableView;
 @synthesize index;
-@synthesize loadingLabel;
-@synthesize activity;
-@synthesize offSeasonLabel;
+@synthesize activityIndicator;
 
 - (void)didReceiveMemoryWarning
 {
@@ -39,7 +31,7 @@
 #pragma mark -
 #pragma mark UIViewController Methods
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
     [super viewDidLoad];
 	
@@ -58,46 +50,37 @@
 
 	if (delegate.isOffSeason)
 	{
-		[activity stopAnimating];
-		loadingLabel.hidden = YES;
-		offSeasonLabel.hidden = NO;
 		self.eventsTableView.hidden = YES;
 		return;
 	}
-	
-	// Add button
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
-																				style:UIBarButtonItemStyleDone
-																				target:self
-																				action:@selector(addEvents:)];
+
 	[self reloadData:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
-    NSIndexPath *tableSelection = [self.eventsTableView indexPathForSelectedRow];
-    [self.eventsTableView deselectRowAtIndexPath:tableSelection animated:NO];
-	
-	[self syncTableDataWithScheduler];
+	[super viewWillAppear:animated];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
 }
 
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)reloadData:(id)sender
+- (IBAction) reloadData:(id)sender
 {
 	self.eventsTableView.hidden = YES;
-	self.navigationItem.rightBarButtonItem.enabled = NO;
-	self.navigationItem.leftBarButtonItem.enabled = NO;
-	[activity startAnimating];
-	// loadingLabel.hidden = NO;
+	
+	[activityIndicator startAnimating];
 	
 	[data removeAllObjects];
 	[days removeAllObjects];
 	[index removeAllObjects];
 	
-	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:YES];
-	// [NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
+	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 }
 
 - (void)addEvents:(id)sender
@@ -332,14 +315,7 @@
 		{
 			[tempArray addObject:event];
 		}
-		
-		
-		[activity stopAnimating];
-		loadingLabel.hidden = YES;
-
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-		self.navigationItem.leftBarButtonItem.enabled = YES;
-        
+		      
         [self.eventsTableView reloadData];
 		self.eventsTableView.hidden = NO;
 		self.eventsTableView.tableHeaderView = nil;
@@ -352,11 +328,7 @@
 	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
 	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
 	
-	[activity stopAnimating];
-	loadingLabel.hidden = YES;
-
-	self.navigationItem.rightBarButtonItem.enabled = YES;
-	self.navigationItem.leftBarButtonItem.enabled = YES;
+	[activityIndicator stopAnimating];
 
 	[self.eventsTableView reloadData];
 	self.eventsTableView.hidden = NO;
@@ -574,19 +546,14 @@
 	
 	NSMutableArray *events = [data objectForKey:date];
 	Schedule *event = [events objectAtIndex:row];
-/*
-	NSString *link = [NSString stringWithFormat:@"%@%d",DETAILFORITEM, event.prog_id];
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:event.title
-																				andDataObject:event
-																				andURL:[NSURL URLWithString:link]];
-*/
+
 	NSString *eventId = [NSString stringWithFormat:@"%@", event.itemID];
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:event.title
 																				andDataObject:event
 																				andId:eventId];
-	eventDetail.displayAddButton = YES;
-	
 	[self.navigationController pushViewController:eventDetail animated:YES];
+
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

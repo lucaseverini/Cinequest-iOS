@@ -51,6 +51,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 // Resets some variables when the users moves to a different screen
 - (void) viewDidDisappear:(BOOL)animated
 {
+	[super viewDidDisappear:animated];
+	
 	status = @"none";
 	previousCell = nil;
 	previousEndDate = nil;

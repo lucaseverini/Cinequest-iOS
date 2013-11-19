@@ -28,7 +28,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 @synthesize switchTitle;
 @synthesize filmsTableView;
-@synthesize loadingLabel;
 @synthesize activity;
 
 #pragma mark -
@@ -271,8 +270,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	// Hide everything, display activity indicator
 	self.filmsTableView.hidden = YES;
-	self.navigationItem.rightBarButtonItem.enabled = NO;
-	switchTitle.hidden = YES;
 	
 	[activity startAnimating];
 	
@@ -283,7 +280,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[titlesWithSort removeAllObjects];
 	[sorts removeAllObjects];
 	
-	[NSThread detachNewThreadSelector:@selector(prepareData) toTarget:self withObject:nil];
+	[self performSelectorOnMainThread:@selector(prepareData) withObject:nil waitUntilDone:NO];
 }
 
 #pragma mark - UIViewController Methods
@@ -302,20 +299,16 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	days = [[NSMutableArray alloc] init];
 	index = [[NSMutableArray alloc] init];
 	
-	//backedUpDays = [[NSMutableArray alloc] init];
-	//backedUpIndex = [[NSMutableArray alloc] init];
-	//backedUpData = [[NSMutableDictionary alloc] init];
+	// backedUpDays = [[NSMutableArray alloc] init];
+	// backedUpIndex = [[NSMutableArray alloc] init];
+	// backedUpData = [[NSMutableDictionary alloc] init];
 	
 	// Inialize titles and sorts
 	titlesWithSort = [[NSMutableDictionary alloc] init];
 	sorts = [[NSMutableArray alloc] init];
-	
+
 	if (delegate.isOffSeason)
 	{
-		[activity stopAnimating];
-		
-		loadingLabel.hidden = YES;
-		self.navigationItem.titleView = nil;
 		self.filmsTableView.hidden = YES;
 		return;
 	}
@@ -334,11 +327,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) viewWillAppear:(BOOL)animated
 {
-    NSIndexPath *tableSelection = [self.filmsTableView indexPathForSelectedRow];
-    [self.filmsTableView deselectRowAtIndexPath:tableSelection animated:NO];
-	
-	[self syncTableDataWithScheduler];
-    
+	[super viewWillAppear:animated];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
 }
 
 - (void) didReceiveMemoryWarning
@@ -405,20 +399,15 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	[titlesWithSort setObject:temp forKey:pre];
     
-    // Display everything, hide activity indicator
-	switchTitle.hidden = NO;
-	loadingLabel.hidden = YES;
-	self.navigationItem.rightBarButtonItem.enabled = YES;
-	
 	[activity stopAnimating];
 	
 	self.filmsTableView.hidden = NO;
 	[self.filmsTableView reloadData];
 	
 	// back up current data
-    backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
-	backedUpIndex	= [[NSMutableArray alloc] initWithArray:index copyItems:YES];
-	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
+    // backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
+	// backedUpIndex = [[NSMutableArray alloc] initWithArray:index copyItems:YES];
+	// backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
 	
 	[self syncTableDataWithScheduler];
 }
@@ -511,7 +500,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (NSInteger) tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-	int count;
+	int count = 0;
 	
 	switch(switcher)
 	{
@@ -695,7 +684,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			titleLabel.text = film.name;
 			[cell.contentView addSubview:titleLabel];
 			
-			UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+			UIButton *infoButton = [UIButton buttonWithType: [appDelegate OSVersion] < 7.0 ? UIButtonTypeInfoDark : UIButtonTypeInfoLight];
 			if(titleNumLines == 1)
 			{
 				[infoButton setFrame:CGRectMake(15.0, 4.0, 24.0, 24.0)];

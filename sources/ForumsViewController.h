@@ -22,10 +22,8 @@
 @property (nonatomic, strong) NSMutableDictionary *data;
 
 @property (nonatomic, strong) IBOutlet UITableView *forumsTableView;
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, strong) IBOutlet UILabel *loadingLabel;
-@property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
-- (IBAction)reloadData:(id)sender;
+- (IBAction) reloadData:(id)sender;
 
 @end

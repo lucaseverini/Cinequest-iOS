@@ -19,11 +19,11 @@
 static NSString *kGetSessionProxy = nil;
 static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
 static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
-
+static char *const kAssociatedScheduleKey = "Schedule";
 
 @implementation FilmDetailController
 
-@synthesize tableView = _tableView;
+@synthesize detailsTableView;
 @synthesize webView;
 @synthesize activityIndicator;
 @synthesize film;
@@ -55,12 +55,21 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 {
 	[super viewDidLoad];
 	
-	self.tableView.hidden = YES;
+	self.detailsTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
 
+	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	venueFont = timeFont;
+
 	self.activityIndicator.color = [UIColor grayColor];
+	
+	[(UIWebView*)self.detailsTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
+
+	[self.activityIndicator startAnimating];
 
     [self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+	
+	[self.detailsTableView reloadData];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -71,10 +80,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-
-	[self.activityIndicator startAnimating];
-
-	[self.tableView reloadData];
 }
 
 - (void) loadData
@@ -82,51 +87,71 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	NSString *weba = [NSString stringWithFormat:web,[film name],[film imageURL],[film description]];
 
     if (film.genre != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Genre: %@<br/>",film.genre];
+	}
+	
     if (film.director != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.director];
+	}
+	
     if (film.producer != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Producer: %@<br/>",film.producer];
+	}
+	
     if (film.writer != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Writer: %@<br/>",film.writer];
+	}
+	
     if (film.cinematographer != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Cinematographer: %@<br/>",film.cinematographer];
+	}
+	
     if (film.editor != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Editor: %@<br/>",film.editor];
+	}
+	
     if (film.cast != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Cast: %@<br/>",film.cast];
+	}
+	
     if (film.country != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Country: %@<br/>",film.country];
+	}
+	
     if (film.language != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.language];
+	}
+	
     if (film.filmInfo != nil)
+	{
         weba = [weba stringByAppendingFormat:@"Film Info: %@<br/>",film.filmInfo];
+	}
 	
 	[webView loadHTMLString:weba baseURL:nil];
 }
-
-#pragma mark - Actions
 
 #pragma mark -
 #pragma mark UIWebView delegate
 
 - (void) webViewDidFinishLoad:(UIWebView *)_webView
 {
-	UIWebView *webview = (UIWebView*) self.tableView.tableHeaderView;
+	// Updates the WebView and force it to redisplay correctly 
+	[self.detailsTableView.tableHeaderView sizeToFit];
+	[self.detailsTableView setTableHeaderView:self.detailsTableView.tableHeaderView];
 
-	[webview sizeToFit];
-	double height = webview.frame.size.height + 30.0f;
-
-	double width = webview.frame.size.width;
-	[webview setFrame:CGRectMake(0,0,width,height)];
-	
 	[self.activityIndicator stopAnimating];
-
-	[self.tableView setTableHeaderView:webview];
-	[self.tableView reloadData];
 	
-	self.tableView.hidden = NO;
 	self.view.userInteractionEnabled = YES;
+	self.detailsTableView.hidden = NO;
 }
 
 #pragma mark - UITableView Datasource
@@ -138,30 +163,29 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	int result = 1;
-	
 	switch (section)
 	{
-		case SCHEDULE_SECTION:
-		{
-			result = [[film schedules] count];
+		default:
+			return 1;
 			break;
-		}
+
+		case SCHEDULE_SECTION:
+			return [[film schedules] count];
+			break;
 			
 		case SOCIAL_MEDIA_SECTION:
+			return 1;
 			break;
 			
 		case CALL_N_EMAIL_SECTION:
-			result = 2;
+			return 2;
 			break;
 	}
-	
-	return result;
 }
 
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
-	NSString *answer;
+	NSString *answer = nil;
 	
 	switch(section)
 	{
@@ -184,26 +208,24 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	int section = [indexPath section];
-	int height = 50.0;
-		
 	switch (section)
 	{
 		case SCHEDULE_SECTION:
-			height = 50.0;
+			return 42.0;
 			break;
 			
 		case SOCIAL_MEDIA_SECTION:
-			height = 50.0;
+			return 50.0;
 			break;
 			
 		case CALL_N_EMAIL_SECTION:
+			return 50.0;
 			break;
 			
 		default:
+			return 50.0;
 			break;
 	}
-				   
-    return height;
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -219,101 +241,74 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	{
 		case SCHEDULE_SECTION:
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
-			
 			// get row number
 			int row = [indexPath row];
 			
 			// get all schedules
 			NSMutableArray *schedules = [film schedules];
-			Schedule *time = [schedules objectAtIndex:row];
-			
-			UIColor *textColor = [UIColor blackColor];
-			BOOL userInteraction = YES;
-			
-			NSUInteger i, count = [mySchedule count];
-			
-			for (i = 0; i < count; i++)
+			Schedule *schedule = [schedules objectAtIndex:row];
+						
+			NSUInteger idx, count = [mySchedule count];
+			for (idx = 0; idx < count; idx++)
 			{
-				Schedule *obj = [mySchedule objectAtIndex:i];
-				if (obj.ID == time.ID)
+				Schedule *obj = [mySchedule objectAtIndex:idx];
+				if (obj.ID == schedule.ID)
 				{
-					textColor = [UIColor blueColor];
-					userInteraction = NO;
-					time.isSelected = YES;
+					schedule.isSelected = YES;
 				}
 			}
 			
-			UILabel *label;
 			UILabel *timeLabel;
 			UILabel *venueLabel;
-			UIButton *checkButton;
+			UIButton *calButton;
 
-			BOOL checked = time.isSelected;
-			UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"];
+			UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+
+			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
 			if (cell == nil)
 			{
 				// init cell
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ScheduleCell"];
-				cell.accessoryType = UITableViewCellAccessoryNone;
 				
-				label = [[UILabel alloc] initWithFrame:CGRectMake(50,2,230,20)];
-				label.tag = CELL_TITLE_LABEL_TAG;
-				[cell.contentView addSubview:label];
-				
-				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,21,150,20)];
+				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 2.0, 250.0, 20.0)];
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
+				timeLabel.font = timeFont;
 				[cell.contentView addSubview:timeLabel];
 				
-				venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(210,21,100,20)];
+				venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 21.0, 250.0, 20.0)];
 				venueLabel.tag = CELL_VENUE_LABEL_TAG;
+				venueLabel.font = venueFont;
 				[cell.contentView addSubview:venueLabel];
 				
-				checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				checkButton.frame = CGRectMake(0,0,50,48);
-				checkButton.userInteractionEnabled = NO;
-				[checkButton setImage:buttonImage forState:UIControlStateNormal];
-				checkButton.backgroundColor = [UIColor clearColor];
-				checkButton.tag = CELL_LEFTBUTTON_TAG;
-				[cell.contentView addSubview:checkButton];
+				calButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				calButton.frame = CGRectMake(11.0, 5.0, 32.0, 32.0);
+				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+				calButton.tag = CELL_LEFTBUTTON_TAG;
+				[cell.contentView addSubview:calButton];
 			}
 			
-			// set the cell's text
-			label = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
-			label.text = [NSString stringWithFormat:@"Date: %@",time.dateString];
-			label.textColor = textColor;
-			label.font = [UIFont systemFontOfSize:14.0f];
-			
 			timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
-			timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",time.startTime,time.endTime];
-			timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
-			timeLabel.textColor = textColor;
-			
+			timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime];
+
 			venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
-			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",time.venue];
-			venueLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
-			venueLabel.textColor = textColor;
+			venueLabel.text = [NSString stringWithFormat:@"Venue: %@", schedule.venue];
 			
-			checkButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-			[checkButton setImage:buttonImage forState:UIControlStateNormal];
-			
-			cell.userInteractionEnabled = userInteraction;
-			
+			calButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
+			[calButton setImage:buttonImage forState:UIControlStateNormal];
+
 			break;
 		}
 		
 		case SOCIAL_MEDIA_SECTION:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
-			if (cell == nil) {
+			if (cell == nil)
+			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FacebookIdentifier];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
                 UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                [fbButton addTarget:self
-                           action:@selector(pressToShareToFacebook:)
-                 forControlEvents:UIControlEventTouchDown];
-                
+                [fbButton addTarget:self action:@selector(pressToShareToFacebook:) forControlEvents:UIControlEventTouchDown];
                 
                 [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
                 [fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
@@ -322,10 +317,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
                 [cell.contentView addSubview:fbButton];
                 
                 UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                [twButton addTarget:self
-                             action:@selector(pressToShareToTwitter:)
-                   forControlEvents:UIControlEventTouchDown];
-                
+                [twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
                 
                 [twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
                 [twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
@@ -333,7 +325,6 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
                 twButton.frame = CGRectMake(92, 10, 32, 32);
                 [cell.contentView addSubview:twButton];
             }
-
 			break;
 		}
 			
@@ -350,9 +341,11 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 				case 0:
 					cell.textLabel.text = @"Call Cinequest Ticketing Line";
 					break;
+					
 				case 1:
 					cell.textLabel.text = @"Email Film Detail";
 					break;
+					
 				default:
 					break;
 			}
@@ -362,40 +355,28 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		default:
 			break;
 	}
+	
 	cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
+	
     return cell;
 }
 
 #pragma mark -
 #pragma mark UITableView delegate
 
-- (void) tableView:(UITableView *)atableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	int section = [indexPath section];
 	int row = [indexPath row];
 	
 	if (section == SCHEDULE_SECTION)
 	{
-		UITableViewCell *oldCell = [atableView cellForRowAtIndexPath:indexPath];
-		
 		NSMutableArray *schedules = [film schedules];
-		Schedule *time = [schedules objectAtIndex:row];
+		Schedule *schedule = [schedules objectAtIndex:row];
 		
-		// set checkBox's status
-		BOOL checked = time.isSelected;
-		time.isSelected = !checked;
-		
-		// get the current cell and the checkbox button 
-		UIButton *checkBoxButton = (UIButton*)[oldCell viewWithTag:CELL_LEFTBUTTON_TAG];
-		
-		// set button's image
-		UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"];
-		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-		
-		[atableView deselectRowAtIndexPath:indexPath animated:NO];
+		[self actionForFilm:schedule];
 	}
-	
-	if (section == CALL_N_EMAIL_SECTION)
+	else if (section == CALL_N_EMAIL_SECTION)
 	{
 		switch (row)
 		{
@@ -428,6 +409,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 				break;
 		}
 	}
+	
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark -
@@ -440,19 +423,51 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		[[self navigationController] popToRootViewControllerAnimated:YES];
 		return;
 	}
+	else if(alertView.tag == 2)
+	{
+		Schedule *schedule = objc_getAssociatedObject(alertView, kAssociatedScheduleKey);
+		
+		switch(buttonIndex)
+		{
+			case 1:			// choice1
+				break;
+				
+			case 2:			// choice2
+				break;
+				
+			case 3:			// choice3
+				if(schedule.presentInScheduler)
+				{
+					[self launchMaps];
+				}
+				else
+				{
+					// Open calendar
+				}
+				break;
+				
+			case 4:			// choice4
+				if(!schedule.presentInScheduler)
+				{
+					[self launchMaps];
+				}
+				break;
+				
+			default:		// Cancel
+				break;
+		}
+	}
 	
 	if (buttonIndex == 1)
 	{
-		//NSLog(@"CALL!");
 		[app openURL:[NSURL URLWithString:TICKET_LINE]];
 	}
 	else
 	{
-		//NSLog(@"cancel");
 	}
 	
-	NSIndexPath *tableSelection = [self.tableView indexPathForSelectedRow];
-    [self.tableView deselectRowAtIndexPath:tableSelection animated:YES];
+	NSIndexPath *tableSelection = [self.detailsTableView indexPathForSelectedRow];
+    [self.detailsTableView deselectRowAtIndexPath:tableSelection animated:YES];
 }
 
 #pragma mark -
@@ -518,6 +533,73 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		alertView.tag = 4;
         [alertView show];
     }
+}
+
+- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
+{
+	NSSet *touches = [touchEvent allTouches];
+	UITouch *touch = [touches anyObject];
+	CGPoint currentTouchPosition = [touch locationInView:self.detailsTableView];
+	NSIndexPath *indexPath = [self.detailsTableView indexPathForRowAtPoint:currentTouchPosition];
+	int row = [indexPath row];
+	
+	if(indexPath != nil)
+	{
+		NSMutableArray *schedules = [film schedules];
+		Schedule *schedule = [schedules objectAtIndex:row];
+
+		schedule.isSelected ^= YES;
+		
+		UIButton *checkBoxButton = (UIButton*)sender;
+		UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
+	}
+}
+
+- (void) actionForFilm:(Schedule*)schedule
+{
+	schedule.presentInScheduler = !schedule.isSelected;
+	schedule.presentInCalendar = !schedule.isSelected;
+	
+	NSString *choice1 = nil;
+	NSString *choice2 = nil;
+	NSString *choice3 = nil;
+	NSString *choice4 = nil;
+	
+	if(schedule.presentInScheduler)
+	{
+		choice1 = schedule.presentInCalendar ? @"Remove from My Schedule & Calendar" : @"Remove from My Schedule";
+		choice2 = schedule.presentInCalendar ? @"Show in Calendar" : @"Add to Calendar";
+		choice3 = @"Show Venue location in Maps";
+	}
+	else
+	{
+		choice1 = @"Add to My Schedule";
+		choice2 = @"Add to My Schedule and Calendar";
+		choice3 = @"Show in Calendar";
+		choice4 = @"Show Venue location in Maps";
+	}
+	
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self
+										  cancelButtonTitle:@"Cancel"
+										  otherButtonTitles:choice1, choice2, choice3, choice4, nil];
+	
+	objc_setAssociatedObject(alert, kAssociatedScheduleKey, schedule, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	
+	alert.tag = 2;
+	[alert show];
+}
+
+- (void) launchMaps
+{
+	// Create an MKMapItem to pass to the Maps app
+	CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(16.775, -3.009);
+	MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate addressDictionary:nil];
+	MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+	[mapItem setName:@"Cinequest - Venue C12"];
+	
+	// Pass the map item to the Maps app
+	[mapItem openInMapsWithLaunchOptions:nil];
 }
 
 @end

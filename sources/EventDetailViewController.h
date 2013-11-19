@@ -21,9 +21,8 @@
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, assign) BOOL displayAddButton;
+@property (nonatomic, strong) IBOutlet UITableView *detailsTableView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 - (id)initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andURL:(NSURL*)link;
 - (id)initWithTitle:(NSString*)name andDataObject:(id)dataObject andId:(NSString*)eventID;

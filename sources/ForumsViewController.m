@@ -13,34 +13,25 @@
 #import "DDXML.h"
 #import "DataProvider.h"
 
-@interface ForumsViewController (Private)
-
-- (void)loadDataFromDatabase;
-- (void)syncTableDataWithScheduler;
-
-@end
 
 @implementation ForumsViewController
 
-#pragma mark -
-#pragma mark Memory Management
 @synthesize days;
 @synthesize index;
 @synthesize data;
 @synthesize forumsTableView;
-@synthesize activity;
-@synthesize loadingLabel;
-@synthesize offSeasonLabel;
+@synthesize activityIndicator;
 
-
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
 }
 
 #pragma mark -
 #pragma mark UIViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 	
 	self.title = @"Forums";
@@ -56,26 +47,18 @@
 	backedUpIndex	= [[NSMutableArray alloc] init];
 	backedUpData	= [[NSMutableDictionary alloc] init]; 
 	
-	if (delegate.isOffSeason) {
-		[activity stopAnimating];
-		loadingLabel.hidden = YES;
-		offSeasonLabel.hidden = NO;
+	if (delegate.isOffSeason)
+	{
 		self.forumsTableView.hidden = YES;
 		return;
 	}
-	
-	// Add button
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
-																			   style:UIBarButtonItemStyleDone
-																			  target:self
-																			  action:@selector(addEvents:)];
+
 	[self reloadData:nil];
-	
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    NSIndexPath *tableSelection = [self.forumsTableView indexPathForSelectedRow];
-    [self.forumsTableView deselectRowAtIndexPath:tableSelection animated:NO];
+- (void) viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
     
 	[self syncTableDataWithScheduler];
 }
@@ -217,15 +200,9 @@
 	
 	[self.forumsTableView reloadData];
 	self.forumsTableView.hidden = NO;
-	loadingLabel.hidden = YES;
-	[activity stopAnimating];
-	self.navigationItem.leftBarButtonItem.enabled = YES;
-	self.navigationItem.rightBarButtonItem.enabled = YES;
+	[activityIndicator stopAnimating];
 	
-	self.forumsTableView.tableHeaderView = nil; // To enable "Reload button", remove this line and uncomment 3 lines below
-//[self.forumsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-//					 atScrollPosition:UITableViewScrollPositionTop
-//							 animated:NO];
+	self.forumsTableView.tableHeaderView = nil;
 }
 
 - (void)checkBoxButtonTapped:(id)sender event:(id)touchEvent {
@@ -284,16 +261,14 @@
 	[index removeAllObjects];
 	
 	self.forumsTableView.hidden = YES;
-	[activity startAnimating];
-	// loadingLabel.hidden = NO;
-	self.navigationItem.leftBarButtonItem.enabled = NO;
-	self.navigationItem.rightBarButtonItem.enabled = NO;
 	
-	// [NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
-	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:YES];
+	[activityIndicator startAnimating];
+	
+	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 }
 
-- (void)addEvents:(id)sender {
+- (void)addEvents:(id)sender
+{
 	int counter = 0;
 	for (int section = 0; section < [days count]; section++) 
 	{
@@ -330,7 +305,8 @@
 	}
 }
 
-- (void)refine:(id)sender {
+- (void)refine:(id)sender
+{
 	// Back button
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
 																			  style:UIBarButtonItemStyleDone
@@ -573,12 +549,7 @@
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:forum.title
 																						andDataObject:forum
 																						andId:eventId];
-	eventDetail.displayAddButton = YES;
-	
 	[self.navigationController pushViewController:eventDetail animated:YES];
-	
-	
-	//NSLog(@"%@%d",DETAILFORITEM, forum.ID);
 }
 
 @end
