@@ -20,9 +20,12 @@
 @synthesize endDate;
 @synthesize dateString;
 @synthesize longDateString;
-@synthesize fontColor;
 @synthesize endTimeString;
+@synthesize fontColor;
+@synthesize type;
+
 @synthesize presentInScheduler;
 @synthesize presentInCalendar;
+@synthesize isSelected;
 
 @end

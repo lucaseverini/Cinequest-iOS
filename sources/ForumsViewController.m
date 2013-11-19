@@ -265,10 +265,10 @@
 			for (int row = 0; row < [rows count]; row++) 
 			{
 				Schedule *aRandomEvent = [rows objectAtIndex:row];
-				if (aRandomEvent.ID == event.ID) {
+				if (aRandomEvent.ID == event.ID)
+				{
 					aRandomEvent.isSelected = event.isSelected;
 				}
-				
 			}
 		}
 	}

@@ -9,5 +9,7 @@
 @interface StartupViewController : UIViewController
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) IBOutlet UIImageView *cinequestImage;
+@property (nonatomic, strong) IBOutlet UIImageView *sjsuImage;
 
 @end

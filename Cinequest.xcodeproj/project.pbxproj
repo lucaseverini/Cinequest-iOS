@@ -33,6 +33,7 @@
 		81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */; };
 		81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7017EBAEED008D2C2C /* NewsViewController.m */; };
 		81745A8517EBAEED008D2C2C /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7217EBAEED008D2C2C /* NSStringAdditions.m */; };
+		8180BE6E183AE0FE00DC8997 /* iPhoneSplash_640x1136.png in Resources */ = {isa = PBXBuildFile; fileRef = 8180BE6D183AE0FE00DC8997 /* iPhoneSplash_640x1136.png */; };
 		8192CC6217EBC91D00DBE036 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8192CC6117EBC91D00DBE036 /* libxml2.dylib */; };
 		8192CC6417EBC92D00DBE036 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */; };
 		81B12C65182B759E000D5200 /* EventDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */; };
@@ -158,6 +159,7 @@
 		81745A7217EBAEED008D2C2C /* NSStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSStringAdditions.m; path = sources/NSStringAdditions.m; sourceTree = SOURCE_ROOT; };
 		81745A7317EBAEED008D2C2C /* OldSchedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OldSchedule.h; path = sources/OldSchedule.h; sourceTree = SOURCE_ROOT; };
 		81745A7417EBAEED008D2C2C /* OldSchedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldSchedule.m; path = sources/OldSchedule.m; sourceTree = SOURCE_ROOT; };
+		8180BE6D183AE0FE00DC8997 /* iPhoneSplash_640x1136.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iPhoneSplash_640x1136.png; path = images/iPhoneSplash_640x1136.png; sourceTree = SOURCE_ROOT; };
 		8192CC6117EBC91D00DBE036 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		81C52B83182B62F000D2F55D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = sources/Reachability.h; sourceTree = SOURCE_ROOT; };
@@ -348,8 +350,8 @@
 			children = (
 				815A275118161BDE00D9CDCE /* Bugs/Features log */,
 				81C8B43C17EBAC9100033D4F /* Sources */,
-				81C8B3B917EBAC1600033D4F /* Images */,
 				81C8B3A017EBABAA00033D4F /* Resources */,
+				81C8B3B917EBAC1600033D4F /* Images */,
 				81745A8717EBAFAE008D2C2C /* Supporting Files */,
 				8199E788182F623F001BCC36 /* Unused */,
 				8149DFC117EBB3280092F8F9 /* Libraries */,
@@ -407,6 +409,7 @@
 		81C8B3B917EBAC1600033D4F /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8180BE6D183AE0FE00DC8997 /* iPhoneSplash_640x1136.png */,
 				81C8B3C317EBAC2C00033D4F /* News.png */,
 				424040BC1831E290003C7346 /* Social Media Buttons */,
 				93E4E0A0182BB1A200515A84 /* cal_selected.png */,
@@ -510,8 +513,8 @@
 				C27BC6DA182A3734006F7D25 /* Schedule.m */,
 				C2D6DC18182975E5005A6897 /* Festival.h */,
 				C2D6DC19182975E5005A6897 /* Festival.m */,
-				81745A7317EBAEED008D2C2C /* Schedule.h */,
-				81745A7417EBAEED008D2C2C /* Schedule.m */,
+				81745A7317EBAEED008D2C2C /* OldSchedule.h */,
+				81745A7417EBAEED008D2C2C /* OldSchedule.m */,
 			);
 			name = FestivalParser;
 			sourceTree = "<group>";
@@ -649,6 +652,7 @@
 				81B12C67182B759E000D5200 /* FilmDetailController.xib in Resources */,
 				81B12C68182B759E000D5200 /* FilmsViewController.xib in Resources */,
 				81B12C69182B759E000D5200 /* ForumsViewController.xib in Resources */,
+				8180BE6E183AE0FE00DC8997 /* iPhoneSplash_640x1136.png in Resources */,
 				81B12C6C182B759E000D5200 /* MySchedulerViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

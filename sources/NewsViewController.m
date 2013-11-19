@@ -40,12 +40,30 @@
 	data = [[NSMutableDictionary alloc] init];
 	sections = [[NSMutableArray alloc] init];
 	
-	[NSThread detachNewThreadSelector:@selector(startParsingXML) toTarget:self withObject:nil];
-	self.newsTableView.hidden = YES;
+	[appDelegate.tabBarController.view setHidden:YES];
+
+	self.newsTableView.tableHeaderView = nil;
+	self.newsTableView.tableFooterView = nil;
+	
+	[self startParsingXML];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear: animated];
+
+	[UIView transitionWithView:appDelegate.tabBarController.view duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve
+	animations:^
+	{
+		[appDelegate.tabBarController.view setHidden:NO];
+	}
+	completion:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
+	[super viewWillAppear: animated];
+	
 	NSIndexPath *tableSelection = [self.newsTableView indexPathForSelectedRow];
     [self.newsTableView deselectRowAtIndexPath:tableSelection animated:YES];
 
@@ -139,8 +157,7 @@
 	}
 	else
 	{
-		//NSLog(@"child count: %d",[rootElement childCount]);
-		loadingLabel.text = @"Error parsing XML.";
+		NSLog(@"Error parsing XML.");;
 		return;
 	}
 
@@ -148,11 +165,14 @@
 	
 	[sections removeObjectAtIndex:0];
 	
-	[NSThread detachNewThreadSelector:@selector(loadImage) toTarget:self withObject:nil];
+	// [NSThread detachNewThreadSelector:@selector(loadImage) toTarget:self withObject:nil];
+
+	[self.newsTableView reloadData];
 }
 
 - (void) loadImage
 {
+
 	NSMutableArray *headerInfoArray = [data objectForKey:@"Header"];
 	NSMutableDictionary *headerInfo = [headerInfoArray objectAtIndex:0];
 	NSString *imagelink = [headerInfo objectForKey:@"image"];
@@ -161,6 +181,7 @@
 	UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
 	imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.newsTableView setTableHeaderView:imageView];
+
 	loadingLabel.hidden = YES;
 	[activityIndicator stopAnimating];
 	self.newsTableView.hidden = NO;

@@ -35,13 +35,26 @@
 @synthesize networkConnection;
 @synthesize dataProvider;
 @synthesize OSVersion;
+@synthesize iPhone4Display;
+@synthesize retinaDisplay;
+@synthesize deviceIdiom;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
 #if TARGET_IPHONE_SIMULATOR
 	NSLog(@"App folder: %@", NSHomeDirectory());
 #endif // TARGET_IPHONE_SIMULATOR
+		
+	deviceIdiom = [[UIDevice currentDevice] userInterfaceIdiom];
+	NSLog(@"UI idiom: %d %@", deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
+	NSLog(@"Device name: %@", [[UIDevice currentDevice] name]);
+	NSLog(@"Device model: %@", [[UIDevice currentDevice] model]);
 	
+	CGSize screenSize = [[UIScreen mainScreen] currentMode].size;
+	retinaDisplay = (screenSize.height >= 1536.0);
+	iPhone4Display = (screenSize.height == 960.0);
+	NSLog(@"Screen size: %gx%g %@", screenSize.width, screenSize.height, retinaDisplay ? @"(Retina)" : @"");
+
 	OSVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
 
 	StartupViewController *startupViewController = [[StartupViewController alloc] initWithNibName:@"StartupViewController" bundle:nil];

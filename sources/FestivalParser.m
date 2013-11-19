@@ -249,7 +249,6 @@
     [dateFormatter setDateFormat:@"h:mm a"];
     schedule.endTime = [dateFormatter stringFromDate:date];
 
-    
     schedule.venue = [self venueAbbr:showing.venue.name];
     return schedule;
 }

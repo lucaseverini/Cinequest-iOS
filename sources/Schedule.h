@@ -8,19 +8,15 @@
 
 @interface Schedule : NSObject
 
-@property (strong, nonatomic) NSString *ID;
-@property (strong, nonatomic) NSString *title;
-@property (strong, nonatomic) NSString *itemID;
-@property (strong, nonatomic) NSString *venue;
-@property (strong, nonatomic) NSDate *startDate; // @"yyyy-MM-dd'T'HH:mm:ss"
-@property (strong, nonatomic) NSDate *endDate; // @"yyyy-MM-dd'T'HH:mm:ss"]
-@property (strong, nonatomic) NSString *startTime; // @"h:mm a"
-@property (strong, nonatomic) NSString *endTime; // @"h:mm a"
-@property (strong, nonatomic) NSString *dateString; // @"EEE, MMM d"
-@property (strong, nonatomic) NSString *longDateString; // @"EEEE, MMMM d"
-
+@property (nonatomic, strong) NSString *ID;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *itemID;
+@property (nonatomic, strong) NSDate *startDate;		// @"yyyy-MM-dd'T'HH:mm:ss"
+@property (nonatomic, strong) NSString *startTime;		// @"h:mm a"
+@property (nonatomic, strong) NSString *endTime;		// @"h:mm a"
 @property (nonatomic, strong) UIColor *fontColor;
 @property (nonatomic, strong) NSString *type;
+
 @property (nonatomic, strong) NSString *venue;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSDate *endDate;

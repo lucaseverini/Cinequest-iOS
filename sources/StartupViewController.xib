@@ -5,9 +5,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MainViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StartupViewController">
             <connections>
                 <outlet property="activityView" destination="STs-4B-f5o" id="JLM-Xg-UtA"/>
+                <outlet property="cinequestImage" destination="oZg-pM-bkW" id="ZNd-Fx-dsf"/>
+                <outlet property="sjsuImage" destination="MkU-tR-wfz" id="bIu-Xo-9rD"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>
         </placeholder>
@@ -16,36 +18,27 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" misplaced="YES" image="sjsulogo_new_sjsu4.gif" translatesAutoresizingMaskIntoConstraints="NO" id="MkU-tR-wfz">
-                    <rect key="frame" x="79" y="375" width="162" height="93"/>
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" fixedFrame="YES" image="iPhoneSplash_640x1136.png" translatesAutoresizingMaskIntoConstraints="NO" id="oZg-pM-bkW">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <autoresizingMask key="autoresizingMask"/>
                 </imageView>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="cq_logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="oZg-pM-bkW">
-                    <rect key="frame" x="10" y="100" width="300" height="68"/>
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="sjsulogo_new_sjsu4.gif" translatesAutoresizingMaskIntoConstraints="NO" id="MkU-tR-wfz">
+                    <rect key="frame" x="79" y="428" width="162" height="93"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </imageView>
-                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="STs-4B-f5o">
-                    <rect key="frame" x="142" y="259" width="37" height="37"/>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="STs-4B-f5o">
+                    <rect key="frame" x="142" y="379" width="37" height="37"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                 </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-            <constraints>
-                <constraint firstItem="MkU-tR-wfz" firstAttribute="centerX" secondItem="STs-4B-f5o" secondAttribute="centerX" id="6dp-PX-kMS"/>
-                <constraint firstItem="oZg-pM-bkW" firstAttribute="centerX" secondItem="STs-4B-f5o" secondAttribute="centerX" id="Axb-xC-5DO"/>
-                <constraint firstItem="oZg-pM-bkW" firstAttribute="centerX" secondItem="1" secondAttribute="centerX" id="COz-4v-CUc"/>
-                <constraint firstItem="oZg-pM-bkW" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="10" id="UDD-eh-i0k"/>
-                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="MkU-tR-wfz" secondAttribute="bottom" constant="80" id="buD-no-qX1"/>
-                <constraint firstItem="oZg-pM-bkW" firstAttribute="top" secondItem="1" secondAttribute="top" constant="100" id="keP-xG-SXF"/>
-                <constraint firstItem="MkU-tR-wfz" firstAttribute="top" relation="greaterThanOrEqual" secondItem="STs-4B-f5o" secondAttribute="bottom" constant="40" id="weB-Ba-vXL"/>
-            </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
     </objects>
     <resources>
-        <image name="cq_logo.png" width="450" height="68"/>
+        <image name="iPhoneSplash_640x1136.png" width="640" height="1136"/>
         <image name="sjsulogo_new_sjsu4.gif" width="162" height="93"/>
     </resources>
 </document>

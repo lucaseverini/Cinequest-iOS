@@ -16,6 +16,10 @@
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:100px;max-width:150px;\"src=\"%@\"/></p><p>%@</p>"
 
+static NSString *kGetSessionProxy = nil;
+static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
+static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
+
 
 @implementation FilmDetailController
 
@@ -31,24 +35,18 @@
 
 #pragma mark - UIViewController Methods
 
-static NSString *kGetSessionProxy = nil;
-static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
-static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
-
-- (id) initWithTitle:(NSString*)name from:(NSUInteger)viewBy andId:(NSString *)ID
+- (id) initWithTitle:(NSString*)name andId:(NSString*)Id
 {
 	self = [super init];
 	if(self != nil)
 	{
+		delegate = appDelegate;
+		mySchedule = delegate.mySchedule;
+		
 		self.navigationItem.title = name;
-        delegate = appDelegate;
-        if (viewBy == VIEW_BY_DATE) {
-            // A Film already has an array of Schedules with it
-            film = [delegate.festival getFilmForId:ID];
-        } else { // I use this generic approach for now, will change it later.
-            film = [delegate.festival getFilmForId:ID];
-        }
-    }
+		
+		film = [delegate.festival getFilmForId:Id];
+	}
 	
 	return self;
 }
@@ -56,102 +54,30 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-	mySchedule = delegate.mySchedule;
 	
 	self.tableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
-	
-    [self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
+
+	self.activityIndicator.color = [UIColor grayColor];
+
+    [self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
+	[super viewWillAppear:animated];
+
+	[self.activityIndicator startAnimating];
+
 	[self.tableView reloadData];
 }
 
-
-- (void) parseData
-{
-	NSData *data = [[appDelegate dataProvider] filmDetail:filmId];
-	if (data == nil)
-	{
-		// Any UI activity must be always executed on main thread/queue
-		dispatch_sync(dispatch_get_main_queue(),
-		^{
-			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-														message:@"Please connect to the internet."
-														delegate:self
-														cancelButtonTitle:@"OK"
-														otherButtonTitles:nil];
-			alert.tag = 1;
-			[alert show];
-		});
-		
-		return;
-	}
-	
-	DDXMLDocument *xmlDocument = [[DDXMLDocument alloc] initWithData:data options:0 error:nil];
-	DDXMLNode *rootElement = [xmlDocument rootElement];
-	NSString *titleString = [NSString stringWithString:[[rootElement childAtIndex:0] stringValue]];
-	NSArray *infoArray = [rootElement children];
-	for (DDXMLNode *node in infoArray)
-	{
-		NSString *value = [[NSString alloc] initWithString:[node stringValue]];
-		NSString *name = [[NSString alloc] initWithString:[node name]];
-		//NSLog(@"%@ %@",name, value);
-		if ([name isEqualToString:@"schedules"])
-		{
-			DDXMLNode *scheduleNodes = node;
-			NSMutableArray *schedules	= [[NSMutableArray alloc] init];
-			for (int i=0; i<[scheduleNodes childCount]; i++) {
-				DDXMLElement *scheduleNode = (DDXMLElement*)[scheduleNodes childAtIndex:i];
-				NSDictionary *atts = [scheduleNode attributesAsDictionary];
-				
-				NSString *ID			= [atts objectForKey:@"id"];
-				NSString *prg_item_id	= [atts objectForKey:@"program_item_id"];
-				NSString *start_time	= [atts objectForKey:@"start_time"];
-				NSString *end_time		= [atts objectForKey:@"end_time"];
-				NSString *venue			= [atts objectForKey:@"venue"];
-				
-				Schedule *event = [[Schedule alloc] init];
-				event.title		= titleString;
-				event.ID		= [ID integerValue];
-				event.prog_id	= [prg_item_id integerValue];
-				event.type		= @"film";
-				event.venue		= venue;
-				
-				if (event.ID == myFilmData.ID) {
-					myFilmData.prog_id = event.prog_id;
-				}
-				//Start Time
-				NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
-				[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-				NSDate *formatterDate = [inputFormatter dateFromString:start_time];
-				event.date = formatterDate;
-				[inputFormatter setDateFormat:@"hh:mm a"];
-				event.timeString = [inputFormatter stringFromDate:formatterDate];
-				//Date
-				[inputFormatter setDateFormat:@"EEEE, MMMM d"];
-				event.dateString = [inputFormatter stringFromDate:formatterDate];
-				//End Time
-				[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-				formatterDate = [inputFormatter dateFromString:end_time];
-				event.endDate = formatterDate;
-				[inputFormatter setDateFormat:@"hh:mm a"];
-				event.endTimeString = [inputFormatter stringFromDate:formatterDate];
-				
-				
-				[schedules addObject:event];
-			}
-			[dataDictionary setObject:schedules forKey:@"Schedules"];
-		}
-		[dataDictionary setObject:value forKey:name];
-	}
-
-	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:YES];
-}
-   
-- (void)loadData
+- (void) loadData
 {
 	NSString *weba = [NSString stringWithFormat:web,[film name],[film imageURL],[film description]];
 
@@ -194,9 +120,11 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	double width = webview.frame.size.width;
 	[webview setFrame:CGRectMake(0,0,width,height)];
 	
+	[self.activityIndicator stopAnimating];
+
 	[self.tableView setTableHeaderView:webview];
 	[self.tableView reloadData];
-	[activityIndicator stopAnimating];
+	
 	self.tableView.hidden = NO;
 	self.view.userInteractionEnabled = YES;
 }

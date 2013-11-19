@@ -14,6 +14,8 @@
 
 @interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
 {
+	NSUInteger filmId;
+	Schedule *myFilmData;
 	FBSession *_session;
 	UIButton *postThisButton;
 	CinequestAppDelegate *delegate;
@@ -25,6 +27,6 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) Film *film;
 
-- (id) initWithTitle:(NSString*)name from:(NSUInteger)viewBy andId:(NSString *)Id;
+- (id) initWithTitle:(NSString*)name andId:(NSString*)filmID;
 
 @end

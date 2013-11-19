@@ -17,8 +17,8 @@
 #define DETAILFORPrgId	@"http://mobile.cinequest.org/mobileCQ.php?type=program_item&iphone&id="
 #define DETAILFORITEM	@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id="
 #define MODE			@"http://mobile.cinequest.org/mobileCQ.php?type=mode"
-
 #define XML_FEED_URL    @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
+#define VENUE_FEED_URL  @"http://www.cinequest.org/venuelist.php"
 
 #define CELL_TITLE_LABEL_TAG	1
 #define	CELL_TIME_LABEL_TAG		2
@@ -39,7 +39,7 @@
 #define NETWORK_CONNECTION_WIFI  1
 #define NETWORK_CONNECTION_PHONE 2
 
-#define appDelegate (CinequestAppDelegate*)[[UIApplication sharedApplication] delegate]
+#define appDelegate ((CinequestAppDelegate*)[[UIApplication sharedApplication] delegate])
 #define app [UIApplication sharedApplication]
 
 @class NewsViewController;
@@ -60,6 +60,9 @@
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
 @property (nonatomic, strong) DataProvider *dataProvider;
 @property (nonatomic, assign) float OSVersion;
+@property (nonatomic, assign) BOOL retinaDisplay;
+@property (nonatomic, assign) BOOL iPhone4Display;
+@property (nonatomic, assign) NSInteger deviceIdiom;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UITabBarController *tabBarController;

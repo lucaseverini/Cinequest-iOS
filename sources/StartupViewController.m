@@ -15,6 +15,8 @@
 
 @implementation StartupViewController
 
+@synthesize cinequestImage;
+@synthesize sjsuImage;
 @synthesize activityView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -39,11 +41,23 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear: animated];
+}
+
 - (void) viewDidAppear:(BOOL)animated
 {
 	CFTimeInterval startTime = CFAbsoluteTimeGetCurrent();
-	
+
     [super viewDidAppear:animated];
+
+	if(appDelegate.iPhone4Display)
+	{
+		[self.activityView setFrame:CGRectOffset(self.activityView.frame, 0.0, -80.0)];
+		[self.sjsuImage setFrame:CGRectOffset(self.sjsuImage.frame, 0.0, -80.0)];
+		[self.cinequestImage setFrame:CGRectOffset(self.cinequestImage.frame, 0.0, -80.0)];
+	}
 
 	[activityView startAnimating];
 		
@@ -73,18 +87,22 @@
 	
 	// Calc the delay to let the splash screen ve visible at least 3 seconds
 	CFTimeInterval spentTime = CFAbsoluteTimeGetCurrent() - startTime;
-	int64_t delayTime = spentTime >= 3.0 ? 0.0 : (3.0 - spentTime) * NSEC_PER_SEC;
+	int64_t delayTime = spentTime >= 2.0 ? 0.0 : (2.0 - spentTime) * NSEC_PER_SEC;
 	
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delayTime), dispatch_get_main_queue(),
 	^{
 		UIWindow *window = [appDelegate window];
-		window.rootViewController = [appDelegate tabBarController];
+		[UIView transitionWithView:window duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve animations:
+		^{
+			window.rootViewController = [appDelegate tabBarController];
+		}
+		completion:nil];
 	});
 }
 
-- (void) viewWillDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
 	
 	[activityView stopAnimating];
 }

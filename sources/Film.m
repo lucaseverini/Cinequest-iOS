@@ -10,7 +10,6 @@
 
 @implementation Film
 
-@synthesize schedules;
 @synthesize tagline;
 @synthesize genre;
 @synthesize director;
@@ -22,6 +21,7 @@
 @synthesize country;
 @synthesize language;
 @synthesize filmInfo;
+@synthesize schedules;
 
 - (id) init
 {
@@ -32,6 +32,11 @@
 	}
 	
     return self;
+}
+
+- (void) dealloc
+{
+	schedules = nil;
 }
 
 @end
