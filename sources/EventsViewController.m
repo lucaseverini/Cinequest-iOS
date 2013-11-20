@@ -498,8 +498,8 @@
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.eventsTableView];
 	NSIndexPath *indexPath = [self.eventsTableView indexPathForRowAtPoint:currentTouchPosition];
-	int row = [indexPath row];
-	int section = [indexPath section];
+	NSInteger row = [indexPath row];
+	NSInteger section = [indexPath section];
 	
 	if (indexPath != nil)
 	{

@@ -124,7 +124,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	if(![appDelegate connectedToNetwork])
 	{
 		NSData *xmlData = [NSData dataWithContentsOfURL:fileUrl];
-		NSLog(@"NO CONNECTION. OLD XML Feed data:%d bytes", [xmlData length]);
+		NSLog(@"NO CONNECTION. OLD XML Feed data:%ld bytes", [xmlData length]);
 		
 		return xmlData;
 	}
@@ -170,11 +170,11 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 				
 				if(connectionError != noErr)
 				{
-					NSLog(@"NO CONNECTION. OLD XML Feed data:%d bytes", [xmlData length]);
+					NSLog(@"NO CONNECTION. OLD XML Feed data:%ld bytes", [xmlData length]);
 				}
 				else
 				{
-					NSLog(@"OLD XML Feed data:%d bytes", [xmlData length]);
+					NSLog(@"OLD XML Feed data:%ld bytes", [xmlData length]);
 				}
 				
 				gettingXmlFeed = NO;
@@ -190,7 +190,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	NSLog(@"NEW XML Feed data:%d bytes", feedDataLen);
+	NSLog(@"NEW XML Feed data:%ld bytes", feedDataLen);
 	
 	[feedData writeToURL:fileUrl atomically:YES];
 	
@@ -286,7 +286,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 {
 	if([response statusCode] >= 400)
 	{
-		NSLog(@"didReceiveResponse: Status Code:%d", [response statusCode]);
+		NSLog(@"didReceiveResponse: Status Code:%ld", [response statusCode]);
 
 		keepRunning = NO;
 	}

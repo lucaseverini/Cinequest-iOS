@@ -207,7 +207,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	int section = [indexPath section];
+	NSInteger section = [indexPath section];
 	switch (section)
 	{
 		case SCHEDULE_SECTION:
@@ -234,7 +234,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	static NSString *FacebookIdentifier = @"FBCell";
 	static NSString *ActionsIdentifier	= @"ActCell";
 	
-	int section = [indexPath section];
+	NSInteger section = [indexPath section];
 	
 	UITableViewCell *cell;
 	switch (section)
@@ -242,7 +242,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		case SCHEDULE_SECTION:
 		{
 			// get row number
-			int row = [indexPath row];
+			NSInteger row = [indexPath row];
 			
 			// get all schedules
 			NSMutableArray *schedules = [film schedules];
@@ -366,8 +366,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	int section = [indexPath section];
-	int row = [indexPath row];
+	NSInteger section = [indexPath section];
+	NSInteger row = [indexPath row];
 	
 	if (section == SCHEDULE_SECTION)
 	{
@@ -541,7 +541,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.detailsTableView];
 	NSIndexPath *indexPath = [self.detailsTableView indexPathForRowAtPoint:currentTouchPosition];
-	int row = [indexPath row];
+	NSInteger row = [indexPath row];
 	
 	if(indexPath != nil)
 	{

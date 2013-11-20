@@ -183,8 +183,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.scheduleTableView];
 	NSIndexPath *indexPath = [self.scheduleTableView indexPathForRowAtPoint:currentTouchPosition];
-	int row = [indexPath row];
-	int section = [indexPath section];
+	NSInteger row = [indexPath row];
+	NSInteger section = [indexPath section];
 	
 	if (indexPath != nil)
 	{
@@ -501,8 +501,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
 	// Just for testing
-	int section = [indexPath section];
-	int row = [indexPath row];
+	NSInteger section = [indexPath section];
+	NSInteger row = [indexPath row];
 	
 	[self launchCalendar];
 	

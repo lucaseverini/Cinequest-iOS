@@ -124,7 +124,7 @@
 	DDXMLDocument *forumsxmlDoc = [[DDXMLDocument alloc] initWithData:xmldata options:0 error:nil];
 	DDXMLNode *rootElement = [forumsxmlDoc rootElement];
 	
-	int childCount = [rootElement childCount];
+	NSInteger childCount = [rootElement childCount];
 	NSString *previousDay = @"empty";
 	NSMutableArray *tempArray = [[NSMutableArray alloc] init];
 	//NSLog(@"%d",childCount);
@@ -211,8 +211,8 @@
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.forumsTableView];
 	NSIndexPath *indexPath = [self.forumsTableView indexPathForRowAtPoint:currentTouchPosition];
-	int row = [indexPath row];
-	int section = [indexPath section];
+	NSInteger row = [indexPath row];
+	NSInteger section = [indexPath section];
 	
 	if (indexPath != nil)
 	{

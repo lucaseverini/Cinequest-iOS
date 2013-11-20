@@ -46,7 +46,7 @@
 #endif // TARGET_IPHONE_SIMULATOR
 		
 	deviceIdiom = [[UIDevice currentDevice] userInterfaceIdiom];
-	NSLog(@"UI idiom: %d %@", deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
+	NSLog(@"UI idiom: %ld %@", deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
 	NSLog(@"Device name: %@", [[UIDevice currentDevice] name]);
 	NSLog(@"Device model: %@", [[UIDevice currentDevice] model]);
 	
@@ -101,7 +101,7 @@
 
 - (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
 {
-	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %i ).", [parseError code]];
+	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %ld ).", [parseError code]];
 	NSLog(@"Error parsing XML: %@", errorString);
 	
 	UIAlertView * errorAlert = [[UIAlertView alloc] initWithTitle:@"Error loading content" 

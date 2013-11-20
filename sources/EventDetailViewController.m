@@ -316,7 +316,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	int section = [indexPath section];
+	NSInteger section = [indexPath section];
 	switch (section)
 	{
 		case SCHEDULE_SECTION:
@@ -343,7 +343,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	static NSString *FacebookIdentifier = @"FBCell";
 	static NSString *ActionsIdentifier	= @"ActCell";
 	
-	int section = [indexPath section];
+	NSInteger section = [indexPath section];
 	
 	UITableViewCell *cell;
 	switch (section)
@@ -353,7 +353,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
 			
 			// get row number
-			int row = [indexPath row];
+			NSInteger row = [indexPath row];
 			
 			// get all schedules
 			NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
@@ -506,8 +506,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	int section = [indexPath section];
-	int row = [indexPath row];
+	NSInteger section = [indexPath section];
+	NSInteger row = [indexPath row];
 	
 	if (section == SCHEDULE_SECTION)
 	{

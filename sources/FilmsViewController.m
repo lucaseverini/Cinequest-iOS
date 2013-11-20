@@ -781,8 +781,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-	int section = [indexPath section];
-	int row = [indexPath row];
+	NSInteger section = [indexPath section];
+	NSInteger row = [indexPath row];
 	
 	switch (switcher)
 	{
