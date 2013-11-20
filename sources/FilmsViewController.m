@@ -39,8 +39,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
 	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
-	int row = [indexPath row];
-	int section = [indexPath section];
+	NSInteger row = [indexPath row];
+	NSInteger section = [indexPath section];
 	
 	if(indexPath != nil)
 	{
@@ -74,8 +74,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
 	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
-	int section = [indexPath section];
-	int row = [indexPath row];
+	NSInteger section = [indexPath section];
+	NSInteger row = [indexPath row];
 
 	switch(switcher)
 	{
@@ -429,8 +429,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) syncTableDataWithScheduler
 {
-	NSUInteger count = [mySchedule count];
-	NSLog(@"Scheduler count: %d",count);
+	NSInteger count = [mySchedule count];
+	NSLog(@"Scheduler count: %ld", count);
 	
 	// Sync current data
 	for (NSUInteger section = 0; section < [days count]; section++)
@@ -479,7 +479,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView*)tableView
 {
-	int count = 0;
+	NSInteger count = 0;
 	
 	switch(switcher)
 	{
@@ -500,7 +500,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (NSInteger) tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-	int count = 0;
+	NSInteger count = 0;
 	
 	switch(switcher)
 	{

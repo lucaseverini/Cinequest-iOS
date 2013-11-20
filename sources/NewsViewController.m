@@ -12,12 +12,6 @@
 #import "DDXML.h"
 #import "DataProvider.h"
 
-@interface NewsViewController (Private)
-
-- (void)loadNewsFromDB;
-
-@end
-
 
 @implementation NewsViewController
 
@@ -68,7 +62,7 @@
 
 	if(tabBarAnimation)
 	{
-		// Don't show an ugly jerk while the bottom tabbar is drawed
+		// Don't show an ugly jerk while the bottom tabbar is drawn
 		[UIView transitionWithView:appDelegate.tabBarController.view duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve
 		animations:^
 		{
@@ -204,6 +198,9 @@
 	NSMutableDictionary *rowData = [rows objectAtIndex:row];
 									 
 	cell.textLabel.text = [rowData objectForKey:@"title"];
+	cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+	cell.textLabel.numberOfLines = 2;
+	
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
     return cell;
@@ -234,6 +231,11 @@
 	[self.navigationController pushViewController:eventDetail animated:YES];
 	
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 54.0;
 }
 
 @end
