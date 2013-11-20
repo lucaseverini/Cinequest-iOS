@@ -61,7 +61,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-	
+    
 	// Get mySchedule array
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
@@ -89,6 +89,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	currentColor	= [UIColor blackColor];
 	masterList		= [NSArray arrayWithObjects:confirmedList, movedList, removedList, nil];
     
+    [self checkEventStoreAccessForCalendar];
     [self checkAndCreateCalendar];
 }
 
@@ -149,7 +150,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 {
     [super viewDidAppear:animated];
     
-    [self checkEventStoreAccessForCalendar];
+//    [self checkEventStoreAccessForCalendar];
 }
 
 #pragma mark -
@@ -339,8 +340,9 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
             NSLog(@"Error saving calendar: %@.", error);
         }
     }
-    
-    [self reloadCalendarItems];
+    if (self.cinequestCalendar) {
+        [self reloadCalendarItems];
+    }
 }
 
 - (void) reloadCalendarItems
@@ -627,7 +629,10 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 {
     // Let's get the default calendar associated with our event store
     self.defaultCalendar = self.eventStore.defaultCalendarForNewEvents;
-    [self checkAndCreateCalendar];
+    if (!self.cinequestCalendar) {
+        [self checkAndCreateCalendar];
+    }
+
 }
 
 - (void) launchCalendar
