@@ -35,8 +35,8 @@
 	
 	self.title = @"News";
 	
-	data = [[NSMutableDictionary alloc] init];
-	sections = [[NSMutableArray alloc] init];
+	data = [NSMutableDictionary new];
+	sections = [NSMutableArray new];
 
 	tabBarAnimation = YES;
 
@@ -82,116 +82,82 @@
 
 - (void) startParsingXML
 {
-	NSData *htmldata = [[appDelegate dataProvider] news];
+	NSData *xmlData = [[appDelegate dataProvider] news];
 	
-	NSString* myString = [[NSString alloc] initWithData:htmldata encoding:NSUTF8StringEncoding];
+	NSString* myString = [[NSString alloc] initWithData:xmlData encoding:NSUTF8StringEncoding];
 	myString = [myString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
 	myString = [myString stringByReplacingOccurrencesOfString:@"\t" withString:@""];
-	htmldata = [myString dataUsingEncoding:NSUTF8StringEncoding];
+	xmlData = [myString dataUsingEncoding:NSUTF8StringEncoding];
 	
-	DDXMLDocument *newsXMLDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
+	DDXMLDocument *newsXMLDoc = [[DDXMLDocument alloc] initWithData:xmlData options:0 error:nil];
 	DDXMLElement *rootElement = [newsXMLDoc rootElement];
-	NSString *preSection	= @"empty";
-	NSMutableArray *temp	= [[NSMutableArray alloc] init];
-	if ([rootElement childCount] == 3)
+	NSString *preSection = @"empty";
+	NSMutableArray *temp = [NSMutableArray new];
+	if([rootElement childCount] == 2)
 	{
-		for (int i=0; i<[rootElement childCount]; i++)
+		NSInteger nodeCount = [rootElement childCount];
+		for (NSInteger nodeIdx = 0; nodeIdx < nodeCount; nodeIdx++)
 		{
-			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
+			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:nodeIdx];
+			
 			NSDictionary *attributes = [child attributesAsDictionary];
-			
 			NSString *section = [attributes objectForKey:@"name"];
-			DDXMLElement *item = (DDXMLElement*)[child childAtIndex:0];
-			NSString *title = @"";
-			NSString *date = @"";
-			NSString *link = @"";
-			NSString *imgurl = @"";
-						
-			for (int j=0; j<[item childCount]; j++)
+			
+			NSInteger subNodeCount = [child childCount];
+			for (NSInteger subNodeIdx = 0; subNodeIdx < subNodeCount; subNodeIdx++)
 			{
-				DDXMLElement *node = (DDXMLElement*)[item childAtIndex:j];
+				DDXMLElement *item = (DDXMLElement*)[child childAtIndex:subNodeIdx];
 				
-				if ([[node name] isEqualToString:@"title"])
+				NSString *title = @"";
+				NSString *link = @"";
+							
+				NSInteger subNode2Count = [item childCount];
+				for (NSInteger subNodeIdx = 0; subNodeIdx < subNode2Count; subNodeIdx++)
 				{
-					title = [node stringValue];
+					DDXMLElement *node = (DDXMLElement*)[item childAtIndex:subNodeIdx];
+					
+					if ([[node name] isEqualToString:@"title"])
+					{
+						title = [node stringValue];
+					}
+					else if ([[node name] isEqualToString:@"link"])
+					{
+						NSDictionary *nodeAttributes = [node attributesAsDictionary];
+						link = [nodeAttributes objectForKey:@"id"];
+					}
 				}
+			
+				NSMutableDictionary *info = [NSMutableDictionary new];
+				[info setObject:title forKey:@"title"];
+				[info setObject:link forKey:@"link"];
 				
-				if ([[node name] isEqualToString:@"date"])
+				if (![preSection isEqualToString:section])
 				{
-					date = [node stringValue];
+					[data setObject:temp forKey:preSection];
+					
+					preSection = [section copy];
+					
+					[sections addObject:section];
+					
+					temp = [NSMutableArray new];
+					[temp addObject:info];
 				}
-				
-				if ([[node name] isEqualToString:@"imageURL"])
+				else
 				{
-					imgurl = [node stringValue];
-				}
-				
-				if ([[node name] isEqualToString:@"link"])
-				{
-					NSDictionary *nodeAttributes = [node attributesAsDictionary];
-					link = [nodeAttributes objectForKey:@"id"];
+					[temp addObject:info];
 				}
 			}
-			
-			if ([section isEqualToString:@"Header"])
-			{
-				DDXMLElement *node = (DDXMLElement*)[item childAtIndex:0];
-				imgurl = [node stringValue];
-			}
-			
-			NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
-			[info setObject:title forKey:@"title"];
-			[info setObject:date forKey:@"date"];
-			[info setObject:link forKey:@"link"];
-			[info setObject:imgurl	forKey:@"image"];
-			
-			if (![preSection isEqualToString:section])
-			{
-				[data setObject:temp forKey:preSection];
-				
-				preSection = [[NSString alloc] initWithString:section];
-				
-				[sections addObject:section];
-				
-				temp = [[NSMutableArray alloc] init];
-				[temp addObject:info];
-			}
-			else
-			{
-				[temp addObject:info];
-			}
-			
 		}
 	}
 	else
 	{
 		NSLog(@"Error parsing XML");
+		
 		return;
 	}
 
 	[data setObject:temp forKey:preSection];
-	
-	[sections removeObjectAtIndex:0];
-	
-	// [self loadImage];
 
-	[self.newsTableView reloadData];
-}
-
-- (void) loadImage
-{
-
-	NSMutableArray *headerInfoArray = [data objectForKey:@"Header"];
-	NSMutableDictionary *headerInfo = [headerInfoArray objectAtIndex:0];
-	NSString *imagelink = [headerInfo objectForKey:@"image"];
-	NSData *imageData = [[appDelegate dataProvider] image:[NSURL URLWithString:imagelink] expiration:nil];
-	UIImage *image = [UIImage imageWithData:imageData];
-	UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-	imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.newsTableView setTableHeaderView:imageView];
-
-	[activityIndicator stopAnimating];
-	self.newsTableView.hidden = NO;
 	[self.newsTableView reloadData];
 }
 
@@ -260,17 +226,14 @@
 	
 	NSMutableArray *rows = [data objectForKey:sectionString];
 	NSMutableDictionary *rowData = [rows objectAtIndex:row];
-/*
-	NSString *link = [NSString stringWithFormat:@"%@%@",DETAILFORITEM, [rowData objectForKey:@"link"]];
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:[rowData objectForKey:@"title"]
-																						andDataObject:nil
-																						andURL:[NSURL URLWithString:link]];
-*/
+
 	NSString *eventId = [rowData objectForKey:@"link"];
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:[rowData objectForKey:@"title"]
 																						andDataObject:nil
 																						andId:eventId];
 	[self.navigationController pushViewController:eventDetail animated:YES];
+	
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

@@ -8,7 +8,8 @@
 
 #define FILMSBYTIME		@"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone"
 #define FILMSBYTITLE	@"http://mobile.cinequest.org/mobileCQ.php?type=films&iphone"
-#define NEWS			@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ihome"
+#define NEWS			@"http://www.cinequest.org/news.php"
+#define OLD_NEWS		@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ihome"
 #define EVENTS			@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ievents"
 #define FORUMS			@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=iforums&iphone"
 #define DVDs			@"http://mobile.cinequest.org/mobileCQ.php?type=dvds&distribution=none&iphone"
