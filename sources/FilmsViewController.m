@@ -430,7 +430,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) syncTableDataWithScheduler
 {
 	NSInteger count = [mySchedule count];
-	NSLog(@"Scheduler count: %ld", count);
+	NSLog(@"Scheduler count: %ld", (long)count);
 	
 	// Sync current data
 	for (NSUInteger section = 0; section < [days count]; section++)

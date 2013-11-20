@@ -76,6 +76,7 @@
 		81D1EC3E182B8990003DD8BB /* StartupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81D1EC3D182B8990003DD8BB /* StartupViewController.xib */; };
 		81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC251829773C005A6897 /* FestivalParser.m */; };
 		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
+		935D58D4183CE0E300BE904F /* VenueParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 935D58D3183CE0E300BE904F /* VenueParser.m */; };
 		93E4E09F182BAFE900515A84 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E4E09E182BAFE900515A84 /* EventKit.framework */; };
 		93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A0182BB1A200515A84 /* cal_selected.png */; };
 		93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */; };
@@ -213,6 +214,8 @@
 		81D1EC3D182B8990003DD8BB /* StartupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StartupViewController.xib; path = sources/StartupViewController.xib; sourceTree = SOURCE_ROOT; };
 		81FBC131182DA37900C01783 /* DataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataProvider.h; path = sources/DataProvider.h; sourceTree = SOURCE_ROOT; };
 		81FBC132182DA37900C01783 /* DataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataProvider.m; path = sources/DataProvider.m; sourceTree = SOURCE_ROOT; };
+		935D58D2183CE0E300BE904F /* VenueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VenueParser.h; path = sources/VenueParser.h; sourceTree = SOURCE_ROOT; };
+		935D58D3183CE0E300BE904F /* VenueParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VenueParser.m; path = sources/VenueParser.m; sourceTree = SOURCE_ROOT; };
 		93E4E09E182BAFE900515A84 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		93E4E0A0182BB1A200515A84 /* cal_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cal_selected.png; path = images/cal_selected.png; sourceTree = SOURCE_ROOT; };
 		93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cal_selected@2x.png"; path = "images/cal_selected@2x.png"; sourceTree = SOURCE_ROOT; };
@@ -507,6 +510,8 @@
 			children = (
 				C2D6DC241829773C005A6897 /* FestivalParser.h */,
 				C2D6DC251829773C005A6897 /* FestivalParser.m */,
+				935D58D2183CE0E300BE904F /* VenueParser.h */,
+				935D58D3183CE0E300BE904F /* VenueParser.m */,
 				C2D6DC2A1829E0F7005A6897 /* CinequestItem.h */,
 				C2D6DC2B1829E0F7005A6897 /* CinequestItem.m */,
 				C2D6DC2D1829E1CE005A6897 /* ProgramItem.h */,
@@ -707,6 +712,7 @@
 				81745A7D17EBAEED008D2C2C /* EventsViewController.m in Sources */,
 				81745A7E17EBAEED008D2C2C /* FilmDetailController.m in Sources */,
 				81745A7F17EBAEED008D2C2C /* FilmsViewController.m in Sources */,
+				935D58D4183CE0E300BE904F /* VenueParser.m in Sources */,
 				81745A8017EBAEED008D2C2C /* ForumsViewController.m in Sources */,
 				C2D6DC231829771E005A6897 /* Venue.m in Sources */,
 				81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */,

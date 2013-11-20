@@ -12,7 +12,7 @@
 #import "Reachability.h"
 #import "StartupViewController.h"
 #import "DataProvider.h"
-
+#import "VenueParser.h"
 
 @interface CinequestAppDelegate (Private)
 
@@ -31,6 +31,7 @@
 @synthesize isOffSeason;
 @synthesize newsView;
 @synthesize festival;
+@synthesize venuesDictionary;
 @synthesize reachability;
 @synthesize networkConnection;
 @synthesize dataProvider;
@@ -46,7 +47,7 @@
 #endif // TARGET_IPHONE_SIMULATOR
 		
 	deviceIdiom = [[UIDevice currentDevice] userInterfaceIdiom];
-	NSLog(@"UI idiom: %ld %@", deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
+	NSLog(@"UI idiom: %ld %@", (long)deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
 	NSLog(@"Device name: %@", [[UIDevice currentDevice] name]);
 	NSLog(@"Device model: %@", [[UIDevice currentDevice] model]);
 	
@@ -61,12 +62,22 @@
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:startupViewController];
 	[navController setNavigationBarHidden:YES animated:NO];
     
+    //Call To Fetch Venues
+    [NSThread detachNewThreadSelector:@selector(callToFetchVenues) toTarget:self withObject:nil];
+    
     self.festival = [[[FestivalParser alloc] init] parseFestival];
 	
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
 	
 	return YES;
+}
+
+-(void)callToFetchVenues{
+    //Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
+    self.venuesDictionary = [[[VenueParser alloc] init] parseVenues];
+    //Print Venue Dictionary
+    NSLog(@"Venues Dictionary:%@",self.venuesDictionary);
 }
 
 - (void) jumpToScheduler
@@ -101,7 +112,7 @@
 
 - (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
 {
-	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %ld ).", [parseError code]];
+	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %ld ).", (long)[parseError code]];
 	NSLog(@"Error parsing XML: %@", errorString);
 	
 	UIAlertView * errorAlert = [[UIAlertView alloc] initWithTitle:@"Error loading content" 

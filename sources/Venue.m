@@ -12,7 +12,15 @@
 
 @synthesize ID;
 @synthesize name;
+@synthesize shortName;
 @synthesize address;
 @synthesize map;
+@synthesize abbrevation;
+@synthesize address1;
+@synthesize address2;
+@synthesize city;
+@synthesize state;
+@synthesize zip;
+@synthesize location;
 
 @end

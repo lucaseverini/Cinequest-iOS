@@ -57,6 +57,7 @@
 @property (readwrite) BOOL isLoggedInFacebook;
 @property (readwrite) BOOL isOffSeason;
 @property (nonatomic, strong) Festival *festival;
+@property (nonatomic, strong) NSDictionary *venuesDictionary;
 @property (nonatomic, strong) Reachability *reachability;
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
 @property (nonatomic, strong) DataProvider *dataProvider;
