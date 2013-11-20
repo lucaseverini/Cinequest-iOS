@@ -321,7 +321,10 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	self.filmsTableView.tableHeaderView = nil;
 	self.filmsTableView.tableFooterView = nil;
-
+    
+    [switchTitle setTitle:@"Date" forSegmentAtIndex:0];
+    [switchTitle setTitle:@"A-Z" forSegmentAtIndex:1];
+    
 	[self reloadData:nil];
 }
 
