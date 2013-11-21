@@ -129,7 +129,7 @@
 		8149DFC817EBB4F90092F8F9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8149DFCA17EBB5450092F8F9 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		8149DFCC17EBB5780092F8F9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sources/main.m; sourceTree = SOURCE_ROOT; };
-		81529074183E184E00EDA02B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		81529074183E184E00EDA02B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../images/Images.xcassets; sourceTree = "<group>"; };
 		815A275018161A5500D9CDCE /* New Features and Bugs.webloc */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "New Features and Bugs.webloc"; sourceTree = "<group>"; };
 		8169B7DB183C670F00A63A34 /* FacebookIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FacebookIcon.png; path = images/FacebookIcon.png; sourceTree = SOURCE_ROOT; };
 		8169B7DC183C670F00A63A34 /* FacebookIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FacebookIcon@2x.png"; path = "images/FacebookIcon@2x.png"; sourceTree = SOURCE_ROOT; };
