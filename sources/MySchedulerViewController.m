@@ -89,8 +89,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	currentColor	= [UIColor blackColor];
 	masterList		= [NSArray arrayWithObjects:confirmedList, movedList, removedList, nil];
     
-    [self checkEventStoreAccessForCalendar];
-    [self checkAndCreateCalendar];
+//    [self checkEventStoreAccessForCalendar];
+//    [self checkAndCreateCalendar];
 }
 
 - (void) viewWillAppear:(BOOL)animated
