@@ -14,14 +14,8 @@
 #import "DataProvider.h"
 #import "VenueParser.h"
 
-@interface CinequestAppDelegate (Private)
 
-- (void) setOffSeason;
-
-@end
-
-
-@implementation CinequestAppDelegate 
+@implementation CinequestAppDelegate
 
 @synthesize window;
 @synthesize tabBarController;
@@ -70,10 +64,13 @@
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
 	
+	tabBarController.delegate = self;
+	
 	return YES;
 }
 
--(void)callToFetchVenues{
+- (void) callToFetchVenues
+{
     //Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
     self.venuesDictionary = [[[VenueParser alloc] init] parseVenues];
     //Print Venue Dictionary
@@ -106,10 +103,6 @@
 	[parser parse];
 }
 
-- (void) parserDidStartDocument:(NSXMLParser *)parser
-{
-}
-
 - (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
 {
 	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %ld ).", (long)[parseError code]];
@@ -126,11 +119,22 @@
 
 - (void) parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
 {
-	if ([string isEqualToString:@"home"]) {
+	if ([string isEqualToString:@"home"])
+	{
 		isOffSeason = NO;
-	} else {
+	}
+	else
+	{
 		isOffSeason = YES;
 	}	
+}
+
+#pragma mark -
+#pragma mark TabBarController delegate
+
+- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+	NSLog(@"%@", viewController);
 }
 
 - (void) startReachability:(NSString*)hostName
