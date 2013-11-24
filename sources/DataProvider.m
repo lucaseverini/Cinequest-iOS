@@ -12,12 +12,12 @@
 NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 
 #define NEWSFEED_TIMESTAMP_ENDPOSITION	256						// News feed time-stamp is contained within that number of bytes
-#define NEWSFEED_CHECK_INTERVAL			300.0					// In seconds
-#define NEWSFEED_TIMEOUT				30.0					// In seconds
-#define NEWSFEED_CHECK_RETRYINTERVAL	60.0					// In seconds
-#define CACHEFOLDER_CHECKINTERVAL		6.0						// In seconds
-#define CACHEFOLDER_MAXSIZE				(20L * 1024L * 1024L)	// 20 MBytes
-#define CACHEFOLDER_MINSIZE				(15L * 1024L * 1024L)	// 15 MBytes
+#define NEWSFEED_CHECK_INTERVAL			300.0					// Interval in seconds between checking for an updated news feed
+#define NEWSFEED_TIMEOUT				30.0					// Timeout in seconds for downloading the news feed
+#define NEWSFEED_CHECK_RETRYINTERVAL	60.0					// Interval in seconds before retrying to download the news feed
+#define CACHEFOLDER_CHECKINTERVAL		120.0					// Interval in seconds between checking the size of cache folder
+#define CACHEFOLDER_MAXSIZE				(20L * 1024L * 1024L)	// Size upper limit for the cache folder. 20 MBytes
+#define CACHEFOLDER_MINSIZE				(15L * 1024L * 1024L)	// Size lower limit for the cache folder. 15 MBytes
 #define MAINFEED_FILE					@"MainFeed.xml"
 #define FILMSBYTIME_FILE				@"FilmsByTime.xml"
 #define FILMSBYTITLE_FILE				@"FilmsByTitle.xml"
