@@ -18,13 +18,15 @@
 	NSURL *dataLink;
 	NSMutableDictionary *dataDictionary;
 	UIButton *postThisButton;
+	BOOL newsDetail;
+	BOOL eventDetail;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) IBOutlet UITableView *detailsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
-- (id)initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andURL:(NSURL*)link;
-- (id)initWithTitle:(NSString*)name andDataObject:(id)dataObject andId:(NSString*)eventID;
+- (id) initWithNews:(NSDictionary*)news;
+- (id) initWithEvent:(NSString*)name andDataObject:(id)dataObject andId:(NSString*)eventID;
 
 @end

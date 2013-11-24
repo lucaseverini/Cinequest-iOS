@@ -548,7 +548,7 @@
 	Schedule *event = [events objectAtIndex:row];
 
 	NSString *eventId = [NSString stringWithFormat:@"%@", event.itemID];
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:event.title
+	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:event.title
 																				andDataObject:event
 																				andId:eventId];
 	[self.navigationController pushViewController:eventDetail animated:YES];

@@ -546,7 +546,7 @@
 	Schedule *forum = [forums objectAtIndex:row];
 
 	NSString *eventId = [NSString stringWithFormat:@"%@", forum.itemID];
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:forum.title
+	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:forum.title
 																						andDataObject:forum
 																						andId:eventId];
 	[self.navigationController pushViewController:eventDetail animated:YES];

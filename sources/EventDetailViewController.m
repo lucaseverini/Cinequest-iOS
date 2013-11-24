@@ -33,31 +33,30 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark UIViewController
 
-- (id) initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andURL:(NSURL*)link
+- (id) initWithNews:(NSDictionary*)news
 {
 	self = [super init];
 	if(self != nil)
 	{
-		self.title = @"Event Detail";
+		self.title = @"Detail";
+
+		newsDetail = YES;
 		
-		dataLink = link;
-		dataDictionary = [[NSMutableDictionary  alloc] init];
-		
-		myData = [[Schedule alloc] init];
-		myData.ID = dataObject.ID;
-		myData.title = dataObject.title;
-		myData.itemID = dataObject.itemID;
+		dataDictionary = [NSMutableDictionary dictionaryWithDictionary:news];
     }
 	
     return self;
 }
 
-- (id) initWithTitle:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSString*)eventID;
+- (id) initWithEvent:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSString*)eventID;
 {
 	self = [super init];
 	if(self != nil)
 	{
-		self.title = @"Event Detail";
+		self.title = @"Detail";
+		
+		eventDetail = YES;
+		
 		eventId = eventID;
 		dataDictionary = [[NSMutableDictionary  alloc] init];
 		
@@ -86,17 +85,28 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 	[self.activityIndicator startAnimating];
 
-	[self performSelectorOnMainThread:@selector(parseData) withObject:nil waitUntilDone:NO];
+	if(newsDetail)
+	{
+		[self performSelectorOnMainThread:@selector(parseNewsData) withObject:nil waitUntilDone:NO];
+	}
+	else
+	{
+		[self performSelectorOnMainThread:@selector(parseEventData) withObject:nil waitUntilDone:NO];
+	}
 	
 	[self.detailsTableView reloadData];
 }
 
-- (void) viewWillAppear:(BOOL)animated
+- (void) parseNewsData
 {
-	[super viewWillAppear:animated];
+	NSString *weba = [NSString stringWithFormat:web, [dataDictionary objectForKey:@"name"], [dataDictionary objectForKey:@"description"]];
+	
+	weba = [self htmlEntityDecode:weba]; // Render HTML properly
+	
+	[self.webView loadHTMLString:weba baseURL:nil];
 }
 
-- (void) parseData
+- (void) parseEventData
 {
 	NSData *data = [[appDelegate dataProvider] eventDetail:eventId];
 	
@@ -176,16 +186,11 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		}
 	}
 	
-	[self loadData];
-}
-
-- (void) loadData
-{
-	NSString *weba = [NSString stringWithFormat:web,[dataDictionary objectForKey:@"Title"],[dataDictionary objectForKey:@"Description"]];
+	NSString *weba = [NSString stringWithFormat:web, [dataDictionary objectForKey:@"Title"], [dataDictionary objectForKey:@"Description"]];
 	
 	weba = [self htmlEntityDecode:weba]; // Render HTML properly
 	
-	[self.webView loadHTMLString:weba baseURL:nil];	
+	[self.webView loadHTMLString:weba baseURL:nil];
 }
 
 #pragma mark -

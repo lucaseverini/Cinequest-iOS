@@ -12,11 +12,14 @@
 #import "DDXML.h"
 #import "DataProvider.h"
 
+static NSString *const kNewsCellIdentifier = @"NewsCell";
+
 
 @implementation NewsViewController
 
 @synthesize newsTableView;
 @synthesize activityIndicator;
+@synthesize news;
 
 - (void) didReceiveMemoryWarning
 {
@@ -28,19 +31,14 @@
     [super viewDidLoad];
 	
 	self.title = @"News";
-	
-	data = [NSMutableDictionary new];
-	sections = [NSMutableArray new];
 
 	tabBarAnimation = YES;
+		
+	news = [NSMutableArray new];
 
 	self.newsTableView.tableHeaderView = nil;
 	self.newsTableView.tableFooterView = nil;
-	
-	// Initialize
-	[data removeAllObjects];
-	[sections removeAllObjects];
-	
+		
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 }
 
@@ -76,6 +74,8 @@
 
 - (void) startParsingXML
 {
+	[news removeAllObjects];
+	
 	NSData *xmlData = [[appDelegate dataProvider] news];
 	
 	NSString* myString = [[NSString alloc] initWithData:xmlData encoding:NSUTF8StringEncoding];
@@ -85,72 +85,61 @@
 	
 	DDXMLDocument *newsXMLDoc = [[DDXMLDocument alloc] initWithData:xmlData options:0 error:nil];
 	DDXMLElement *rootElement = [newsXMLDoc rootElement];
-	NSString *preSection = @"empty";
-	NSMutableArray *temp = [NSMutableArray new];
-	if([rootElement childCount] == 2)
+
+	NSInteger nodeCount = [rootElement childCount];
+	for (NSInteger nodeIdx = 0; nodeIdx < nodeCount; nodeIdx++)
 	{
-		NSInteger nodeCount = [rootElement childCount];
-		for (NSInteger nodeIdx = 0; nodeIdx < nodeCount; nodeIdx++)
+		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:nodeIdx];
+
+		if ([[child name] isEqualToString:@"LastUpdated"])
 		{
-			DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:nodeIdx];
-			
-			NSDictionary *attributes = [child attributesAsDictionary];
-			NSString *section = [attributes objectForKey:@"name"];
-			
+			// Extract timestamp
+		}
+		else if ([[child name] isEqualToString:@"ArrayOfNews"])
+		{
 			NSInteger subNodeCount = [child childCount];
 			for (NSInteger subNodeIdx = 0; subNodeIdx < subNodeCount; subNodeIdx++)
 			{
-				DDXMLElement *item = (DDXMLElement*)[child childAtIndex:subNodeIdx];
+				DDXMLElement *newsNode = (DDXMLElement*)[child childAtIndex:subNodeIdx];
 				
-				NSString *title = @"";
-				NSString *link = @"";
+				NSString *name = @"";
+				NSString *description = @"";
+				NSString *imageUrl = @"";
+				NSString *info = @"";
 							
-				NSInteger subNode2Count = [item childCount];
+				NSInteger subNode2Count = [newsNode childCount];
 				for (NSInteger subNodeIdx = 0; subNodeIdx < subNode2Count; subNodeIdx++)
 				{
-					DDXMLElement *node = (DDXMLElement*)[item childAtIndex:subNodeIdx];
+					DDXMLElement *newsSubNode = (DDXMLElement*)[newsNode childAtIndex:subNodeIdx];
 					
-					if ([[node name] isEqualToString:@"title"])
+					if ([[newsSubNode name] isEqualToString:@"Name"])
 					{
-						title = [node stringValue];
+						name = [newsSubNode stringValue];
 					}
-					else if ([[node name] isEqualToString:@"link"])
+					else if ([[newsSubNode name] isEqualToString:@"ShortDescription"])
 					{
-						NSDictionary *nodeAttributes = [node attributesAsDictionary];
-						link = [nodeAttributes objectForKey:@"id"];
+						description = [newsSubNode stringValue];
+					}
+					else if ([[newsSubNode name] isEqualToString:@"EventImage"])
+					{
+						imageUrl = [newsSubNode stringValue];
+					}
+					else if ([[newsSubNode name] isEqualToString:@"InfoLink"])
+					{
+						info = [newsSubNode stringValue];
 					}
 				}
 			
-				NSMutableDictionary *info = [NSMutableDictionary new];
-				[info setObject:title forKey:@"title"];
-				[info setObject:link forKey:@"link"];
+				NSMutableDictionary *newsItem = [NSMutableDictionary new];
+				[newsItem setObject:name forKey:@"name"];
+				[newsItem setObject:description forKey:@"description"];
+				[newsItem setObject:imageUrl forKey:@"image"];
+				[newsItem setObject:info forKey:@"info"];
 				
-				if (![preSection isEqualToString:section])
-				{
-					[data setObject:temp forKey:preSection];
-					
-					preSection = [section copy];
-					
-					[sections addObject:section];
-					
-					temp = [NSMutableArray new];
-					[temp addObject:info];
-				}
-				else
-				{
-					[temp addObject:info];
-				}
+				[news addObject:newsItem];
 			}
 		}
 	}
-	else
-	{
-		NSLog(@"Error parsing XML");
-		
-		return;
-	}
-
-	[data setObject:temp forKey:preSection];
 
 	[self.newsTableView reloadData];
 }
@@ -168,36 +157,27 @@
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [sections count];
+    return 1;
 }
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	NSString *sectionString = [sections objectAtIndex:section];
-	NSMutableArray *rows = [data objectForKey:sectionString];
-	return [rows count];
+	return [news count];
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-	
-	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kNewsCellIdentifier];
     if(cell == nil)
 	{
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kNewsCellIdentifier];
     }
     
-    // Set up the cell...
-	NSString *sectionString = [sections objectAtIndex:section];
-	
-	NSMutableArray *rows = [data objectForKey:sectionString];
-	NSMutableDictionary *rowData = [rows objectAtIndex:row];
+	NSMutableDictionary *newsData = [news objectAtIndex:row];
 									 
-	cell.textLabel.text = [rowData objectForKey:@"title"];
+	cell.textLabel.text = [newsData objectForKey:@"name"];
 	cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
 	cell.textLabel.numberOfLines = 2;
 	
@@ -206,28 +186,16 @@
     return cell;
 }
 
-- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
-{
-	return [sections objectAtIndex:section];
-}
-
 #pragma mark -
 #pragma mark UITableView Delegate
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
-	
-	NSString *sectionString = [sections objectAtIndex:section];
-	
-	NSMutableArray *rows = [data objectForKey:sectionString];
-	NSMutableDictionary *rowData = [rows objectAtIndex:row];
+	NSMutableDictionary *newsData = [news objectAtIndex:row];
 
-	NSString *eventId = [rowData objectForKey:@"link"];
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:[rowData objectForKey:@"title"]
-																						andDataObject:nil
-																						andId:eventId];
+	NSString *eventId = [newsData objectForKey:@"link"];
+	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithNews:newsData];
 	[self.navigationController pushViewController:eventDetail animated:YES];
 	
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];

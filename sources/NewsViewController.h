@@ -8,14 +8,11 @@
 
 @interface NewsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
-	// Stores a list of name
-	NSMutableArray *sections;	
-	// Stores value: name of section object: array of rows
-	NSMutableDictionary *data;
 	BOOL tabBarAnimation;
 }
 
 @property (nonatomic, weak) UITableView *newsTableView;
 @property (nonatomic, weak) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) NSMutableArray *news;
 
 @end
