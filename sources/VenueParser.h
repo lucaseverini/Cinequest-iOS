@@ -11,6 +11,7 @@
 @interface VenueParser : NSObject
 
 @property (strong, nonatomic) NSMutableDictionary *venueDictionary;
--(NSDictionary *)parseVenues;
+
+- (NSDictionary *) parseVenues;
 
 @end

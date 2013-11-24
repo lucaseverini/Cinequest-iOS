@@ -16,6 +16,7 @@ static NSString *kGetSessionProxy = nil;
 static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
 static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
+#define web_news @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p>%@</p>"
 
 
@@ -99,9 +100,9 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (void) parseNewsData
 {
-	NSString *weba = [NSString stringWithFormat:web, [dataDictionary objectForKey:@"name"], [dataDictionary objectForKey:@"description"]];
-	
-	weba = [self htmlEntityDecode:weba]; // Render HTML properly
+	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[dataDictionary objectForKey:@"image"]];
+	NSString *weba = [NSString stringWithFormat:web_news, [dataDictionary objectForKey:@"name"], cachedImage, [dataDictionary objectForKey:@"description"]];
+	weba = [self htmlEntityDecode:weba];
 	
 	[self.webView loadHTMLString:weba baseURL:nil];
 }
@@ -186,8 +187,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		}
 	}
 	
-	NSString *weba = [NSString stringWithFormat:web, [dataDictionary objectForKey:@"Title"], [dataDictionary objectForKey:@"Description"]];
-	
+	NSString *weba = [NSString stringWithFormat:web, [dataDictionary objectForKey:@"Title"], [dataDictionary objectForKey:@"Description"]];	
 	weba = [self htmlEntityDecode:weba]; // Render HTML properly
 	
 	[self.webView loadHTMLString:weba baseURL:nil];

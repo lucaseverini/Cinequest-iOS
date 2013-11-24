@@ -88,8 +88,6 @@
     [super viewDidAppear:animated];
 
 	[activityView startAnimating];
-		
-	[appDelegate startReachability:XML_FEED_URL];
 	
 	[appDelegate setMySchedule:[[NSMutableArray alloc] init]];
 	[appDelegate setNewsView:[[NewsViewController alloc] init]];
@@ -113,6 +111,9 @@
     FestivalParser *festivalParser = [[FestivalParser alloc] init];
 	[appDelegate setFestival:[festivalParser parseFestival]];
 	
+	// Call To Fetch Venues
+    [NSThread detachNewThreadSelector:@selector(callToFetchVenues) toTarget:appDelegate withObject:nil];
+
 	// Calc the delay to let the splash screen ve visible at least 3 seconds
 	CFTimeInterval spentTime = CFAbsoluteTimeGetCurrent() - startTime;
 	int64_t delayTime = spentTime >= 2.0 ? 0.0 : (2.0 - spentTime) * NSEC_PER_SEC;
@@ -122,7 +123,7 @@
 		UIWindow *window = [appDelegate window];
 		[UIView transitionWithView:window duration:0.5 options:UIViewAnimationOptionTransitionCrossDissolve animations:
 		^{
-			window.rootViewController = [appDelegate tabBarController];
+			window.rootViewController = [appDelegate tabBar];
 		}
 		completion:nil];
 	});

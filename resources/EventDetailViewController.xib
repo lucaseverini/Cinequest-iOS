@@ -56,7 +56,8 @@
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<bool key="IBUIMultipleTouchEnabled">YES</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<int key="IBUIDataDetectorTypes">1</int>
+								<int key="IBUIDataDetectorTypes">3</int>
+								<bool key="IBUISuppressesIncrementalRendering">YES</bool>
 								<bool key="IBUIDetectsPhoneNumbers">YES</bool>
 							</object>
 						</array>

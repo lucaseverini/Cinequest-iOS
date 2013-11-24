@@ -27,14 +27,9 @@
     return self;
 }
 
--(NSDictionary *)parseVenues
+- (NSDictionary*) parseVenues
 {
-    NSURL *url = [NSURL URLWithString:VENUE_FEED_URL];
-    NSMutableURLRequest *request= [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"GET"];
-    NSError *error;
-    NSHTTPURLResponse *response;
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+	NSData *responseData = [[appDelegate dataProvider] venues];
 	
 	NSString *myString = [[NSString alloc] initWithData:responseData encoding:NSISOLatin2StringEncoding];
 	myString = [myString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
@@ -80,6 +75,7 @@
 				venue1.location = [showChild stringValue];
 			}
 		}
+		
         [self.venueDictionary setObject:venue1 forKey:venue1.ID];
 	}
     

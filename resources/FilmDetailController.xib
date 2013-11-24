@@ -56,9 +56,8 @@
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<bool key="IBUIMultipleTouchEnabled">YES</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<int key="IBUIDataDetectorTypes">7</int>
+								<int key="IBUIDataDetectorTypes">2</int>
 								<bool key="IBUISuppressesIncrementalRendering">YES</bool>
-								<bool key="IBUIDetectsPhoneNumbers">YES</bool>
 							</object>
 						</array>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>

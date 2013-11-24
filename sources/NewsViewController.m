@@ -50,7 +50,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	
 	if(tabBarAnimation)
 	{
-		[appDelegate.tabBarController.view setHidden:YES];
+		[appDelegate.tabBar.view setHidden:YES];
 	}
 }
 
@@ -61,10 +61,10 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	if(tabBarAnimation)
 	{
 		// Don't show an ugly jerk while the bottom tabbar is drawn
-		[UIView transitionWithView:appDelegate.tabBarController.view duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve
+		[UIView transitionWithView:appDelegate.tabBar.view duration:0.4 options:UIViewAnimationOptionTransitionCrossDissolve
 		animations:^
 		{
-			[appDelegate.tabBarController.view setHidden:NO];
+			[appDelegate.tabBar.view setHidden:NO];
 		}
 		completion:nil];
 		
@@ -76,7 +76,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 {
 	[news removeAllObjects];
 	
-	NSData *xmlData = [[appDelegate dataProvider] news];
+	NSData *xmlData = [[appDelegate dataProvider] newsFeed];
 	
 	NSString* myString = [[NSString alloc] initWithData:xmlData encoding:NSUTF8StringEncoding];
 	myString = [myString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
@@ -147,7 +147,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 - (IBAction) toFestival:(id)sender
 {
 	CinequestAppDelegate *delegate = appDelegate;
-	delegate.tabBarController.selectedIndex = 0;
+	delegate.tabBar.selectedIndex = 0;
 	delegate.isPresentingModalView = NO;
 	[self dismissViewControllerAnimated:YES completion:nil];
 }

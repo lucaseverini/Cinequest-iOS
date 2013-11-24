@@ -14,7 +14,7 @@
 #import "Festival.h"
 #import "Film.h"
 
-#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:100px;max-width:150px;\"src=\"%@\"/></p><p>%@</p>"
+#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
 static NSString *kGetSessionProxy = nil;
 static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
@@ -84,7 +84,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) loadData
 {
-	NSString *weba = [NSString stringWithFormat:web,[film name],[film imageURL],[film description]];
+	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[film imageURL]];
+
+	NSString *weba = [NSString stringWithFormat:web, [film name], cachedImage, [film description]];
 
     if (film.genre != nil)
 	{
@@ -135,7 +137,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
         weba = [weba stringByAppendingFormat:@"Film Info: %@<br/>",film.filmInfo];
 	}
-	
+
 	[webView loadHTMLString:weba baseURL:nil];
 }
 

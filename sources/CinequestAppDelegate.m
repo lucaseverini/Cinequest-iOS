@@ -18,7 +18,7 @@
 @implementation CinequestAppDelegate
 
 @synthesize window;
-@synthesize tabBarController;
+@synthesize tabBar;
 @synthesize mySchedule;
 @synthesize isPresentingModalView;
 @synthesize isLoggedInFacebook;
@@ -55,36 +55,28 @@
 	StartupViewController *startupViewController = [[StartupViewController alloc] initWithNibName:@"StartupViewController" bundle:nil];
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:startupViewController];
 	[navController setNavigationBarHidden:YES animated:NO];
-    
-    //Call To Fetch Venues
-    [NSThread detachNewThreadSelector:@selector(callToFetchVenues) toTarget:self withObject:nil];
-    
-    self.festival = [[[FestivalParser alloc] init] parseFestival];
 	
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
 	
-	tabBarController.delegate = self;
+	tabBar.delegate = self;
+	
+	[self startReachability:MAIN_FEED];
 	
 	return YES;
 }
 
 - (void) callToFetchVenues
 {
-    //Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
+    // Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
     self.venuesDictionary = [[[VenueParser alloc] init] parseVenues];
-    //Print Venue Dictionary
-    NSLog(@"Venues Dictionary:%@",self.venuesDictionary);
+    // Print Venue Dictionary
+    // NSLog(@"Venues Dictionary:%@", self.venuesDictionary);
 }
 
 - (void) jumpToScheduler
 {
-	tabBarController.selectedIndex = 4;
-}
-
-- (BOOL) connectedToNetwork
-{
-	return [self.reachability isReachable];
+	tabBar.selectedIndex = 4;
 }
 
 #pragma mark -
@@ -130,11 +122,11 @@
 }
 
 #pragma mark -
-#pragma mark TabBarController delegate
+#pragma mark Network Reachability
 
-- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+- (BOOL) connectedToNetwork
 {
-	NSLog(@"%@", viewController);
+	return [self.reachability isReachable];
 }
 
 - (void) startReachability:(NSString*)hostName
@@ -198,6 +190,9 @@
 	NSLog(@"Network Connection: %s", networkConnection == 1 ? "DialUp" : networkConnection == 2 ? "WiFi" : "None");
 }
 
+#pragma mark -
+#pragma mark Utility functions
+
 - (NSURL*) cachesDirectory
 {
     static NSURL *cachesDir;
@@ -227,9 +222,26 @@
     }
     
     return docsDir;
-    
-    // Apple has changed the guidelines regarding the Documents folder
-    // http://stackoverflow.com/questions/8209406/ios-5-does-not-allow-to-store-downloaded-data-in-documents-directory
+}
+
+#pragma mark -
+#pragma mark TabBarController delegate
+
+- (BOOL) tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
+{
+	curTabIndex = [tabBarController selectedIndex];
+	
+	return YES;
+}
+
+- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    CATransition *animation = [CATransition animation];
+    [animation setType:kCATransitionReveal];
+    [animation setSubtype:curTabIndex > [tabBarController selectedIndex] ? kCATransitionFromLeft : kCATransitionFromRight];
+    [animation setDuration:0.5];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+    [self.window.layer addAnimation:animation forKey:nil];
 }
 
 @end

@@ -9,18 +9,22 @@
 #import "DataProvider.h"
 #import "CinequestAppDelegate.h"
 
-NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
+NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 
-#define XMLFEED_TIMESTAMP_ENDPOSITION	512				// XML feed time-stamp is contained within that number of bytes
-#define XMLFEED_CHECK_INTERVAL			60				// In seconds
-#define XMLFEED_TIMEOUT					30				// In seconds
-#define XMLFEED_CHECK_RETRYINTERVAL		10.0			// 10 second retry interval
-#define XMLFEED_FILE					@"XmlFeed.xml"
+#define NEWSFEED_TIMESTAMP_ENDPOSITION	256						// News feed time-stamp is contained within that number of bytes
+#define NEWSFEED_CHECK_INTERVAL			300.0					// In seconds
+#define NEWSFEED_TIMEOUT				30.0					// In seconds
+#define NEWSFEED_CHECK_RETRYINTERVAL	60.0					// In seconds
+#define CACHEFOLDER_CHECKINTERVAL		6.0						// In seconds
+#define CACHEFOLDER_MAXSIZE				(20L * 1024L * 1024L)	// 20 MBytes
+#define CACHEFOLDER_MINSIZE				(15L * 1024L * 1024L)	// 15 MBytes
+#define MAINFEED_FILE					@"MainFeed.xml"
 #define FILMSBYTIME_FILE				@"FilmsByTime.xml"
 #define FILMSBYTITLE_FILE				@"FilmsByTitle.xml"
-#define NEWS_FILE						@"News.xml"
+#define NEWSFEED_FILE					@"NewsFeed.xml"
 #define EVENTS_FILE						@"Events.xml"
 #define FORUMS_FILE						@"Forums.xml"
+#define VENUES_FILE						@"Venues.xml"
 #define MODE_FILE						@"Mode.xml"
 #define FILMDETAIL_FILE					@"FilmDetail.%d.xml"
 #define EVENTDETAIL_FILE				@"EventDetail.%@.xml"
@@ -50,8 +54,8 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 
 @implementation DataProvider
 
-@synthesize xmlFeedUpdated;
-@synthesize xmlFeedDate;
+@synthesize newsFeedUpdated;
+@synthesize newsFeedDate;
 
 - (id) init
 {
@@ -59,17 +63,27 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	if(self != nil)
 	{
 		fileMgr = [NSFileManager defaultManager];
-		cacheDir = [appDelegate cachesDirectory];
+		cacheDir = [NSURL URLWithString:@"CinequestDataCache" relativeToURL:[appDelegate cachesDirectory]];
 		
-		NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:XMLFEED_FILE];
+		if(![fileMgr fileExistsAtPath:[cacheDir path] isDirectory:nil])
+		{
+			if(![fileMgr createDirectoryAtPath:[cacheDir path] withIntermediateDirectories:YES attributes:nil error:nil])
+			{
+				NSLog(@"Error creating cache folder %@", [cacheDir path]);
+				
+				cacheDir = [appDelegate cachesDirectory]; // This can't fail...
+			}
+		}
+		
+		NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:NEWSFEED_FILE];
 		NSFileHandle *file = [NSFileHandle fileHandleForReadingFromURL:fileUrl error:nil];
 		NSData *xmlData = [file readDataOfLength:512];
 		if(xmlData != nil)
 		{
-			self.xmlFeedDate = [self getFeedTimeStamp:xmlData];
-			NSLog(@"XML Feed date:%@", self.xmlFeedDate);
+			self.newsFeedDate = [self getFeedTimeStamp:xmlData];
+			NSLog(@"News Feed date:%@", self.newsFeedDate);
 			
-			xmlFeedHasBeenDownloaded = YES;
+			newsFeedHasBeenDownloaded = YES;
 		}
 		[file closeFile];
 		
@@ -80,10 +94,13 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 			queryDates = [NSMutableDictionary dictionaryWithCapacity:1000];
 		}
 
-		checkFeedTimer = [NSTimer timerWithTimeInterval:XMLFEED_CHECK_INTERVAL target:self selector:@selector(checkXmlFeed) userInfo:nil repeats:YES];
+		checkFeedTimer = [NSTimer timerWithTimeInterval:NEWSFEED_CHECK_INTERVAL target:self selector:@selector(checkNewsFeed) userInfo:nil repeats:YES];
 		[[NSRunLoop mainRunLoop] addTimer:checkFeedTimer forMode:NSRunLoopCommonModes];
-		
 		[checkFeedTimer fire];
+
+		checkFolderTimer = [NSTimer timerWithTimeInterval:CACHEFOLDER_CHECKINTERVAL target:self selector:@selector(checkCacheFolder) userInfo:nil repeats:YES];
+		[[NSRunLoop mainRunLoop] addTimer:checkFolderTimer forMode:NSRunLoopCommonModes];
+		[checkFolderTimer fire];
 	}
 	
 	return self;
@@ -98,13 +115,13 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 
 - (void) reset
 {
-	[fileMgr removeItemAtURL:[cacheDir URLByAppendingPathComponent:XMLFEED_FILE] error:nil];
+	[fileMgr removeItemAtURL:[cacheDir URLByAppendingPathComponent:MAINFEED_FILE] error:nil];
 
-	self.xmlFeedUpdated = NO;
-	self.xmlFeedDate = nil;
+	self.newsFeedUpdated = NO;
+	self.newsFeedDate = nil;
 
 	// Remove all files from cache folder. Should be smarter
-	NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:[cacheDir path]];
+	NSDirectoryEnumerator *dirEnum = [fileMgr enumeratorAtPath:[cacheDir path]];
 	NSString *fileName;
 	while(fileName = [dirEnum nextObject])
 	{
@@ -115,31 +132,31 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	[checkFeedTimer fire];
 }
 
-- (NSData*) xmlFeed;
+- (NSData*) newsFeed
 {
-    NSLog(@"Getting xml feed...");
+    NSLog(@"Getting news feed...");
 
-	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:XMLFEED_FILE];
+	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:NEWSFEED_FILE];
 
 	if(![appDelegate connectedToNetwork])
 	{
 		NSData *xmlData = [NSData dataWithContentsOfURL:fileUrl];
-		NSLog(@"NO CONNECTION. OLD XML Feed data:%ld bytes", (unsigned long)[xmlData length]);
+		NSLog(@"NO CONNECTION. Old news Feed data:%ld bytes", (unsigned long)[xmlData length]);
 		
 		return xmlData;
 	}
 	
-	gettingXmlFeed = YES;
+	gettingNewsFeed = YES;
 
 	feedData = [[NSMutableData alloc] init];
 	feedDataLen = 0;
-	xmlFeedTimeStampChecked = NO;
-	xmlFeedHasBeenUpdated = NO;
+	newsFeedTimeStampChecked = NO;
+	newsFeedHasBeenUpdated = NO;
 	justChecking = NO;
 	connectionError = noErr;
 		
-	NSURL *url = [NSURL URLWithString:XML_FEED_URL];
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:XMLFEED_TIMEOUT];
+	NSURL *url = [NSURL URLWithString:NEWS_FEED];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:NEWSFEED_TIMEOUT];
     if([NSURLConnection canHandleRequest:urlRequest])
     {
         NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:NO];
@@ -160,48 +177,48 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		
 		app.networkActivityIndicatorVisible = NO;
 		
-		if(!xmlFeedHasBeenUpdated || connectionError != noErr)
+		if(!newsFeedHasBeenUpdated || connectionError != noErr)
 		{
 			feedData = nil;
 			
-			if(xmlFeedHasBeenDownloaded)
+			if(newsFeedHasBeenDownloaded)
 			{
 				NSData *xmlData = [NSData dataWithContentsOfURL:fileUrl];
 				
 				if(connectionError != noErr)
 				{
-					NSLog(@"NO CONNECTION. OLD XML Feed data:%ld bytes", (unsigned long)[xmlData length]);
+					NSLog(@"NO CONNECTION. Old news Feed data:%ld bytes", (unsigned long)[xmlData length]);
 				}
 				else
 				{
-					NSLog(@"OLD XML Feed data:%ld bytes", (unsigned long)[xmlData length]);
+					NSLog(@"Old news Feed data:%ld bytes", (unsigned long)[xmlData length]);
 				}
 				
-				gettingXmlFeed = NO;
+				gettingNewsFeed = NO;
 				
 				return xmlData;
 			}
 			else
 			{
-				gettingXmlFeed = NO;
+				gettingNewsFeed = NO;
 				
 				return nil;
 			}
 		}
 	}
 	
-	NSLog(@"NEW XML Feed data:%ld bytes", (unsigned long)feedDataLen);
+	NSLog(@"NEW news Feed data:%ld bytes", (unsigned long)feedDataLen);
 	
 	[feedData writeToURL:fileUrl atomically:YES];
 	
 	NSData *xmlData = [NSData dataWithData:feedData];
 	feedData = nil;
 	
-	xmlFeedHasBeenDownloaded = YES;
+	newsFeedHasBeenDownloaded = YES;
 	
-	self.xmlFeedUpdated = NO;
+	self.newsFeedUpdated = NO;
 		
-	gettingXmlFeed = NO;
+	gettingNewsFeed = NO;
 
 	return xmlData;
 }
@@ -210,7 +227,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 {
 	if(connection == checkConnection)
 	{
-		if(gettingXmlFeed)
+		if(gettingNewsFeed)
 		{
 			return;		// Abort checking if xml feed is being downloaded
 		}
@@ -219,46 +236,46 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	[feedData appendData:data];
 	feedDataLen += [data length];
 	
-	if(feedDataLen >= XMLFEED_TIMESTAMP_ENDPOSITION && !xmlFeedTimeStampChecked)
+	if(feedDataLen >= NEWSFEED_TIMESTAMP_ENDPOSITION && !newsFeedTimeStampChecked)
 	{
 		NSDate *date = [self getFeedTimeStamp:data];
 		if(date != nil)
 		{
-			xmlFeedTimeStampChecked = YES;
+			newsFeedTimeStampChecked = YES;
 			
 			if(justChecking)
 			{
-				if(self.xmlFeedDate == nil || [self.xmlFeedDate compare:date] != NSOrderedSame)
+				if(self.newsFeedDate == nil || [self.newsFeedDate compare:date] != NSOrderedSame)
 				{
-					self.xmlFeedDate = date;
-					xmlFeedHasBeenUpdated = YES;
+					self.newsFeedDate = date;
+					newsFeedHasBeenUpdated = YES;
 				}
 				else
 				{
-					xmlFeedHasBeenUpdated = NO;
+					newsFeedHasBeenUpdated = NO;
 				}
 
 				keepRunning = NO;
 			}
-			else if(!xmlFeedHasBeenDownloaded)
+			else if(!newsFeedHasBeenDownloaded)
 			{
-				if(self.xmlFeedDate == nil || [self.xmlFeedDate compare:date] != NSOrderedSame)
+				if(self.newsFeedDate == nil || [self.newsFeedDate compare:date] != NSOrderedSame)
 				{
-					self.xmlFeedDate = date;
+					self.newsFeedDate = date;
 				}
 
-				xmlFeedHasBeenUpdated = YES;
+				newsFeedHasBeenUpdated = YES;
 			}
 			else
 			{
-				if(self.xmlFeedDate == nil || [self.xmlFeedDate compare:date] != NSOrderedSame)
+				if(self.newsFeedDate == nil || [self.newsFeedDate compare:date] != NSOrderedSame)
 				{
-					self.xmlFeedDate = date;
-					xmlFeedHasBeenUpdated = YES;
+					self.newsFeedDate = date;
+					newsFeedHasBeenUpdated = YES;
 				}
 				else
 				{
-					xmlFeedHasBeenUpdated = NO;
+					newsFeedHasBeenUpdated = NO;
 					keepRunning = NO;
 				}
 			}
@@ -277,8 +294,6 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 
 - (void) connectionDidFinishLoading:(NSURLConnection*)connection
 {
-    NSLog(@"connectionDidFinishLoading");
-	
 	keepRunning = NO;
 }
 
@@ -297,19 +312,15 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 	NSInteger dataLen = [dataStr length];
 	
-	NSRange timeStampStart = [dataStr rangeOfString:@"<LastUpdated " options:0];
+	NSRange timeStampStart = [dataStr rangeOfString:@"<LastUpdated><![CDATA[" options:0];
 	if(timeStampStart.location != NSNotFound)
 	{
 		NSInteger rangeStart = timeStampStart.location + timeStampStart.length;
 		NSInteger rangeLen = dataLen - rangeStart;
-		NSRange timeStampEnd = [dataStr rangeOfString:@"</LastUpdated>" options:0 range:NSMakeRange(rangeStart, rangeLen)];
+		NSRange timeStampEnd = [dataStr rangeOfString:@"]]></LastUpdated>" options:0 range:NSMakeRange(rangeStart, rangeLen)];
 		if(timeStampEnd.location != NSNotFound)
 		{
 			rangeStart = timeStampStart.location + timeStampStart.length;
-			rangeLen = timeStampEnd.location - rangeStart;
-			timeStampStart = [dataStr rangeOfString:@">" options:0 range:NSMakeRange(rangeStart, rangeLen)];
-			
-			rangeStart = timeStampStart.location + 1;
 			rangeLen = timeStampEnd.location - rangeStart;
 			NSString *dateTimeStr = [dataStr substringWithRange:NSMakeRange(rangeStart, rangeLen)];
 			
@@ -324,74 +335,150 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	return nil;
 }
 
-- (void) checkXmlFeed
+- (void) checkCacheFolder
 {
-	if(![appDelegate connectedToNetwork])
-	{
-		[checkFeedTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:XMLFEED_CHECK_RETRYINTERVAL]];
-		return;
-	}
-	else
-	{
-		[checkFeedTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:XMLFEED_CHECK_INTERVAL]];
-	}
-	
-	if(gettingXmlFeed)
-	{
-		return;
-	}
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+	^{
+		NSString *folderPath = [cacheDir path];
+		NSDictionary *dirAttrib = [fileMgr attributesOfItemAtPath:folderPath error:nil];
+		if(![cacheFolderDate isEqualToDate:[dirAttrib fileModificationDate]])
+		{
+			cacheFolderDate = [dirAttrib fileModificationDate];
+			
+			[NSThread sleepForTimeInterval:4.0];
+			
+			NSArray *files = [fileMgr subpathsOfDirectoryAtPath:folderPath error:nil];
+			NSEnumerator *filesEnumerator = [files objectEnumerator];
+			NSString *fileName;
+			NSUInteger folderSize = 0;
+			while(fileName = [filesEnumerator nextObject])
+			{
+				NSDictionary *fileAttrib = [fileMgr attributesOfItemAtPath:[folderPath stringByAppendingPathComponent:fileName] error:nil];
+				folderSize += [fileAttrib fileSize];
+			}
+			
+			NSLog(@"CacheFolder size: %ld", folderSize);
+			
+			if(folderSize > CACHEFOLDER_MAXSIZE)
+			{
+				NSLog(@"Cleaning cache folder...");
 
-    NSLog(@"Checking xml feed...");
-	
-	NSURL *url = [NSURL URLWithString:XML_FEED_URL];
-	
-	feedData = [[NSMutableData alloc] init];
-	feedDataLen = 0;
-	xmlFeedTimeStampChecked = NO;
-	xmlFeedHasBeenUpdated = NO;
-	justChecking = YES;
-	connectionError = noErr;
-	
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:XMLFEED_TIMEOUT];
-    if([NSURLConnection canHandleRequest:urlRequest])
-    {
-        checkConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:NO];
-		
-		app.networkActivityIndicatorVisible = YES;
+				files = [files sortedArrayUsingComparator:
+				^(id fileA, id fileB)
+				{
+					NSDictionary *fileAttrib = [fileMgr attributesOfItemAtPath:[folderPath stringByAppendingPathComponent:fileA] error:nil];
+					NSDate *fileDateA = [fileAttrib fileModificationDate];
 
-		[checkConnection start];
-		
-		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-		
-        keepRunning = YES;
-        while(keepRunning)
-        {
-            [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
-        }
-		
-		[checkConnection cancel];
+					fileAttrib = [fileMgr attributesOfItemAtPath:[folderPath stringByAppendingPathComponent:fileB] error:nil];
+					NSDate *fileDateB = [fileAttrib fileModificationDate];
 
-		app.networkActivityIndicatorVisible = NO;
+					if([fileDateA earlierDate:fileDateB] == fileDateA)
+					{
+						return NSOrderedAscending;
+					}
+					else if([fileDateB earlierDate:fileDateA] == fileDateB)
+					{
+						return NSOrderedDescending;
+					}
+					else
+					{
+						return NSOrderedSame;
+					}
+				}];
 
-		feedData = nil;
+				filesEnumerator = [files objectEnumerator];
+				while(fileName = [filesEnumerator nextObject])
+				{
+					NSString *filePath = [folderPath stringByAppendingPathComponent:fileName];
+					NSDictionary *fileAttrib = [fileMgr attributesOfItemAtPath:filePath error:nil];
+					
+					if([fileMgr removeItemAtPath:filePath error:nil])
+					{
+						folderSize -= [fileAttrib fileSize];
+						if(folderSize < CACHEFOLDER_MINSIZE)
+						{
+							break;
+						}
+					}
+				}
+				
+				NSLog(@"Cache folder cleaned.");
+			}
+		}
+	});
+}
+
+- (void) checkNewsFeed
+{
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+	^{
+		if(![appDelegate connectedToNetwork])
+		{
+			[checkFeedTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:NEWSFEED_CHECK_RETRYINTERVAL]];
+			return;
+		}
+		else
+		{
+			[checkFeedTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:NEWSFEED_CHECK_INTERVAL]];
+		}
 		
-		if(gettingXmlFeed) // If the feed is being get the check can be aborted
+		if(gettingNewsFeed)
 		{
 			return;
 		}
-		
-		if(xmlFeedHasBeenUpdated)
-		{
-			xmlFeedHasBeenDownloaded = NO;
 
-			if(!self.xmlFeedUpdated)
+		NSLog(@"Checking news feed...");
+		
+		NSURL *url = [NSURL URLWithString:NEWS_FEED];
+		
+		feedData = [[NSMutableData alloc] init];
+		feedDataLen = 0;
+		newsFeedTimeStampChecked = NO;
+		newsFeedHasBeenUpdated = NO;
+		justChecking = YES;
+		connectionError = noErr;
+		
+		NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:NEWSFEED_TIMEOUT];
+		if([NSURLConnection canHandleRequest:urlRequest])
+		{
+			checkConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:NO];
+			
+			app.networkActivityIndicatorVisible = YES;
+
+			[checkConnection start];
+			
+			NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+			
+			keepRunning = YES;
+			while(keepRunning)
 			{
-				self.xmlFeedUpdated = YES;
+				[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+			}
+			
+			[checkConnection cancel];
+
+			app.networkActivityIndicatorVisible = NO;
+
+			feedData = nil;
+			
+			if(gettingNewsFeed) // If the feed is being get the check can be aborted
+			{
+				return;
+			}
+			
+			if(newsFeedHasBeenUpdated)
+			{
+				newsFeedHasBeenDownloaded = NO;
+
+				if(!self.newsFeedUpdated)
+				{
+					self.newsFeedUpdated = YES;
+				}
 			}
 		}
-	}
-	
-	NSLog(@"xmlFeedUpdated:%@  Date:%@", self.xmlFeedUpdated ? @"YES" : @"NO", self.xmlFeedDate);
+		
+		NSLog(@"newsFeedUpdated:%@  Date:%@", self.newsFeedUpdated ? @"YES" : @"NO", self.newsFeedDate);
+	});
 }
 
 - (NSData*) filmsByTime
@@ -416,7 +503,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -427,7 +514,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
@@ -466,7 +553,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -477,7 +564,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
@@ -494,12 +581,12 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 }
 
-- (NSData*) news
+- (NSData*) mainFeed
 {
-	NSLog(@"Getting news...");
+	NSLog(@"Getting main feed...");
 
-	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:NEWS_FILE];
-	NSString *key = @"NewsDate";
+	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:MAINFEED_FILE];
+	NSString *key = @"MainFeedDate";
 	NSDate *queryDate = [queryDates objectForKey:key];
 	
 	if(![appDelegate connectedToNetwork])
@@ -516,7 +603,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -527,11 +614,11 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
-	NSData *queryData = [NSData dataWithNetURLShowingActivity:[NSURL URLWithString:NEWS]];
+	NSData *queryData = [NSData dataWithNetURLShowingActivity:[NSURL URLWithString:MAIN_FEED]];
 	if(queryData != nil)
 	{
 		[queryData writeToURL:fileUrl atomically:YES];
@@ -566,7 +653,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -577,7 +664,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
@@ -616,7 +703,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -627,11 +714,61 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
 	NSData *queryData = [NSData dataWithNetURLShowingActivity:[NSURL URLWithString:FORUMS]];
+	if(queryData != nil)
+	{
+		[queryData writeToURL:fileUrl atomically:YES];
+		
+		return queryData;
+	}
+	else
+	{
+		return [NSData dataWithContentsOfURL:fileUrl];
+	}
+}
+
+- (NSData*) venues
+{
+	NSLog(@"Getting venues...");
+	
+	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:VENUES_FILE];
+	NSString *key = @"VenuesDate";
+	NSDate *queryDate = [queryDates objectForKey:key];
+	
+	if(![appDelegate connectedToNetwork])
+	{
+		if([fileMgr fileExistsAtPath:[fileUrl path]])
+		{
+			NSLog(@"NO CONNECTION. Getting OLD venues...");
+			
+			return [NSData dataWithContentsOfURL:fileUrl];
+		}
+		else
+		{
+			return nil;
+		}
+	}
+	
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
+	{
+		if([fileMgr fileExistsAtPath:[fileUrl path]])
+		{
+			NSLog(@"Getting OLD venues...");
+			
+			return [NSData dataWithContentsOfURL:fileUrl];
+		}
+	}
+	else
+	{
+		queryDate = self.newsFeedDate;
+		[self saveQueryDate:queryDate forKey:key];
+	}
+	
+	NSData *queryData = [NSData dataWithNetURLShowingActivity:[NSURL URLWithString:VENUES]];
 	if(queryData != nil)
 	{
 		[queryData writeToURL:fileUrl atomically:YES];
@@ -666,7 +803,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -677,7 +814,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
@@ -721,8 +858,6 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 
 - (NSData*) image:(NSURL*)imageUrl expiration:(NSDate*)expirationDate
 {
-	NSLog(@"Getting image %@...", [imageUrl path]);
-
 	NSString *imgPath = [[[imageUrl path] substringFromIndex:1] stringByReplacingOccurrencesOfString:@"/" withString:@"."];
 	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:imgPath];
 	NSString *key = imgPath;
@@ -805,7 +940,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -816,7 +951,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
@@ -856,7 +991,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 		}
 	}
 	
-	if(queryDate != nil && [queryDate compare:self.xmlFeedDate] == NSOrderedSame)
+	if(queryDate != nil && [queryDate compare:self.newsFeedDate] == NSOrderedSame)
 	{
 		if([fileMgr fileExistsAtPath:[fileUrl path]])
 		{
@@ -867,7 +1002,7 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	}
 	else
 	{
-		queryDate = self.xmlFeedDate;
+		queryDate = self.newsFeedDate;
 		[self saveQueryDate:queryDate forKey:key];
 	}
 	
@@ -881,6 +1016,69 @@ NSString *const kXmlFeedUpdatedNotification = @"XmlFeedUpdatedNotification";
 	else
 	{
 		return [NSData dataWithContentsOfURL:fileUrl];
+	}
+}
+
+- (NSString*) cacheImage:(NSString*)imageUrl
+{
+	if(imageUrl == nil)
+	{
+		return nil;
+	}
+	
+	BOOL imageCached = NO;
+    imageUrl = [imageUrl stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]; // Cleanup to avoid errors in getting an NSURL
+	NSURL *url = [NSURL URLWithString:imageUrl];
+	NSString *fileName = [imageUrl lastPathComponent];
+	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:fileName];
+	NSString *filePath = [fileUrl path];
+
+	if(![appDelegate connectedToNetwork])
+	{
+		if([fileMgr fileExistsAtPath:[fileUrl path]])
+		{
+			NSLog(@"NO CONNECTION. Getting OLD image...");
+			
+			return [fileUrl absoluteString];
+		}
+		else
+		{
+			return nil;
+		}
+	}
+
+	if([fileMgr fileExistsAtPath:filePath])
+	{
+		imageCached = YES;
+		
+		NSDictionary *fileAttrib = [fileMgr attributesOfItemAtPath:filePath error:nil];
+		NSDate *imageDate = [fileAttrib fileModificationDate];
+		
+		// If the imageDate is the laterDate return the cached image
+		if([imageDate laterDate:appDelegate.dataProvider.newsFeedDate] == imageDate)
+		{
+			return [fileUrl absoluteString];
+		}
+	}
+
+	// Image either not cached or earlier than last news feed to download it
+	NSData *imgData = [NSData dataWithContentsOfURL:url];
+	if(imgData != nil)
+	{
+		[imgData writeToFile:filePath atomically:YES];
+		
+		return [fileUrl absoluteString];
+	}
+	else
+	{
+		if(imageCached)
+		{
+			return [fileUrl absoluteString];
+		}
+		else
+		{
+			return nil;
+		}
 	}
 }
 

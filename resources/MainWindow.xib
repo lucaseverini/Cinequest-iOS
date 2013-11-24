@@ -13,7 +13,7 @@
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <customObject id="3" customClass="CinequestAppDelegate">
             <connections>
-                <outlet property="tabBarController" destination="106" id="113"/>
+                <outlet property="tabBar" destination="106" id="lTD-um-Bdn"/>
                 <outlet property="window" destination="2" id="9"/>
             </connections>
         </customObject>
@@ -186,7 +186,7 @@
         </tabBarController>
     </objects>
     <resources>
-        <image name="News.png" width="30" height="30"/>
+        <image name="News.png" width="25" height="25"/>
         <image name="events_icon_small.png" width="30" height="30"/>
         <image name="film_icon2.png" width="30" height="30"/>
         <image name="schedule.png" width="30" height="30"/>

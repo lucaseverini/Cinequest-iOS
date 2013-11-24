@@ -12,34 +12,38 @@ extern NSString *const kUpdatedXMLFeedNotification;
 {
 	NSInteger connectionError;
 	BOOL keepRunning;
-	BOOL xmlFeedTimeStampChecked;
+	BOOL newsFeedTimeStampChecked;
 	NSMutableData *feedData;
 	NSUInteger feedDataLen;
-	BOOL xmlFeedHasBeenUpdated;
-	BOOL xmlFeedHasBeenDownloaded;
+	BOOL newsFeedHasBeenUpdated;
+	BOOL newsFeedHasBeenDownloaded;
 	NSURL *cacheDir;
 	NSTimer *checkFeedTimer;
+	NSTimer *checkFolderTimer;
 	BOOL justChecking;
-	BOOL gettingXmlFeed;
+	BOOL gettingNewsFeed;
 	NSURLConnection *checkConnection;
 	NSFileManager *fileMgr;
 	NSURL *queryDatesUrl;
 	NSMutableDictionary *queryDates;
+	NSDate *cacheFolderDate;
 }
 
-@property (atomic, assign) BOOL xmlFeedUpdated;
-@property (atomic, strong) NSDate *xmlFeedDate;
+@property (atomic, assign) BOOL newsFeedUpdated;
+@property (atomic, strong) NSDate *newsFeedDate;
 
-- (NSData*) xmlFeed;
-- (void) reset;
+- (NSData*) mainFeed;
+- (NSData*) newsFeed;
 - (NSData*) filmsByTime;
 - (NSData*) filmsByTitle;
-- (NSData*) news;
 - (NSData*) events;
 - (NSData*) forums;
+- (NSData*) venues;
 - (NSData*) mode;
 - (NSData*) image:(NSURL*)imageUrl expiration:(NSDate*)expirationDate;
 - (NSData*) filmDetail:(NSString*)filmId;
 - (NSData*) eventDetail:(NSString*)eventId;
+- (NSString*) cacheImage:(NSString*)imageUrl;
+- (void) reset;
 
 @end

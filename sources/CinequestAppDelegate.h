@@ -8,7 +8,6 @@
 
 #define FILMSBYTIME		@"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone"
 #define FILMSBYTITLE	@"http://mobile.cinequest.org/mobileCQ.php?type=films&iphone"
-#define NEWS			@"http://www.cinequest.org/news.php"
 #define OLD_NEWS		@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ihome"
 #define EVENTS			@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ievents"
 #define FORUMS			@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=iforums&iphone"
@@ -18,8 +17,9 @@
 #define DETAILFORPrgId	@"http://mobile.cinequest.org/mobileCQ.php?type=program_item&iphone&id="
 #define DETAILFORITEM	@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=items&iphone&id="
 #define MODE			@"http://mobile.cinequest.org/mobileCQ.php?type=mode"
-#define XML_FEED_URL    @"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
-#define VENUE_FEED_URL  @"http://www.cinequest.org/venuelist.php"
+#define NEWS_FEED		@"http://www.cinequest.org/news.php"
+#define MAIN_FEED		@"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
+#define VENUES			@"http://www.cinequest.org/venuelist.php"
 
 #define CELL_TITLE_LABEL_TAG	1
 #define	CELL_TIME_LABEL_TAG		2
@@ -50,6 +50,9 @@
 @class DataProvider;
 
 @interface CinequestAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
+{
+	NSInteger curTabIndex;
+}
 
 @property (nonatomic, strong) NewsViewController *newsView;
 @property (nonatomic, strong) NSMutableArray *mySchedule;
@@ -67,7 +70,7 @@
 @property (nonatomic, assign) NSInteger deviceIdiom;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
-@property (nonatomic, strong) IBOutlet UITabBarController *tabBarController;
+@property (nonatomic, strong) IBOutlet UITabBarController *tabBar;
 
 - (void) setOffSeason;
 - (void) jumpToScheduler;
