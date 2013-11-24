@@ -357,7 +357,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 				folderSize += [fileAttrib fileSize];
 			}
 			
-			NSLog(@"CacheFolder size: %ld", folderSize);
+			NSLog(@"CacheFolder size: %ld", (unsigned long)folderSize);
 			
 			if(folderSize > CACHEFOLDER_MAXSIZE)
 			{

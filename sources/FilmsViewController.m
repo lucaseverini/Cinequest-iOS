@@ -703,11 +703,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			CGFloat hPos = titleNumLines == 1 ? 28.0 : 50.0;
 			for(Schedule *schedule in schedules)
 			{
-				if(filmIdx > 0)
-				{
-					film = [schedules objectAtIndex:filmIdx];
-				}
-				
 				UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, hPos, 250.0, 20.0)];
 				timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime];
 				timeLabel.font = timeFont;
