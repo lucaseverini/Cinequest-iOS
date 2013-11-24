@@ -7,6 +7,7 @@
 //
 
 @class CinequestAppDelegate;
+@class Schedule;
 
 @interface FilmsViewController : UIViewController < UITableViewDelegate, UITableViewDataSource >
 {
@@ -26,6 +27,8 @@
 	UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
+    EKCalendar *cinequestCalendar;
+    EKEventStore *eventStore;
 }
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
@@ -34,5 +37,8 @@
 
 - (IBAction) switchTitle:(id)sender;
 - (IBAction) reloadData:(id)sender;
+
+- (void) addOrRemoveFilm:(Schedule*)film;
+- (void) calendarButtonTapped:(id)sender event:(id)touchEvent;
 
 @end

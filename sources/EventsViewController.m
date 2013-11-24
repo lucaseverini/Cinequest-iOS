@@ -48,6 +48,10 @@
 	backedUpIndex	= [[NSMutableArray alloc] init];
 	backedUpData	= [[NSMutableDictionary alloc] init];
 
+    titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	venueFont = timeFont;
+
 	if (delegate.isOffSeason)
 	{
 		self.eventsTableView.hidden = YES;
@@ -291,19 +295,21 @@
 		[dateFormatter setDateFormat:@"hh:mm a"];
 		event.startTime = [dateFormatter stringFromDate:date];
 		//Date
-		[dateFormatter setDateFormat:@"EEEE, MMMM d"];
+		[dateFormatter setDateFormat:@"EEE, MMMM d"];
 		NSString *dateString = [dateFormatter stringFromDate:date];
 		event.dateString = dateString;
+        [dateFormatter setDateFormat:@"EEEE, MMMM d"];
+        event.longDateString = [dateFormatter stringFromDate:date];
 		//End Time
 		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 		date = [dateFormatter dateFromString:end];
 		event.endDate = date;
 		[dateFormatter setDateFormat:@"hh:mm a"];
 		event.endTime = [dateFormatter stringFromDate:date];
-		if (![previousDay isEqualToString:dateString]) 
+		if (![previousDay isEqualToString:event.longDateString])
 		{
 			[data setObject:tempArray forKey:previousDay];
-			previousDay = [[NSString alloc] initWithString:dateString];
+			previousDay = [[NSString alloc] initWithString:event.longDateString];
 			[days addObject:previousDay];
 			
 			[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
@@ -329,7 +335,9 @@
 	backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
 	
 	[activityIndicator stopAnimating];
-
+    
+    [delegate populateCalendarEntries];
+    
 	[self.eventsTableView reloadData];
 	self.eventsTableView.hidden = NO;
 	self.eventsTableView.tableHeaderView = nil;
@@ -409,8 +417,7 @@
 	NSString *date = [days objectAtIndex:section];
 	NSMutableArray *events = [data objectForKey:date];
 	Schedule *event = [events objectAtIndex:row];
-	// get title
-	NSString *displayString = [NSString stringWithFormat:@"%@",event.title];
+
     // set text color
 	UIColor *textColor = [UIColor blackColor];
 	
@@ -431,8 +438,9 @@
 	
 	// get checkbox status
 	BOOL checked = event.isSelected;
-	UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"];
-	
+	UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+	NSInteger titleNumLines = 1;
+    
 	UILabel *titleLabel;
 	UILabel *timeLabel;
 	UILabel *venueLabel;
@@ -443,20 +451,23 @@
 	{
 		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		
-		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,2,230,20)];
+		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
+        titleLabel.font = titleFont;
 		[tempCell.contentView addSubview:titleLabel];
 		
-		timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,21,150,20)];
+		timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
 		timeLabel.tag = CELL_TIME_LABEL_TAG;
+        timeLabel.font = timeFont;
 		[tempCell.contentView addSubview:timeLabel];
 		
-		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(210,21,100,20)];
+		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
+        venueLabel.font = venueFont;
 		[tempCell.contentView addSubview:venueLabel];
 		
 		checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		checkButton.frame = CGRectMake(0,0,50,50);
+		checkButton.frame = CGRectMake(11.0, 16.0, 32.0, 32.0);
 		[checkButton setImage:buttonImage forState:UIControlStateNormal];
 		
 		[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
@@ -467,21 +478,52 @@
 	}
 	
 	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
-	titleLabel.text = displayString;
-	titleLabel.textColor = textColor;
-	
-	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-	timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",event.startTime,event.endTime];
-	timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
-	timeLabel.textColor = textColor;
-	
-	venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
-	venueLabel.text = [NSString stringWithFormat:@"Venue: %@",event.venue];
-	venueLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
-	venueLabel.textColor = textColor;
-	
-	checkButton = (UIButton*)[tempCell viewWithTag:CELL_LEFTBUTTON_TAG];
-	[checkButton setImage:buttonImage forState:UIControlStateNormal];
+	CGSize size = [event.title sizeWithFont:titleFont];
+    if(size.width < 256.0)
+    {
+        [titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
+    }
+    else
+    {
+        [titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 42.0)];
+        titleNumLines = 2;
+    }
+    
+    [titleLabel setNumberOfLines:titleNumLines];
+    titleLabel.text = event.title;
+    
+    timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
+    if(titleNumLines == 1)
+    {
+        [timeLabel setFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
+    }
+    else
+    {
+        [timeLabel setFrame:CGRectMake(52.0, 50.0, 250.0, 20.0)];
+    }
+    timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", event.dateString, event.startTime, event.endTime];
+    
+    venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
+    if(titleNumLines == 1)
+    {
+        [venueLabel setFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
+    }
+    else
+    {
+        [venueLabel setFrame:CGRectMake(52.0, 68.0, 250.0, 20.0)];
+    }
+    venueLabel.text = [NSString stringWithFormat:@"Venue: %@",event.venue];
+    
+    checkButton = (UIButton*)[tempCell viewWithTag:CELL_LEFTBUTTON_TAG];
+    if(titleNumLines == 1)
+    {
+        [checkButton setFrame:CGRectMake(11.0, 16.0, 32.0, 32.0)];
+    }
+    else
+    {
+        [checkButton setFrame:CGRectMake(11.0, 28.0, 32.0, 32.0)];
+    }
+    [checkButton setImage:buttonImage forState:UIControlStateNormal];
 		
 	if (textColor == [UIColor blueColor]) {
 		checkButton.userInteractionEnabled = YES;
@@ -519,7 +561,7 @@
 		UIButton *checkBoxButton = (UIButton*)[currentCell viewWithTag:CELL_LEFTBUTTON_TAG];
 		
 		// set button's image
-		UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"];
+        UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"cal_unselected.png"] : [UIImage imageNamed:@"cal_selected.png"];
 		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
 	}
 }
@@ -555,6 +597,26 @@
 
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	NSUInteger section = [indexPath section];
+	NSUInteger row = [indexPath row];
+    
+    NSString *dateString = [days objectAtIndex:section];
+    Schedule *schedule = [[data objectForKey:dateString] objectAtIndex:row];
+    
+    CGSize size = [schedule.title sizeWithFont:titleFont];
+    if(size.width >= 256.0)
+    {
+        return 88.0;
+    }
+    else
+    {
+        return 66.0;
+    }
+}
+
 
 @end
 

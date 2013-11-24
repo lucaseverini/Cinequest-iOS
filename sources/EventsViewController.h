@@ -15,6 +15,9 @@
 	NSMutableArray *backedUpIndex;
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
+    UIFont *titleFont;
+	UIFont *timeFont;
+	UIFont *venueFont;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *eventsTableView;

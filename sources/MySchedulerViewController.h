@@ -25,6 +25,11 @@
 	UIColor *currentColor;			// used to help color code the removed,confirmed,moved state of films (NSXMLPARSER Delegate)
 	NSDate *previousEndDate;		// a pointer to a previous date to compare schedule conflicts
 	UITableViewCell *previousCell;
+    EKEventStore *eventStore;
+    EKCalendar *cinequestCalendar;
+	UIFont *titleFont;
+	UIFont *timeFont;
+	UIFont *venueFont;    
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *scheduleTableView;

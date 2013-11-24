@@ -18,6 +18,7 @@
 
 #define VIEW_BY_DATE	0
 #define VIEW_BY_TITLE	1
+#define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
 
 static NSString *const kDateCellIdentifier = @"DateCell";
 static NSString *const kTitleCellIdentifier = @"TitleCell";
@@ -35,72 +36,47 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
-	NSSet *touches = [touchEvent allTouches];
+    Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+    schedule.isSelected ^= YES;
+    
+    //Call to Appdelegate to Add/Remove from Calendar
+    [delegate addToDeviceCalendar:schedule];
+    [delegate addOrRemoveFilm:schedule];
+    [self syncTableDataWithScheduler];
+    
+    NSLog(@"Schedule:ItemID-ID:%@-%@ \nSchedule Array:%@",schedule.itemID,schedule.ID,mySchedule);
+    UIButton *checkBoxButton = (UIButton*)sender;
+    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+    [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
+}
+
+-(Schedule*)getItemForSender:(id)sender event:(id)touchEvent{
+    NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
 	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
 	NSInteger row = [indexPath row];
 	NSInteger section = [indexPath section];
-	
-	if(indexPath != nil)
+    Schedule *film = nil;
+    
+    if (indexPath != nil)
 	{
-		Schedule *schedule = nil;
-		
 		if(switcher == VIEW_BY_DATE)
 		{
 			NSString *date = [days objectAtIndex:section];
 			NSMutableArray *films = [data objectForKey:date];
-			schedule = [films objectAtIndex:row];
+			film = [films objectAtIndex:row];
 		}
 		else // VIEW_BY_TITLE
 		{
 			NSString *sort = [sorts objectAtIndex:section];
 			NSMutableArray *films = [titlesWithSort objectForKey:sort];
 			Film *film = [films objectAtIndex:row];
-			schedule = [film.schedules objectAtIndex:0];
+			film = [film.schedules objectAtIndex:0];
 		}
-		
-		schedule.isSelected ^= YES;
-		
-		UIButton *checkBoxButton = (UIButton*)sender;
-		UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-	}
-}
-
-- (void) infoButtonTapped:(id)sender event:(id)touchEvent
-{
-	NSSet *touches = [touchEvent allTouches];
-	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
-	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
-	NSInteger section = [indexPath section];
-	NSInteger row = [indexPath row];
-
-	switch(switcher)
-	{
-		case VIEW_BY_DATE:
-		{
-			NSString *date = [days objectAtIndex:section];
-			NSMutableArray *films = [data objectForKey:date];
-			Schedule *schedule = [films objectAtIndex:row];
-			[self showFilmDetails:schedule];
-		}
-			break;
-			
-		case VIEW_BY_TITLE:
-		{
-			NSString *sort = [sorts objectAtIndex:section];
-			NSMutableArray *films = [titlesWithSort objectForKey:sort];
-			Film *film = [films objectAtIndex:row];
-			
-			NSLog(@"%@", film.genre);
-			
-			Schedule *schedule = [film.schedules objectAtIndex:0];
-			[self showFilmDetails:schedule];
-		}
-			break;
-	}
+    }
+    
+    return film;
 }
 
 - (void) launchMaps
@@ -143,85 +119,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Film Detail" andId:schedule.itemID];
 	[[self navigationController] pushViewController:filmDetail animated:YES];
-}
-
-- (void) actionForFilm:(Schedule*)film
-{
-	film.presentInScheduler = !film.isSelected;
-	film.presentInCalendar = !film.isSelected;
-	
-	NSString *choice1 = nil;
-	NSString *choice2 = nil;
-	NSString *choice3 = nil;
-	NSString *choice4 = nil;
-	NSString *choice5 = nil;
-
-	if(film.presentInScheduler)
-	{
-		choice1 = film.presentInCalendar ? @"Remove from My Schedule & Calendar" : @"Remove from My Schedule";
-		choice2 = film.presentInCalendar ? @"Show in Calendar" : @"Add to Calendar";
-		choice3 = @"Show Venue location in Maps";
-		choice4 = @"Film Detail";
-	}
-	else
-	{
-		choice1 = @"Add to My Schedule";
-		choice2 = @"Add to My Schedule and Calendar";
-		choice3 = @"Show in Calendar";
-		choice4 = @"Show Venue location in Maps";
-		choice5 = @"Film Detail";
-	}
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self
-												cancelButtonTitle:@"Cancel"
-												otherButtonTitles:choice1, choice2, choice3, choice4, choice5, nil];
-	
-	objc_setAssociatedObject(alert, kAssociatedScheduleKey, film, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-	
-	[alert show];
-}
-
-- (void) alertView:(UIAlertView*)alert clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	Schedule *film = objc_getAssociatedObject(alert, kAssociatedScheduleKey);
-
-	switch(buttonIndex)
-	{
-		case 1:			// choice1
-			break;
-
-		case 2:			// choice2
-			break;
-
-		case 3:			// choice3
-			if(film.presentInScheduler)
-			{
-				[self launchMaps];
-			}
-			else
-			{
-				// Open calendar
-			}
-			break;
-
-		case 4:			// choice4
-			if(film.presentInScheduler)
-			{
-				[self showFilmDetails:film];
-			}
-			else
-			{
-				[self launchMaps];
-			}
-			break;
-
-		case 5:			// choice5
-			[self showFilmDetails:film];
-			break;
-
-		default:		// Cancel
-			break;
-	}
 }
 
 - (void) addOrRemoveFilm:(Schedule*)film
@@ -293,7 +190,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	delegate = appDelegate;
 	mySchedule = [appDelegate mySchedule];
-	
+	cinequestCalendar = delegate.cinequestCalendar;
+    eventStore = delegate.eventStore;
+    
 	// Initialize data
 	data = [[NSMutableDictionary alloc] init];
 	days = [[NSMutableArray alloc] init];
@@ -331,6 +230,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+    [self.filmsTableView reloadData];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -351,6 +251,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
     [delegate.festival.schedules sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES], nil]];
     NSString *previousDay = @"empty";
 	NSMutableArray *tempArray = [NSMutableArray array];
+    
+    [delegate populateCalendarEntries];
     
 	for (Schedule *schedule in delegate.festival.schedules)
 	{
@@ -552,7 +454,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			}
 			
 			UILabel *titleLabel, *timeLabel, *venueLabel;
-			UIButton *calButton, *infoButton;
+			UIButton *calButton;
 			
 			// Get checkbox status
 			UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
@@ -568,7 +470,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				titleLabel.font = titleFont;
 				[cell.contentView addSubview:titleLabel];
 				
-				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
+				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
 				timeLabel.font = timeFont;
 				[cell.contentView addSubview:timeLabel];
@@ -578,14 +480,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				venueLabel.font = venueFont;
 				[cell.contentView addSubview:venueLabel];
 				
-				infoButton = [UIButton buttonWithType: [appDelegate OSVersion] < 7.0 ? UIButtonTypeInfoDark : UIButtonTypeInfoLight];
-				infoButton.frame = CGRectMake(15.0, 4.0, 24.0, 24.0);
-				[infoButton addTarget:self action:@selector(infoButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
-				infoButton.tag = CELL_RIGHTBUTTON_TAG;
-				[cell.contentView addSubview:infoButton];
-				
 				calButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				calButton.frame = CGRectMake(11.0, 32.0, 32.0, 32.0);
+				calButton.frame = CGRectMake(11.0, 16.0, 32.0, 32.0);
 				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				calButton.tag = CELL_LEFTBUTTON_TAG;
 				[cell.contentView addSubview:calButton];
@@ -628,24 +524,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			}
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
 			
-			infoButton = (UIButton*)[cell viewWithTag:CELL_RIGHTBUTTON_TAG];
-			if(titleNumLines == 1)
-			{
-				[infoButton setFrame:CGRectMake(15.0, 4.0, 24.0, 24.0)];
-			}
-			else
-			{
-				[infoButton setFrame:CGRectMake(15.0, 15.0, 24.0, 24.0)];
-			}
-			
 			calButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
 			if(titleNumLines == 1)
 			{
-				[calButton setFrame:CGRectMake(11.0, 32.0, 32.0, 32.0)];
+				[calButton setFrame:CGRectMake(11.0, 16.0, 32.0, 32.0)];
 			}
 			else
 			{
-				[calButton setFrame:CGRectMake(11.0, 54.0, 32.0, 32.0)];
+				[calButton setFrame:CGRectMake(11.0, 28.0, 32.0, 32.0)];
 			}
 			[calButton setImage:buttonImage forState:UIControlStateNormal];
 		}
@@ -687,19 +573,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			titleLabel.text = film.name;
 			[cell.contentView addSubview:titleLabel];
 			
-			UIButton *infoButton = [UIButton buttonWithType: [appDelegate OSVersion] < 7.0 ? UIButtonTypeInfoDark : UIButtonTypeInfoLight];
-			if(titleNumLines == 1)
-			{
-				[infoButton setFrame:CGRectMake(15.0, 4.0, 24.0, 24.0)];
-			}
-			else
-			{
-				[infoButton setFrame:CGRectMake(15.0, 15.0, 24.0, 24.0)];
-			}
-			[infoButton addTarget:self action:@selector(infoButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
-			infoButton.tag = CELL_RIGHTBUTTON_TAG;
-			[cell.contentView addSubview:infoButton];
-			
 			CGFloat hPos = titleNumLines == 1 ? 28.0 : 50.0;
 			for(Schedule *schedule in schedules)
 			{
@@ -718,7 +591,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				UIButton *calButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				calButton.frame = CGRectMake(11.0, hPos + 4, 32.0, 32.0);
 				calButton.tag = CELL_LEFTBUTTON_TAG + filmIdx;
-				UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+				UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"fav_add.png"] : [UIImage imageNamed:@"fav_remove.png"];
 				[calButton setImage:buttonImage forState:UIControlStateNormal];
 				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				[cell.contentView addSubview:calButton];
@@ -789,7 +662,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			NSString *date = [days objectAtIndex:section];
 			NSMutableArray *films = [data objectForKey:date];
 			Schedule *schedule = [films objectAtIndex:row];
-			[self actionForFilm:schedule];
+			[self showFilmDetails:schedule];
 		}
 			break;
 			
@@ -799,7 +672,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			NSMutableArray *films = [titlesWithSort objectForKey:sort];
 			Film *film = [films objectAtIndex:row];
 			Schedule *schedule = [film.schedules objectAtIndex:0];
-			[self actionForFilm:schedule];
+            [self showFilmDetails:schedule];
 		}
 			break;
 			

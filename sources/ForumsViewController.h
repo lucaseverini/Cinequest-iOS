@@ -15,6 +15,9 @@
 	NSMutableDictionary *backedUpData;
 	NSMutableArray *backedUpDays;
 	NSMutableArray *backedUpIndex;
+    UIFont *titleFont;
+	UIFont *timeFont;
+	UIFont *venueFont;    
 }
 
 @property (nonatomic, strong) NSMutableArray *days;

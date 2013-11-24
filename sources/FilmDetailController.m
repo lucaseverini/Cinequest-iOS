@@ -80,6 +80,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+    [self.detailsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];    
 }
 
 - (void) loadData
@@ -539,23 +540,33 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
-	NSSet *touches = [touchEvent allTouches];
+	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+    schedule.isSelected ^= YES;
+    
+    //Call to Delegate to Add/Remove from Calendar
+    [delegate addToDeviceCalendar:schedule];
+    [delegate addOrRemoveFilm:schedule];
+    
+    NSLog(@"Schedule:ID+ItemID:%@-%@",schedule.ID,schedule.itemID);
+    UIButton *checkBoxButton = (UIButton*)sender;
+    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+    [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
+}
+
+-(Schedule*)getItemForSender:(id)sender event:(id)touchEvent{
+    NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.detailsTableView];
 	NSIndexPath *indexPath = [self.detailsTableView indexPathForRowAtPoint:currentTouchPosition];
 	NSInteger row = [indexPath row];
-	
+	Schedule *schedule = nil;
 	if(indexPath != nil)
 	{
 		NSMutableArray *schedules = [film schedules];
-		Schedule *schedule = [schedules objectAtIndex:row];
-
-		schedule.isSelected ^= YES;
-		
-		UIButton *checkBoxButton = (UIButton*)sender;
-		UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-		[checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-	}
+		schedule = [schedules objectAtIndex:row];
+    }
+    
+    return schedule;
 }
 
 - (void) actionForFilm:(Schedule*)schedule

@@ -20,6 +20,7 @@
 #define NEWS_FEED		@"http://www.cinequest.org/news.php"
 #define MAIN_FEED		@"http://payments.cinequest.org/websales/feed.ashx?guid=70d8e056-fa45-4221-9cc7-b6dc88f62c98&showslist=true"
 #define VENUES			@"http://www.cinequest.org/venuelist.php"
+#define CALENDAR_FILE   @"calendar.plist"
 
 #define CELL_TITLE_LABEL_TAG	1
 #define	CELL_TIME_LABEL_TAG		2
@@ -44,10 +45,11 @@
 #define app [UIApplication sharedApplication]
 
 @class NewsViewController;
-@class Festival;
 @class Reachability;
-@class Festival;
 @class DataProvider;
+
+#import "Schedule.h"
+#import "Festival.h"
 
 @interface CinequestAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, NSXMLParserDelegate> 
 {
@@ -72,6 +74,14 @@
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UITabBarController *tabBar;
 
+//For Calendar Events
+@property (nonatomic, strong) EKEventStore *eventStore;
+@property (nonatomic, strong) EKCalendar *cinequestCalendar;
+@property (nonatomic, strong) NSString *calendarIdentifier;
+@property (nonatomic, strong) NSMutableArray *arrayCalendarItems;
+@property (nonatomic, strong) NSMutableDictionary *dictSavedEventsInCalendar;
+@property (nonatomic, strong) NSMutableArray *arrCalendarIdentifiers;
+
 - (void) setOffSeason;
 - (void) jumpToScheduler;
 - (BOOL) connectedToNetwork;
@@ -79,6 +89,10 @@
 
 - (NSURL*) cachesDirectory;
 - (NSURL*) documentsDirectory;
+
+- (void) addOrRemoveFilm:(Schedule*)film;
+- (void) addToDeviceCalendar:(Schedule*)film;
+- (void) populateCalendarEntries;
 
 @end
 
