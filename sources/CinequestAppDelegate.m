@@ -78,7 +78,7 @@
 
 -(void)applicationDidEnterBackground:(UIApplication *)application{
     NSError *error = nil;
-    NSURL *url = [[self cachesDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
+    NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
     NSLog(@"File URL:%@",url);
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -119,7 +119,7 @@
         self.dictSavedEventsInCalendar = [[NSMutableDictionary alloc] init];
     }
     
-    NSURL *url = [[self cachesDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
+    NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[url path]])
     {
