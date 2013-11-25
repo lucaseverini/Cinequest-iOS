@@ -120,7 +120,7 @@
         self.dictSavedEventsInCalendar = [[NSMutableDictionary alloc] init];
     }
     
-    NSURL *url = [[self cachesDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
+    NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[url path]])
     {

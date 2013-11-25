@@ -44,7 +44,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
     [delegate addOrRemoveFilm:schedule];
     [self syncTableDataWithScheduler];
     
-    NSLog(@"Schedule:ItemID-ID:%@-%@ \nSchedule Array:%@",schedule.itemID,schedule.ID,mySchedule);
+    NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@",schedule.itemID,schedule.ID,mySchedule);
     UIButton *checkBoxButton = (UIButton*)sender;
     UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
     [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
@@ -58,7 +58,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	NSIndexPath *indexPath = [self.filmsTableView indexPathForRowAtPoint:currentTouchPosition];
 	NSInteger row = [indexPath row];
 	NSInteger section = [indexPath section];
-    Schedule *film = nil;
+    Schedule *schedule = nil;
     
     if (indexPath != nil)
 	{
@@ -66,18 +66,19 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		{
 			NSString *date = [days objectAtIndex:section];
 			NSMutableArray *films = [data objectForKey:date];
-			film = [films objectAtIndex:row];
+			schedule = [films objectAtIndex:row];
 		}
 		else // VIEW_BY_TITLE
 		{
+            UIButton *btnSelected = (UIButton*)sender;
 			NSString *sort = [sorts objectAtIndex:section];
 			NSMutableArray *films = [titlesWithSort objectForKey:sort];
 			Film *film = [films objectAtIndex:row];
-			film = [film.schedules objectAtIndex:0];
+			schedule = (Schedule*)[film.schedules objectAtIndex:btnSelected.tag-CELL_LEFTBUTTON_TAG];
 		}
     }
     
-    return film;
+    return schedule;
 }
 
 - (void) launchMaps
@@ -580,7 +581,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				UIButton *calButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				calButton.frame = CGRectMake(11.0, hPos + 4, 32.0, 32.0);
 				calButton.tag = CELL_LEFTBUTTON_TAG + filmIdx;
-				UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"fav_add.png"] : [UIImage imageNamed:@"fav_remove.png"];
+				UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];;
 				[calButton setImage:buttonImage forState:UIControlStateNormal];
 				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				[cell.contentView addSubview:calButton];
