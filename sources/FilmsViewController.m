@@ -44,7 +44,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
     [delegate addOrRemoveFilm:schedule];
     [self syncTableDataWithScheduler];
     
-    NSLog(@"Schedule:ItemID-ID:%@-%@ \nSchedule Array:%@",schedule.itemID,schedule.ID,mySchedule);
+    NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@",schedule.itemID,schedule.ID,mySchedule);
     UIButton *checkBoxButton = (UIButton*)sender;
     UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
     [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
