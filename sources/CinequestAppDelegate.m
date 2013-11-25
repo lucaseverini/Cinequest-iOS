@@ -75,20 +75,40 @@
 	return YES;
 }
 
-- (void) applicationDidEnterBackground:(UIApplication *)application
-{
+-(void)applicationDidEnterBackground:(UIApplication *)application{
+    [self saveCalendarToDocuments];
+}
+
+-(void)applicationDidBecomeActive:(UIApplication *)application{
+    
+    if (!self.dictSavedEventsInCalendar) {
+        self.dictSavedEventsInCalendar = [[NSMutableDictionary alloc] init];
+    }
+    
+    NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:[url path]])
+    {
+        self.dictSavedEventsInCalendar = [NSMutableDictionary dictionaryWithContentsOfURL:url];
+        NSLog(@"Content from Cache:%@",self.dictSavedEventsInCalendar);
+    }
+    else{
+        
+    }
+}
+
+//Saves the Calendar.plist file to Documents Directory to keep track of save items in calendar
+-(void) saveCalendarToDocuments{
     NSError *error = nil;
     NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
-    NSLog(@"File URL:%@",url);
-    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[url path]]) {
         
         NSLog(@"Dictionary is:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
         
         [fileManager removeItemAtURL:url error:&error];
-        BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES]; //was arrCalendarIdentifiers
-        NSLog(@"Dictionary is after update:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
+        BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
+        NSLog(@"Dictionary is after update:%@",[NSMutableDictionary dictionaryWithContentsOfURL:url]);
         
         if (flag) {
             NSLog(@"Success saving file");
@@ -98,7 +118,7 @@
         }
     }
     else{
-        BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES]; //was arrCalendarIdentifiers
+        BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
         if (flag) {
             NSLog(@"Success saving file");
         }
@@ -106,29 +126,6 @@
             NSLog(@"Fail saving file");
         }
         
-    }
-    //    if (![fileManager fileExistsAtPath:[url path]])
-    //    {
-    //
-    //    }
-}
-
-- (void) applicationDidBecomeActive:(UIApplication *)application
-{
-    if (!self.dictSavedEventsInCalendar)
-	{
-        self.dictSavedEventsInCalendar = [[NSMutableDictionary alloc] init];
-    }
-    
-    NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:[url path]])
-    {
-        self.dictSavedEventsInCalendar = [NSMutableDictionary dictionaryWithContentsOfURL:url];
-        NSLog(@"Content from Cache:%@", self.dictSavedEventsInCalendar);
-    }
-    else
-	{
     }
 }
 
@@ -464,6 +461,7 @@
             }
         }
     }
+    [self saveCalendarToDocuments];
 }
 
 - (void) addOrRemoveFilm:(Schedule*)film
