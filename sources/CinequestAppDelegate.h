@@ -87,7 +87,6 @@
 - (BOOL) connectedToNetwork;
 - (void) startReachability:(NSString*)hostName;
 
-- (void) setOffSeason;
 - (void) jumpToScheduler;
 - (void) addOrRemoveFilm:(Schedule*)film;
 - (void) addToDeviceCalendar:(Schedule*)film;
