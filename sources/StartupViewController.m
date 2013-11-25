@@ -55,11 +55,6 @@
 	[super viewWillDisappear: animated];
 }
 
-- (void) viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear: animated];
-}
-
 - (void) viewDidLayoutSubviews
 {
 	if(appDelegate.iPhone4Display)
@@ -89,32 +84,30 @@
 
 	[activityView startAnimating];
 	
-	[appDelegate setMySchedule:[[NSMutableArray alloc] init]];
-	[appDelegate setNewsView:[[NewsViewController alloc] init]];
-	
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     if(![prefs stringForKey:@"CalendarID"])
 	{
         [prefs setObject:@"" forKey:@"CalendarID"];
     }
 	
-	[appDelegate setDataProvider:[[DataProvider alloc] init]];
+	appDelegate.dataProvider = [DataProvider new];
 
-	// Do we need it?
-	if([appDelegate connectedToNetwork])
-	{
-		[appDelegate setOffSeason];
-		// isOffSeason = YES;
-		// NSLog(@"IS OFFSEASON? %@",(isOffSeason) ? @"YES" : @"NO");
-	}
-
-    FestivalParser *festivalParser = [[FestivalParser alloc] init];
-	[appDelegate setFestival:[festivalParser parseFestival]];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+	^{
+		appDelegate.festival = [[FestivalParser new] parseFestival];
+	});
 	
-	// Call To Fetch Venues
-    [NSThread detachNewThreadSelector:@selector(callToFetchVenues) toTarget:appDelegate withObject:nil];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+	^{
+		[appDelegate fetchVenues];
+	});
+	
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+	^{
+		[appDelegate checkEventStoreAccessForCalendar];
+	});
 
-	// Calc the delay to let the splash screen ve visible at least 3 seconds
+	// Calc the delay to leave the splash screen visible for at least 3 seconds
 	CFTimeInterval spentTime = CFAbsoluteTimeGetCurrent() - startTime;
 	int64_t delayTime = spentTime >= 2.0 ? 0.0 : (2.0 - spentTime) * NSEC_PER_SEC;
 	
@@ -123,6 +116,11 @@
 		UIWindow *window = [appDelegate window];
 		[UIView transitionWithView:window duration:0.5 options:UIViewAnimationOptionTransitionCrossDissolve animations:
 		^{
+			while(!appDelegate.festivalParsed || !appDelegate.venuesParsed) // Wait for festival and venues to be parsed completely...
+			{
+				[NSThread sleepForTimeInterval:0.01];
+			}
+			
 			window.rootViewController = [appDelegate tabBar];
 		}
 		completion:nil];

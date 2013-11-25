@@ -70,11 +70,13 @@
 @property (nonatomic, assign) BOOL retinaDisplay;
 @property (nonatomic, assign) BOOL iPhone4Display;
 @property (nonatomic, assign) NSInteger deviceIdiom;
+@property (atomic, assign) BOOL festivalParsed;
+@property (atomic, assign) BOOL venuesParsed;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UITabBarController *tabBar;
 
-//For Calendar Events
+// For Calendar Events
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) EKCalendar *cinequestCalendar;
 @property (nonatomic, strong) NSString *calendarIdentifier;
@@ -82,17 +84,20 @@
 @property (nonatomic, strong) NSMutableDictionary *dictSavedEventsInCalendar;
 @property (nonatomic, strong) NSMutableArray *arrCalendarIdentifiers;
 
-- (void) setOffSeason;
-- (void) jumpToScheduler;
 - (BOOL) connectedToNetwork;
 - (void) startReachability:(NSString*)hostName;
+
+- (void) jumpToScheduler;
+- (void) addOrRemoveFilm:(Schedule*)film;
+- (void) addToDeviceCalendar:(Schedule*)film;
+- (void) populateCalendarEntries;
+- (void) checkEventStoreAccessForCalendar;
+- (void) fetchVenues;
 
 - (NSURL*) cachesDirectory;
 - (NSURL*) documentsDirectory;
 
-- (void) addOrRemoveFilm:(Schedule*)film;
-- (void) addToDeviceCalendar:(Schedule*)film;
-- (void) populateCalendarEntries;
-
 @end
+
+
 

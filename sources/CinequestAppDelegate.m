@@ -7,7 +7,6 @@
 //
 
 #import "CinequestAppDelegate.h"
-#import "NewsViewController.h"
 #import "FestivalParser.h"
 #import "Reachability.h"
 #import "StartupViewController.h"
@@ -15,6 +14,7 @@
 #import "VenueParser.h"
 
 #define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
+
 
 @implementation CinequestAppDelegate
 
@@ -34,7 +34,8 @@
 @synthesize iPhone4Display;
 @synthesize retinaDisplay;
 @synthesize deviceIdiom;
-
+@synthesize festivalParsed;
+@synthesize venuesParsed;
 @synthesize eventStore;
 @synthesize cinequestCalendar;
 @synthesize calendarIdentifier;
@@ -68,8 +69,6 @@
     [self.window makeKeyAndVisible];
 	
 	tabBar.delegate = self;
-    
-    [self checkEventStoreAccessForCalendar];
 	
 	[self startReachability:MAIN_FEED];
 	
@@ -105,7 +104,7 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[url path]]) {
         
-        NSLog(@"Dictionary is:%@",[NSMutableDictionary dictionaryWithContentsOfURL:url]);
+        NSLog(@"Dictionary is:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
         
         [fileManager removeItemAtURL:url error:&error];
         BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
@@ -133,7 +132,7 @@
 - (void) callToFetchVenues
 {
     // Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
-    self.venuesDictionary = [[[VenueParser alloc] init] parseVenues];
+    self.venuesDictionary = [[VenueParser new] parseVenues];
     // Print Venue Dictionary
     // NSLog(@"Venues Dictionary:%@", self.venuesDictionary);
 }
@@ -141,48 +140,6 @@
 - (void) jumpToScheduler
 {
 	tabBar.selectedIndex = 4;
-}
-
-#pragma mark -
-#pragma mark Mode XML parser delegate
-
-- (void) setOffSeason
-{
-	NSData *data = [[self dataProvider] mode];	
-	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-	
-	[parser setDelegate: self];
-	[parser setShouldProcessNamespaces: NO];
-	[parser setShouldReportNamespacePrefixes: NO];
-	[parser setShouldResolveExternalEntities: NO];
-	
-	[parser parse];
-}
-
-- (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
-{
-	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %ld ).", (long)[parseError code]];
-	NSLog(@"Error parsing XML: %@", errorString);
-	
-	UIAlertView * errorAlert = [[UIAlertView alloc] initWithTitle:@"Error loading content" 
-												message:errorString
-												delegate:self
-												cancelButtonTitle:@"OK" 
-												otherButtonTitles:nil];
-	[errorAlert show];
-
-}
-
-- (void) parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
-{
-	if ([string isEqualToString:@"home"])
-	{
-		isOffSeason = NO;
-	}
-	else
-	{
-		isOffSeason = YES;
-	}	
 }
 
 #pragma mark -
@@ -547,7 +504,8 @@
 	}
 }
 
-- (void) populateCalendarEntries{
+- (void) populateCalendarEntries
+{
     if ([mySchedule count] == 0 && [[self.dictSavedEventsInCalendar allKeys] count]>0) {
         for (Schedule *schedule in self.festival.schedules) {
             NSString *stringID = [NSString stringWithFormat:@"%@-%@",schedule.itemID,schedule.ID];
@@ -565,7 +523,6 @@
         }
     }
 }
-
 
 @end
 
