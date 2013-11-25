@@ -7,7 +7,6 @@
 //
 
 #import "CinequestAppDelegate.h"
-#import "NewsViewController.h"
 #import "FestivalParser.h"
 #import "Reachability.h"
 #import "StartupViewController.h"
@@ -15,6 +14,7 @@
 #import "VenueParser.h"
 
 #define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
+
 
 @implementation CinequestAppDelegate
 
@@ -78,8 +78,8 @@
 - (void) applicationDidEnterBackground:(UIApplication *)application
 {
     NSError *error = nil;
-    NSURL *url = [[self cachesDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
-    NSLog(@"File URL:%@", url);
+    NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
+    NSLog(@"File URL:%@",url);
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[url path]]) {
@@ -132,7 +132,6 @@
     }
 }
 
-
 - (void) fetchVenues
 {
     // Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
@@ -144,48 +143,6 @@
 - (void) jumpToScheduler
 {
 	tabBar.selectedIndex = 4;
-}
-
-#pragma mark -
-#pragma mark Mode XML parser delegate
-
-- (void) setOffSeason
-{
-	NSData *data = [[self dataProvider] mode];	
-	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-	
-	[parser setDelegate: self];
-	[parser setShouldProcessNamespaces: NO];
-	[parser setShouldReportNamespacePrefixes: NO];
-	[parser setShouldResolveExternalEntities: NO];
-	
-	[parser parse];
-}
-
-- (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
-{
-	NSString * errorString = [NSString stringWithFormat:@"Unable to get mode (Error code %ld ).", (long)[parseError code]];
-	NSLog(@"Error parsing XML: %@", errorString);
-	
-	UIAlertView * errorAlert = [[UIAlertView alloc] initWithTitle:@"Error loading content" 
-												message:errorString
-												delegate:self
-												cancelButtonTitle:@"OK" 
-												otherButtonTitles:nil];
-	[errorAlert show];
-
-}
-
-- (void) parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
-{
-	if ([string isEqualToString:@"home"])
-	{
-		isOffSeason = NO;
-	}
-	else
-	{
-		isOffSeason = YES;
-	}	
 }
 
 #pragma mark -
@@ -568,7 +525,6 @@
         }
     }
 }
-
 
 @end
 
