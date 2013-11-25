@@ -49,6 +49,10 @@
 	NSLog(@"App folder: %@", NSHomeDirectory());
 #endif // TARGET_IPHONE_SIMULATOR
 		
+    if (!self.mySchedule) {
+        self.mySchedule = [NSMutableArray array];
+    }
+    
 	deviceIdiom = [[UIDevice currentDevice] userInterfaceIdiom];
 	NSLog(@"UI idiom: %ld %@", (long)deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
 	NSLog(@"Device name: %@", [[UIDevice currentDevice] name]);
@@ -506,6 +510,10 @@
 
 - (void) populateCalendarEntries
 {
+    if (!self.mySchedule) {
+        self.mySchedule = [NSMutableArray array];
+    }
+    
     if ([mySchedule count] == 0 && [[self.dictSavedEventsInCalendar allKeys] count]>0) {
         for (Schedule *schedule in self.festival.schedules) {
             NSString *stringID = [NSString stringWithFormat:@"%@-%@",schedule.itemID,schedule.ID];
