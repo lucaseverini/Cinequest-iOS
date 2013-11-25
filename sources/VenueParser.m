@@ -69,7 +69,7 @@
 				venue1.state = [showChild stringValue];
 			}
             else if ([[showChild name] isEqualToString:@"Zip"]) {
-				venue1.zip = [[showChild stringValue] intValue];
+				venue1.zip = [showChild stringValue];
 			}
             else if ([[showChild name] isEqualToString:@"location"]) {
 				venue1.location = [showChild stringValue];
