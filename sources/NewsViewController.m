@@ -92,14 +92,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:nodeIdx];
 		NSString *chilName = [child name];
 		
-		if ([chilName isEqualToString:@"LastUpdated"])
-		{
-			NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-			[dateFormat setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss"];
-			NSDate *date = [dateFormat dateFromString:[child stringValue]];
-			NSLog(@"News feed time-stamp: %@", date);
-		}
-		else if ([chilName isEqualToString:@"ArrayOfNews"])
+		if ([chilName isEqualToString:@"ArrayOfNews"])
 		{
 			NSInteger subNodeCount = [child childCount];
 			for (NSInteger subNodeIdx = 0; subNodeIdx < subNodeCount; subNodeIdx++)

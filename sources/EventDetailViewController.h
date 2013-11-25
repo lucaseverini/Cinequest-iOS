@@ -18,8 +18,8 @@
 	NSURL *dataLink;
 	NSMutableDictionary *dataDictionary;
 	UIButton *postThisButton;
-	BOOL newsDetail;
-	BOOL eventDetail;
+	BOOL showNewsDetail;
+	BOOL showEventDetail;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;

@@ -12,12 +12,13 @@
 #import "Schedule.h"
 #import "DataProvider.h"
 
-static NSString *kGetSessionProxy = nil;
-static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
-static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
+static NSString *kScheduleCellIdentifier = @"ScheduleCell";
+static NSString *kSocialCellIdentifier = @"SocialCell";
+static NSString *kActionsCellIdentifier= @"ActionCell";
 
 #define web_news @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p>%@</p>"
+#define web_paragraph @"<p>%@</p>"
 
 
 @implementation EventDetailViewController
@@ -41,7 +42,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	{
 		self.title = @"Detail";
 
-		newsDetail = YES;
+		showNewsDetail = YES;
 		
 		dataDictionary = [NSMutableDictionary dictionaryWithDictionary:news];
     }
@@ -56,7 +57,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	{
 		self.title = @"Detail";
 		
-		eventDetail = YES;
+		showEventDetail = YES;
 		
 		eventId = eventID;
 		dataDictionary = [[NSMutableDictionary  alloc] init];
@@ -86,11 +87,11 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 	[self.activityIndicator startAnimating];
 
-	if(newsDetail)
+	if(showNewsDetail)
 	{
 		[self performSelectorOnMainThread:@selector(parseNewsData) withObject:nil waitUntilDone:NO];
 	}
-	else
+	else if(showEventDetail)
 	{
 		[self performSelectorOnMainThread:@selector(parseEventData) withObject:nil waitUntilDone:NO];
 	}
@@ -100,8 +101,19 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (void) parseNewsData
 {
-	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[dataDictionary objectForKey:@"image"]];
-	NSString *weba = [NSString stringWithFormat:web_news, [dataDictionary objectForKey:@"name"], cachedImage, [dataDictionary objectForKey:@"description"]];
+	NSString *name = [dataDictionary objectForKey:@"name"];
+	NSString *image = [appDelegate.dataProvider cacheImage:[dataDictionary objectForKey:@"image"]];
+	NSString *description = [dataDictionary objectForKey:@"description"];
+	NSString *info = [[dataDictionary objectForKey:@"info"] lowercaseString];
+	NSString *weba = [NSString stringWithFormat:web_news, name, image, description];
+	if(info.length != 0 && [info hasPrefix:@"http"])
+	{
+		weba = [weba stringByAppendingString:[NSString stringWithFormat:web_paragraph, info]];
+	}
+	else
+	{
+		NSLog(@"Show event %@", info);
+	}
 	weba = [self htmlEntityDecode:weba];
 	
 	[self.webView loadHTMLString:weba baseURL:nil];
@@ -208,6 +220,18 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	self.detailsTableView.hidden = NO;
 }
 
+- (BOOL) webView:(UIWebView *)inWeb shouldStartLoadWithRequest:(NSURLRequest *)inRequest navigationType:(UIWebViewNavigationType)inType
+{
+    if(inType == UIWebViewNavigationTypeLinkClicked)
+	{
+        [app openURL:[inRequest URL]];
+		
+        return NO;
+    }
+	
+    return YES;
+}
+
 #pragma mark -
 #pragma mark Actions
 
@@ -272,51 +296,86 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 3;
+	if(showNewsDetail)
+	{
+		return 2;
+	}
+	else
+	{
+		return 3;
+	}
 }
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	switch (section)
+	if(showNewsDetail)
 	{
-		default:
-			return 1;
-			break;
-			
-		case SCHEDULE_SECTION:
-			return [[dataDictionary objectForKey:@"Schedules"] count];
-			break;
-			
-		case SOCIAL_MEDIA_SECTION:
-			return 1;
-			break;
-			
-		case CALL_N_EMAIL_SECTION:
-			return 2;
-			break;
+		switch (section)
+		{
+			case 0:
+				return 1;
+				break;
+				
+			case 1:
+				return 2;
+				break;
+		}
 	}
+	else
+	{
+		switch (section)
+		{
+			case SCHEDULE_SECTION:
+				return 1; //[[dataDictionary objectForKey:@"Schedules"] count];
+				break;
+				
+			case SOCIAL_MEDIA_SECTION:
+				return 1;
+				break;
+				
+			case CALL_N_EMAIL_SECTION:
+				return 2;
+				break;
+		}
+	}
+	
+	return 1;
 }
 
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
-	NSString *answer = nil;
-	
-	switch(section)
+	if(showNewsDetail)
 	{
-		case SCHEDULE_SECTION:
-			answer = @"Schedules";
-			break;
-			
-		case SOCIAL_MEDIA_SECTION:
-			answer = @"Share to Social Media";
-			break;
-			
-		case CALL_N_EMAIL_SECTION:
-			answer = @"Actions";
-			break;
+		switch(section)
+		{
+			case 0:
+				return  @"Share to Social Media";
+				break;
+				
+			case 1:
+				return  @"Actions";
+				break;
+		}
+	}
+	else
+	{
+		switch(section)
+		{
+			case SCHEDULE_SECTION:
+				return @"Schedules";
+				break;
+				
+			case SOCIAL_MEDIA_SECTION:
+				return  @"Share to Social Media";
+				break;
+				
+			case CALL_N_EMAIL_SECTION:
+				return  @"Actions";
+				break;
+		}
 	}
 	
-    return answer;
+	return nil;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -344,165 +403,125 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *ScheduleCellID		= @"ScheduleCell";
-	static NSString *FacebookIdentifier = @"FBCell";
-	static NSString *ActionsIdentifier	= @"ActCell";
-	
 	NSInteger section = [indexPath section];
+	UITableViewCell *cell = nil;
 	
-	UITableViewCell *cell;
-	switch (section)
+	if(showEventDetail && section == 0)
 	{
-		case SCHEDULE_SECTION:
+		// get row number
+		NSInteger row = [indexPath row];
+		
+		// get all schedules
+		NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
+		Schedule *time = [schedules objectAtIndex:row];
+		
+		NSUInteger i, count = [mySchedule count];
+		
+		for (i = 0; i < count; i++)
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
-			
-			// get row number
-			NSInteger row = [indexPath row];
-			
-			// get all schedules
-			NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
-			Schedule *time = [schedules objectAtIndex:row];
-			
-			UIColor *textColor = [UIColor blackColor];
-			BOOL userInteraction = YES;
-			
-			NSUInteger i, count = [mySchedule count];
-			
-			for (i = 0; i < count; i++)
+			Schedule *obj = [mySchedule objectAtIndex:i];
+			if (obj.ID == time.ID)
 			{
-				Schedule *obj = [mySchedule objectAtIndex:i];
-				if (obj.ID == time.ID)
-				{
-					textColor = [UIColor blueColor];
-					userInteraction = NO;
-					time.isSelected = YES;
-				}
+				time.isSelected = YES;
 			}
-			
-			UILabel *label;
-			UILabel *timeLabel;
-			UILabel *venueLabel;
-			UIButton *checkButton;
-			
-			BOOL checked = time.isSelected;
-				  
-			UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"];
-			if (cell == nil)
-			{
-				// init cell
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ScheduleCell"];
-				cell.accessoryType = UITableViewCellAccessoryNone;
-				
-				label = [[UILabel alloc] initWithFrame:CGRectMake(50,2,230,20)];
-				label.tag = CELL_TITLE_LABEL_TAG;
-				[cell.contentView addSubview:label];
-				
-				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,21,150,20)];
-				timeLabel.tag = CELL_TIME_LABEL_TAG;
-				[cell.contentView addSubview:timeLabel];
-				
-				venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(210,21,100,20)];
-				venueLabel.tag = CELL_VENUE_LABEL_TAG;
-				[cell.contentView addSubview:venueLabel];
-				
-				checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				checkButton.frame = CGRectMake(0,0,50,48);
-				checkButton.userInteractionEnabled = NO;
-				[checkButton setImage:buttonImage forState:UIControlStateNormal];
-				checkButton.backgroundColor = [UIColor clearColor];
-				checkButton.tag = CELL_LEFTBUTTON_TAG;
-				[cell.contentView addSubview:checkButton];
-			}
-			
-			// set the cell's text
-			label = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
-			label.text = [NSString stringWithFormat:@"Date: %@",time.dateString];
-			label.textColor = textColor;
-			label.font = [UIFont systemFontOfSize:14.0f];
-			
-			timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
-			timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",time.startTime,time.endTime];
-			timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
-			timeLabel.textColor = textColor;
-			
-			venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
-			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",time.venue];
-			venueLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
-			venueLabel.textColor = textColor;
-			
-			checkButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-			[checkButton setImage:buttonImage forState:UIControlStateNormal];
-			
-			cell.userInteractionEnabled = userInteraction;
-			
-			break;
 		}
-			
-		case SOCIAL_MEDIA_SECTION:
-		{
-			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
-			if (cell == nil) {
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FacebookIdentifier];
-				cell.selectionStyle = UITableViewCellSelectionStyleNone;
-				
-                UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                [fbButton addTarget:self
-                             action:@selector(pressToShareToFacebook:)
-                   forControlEvents:UIControlEventTouchDown];
-                
-                
-                [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
-                [fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
-                [fbButton setBackgroundColor:[UIColor clearColor]];
-                fbButton.frame = CGRectMake(40, 10, 32, 32);
-                [cell.contentView addSubview:fbButton];
-                
-                UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                [twButton addTarget:self
-                             action:@selector(pressToShareToTwitter:)
-                   forControlEvents:UIControlEventTouchDown];
-                
-                
-                [twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
-                [twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
-                [twButton setBackgroundColor:[UIColor clearColor]];
-                twButton.frame = CGRectMake(92, 10, 32, 32);
-                [cell.contentView addSubview:twButton];
-			}
+		
+		UILabel *label;
+		UILabel *timeLabel;
+		UILabel *venueLabel;
+		UIButton *checkButton;
 
-			break;
-		}
-			
-		case CALL_N_EMAIL_SECTION:
+		UIImage *buttonImage = (time.isSelected) ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"];
+		
+		cell = [tableView dequeueReusableCellWithIdentifier:kScheduleCellIdentifier];
+		if (cell == nil)
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:ActionsIdentifier];
-			if (cell == nil) {
-				
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
-			}
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kScheduleCellIdentifier];
+			cell.accessoryType = UITableViewCellAccessoryNone;
 			
-			switch (indexPath.row)
-			{
-				case 0:
-					cell.textLabel.text = @"Call Cinequest Ticketing Line";
-					break;
-					
-				case 1:
-					cell.textLabel.text = @"Email Event Detail";
-					break;
-					
-				default:
-					break;
-			}
+			label = [[UILabel alloc] initWithFrame:CGRectMake(50,2,230,20)];
+			label.tag = CELL_TITLE_LABEL_TAG;
+			label.font = [UIFont systemFontOfSize:14.0f];
+			[cell.contentView addSubview:label];
+			
+			timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(50,21,150,20)];
+			timeLabel.tag = CELL_TIME_LABEL_TAG;
+			timeLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
+			[cell.contentView addSubview:timeLabel];
+			
+			venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(210,21,100,20)];
+			venueLabel.tag = CELL_VENUE_LABEL_TAG;
+			venueLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
+			[cell.contentView addSubview:venueLabel];
+			
+			checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			checkButton.frame = CGRectMake(0,0,50,48);
+			checkButton.tag = CELL_LEFTBUTTON_TAG;
+			[cell.contentView addSubview:checkButton];
 		}
-			break;
+		
+		label = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
+		label.text = [NSString stringWithFormat:@"Date: %@",time.dateString];
+		
+		timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
+		timeLabel.text = [NSString stringWithFormat:@"Time: %@ - %@",time.startTime,time.endTime];
+		
+		venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
+		venueLabel.text = [NSString stringWithFormat:@"Venue: %@",time.venue];
+		
+		checkButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
+		[checkButton setImage:buttonImage forState:UIControlStateNormal];
+	}
+	else if((showEventDetail && section == 1) || (showNewsDetail && section == 0))
+	{
+		cell = [tableView dequeueReusableCellWithIdentifier:kSocialCellIdentifier];
+		if(cell == nil)
+		{
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kSocialCellIdentifier];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			
-		default:
-			break;
+			UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			[fbButton addTarget:self action:@selector(pressToShareToFacebook:) forControlEvents:UIControlEventTouchDown];
+						
+			[fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
+			[fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
+			fbButton.frame = CGRectMake(40, 10, 32, 32);
+			[cell.contentView addSubview:fbButton];
+			
+			UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			[twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
+			
+			[twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
+			[twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
+			twButton.frame = CGRectMake(92, 10, 32, 32);
+			[cell.contentView addSubview:twButton];
+		}
+	}
+	else if((showEventDetail && section == 2) || (showNewsDetail && section == 1))
+	{
+		cell = [tableView dequeueReusableCellWithIdentifier:kActionsCellIdentifier];
+		if (cell == nil)
+		{
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kActionsCellIdentifier];
+			
+			cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
+		}
+		
+		switch (indexPath.row)
+		{
+			case 0:
+				cell.textLabel.text = @"Call Cinequest Ticketing Line";
+				break;
+				
+			case 1:
+				cell.textLabel.text = @"Email Event Detail";
+				break;
+				
+			default:
+				break;
+		}
 	}
 	
-	cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
     return cell;
 }
 
@@ -514,7 +533,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 	NSInteger section = [indexPath section];
 	NSInteger row = [indexPath row];
 	
-	if (section == SCHEDULE_SECTION)
+	if(showEventDetail && section == 0)
 	{
 		UITableViewCell *oldCell = [tableView cellForRowAtIndexPath:indexPath];
 		
@@ -534,8 +553,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 		
 		[tableView deselectRowAtIndexPath:indexPath animated:NO];
 	}
-	
-	if (section == CALL_N_EMAIL_SECTION)
+	else if ((showEventDetail && section == 2) || (showNewsDetail && section == 1))
 	{
 		switch (row)
 		{
@@ -566,6 +584,8 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 			default:
 				break;
 		}
+		
+		[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	}
 }
 
@@ -654,7 +674,7 @@ static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 #pragma mark -
 #pragma mark Decode NSString for HTML
 
--(NSString *) htmlEntityDecode:(NSString *)string
+- (NSString *) htmlEntityDecode:(NSString *)string
 {
 	// string = [string stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
 	// string = [string stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];

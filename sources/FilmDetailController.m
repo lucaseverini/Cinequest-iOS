@@ -16,10 +16,8 @@
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
-static NSString *kGetSessionProxy = nil;
-static NSString *kApiKey	= @"d944f2ee4f658052fd27137c0b9ff276";
-static NSString *kApiSecret = @"e4070331e81e43de67c009c8f7ace326";
 static char *const kAssociatedScheduleKey = "Schedule";
+
 
 @implementation FilmDetailController
 
