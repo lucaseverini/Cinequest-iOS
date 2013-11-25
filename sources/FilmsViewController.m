@@ -238,7 +238,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 #pragma mark - Private Methods
 
 - (void) prepareData
-{	
+{
 	// FILMS BY TIME
     [delegate.festival.schedules sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES], nil]];
     NSString *previousDay = @"empty";

@@ -89,54 +89,54 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 	NSString *weba = [NSString stringWithFormat:web, [film name], cachedImage, [film description]];
 
-    if (film.genre != nil)
+    if (film.genre != nil && ![film.genre isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Genre: %@<br/>",film.genre];
+        weba = [weba stringByAppendingFormat:@"<b>Genre</b>: %@<br/>",film.genre];
 	}
 	
-    if (film.director != nil)
+    if (film.director != nil && ![film.genre isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.director];
+        weba = [weba stringByAppendingFormat:@"<b>Director</b>: %@<br/>",film.director];
 	}
 	
-    if (film.producer != nil)
+    if (film.producer != nil && ![film.producer isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Producer: %@<br/>",film.producer];
+        weba = [weba stringByAppendingFormat:@"<b>Producer</b>: %@<br/>",film.producer];
 	}
 	
-    if (film.writer != nil)
+    if (film.writer != nil && ![film.writer isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Writer: %@<br/>",film.writer];
+        weba = [weba stringByAppendingFormat:@"<b>Writer</b>: %@<br/>",film.writer];
 	}
 	
-    if (film.cinematographer != nil)
+    if (film.cinematographer != nil && ![film.cinematographer isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Cinematographer: %@<br/>",film.cinematographer];
+        weba = [weba stringByAppendingFormat:@"<b>Cinematographer</b>: %@<br/>",film.cinematographer];
 	}
 	
-    if (film.editor != nil)
+    if (film.editor != nil && ![film.editor isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Editor: %@<br/>",film.editor];
+        weba = [weba stringByAppendingFormat:@"<b>Editor</b>: %@<br/>",film.editor];
 	}
 	
-    if (film.cast != nil)
+    if (film.cast != nil && ![film.cast isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Cast: %@<br/>",film.cast];
+        weba = [weba stringByAppendingFormat:@"<b>Cast</b>: %@<br/>",film.cast];
 	}
 	
-    if (film.country != nil)
+    if (film.country != nil && ![film.country isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Country: %@<br/>",film.country];
+        weba = [weba stringByAppendingFormat:@"<b>Country</b>: %@<br/>",film.country];
 	}
 	
-    if (film.language != nil)
+    if (film.language != nil && ![film.language isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Director: %@<br/>",film.language];
+        weba = [weba stringByAppendingFormat:@"<b>Language</b>: %@<br/>",film.language];
 	}
 	
-    if (film.filmInfo != nil)
+    if (film.filmInfo != nil && ![film.filmInfo isEqualToString:@""])
 	{
-        weba = [weba stringByAppendingFormat:@"Film Info: %@<br/>",film.filmInfo];
+        weba = [weba stringByAppendingFormat:@"<b>Film Info</b>: %@<br/>",film.filmInfo];
 	}
 
 	[webView loadHTMLString:weba baseURL:nil];
@@ -550,7 +550,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
 	if(schedule != nil)
 	{
-		[self launchMapsWithVenue:schedule.venue];
+		[self launchMapsWithVenue:schedule.venueItem];
 	}
 	else
 	{
@@ -623,17 +623,17 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[alert show];
 }
 
-- (void) launchMapsWithVenue:(NSString*)venueName
+- (void) launchMapsWithVenue:(Venue*)venueName
 {
 	// Please may someone who knows about venues solve this?
 	// We need to find the venue using the venue name contained in the schedule (or whatever other method that works...)
 	// =================================================================================================================
 	NSDictionary *venues = appDelegate.venuesDictionary;
 	// For now takes always the same venue
-	Venue *venue = [venues objectForKey:@"200"];
-	
+	Venue *venue = [venues objectForKey:venueName.ID];
+	NSString *nameOfVenue = [[venue.name componentsSeparatedByString:@"-"] firstObject];
 	// Set location to be searched
-	NSString *location = [NSString stringWithFormat:@"%@ %@, %@, %@ %@", venue.address1, venue.address2, venue.city, venue.state, venue.zip];
+	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@",nameOfVenue, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
 		
 	CLGeocoder *geocoder = [[CLGeocoder alloc] init];
 	[geocoder geocodeAddressString:location completionHandler:

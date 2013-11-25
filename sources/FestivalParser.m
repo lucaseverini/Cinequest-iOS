@@ -254,6 +254,9 @@
     schedule.endTime = [dateFormatter stringFromDate:date];
 
     schedule.venue = [self venueAbbr:showing.venue.name];
+    
+    schedule.venueItem = [showing venue];
+    
     return schedule;
 }
 

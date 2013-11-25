@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
+#import "Venue.h"
+
 @interface Schedule : NSObject
 
 @property (nonatomic, strong) NSString *ID;
@@ -27,6 +29,7 @@
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) BOOL presentInScheduler;
 @property (nonatomic, assign) BOOL presentInCalendar;
+@property (nonatomic, strong) Venue *venueItem;
 
 /* From the old Schedule.h
  

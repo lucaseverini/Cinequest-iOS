@@ -28,4 +28,16 @@
 @synthesize presentInCalendar;
 @synthesize isSelected;
 
+-(id)init{
+    self = [super init];
+	if(self != nil)
+	{
+        if (!self.venueItem) {
+            self.venueItem = [[Venue alloc] init];
+        }
+    }
+	
+    return self;
+}
+
 @end

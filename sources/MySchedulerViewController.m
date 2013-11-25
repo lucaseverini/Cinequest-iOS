@@ -19,13 +19,13 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 
 @interface MySchedulerViewController ()
-
+/*
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) EKCalendar *defaultCalendar;
 @property (nonatomic, strong) EKCalendar *cinequestCalendar;
 @property (nonatomic, copy) NSString *calendarIdentifier;
 @property (nonatomic, strong) NSMutableArray *arrCalendarItems;
-
+*/
 @end
 
 @implementation MySchedulerViewController
@@ -242,6 +242,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	return returnString;
 }
 
+// Below Method Commented for now
+/*
 - (void) checkAndCreateCalendar
 {
     if (!_arrCalendarItems)
@@ -322,7 +324,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
         [self reloadCalendarItems];
     }
 }
-
+*/
 - (void) reloadCalendarItems
 {
     [self.scheduleTableView reloadData];
@@ -363,9 +365,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
 	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];		
 	Schedule *film = [rowsData objectAtIndex:indexPath.row];
-
-	CGFloat labelFontSize = [UIFont labelFontSize];
-	CGFloat fontSize = [UIFont systemFontSize];
 
 	UILabel *titleLabel;
 	UILabel *timeLabel;
@@ -429,12 +428,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-	// Just for testing
-	NSInteger section = [indexPath section];
-	NSInteger row = [indexPath row];
-	
-	[self launchCalendar];
-	
+//	[self launchCalendar];	
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
