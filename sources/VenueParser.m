@@ -79,6 +79,8 @@
         [self.venueDictionary setObject:venue1 forKey:venue1.ID];
 	}
     
+	appDelegate.venuesParsed = YES;
+
     return venueDictionary;
 }
 

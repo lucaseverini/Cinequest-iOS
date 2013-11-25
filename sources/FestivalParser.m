@@ -37,6 +37,7 @@
 - (Festival*) parseFestival
 {	
     [self parseShows];
+	
     Festival *festival = [[Festival alloc] init];
     NSMutableDictionary *shortFilms = [[NSMutableDictionary alloc] init];
 
@@ -93,6 +94,9 @@
         
         
     }
+	
+	appDelegate.festivalParsed = YES;
+	
     return festival;
 }
 

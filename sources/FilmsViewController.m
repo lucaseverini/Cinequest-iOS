@@ -50,7 +50,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
     [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
 }
 
--(Schedule*)getItemForSender:(id)sender event:(id)touchEvent{
+- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
+{
     NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.filmsTableView];
@@ -233,20 +234,10 @@ static char *const kAssociatedScheduleKey = "Schedule";
     [self.filmsTableView reloadData];
 }
 
-- (void) viewDidAppear:(BOOL)animated
-{
-	[super viewDidAppear:animated];
-}
-
-- (void) didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
 #pragma mark - Private Methods
 
 - (void) prepareData
-{
+{	
 	// FILMS BY TIME
     [delegate.festival.schedules sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES], nil]];
     NSString *previousDay = @"empty";
@@ -256,8 +247,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
     
 	for (Schedule *schedule in delegate.festival.schedules)
 	{
-		//[films addObject:film];
-		
 		if (![previousDay isEqualToString:schedule.longDateString])
 		{
 			[data setObject:tempArray forKey:previousDay];

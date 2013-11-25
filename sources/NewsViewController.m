@@ -90,12 +90,16 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	for (NSInteger nodeIdx = 0; nodeIdx < nodeCount; nodeIdx++)
 	{
 		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:nodeIdx];
-
-		if ([[child name] isEqualToString:@"LastUpdated"])
+		NSString *chilName = [child name];
+		
+		if ([chilName isEqualToString:@"LastUpdated"])
 		{
-			// Extract timestamp
+			NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+			[dateFormat setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss"];
+			NSDate *date = [dateFormat dateFromString:[child stringValue]];
+			NSLog(@"News feed time-stamp: %@", date);
 		}
-		else if ([[child name] isEqualToString:@"ArrayOfNews"])
+		else if ([chilName isEqualToString:@"ArrayOfNews"])
 		{
 			NSInteger subNodeCount = [child childCount];
 			for (NSInteger subNodeIdx = 0; subNodeIdx < subNodeCount; subNodeIdx++)
@@ -108,35 +112,39 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 				NSString *info = @"";
 							
 				NSInteger subNode2Count = [newsNode childCount];
-				for (NSInteger subNodeIdx = 0; subNodeIdx < subNode2Count; subNodeIdx++)
+				if(subNode2Count != 0)
 				{
-					DDXMLElement *newsSubNode = (DDXMLElement*)[newsNode childAtIndex:subNodeIdx];
-					
-					if ([[newsSubNode name] isEqualToString:@"Name"])
+					for (NSInteger subNodeIdx = 0; subNodeIdx < subNode2Count; subNodeIdx++)
 					{
-						name = [newsSubNode stringValue];
+						DDXMLElement *newsSubNode = (DDXMLElement*)[newsNode childAtIndex:subNodeIdx];
+						NSString *subNodename = [newsSubNode name];
+						
+						if ([subNodename isEqualToString:@"Name"])
+						{
+							name = [newsSubNode stringValue];
+						}
+						else if ([subNodename isEqualToString:@"ShortDescription"])
+						{
+							description = [newsSubNode stringValue];
+						}
+						else if ([subNodename isEqualToString:@"EventImage"])
+						{
+							imageUrl = [newsSubNode stringValue];
+						}
+						else if ([subNodename isEqualToString:@"InfoLink"])
+						{
+							info = [newsSubNode stringValue];
+						}
 					}
-					else if ([[newsSubNode name] isEqualToString:@"ShortDescription"])
-					{
-						description = [newsSubNode stringValue];
-					}
-					else if ([[newsSubNode name] isEqualToString:@"EventImage"])
-					{
-						imageUrl = [newsSubNode stringValue];
-					}
-					else if ([[newsSubNode name] isEqualToString:@"InfoLink"])
-					{
-						info = [newsSubNode stringValue];
-					}
-				}
-			
-				NSMutableDictionary *newsItem = [NSMutableDictionary new];
-				[newsItem setObject:name forKey:@"name"];
-				[newsItem setObject:description forKey:@"description"];
-				[newsItem setObject:imageUrl forKey:@"image"];
-				[newsItem setObject:info forKey:@"info"];
 				
-				[news addObject:newsItem];
+					NSMutableDictionary *newsItem = [NSMutableDictionary new];
+					[newsItem setObject:name forKey:@"name"];
+					[newsItem setObject:description forKey:@"description"];
+					[newsItem setObject:imageUrl forKey:@"image"];
+					[newsItem setObject:info forKey:@"info"];
+					
+					[news addObject:newsItem];
+				}
 			}
 		}
 	}
@@ -194,7 +202,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	NSUInteger row = [indexPath row];
 	NSMutableDictionary *newsData = [news objectAtIndex:row];
 
-	NSString *eventId = [newsData objectForKey:@"link"];
 	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithNews:newsData];
 	[self.navigationController pushViewController:eventDetail animated:YES];
 	

@@ -34,7 +34,8 @@
 @synthesize iPhone4Display;
 @synthesize retinaDisplay;
 @synthesize deviceIdiom;
-
+@synthesize festivalParsed;
+@synthesize venuesParsed;
 @synthesize eventStore;
 @synthesize cinequestCalendar;
 @synthesize calendarIdentifier;
@@ -68,27 +69,26 @@
     [self.window makeKeyAndVisible];
 	
 	tabBar.delegate = self;
-    
-    [self checkEventStoreAccessForCalendar];
 	
 	[self startReachability:MAIN_FEED];
 	
 	return YES;
 }
 
--(void)applicationDidEnterBackground:(UIApplication *)application{
+- (void) applicationDidEnterBackground:(UIApplication *)application
+{
     NSError *error = nil;
     NSURL *url = [[self cachesDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
-    NSLog(@"File URL:%@",url);
+    NSLog(@"File URL:%@", url);
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[url path]]) {
         
-        NSLog(@"Dictionary is:%@",[NSMutableDictionary dictionaryWithContentsOfURL:url]);
+        NSLog(@"Dictionary is:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
         
         [fileManager removeItemAtURL:url error:&error];
         BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES]; //was arrCalendarIdentifiers
-        NSLog(@"Dictionary is after update:%@",[NSMutableDictionary dictionaryWithContentsOfURL:url]);
+        NSLog(@"Dictionary is after update:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
         
         if (flag) {
             NSLog(@"Success saving file");
@@ -113,9 +113,10 @@
     //    }
 }
 
--(void)applicationDidBecomeActive:(UIApplication *)application{
-    
-    if (!self.dictSavedEventsInCalendar) {
+- (void) applicationDidBecomeActive:(UIApplication *)application
+{
+    if (!self.dictSavedEventsInCalendar)
+	{
         self.dictSavedEventsInCalendar = [[NSMutableDictionary alloc] init];
     }
     
@@ -124,18 +125,18 @@
     if ([fileManager fileExistsAtPath:[url path]])
     {
         self.dictSavedEventsInCalendar = [NSMutableDictionary dictionaryWithContentsOfURL:url];
-        NSLog(@"Content from Cache:%@",self.dictSavedEventsInCalendar);
+        NSLog(@"Content from Cache:%@", self.dictSavedEventsInCalendar);
     }
-    else{
-        
+    else
+	{
     }
 }
 
 
-- (void) callToFetchVenues
+- (void) fetchVenues
 {
     // Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
-    self.venuesDictionary = [[[VenueParser alloc] init] parseVenues];
+    self.venuesDictionary = [[VenueParser new] parseVenues];
     // Print Venue Dictionary
     // NSLog(@"Venues Dictionary:%@", self.venuesDictionary);
 }
@@ -548,7 +549,8 @@
 	}
 }
 
-- (void) populateCalendarEntries{
+- (void) populateCalendarEntries
+{
     if ([mySchedule count] == 0 && [[self.dictSavedEventsInCalendar allKeys] count]>0) {
         for (Schedule *schedule in self.festival.schedules) {
             NSString *stringID = [NSString stringWithFormat:@"%@-%@",schedule.itemID,schedule.ID];
