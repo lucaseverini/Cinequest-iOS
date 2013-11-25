@@ -627,11 +627,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	// Please may someone who knows about venues solve this?
 	// We need to find the venue using the venue name contained in the schedule (or whatever other method that works...)
+	// =================================================================================================================
 	NSDictionary *venues = appDelegate.venuesDictionary;
 	// For now takes always the same venue
 	Venue *venue = [venues objectForKey:@"200"];
 	
-	// Set location
+	// Set location to be searched
 	NSString *location = [NSString stringWithFormat:@"%@ %@, %@, %@ %@", venue.address1, venue.address2, venue.city, venue.state, venue.zip];
 		
 	CLGeocoder *geocoder = [[CLGeocoder alloc] init];
