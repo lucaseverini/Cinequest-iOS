@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSString *address2;
 @property (strong, nonatomic) NSString *city;
 @property (strong, nonatomic) NSString *state;
-@property (nonatomic) int zip;
+@property (assign, nonatomic) NSInteger zip;
 @property (strong, nonatomic) NSString *location;
 
 @end

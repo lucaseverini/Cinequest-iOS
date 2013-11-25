@@ -22,6 +22,7 @@
 	NSMutableArray *mySchedule;
 	UIFont *timeFont;
 	UIFont *venueFont;
+	UIFont *actionFont;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;

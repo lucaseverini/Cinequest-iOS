@@ -56,6 +56,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	self.detailsTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
 
+	actionFont = [UIFont systemFontOfSize:16.0f];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
 
@@ -259,10 +260,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				}
 			}
 			
-			UILabel *timeLabel;
-			UILabel *venueLabel;
-			UIButton *calButton;
-
+			UILabel *timeLabel = nil;
+			UILabel *venueLabel = nil;
+			UIButton *calButton = nil;
+			UIButton *mapsButton = nil;
+			
 			UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
 
 			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
@@ -283,9 +285,16 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				
 				calButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				calButton.frame = CGRectMake(11.0, 5.0, 32.0, 32.0);
-				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				calButton.tag = CELL_LEFTBUTTON_TAG;
+				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				[cell.contentView addSubview:calButton];
+
+				mapsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				mapsButton.frame = CGRectMake(274.0, 5.0, 32.0, 32.0);
+				mapsButton.tag = CELL_RIGHTBUTTON_TAG;
+				[mapsButton setImage:[UIImage imageNamed:@"maps.png"] forState:UIControlStateNormal];
+				[mapsButton addTarget:self action:@selector(mapsButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+				[cell.contentView addSubview:mapsButton];
 			}
 			
 			timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
@@ -309,23 +318,20 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
                 UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                fbButton.frame = CGRectMake(40, 10, 32, 32);
                 [fbButton addTarget:self action:@selector(pressToShareToFacebook:) forControlEvents:UIControlEventTouchDown];
-                
                 [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
                 [fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
-                [fbButton setBackgroundColor:[UIColor clearColor]];
-                fbButton.frame = CGRectMake(40, 10, 32, 32);
                 [cell.contentView addSubview:fbButton];
                 
                 UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                [twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
-                
+				twButton.frame = CGRectMake(92, 10, 32, 32);
+				[twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
                 [twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
                 [twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
-                [twButton setBackgroundColor:[UIColor clearColor]];
-                twButton.frame = CGRectMake(92, 10, 32, 32);
                 [cell.contentView addSubview:twButton];
             }
+			
 			break;
 		}
 			
@@ -335,6 +341,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			if (cell == nil)
 			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
+				
+				cell.textLabel.font = actionFont;
 			}
 			
 			switch (indexPath.row)
@@ -356,8 +364,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		default:
 			break;
 	}
-	
-	cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
 	
     return cell;
 }
@@ -419,6 +425,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+/*
 	if(alertView.tag == 1)
 	{
 		[[self navigationController] popToRootViewControllerAnimated:YES];
@@ -469,6 +476,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	NSIndexPath *tableSelection = [self.detailsTableView indexPathForSelectedRow];
     [self.detailsTableView deselectRowAtIndexPath:tableSelection animated:YES];
+*/
 }
 
 #pragma mark -
@@ -536,6 +544,19 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
 }
 
+- (void) mapsButtonTapped:(id)sender event:(id)touchEvent
+{
+	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+	if(schedule != nil)
+	{
+		[self launchMapsWithVenue:schedule.venue];
+	}
+	else
+	{
+		NSLog(@"Schedule is nil!!");
+	}
+}
+
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
@@ -601,13 +622,16 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[alert show];
 }
 
-- (void) launchMaps
+- (void) launchMapsWithVenue:(NSString*)venue
 {
+	NSDictionary *venues = appDelegate.venuesDictionary;
+	// http://maps.google.com/maps?q=Camera+12+Cinemas,201+S+2nd+St,+San+Jose,+CA+95113
+	
 	// Create an MKMapItem to pass to the Maps app
 	CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(16.775, -3.009);
 	MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate addressDictionary:nil];
 	MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
-	[mapItem setName:@"Cinequest - Venue C12"];
+	[mapItem setName:venue];
 	
 	// Pass the map item to the Maps app
 	[mapItem openInMapsWithLaunchOptions:nil];

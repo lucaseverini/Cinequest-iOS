@@ -80,6 +80,8 @@
 		81D67061183E19D8007E9B99 /* iphone_icon_120.png in Resources */ = {isa = PBXBuildFile; fileRef = 81D6705A183E19D8007E9B99 /* iphone_icon_120.png */; };
 		81D67062183E19D8007E9B99 /* iphone_icon_512.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 81D6705B183E19D8007E9B99 /* iphone_icon_512.jpg */; };
 		81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC251829773C005A6897 /* FestivalParser.m */; };
+		81E632AF184321CC0082F4C5 /* maps.png in Resources */ = {isa = PBXBuildFile; fileRef = 81E632AE184321CC0082F4C5 /* maps.png */; };
+		81E632B11843234A0082F4C5 /* maps@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81E632B01843234A0082F4C5 /* maps@2x.png */; };
 		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
 		935D58D4183CE0E300BE904F /* VenueParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 935D58D3183CE0E300BE904F /* VenueParser.m */; };
 		935D58D6183CE26000BE904F /* News@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 935D58D5183CE26000BE904F /* News@2x.png */; };
@@ -223,6 +225,8 @@
 		81D67059183E19D8007E9B99 /* iphone_icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_icon_114.png; path = images/iphone_icon_114.png; sourceTree = SOURCE_ROOT; };
 		81D6705A183E19D8007E9B99 /* iphone_icon_120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_icon_120.png; path = images/iphone_icon_120.png; sourceTree = SOURCE_ROOT; };
 		81D6705B183E19D8007E9B99 /* iphone_icon_512.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = iphone_icon_512.jpg; path = images/iphone_icon_512.jpg; sourceTree = SOURCE_ROOT; };
+		81E632AE184321CC0082F4C5 /* maps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = maps.png; path = images/maps.png; sourceTree = SOURCE_ROOT; };
+		81E632B01843234A0082F4C5 /* maps@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "maps@2x.png"; path = "images/maps@2x.png"; sourceTree = SOURCE_ROOT; };
 		81FBC131182DA37900C01783 /* DataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataProvider.h; path = sources/DataProvider.h; sourceTree = SOURCE_ROOT; };
 		81FBC132182DA37900C01783 /* DataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataProvider.m; path = sources/DataProvider.m; sourceTree = SOURCE_ROOT; };
 		935D58D2183CE0E300BE904F /* VenueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VenueParser.h; path = sources/VenueParser.h; sourceTree = SOURCE_ROOT; };
@@ -438,6 +442,8 @@
 			children = (
 				813CB475183E1FAF00974776 /* Images.xcassets */,
 				424040BC1831E290003C7346 /* Social Media Buttons */,
+				81E632AE184321CC0082F4C5 /* maps.png */,
+				81E632B01843234A0082F4C5 /* maps@2x.png */,
 				81B32C90183C2AF9006D2D78 /* Default-568h@2x.png */,
 				93E4E0A0182BB1A200515A84 /* cal_selected.png */,
 				93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */,
@@ -685,6 +691,7 @@
 				424040C61831E2A6003C7346 /* google-plus.png in Resources */,
 				93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */,
 				8169B7DF183C670F00A63A34 /* FacebookIcon.png in Resources */,
+				81E632B11843234A0082F4C5 /* maps@2x.png in Resources */,
 				935D58D6183CE26000BE904F /* News@2x.png in Resources */,
 				81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */,
 				81C8B3E117EBAC2C00033D4F /* unchecked.png in Resources */,
@@ -693,6 +700,7 @@
 				81B12C65182B759E000D5200 /* EventDetailViewController.xib in Resources */,
 				81D67060183E19D8007E9B99 /* iphone_icon_114.png in Resources */,
 				424040C71831E2A6003C7346 /* twitter-pressed.png in Resources */,
+				81E632AF184321CC0082F4C5 /* maps.png in Resources */,
 				81B12C66182B759E000D5200 /* EventsViewController.xib in Resources */,
 				81B12C67182B759E000D5200 /* FilmDetailController.xib in Resources */,
 				81B12C68182B759E000D5200 /* FilmsViewController.xib in Resources */,
