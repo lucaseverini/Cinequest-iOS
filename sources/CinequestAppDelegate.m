@@ -129,7 +129,7 @@
     }
 }
 
-- (void) callToFetchVenues
+- (void) fetchVenues
 {
     // Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
     self.venuesDictionary = [[VenueParser new] parseVenues];
