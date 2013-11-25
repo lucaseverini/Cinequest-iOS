@@ -302,12 +302,15 @@
 
 - (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
-    CATransition *animation = [CATransition animation];
-    [animation setType:kCATransitionReveal];
-    [animation setSubtype:curTabIndex > [tabBarController selectedIndex] ? kCATransitionFromLeft : kCATransitionFromRight];
-    [animation setDuration:0.5];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-    [self.window.layer addAnimation:animation forKey:nil];
+	if(curTabIndex != [tabBarController selectedIndex])
+	{
+		CATransition *animation = [CATransition animation];
+		[animation setType:kCATransitionReveal];
+		[animation setSubtype:curTabIndex > [tabBarController selectedIndex] ? kCATransitionFromLeft : kCATransitionFromRight];
+		[animation setDuration:0.5];
+		[animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+		[self.window.layer addAnimation:animation forKey:nil];
+	}
 }
 
 #pragma mark -
