@@ -21,6 +21,11 @@
 @synthesize lastChanged;
 @synthesize events;
 
+@synthesize sortedSchedules;
+@synthesize sortedFilms;
+@synthesize sortedEvents;
+@synthesize sortedForums;
+
 - (id) init
 {
 	self = [super init];
