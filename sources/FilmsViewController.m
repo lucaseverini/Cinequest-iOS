@@ -213,43 +213,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	self.filmsTableView.tableHeaderView = filmSearchBar;
 	self.filmsTableView.tableFooterView = nil;
     
+    filmSearchBar.delegate = self;
+    
+    [self setSearchKeyAsDone];
+    
     [switchTitle setTitle:@"Date" forSegmentAtIndex:0];
     [switchTitle setTitle:@"A-Z" forSegmentAtIndex:1];
  
 	[self loadData:nil];
-}
-
-- (void) test
-{
- 	curFilms = delegate.festival.films;
- 	curSchedules = delegate.festival.schedules;
-	
-	[activity startAnimating];
-
-	if(NO)
-	{
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@", @"Ginger"];
-		NSMutableArray *foundFilms = [NSMutableArray arrayWithArray:[curFilms filteredArrayUsingPredicate:predicate]];
-		
-		NSMutableArray *filmsToRemove = [NSMutableArray arrayWithArray:curFilms];
-		[filmsToRemove removeObjectsInArray:foundFilms];
-		
-		for(Film *film in filmsToRemove)
-		{
-			[curSchedules removeObjectsInArray:film.schedules];
-		}
-		
-		curFilms = foundFilms;
-	}
-	
-	// Start parsing data
-	[data removeAllObjects];
-	[days removeAllObjects];
-	[index removeAllObjects];
-	[titlesWithSort removeAllObjects];
-	[sorts removeAllObjects];
-	
-	[self prepareData];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -716,7 +687,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		NSMutableArray *foundFilms = [NSMutableArray array];
 		if(searchText.length != 0)
 		{
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@", searchText];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name beginswith[c] %@", searchText];
 			foundFilms = [NSMutableArray arrayWithArray:[curFilms filteredArrayUsingPredicate:predicate]];
 		}
 		
@@ -767,6 +738,30 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	// Return YES to cause the search result table view to be reloaded.
 	
     return YES;
+}
+
+- (void)setSearchKeyAsDone
+{
+    for (UIView *subview in self.filmSearchBar.subviews)
+    {
+        for (UIView *subSubview in subview.subviews)
+        {
+            if ([subSubview conformsToProtocol:@protocol(UITextInputTraits)])
+            {
+                UITextField *textField = (UITextField *)subSubview;
+                [textField setKeyboardAppearance: UIKeyboardAppearanceAlert];
+                textField.returnKeyType = UIReturnKeyDone;
+                break;
+            }
+        }
+    }
+    
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
 }
 
 @end
