@@ -23,7 +23,7 @@
 
 @synthesize sortedSchedules;
 @synthesize sortedFilms;
-@synthesize sortedEvents;
+@synthesize sortedSpecials;
 @synthesize sortedForums;
 
 - (id) init
@@ -37,6 +37,11 @@
 		venueLocations = [[NSMutableArray alloc] init];
 		lastChanged = @"";
 		events = [[NSMutableArray alloc] init];
+        
+        sortedSchedules = [[NSMutableDictionary alloc] init];
+        sortedFilms = [[NSMutableDictionary alloc] init];
+        sortedForums = [[NSMutableDictionary alloc] init];
+        sortedSpecials = [[NSMutableDictionary alloc] init];
 	}
 	
     return self;

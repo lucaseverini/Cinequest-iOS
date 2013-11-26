@@ -98,6 +98,8 @@
 		C27139421828E8C900BF8DCB /* List_of_Shows_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */; };
 		C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6D7182A1E26006F7D25 /* VenueLocation.m */; };
 		C27BC6DB182A3734006F7D25 /* Schedule.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6DA182A3734006F7D25 /* Schedule.m */; };
+		C2B86DF41844C01A0088A958 /* Forum.m in Sources */ = {isa = PBXBuildFile; fileRef = C2B86DF31844C01A0088A958 /* Forum.m */; };
+		C2B86DF71844C0350088A958 /* Special.m in Sources */ = {isa = PBXBuildFile; fileRef = C2B86DF61844C0350088A958 /* Special.m */; };
 		C2D6DC1A182975E5005A6897 /* Festival.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC19182975E5005A6897 /* Festival.m */; };
 		C2D6DC211829771E005A6897 /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1C1829771E005A6897 /* Show.m */; };
 		C2D6DC221829771E005A6897 /* Showing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1E1829771E005A6897 /* Showing.m */; };
@@ -248,6 +250,10 @@
 		C27BC6D7182A1E26006F7D25 /* VenueLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VenueLocation.m; path = sources/VenueLocation.m; sourceTree = SOURCE_ROOT; };
 		C27BC6D9182A3734006F7D25 /* Schedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Schedule.h; path = sources/Schedule.h; sourceTree = SOURCE_ROOT; };
 		C27BC6DA182A3734006F7D25 /* Schedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Schedule.m; path = sources/Schedule.m; sourceTree = SOURCE_ROOT; };
+		C2B86DF21844C01A0088A958 /* Forum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Forum.h; path = sources/Forum.h; sourceTree = SOURCE_ROOT; };
+		C2B86DF31844C01A0088A958 /* Forum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Forum.m; path = sources/Forum.m; sourceTree = SOURCE_ROOT; };
+		C2B86DF51844C0350088A958 /* Special.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Special.h; path = sources/Special.h; sourceTree = SOURCE_ROOT; };
+		C2B86DF61844C0350088A958 /* Special.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Special.m; path = sources/Special.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC18182975E5005A6897 /* Festival.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Festival.h; path = sources/Festival.h; sourceTree = SOURCE_ROOT; };
 		C2D6DC19182975E5005A6897 /* Festival.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Festival.m; path = sources/Festival.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC1B1829771E005A6897 /* Show.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Show.h; path = sources/Show.h; sourceTree = SOURCE_ROOT; };
@@ -556,6 +562,10 @@
 				C2D6DC19182975E5005A6897 /* Festival.m */,
 				81745A7317EBAEED008D2C2C /* OldSchedule.h */,
 				81745A7417EBAEED008D2C2C /* OldSchedule.m */,
+				C2B86DF21844C01A0088A958 /* Forum.h */,
+				C2B86DF31844C01A0088A958 /* Forum.m */,
+				C2B86DF51844C0350088A958 /* Special.h */,
+				C2B86DF61844C0350088A958 /* Special.m */,
 			);
 			name = FestivalParser;
 			sourceTree = "<group>";
@@ -733,11 +743,13 @@
 				C27BC6DB182A3734006F7D25 /* Schedule.m in Sources */,
 				81745A7517EBAEED008D2C2C /* CinequestAppDelegate.m in Sources */,
 				81745A7617EBAEED008D2C2C /* DDXMLDocument.m in Sources */,
+				C2B86DF41844C01A0088A958 /* Forum.m in Sources */,
 				81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */,
 				C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */,
 				81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */,
 				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
 				C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */,
+				C2B86DF71844C0350088A958 /* Special.m in Sources */,
 				C2D6DC291829B8BF005A6897 /* Film.m in Sources */,
 				81745A7C17EBAEED008D2C2C /* EventDetailViewController.m in Sources */,
 				81D1EC3B182B892B003DD8BB /* StartupViewController.m in Sources */,

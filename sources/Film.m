@@ -21,14 +21,13 @@
 @synthesize country;
 @synthesize language;
 @synthesize filmInfo;
-@synthesize schedules;
 
 - (id) init
 {
 	self = [super init];
 	if(self != nil)
 	{
-		schedules = [[NSMutableArray alloc] init];
+		super.schedules = [[NSMutableArray alloc] init];
 	}
 	
     return self;
@@ -36,7 +35,7 @@
 
 - (void) dealloc
 {
-	schedules = nil;
+	super.schedules = nil;
 }
 
 @end

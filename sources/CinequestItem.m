@@ -14,5 +14,7 @@
 @synthesize name;
 @synthesize description;
 @synthesize imageURL;
+@synthesize shortItems;
+@synthesize schedules;
 
 @end

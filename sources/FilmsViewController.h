@@ -8,6 +8,7 @@
 
 @class CinequestAppDelegate;
 @class Schedule;
+@class Festival;
 
 @interface FilmsViewController : UIViewController < UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate>
 {

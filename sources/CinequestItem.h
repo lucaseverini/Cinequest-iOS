@@ -12,6 +12,7 @@
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *description;
 @property (strong, nonatomic) NSString *imageURL;
-
+@property (strong, nonatomic) NSMutableArray *shortItems;
+@property (strong, nonatomic) NSMutableArray *schedules;
 
 @end

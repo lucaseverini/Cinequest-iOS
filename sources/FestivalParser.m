@@ -18,6 +18,8 @@
 #import "Schedule.h"
 #import "VenueLocation.h"
 #import "DataProvider.h"
+#import "Forum.h"
+#import "Special.h"
 
 @implementation FestivalParser
 
@@ -34,7 +36,7 @@
     return self;
 }
 
-- (Festival*) parseFestival
+/* - (Festival*) parseFestival
 {	
     [self parseShows];
 	
@@ -98,6 +100,289 @@
 	appDelegate.festivalParsed = YES;
 	
     return festival;
+}
+*/
+
+- (Festival*) parseFestival
+{
+    [self parseShows];
+	
+    Festival *festival = [[Festival alloc] init];
+    NSMutableDictionary *shorts = [[NSMutableDictionary alloc] init];
+    
+    NSMutableSet *uniqueVenues = [[NSMutableSet alloc] init];
+    
+    // Remove the partial shows from shows
+    // Add them to partialShows, grouped by their title
+    
+    // errorString: for logging error
+    NSMutableString *errorString = [[NSMutableString alloc] init];
+    
+    NSMutableArray *discardedShows = [[NSMutableArray alloc] init];
+    for (Show *show in shows) {
+        if ([show.currentShowings count] == 0) {
+            [discardedShows addObject:show];
+            
+            NSMutableArray *eventType = [show.customProperties objectForKey:@"EventType"];
+            if (eventType == nil) {
+                [errorString appendFormat:@"Show with ID: %@ has no EventType\n", show.ID];
+                // consider a Show with no EventType a Film now
+                // but skip when the xml feed is fixed
+                Film *film = [self getFilmFrom:show];
+                [shorts setObject:film forKey:show.ID];
+                [self addItem:film to:festival.sortedFilms];
+            } else if ([eventType count] > 1) {
+                // skipping Show that has more than 1 EventType
+                continue;
+            } else if ([eventType containsObject:@"Film"]) {
+                Film *film = [self getFilmFrom:show];
+                [shorts setObject:film forKey:show.ID];
+                [self addItem:film to:festival.sortedFilms];
+                // TODO: add film to festival.sortedSchedules when done
+            } else if ([eventType containsObject:@"Forum"]) {
+                Forum *forum = [self getForumFrom:show];
+                [shorts setObject:forum forKey:show.ID];
+                // TODO: add forum to festival.sortedForums when done
+            } else if ([eventType containsObject:@"Special"]) {
+                Special *special = [self getSpecialFrom:show];
+                [shorts setObject:special forKey:show.ID];
+                // TODO: add special to festival.sortedSpecials when done
+            }
+        }
+    }
+    
+    [shows removeObjectsInArray:discardedShows];
+    
+    for (Show *show in shows) {
+        
+        CinequestItem *item;
+        
+        NSMutableArray *eventType = [show.customProperties objectForKey:@"EventType"];
+        if (eventType == nil) {
+            [errorString appendFormat:@"Show with ID: %@ has no EventType\n", show.ID];
+            // consider a Show with no EventType a Film now
+            // but skip when the xml feed is fixed
+            item = [self getFilmFrom:show];
+            [self addItem:item to:festival.sortedFilms];
+        } else if ([eventType count] > 1) {
+            // skipping Show that has more than 1 EventType
+            continue;
+        } else if ([eventType containsObject:@"Film"]) {
+            item = [self getFilmFrom:show];
+            [self addItem:item to:festival.sortedFilms];
+        } else if ([eventType containsObject:@"Forum"]) {
+            item = [self getForumFrom:show];
+        } else if ([eventType containsObject:@"Special"]) {
+            item = [self getSpecialFrom:show];
+        }
+        
+        NSMutableArray *shortIDs = [show.customProperties objectForKey:@"ShortID"];
+        if (shortIDs != nil) {
+            for (NSString *ID in shortIDs) {
+                CinequestItem *subItem = [shorts objectForKey:ID];
+                [item.shortItems addObject:subItem];
+            }
+        }
+        
+        for (Showing *showing in show.currentShowings) {
+            Schedule *schedule = [self getScheduleFrom:showing forItem:item];
+            [item.schedules addObject:schedule];
+            
+            [self addItemToDictionary:item with:schedule in:festival];
+            
+            if (![uniqueVenues containsObject:schedule.venue]) {
+                [uniqueVenues addObject:schedule.venue];
+                [festival.venueLocations addObject:[self getVenueLocation:showing.venue]];
+            }
+            
+            for (CinequestItem *cinequestItem in item.shortItems) {
+                [cinequestItem.schedules addObject:schedule];
+            }
+        }
+        
+    }
+    
+    for (CinequestItem *shortItem in [shorts allValues]) {
+        for (Schedule *shortItemSchedule in shortItem.schedules) {
+            [self addItemToDictionary:shortItem with:shortItemSchedule in:festival];
+        }
+    }
+    
+	appDelegate.festivalParsed = YES;
+	
+    return festival;
+}
+
+
+- (void) addItem:(CinequestItem *)item to:(NSMutableDictionary *)alphabetDictionary {
+    NSString *itemName = [item name];
+    itemName = [itemName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if ([itemName length] > 0) {
+        NSString *firstLetter = [itemName substringToIndex:1];
+        firstLetter = [firstLetter uppercaseString];
+        NSMutableArray *values = [alphabetDictionary objectForKey:firstLetter];
+        if (values == nil) {
+            values = [NSMutableArray array];
+            [alphabetDictionary setObject:values forKey:firstLetter];
+        } else {
+            [values addObject:item];
+        }
+    }
+}
+
+- (void) addItemToDictionary:(CinequestItem *)item with:(Schedule *)schedule in:(Festival*)festival{
+    NSString *date = [schedule longDateString];
+    NSMutableArray *values;
+    if ([date length] > 0) {
+        if ([item isKindOfClass:[Film class]]) {
+            values = [festival.sortedSchedules objectForKey:date];
+            if (values == nil) {
+                values = [NSMutableArray array];
+                [festival.sortedSchedules setObject:values forKey:date];
+            } else {
+                [values addObject:item];
+            }
+        } else if ([item isKindOfClass:[Forum class]]) {
+            values = [festival.sortedForums objectForKey:date];
+            if (values == nil) {
+                values = [NSMutableArray array];
+                [festival.sortedForums setObject:values forKey:date];
+            } else {
+                [values addObject:item];
+            }
+        } else if ([item isKindOfClass:[Special class]]) {
+            values = [festival.sortedSpecials objectForKey:date];
+            if (values == nil) {
+                values = [NSMutableArray array];
+                [festival.sortedSpecials setObject:values forKey:date];
+            } else {
+                [values addObject:item];
+            }
+        }
+    }
+}
+
+
+
+
+- (NSMutableArray *)getShows
+{
+    return shows;
+}
+
+
+- (VenueLocation *) getVenueLocation:(Venue *)venue
+{
+    VenueLocation *loc = [[VenueLocation alloc] init];
+    loc.ID = venue.ID;
+    loc.venueAbbreviation = [self venueAbbr:(venue.name)];
+    loc.name = venue.name;
+    loc.location = venue.address;
+    return loc;
+}
+
+- (Schedule *) getScheduleFrom:(Showing *) showing forItem:(CinequestItem *)item
+{
+    Schedule *schedule = [[Schedule alloc] init];
+    schedule.ID = showing.ID;
+    schedule.itemID = item.ID;
+    schedule.title = item.name;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    NSDate *date = [dateFormatter dateFromString:showing.startDate];
+    schedule.startDate = date;
+    
+    [dateFormatter setDateFormat:@"h:mm a"];
+    schedule.startTime = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"EEE, MMM d"];
+    schedule.dateString = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"EEEE, MMMM d"];
+    schedule.longDateString = [dateFormatter stringFromDate:date];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    date = [dateFormatter dateFromString:showing.endDate];
+    schedule.endDate = date;
+    
+    [dateFormatter setDateFormat:@"h:mm a"];
+    schedule.endTime = [dateFormatter stringFromDate:date];
+    
+    schedule.venue = [self venueAbbr:showing.venue.name];
+    
+    schedule.venueItem = [showing venue];
+    
+    return schedule;
+}
+
+- (NSString *) venueAbbr:(NSString *)name
+{
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^A-Z0-9]" options:0 error:&error];
+    
+    NSString *modifiedString = [regex stringByReplacingMatchesInString:name options:0 range:NSMakeRange(0, [name length]) withTemplate:@""];
+    return modifiedString;
+}
+
+- (ProgramItem *) getProgramItem:(Show *)show
+{
+    ProgramItem *item = [[ProgramItem alloc] init];
+    item.ID = show.ID;
+    item.name = show.name;
+    item.description = show.shortDescription;
+    return item;
+}
+
+- (Film *)getFilmFrom:(Show *)show
+{
+    Film *film = [[Film alloc] init];
+    /* TODO: tagline and filmInfo seem unused
+     * TODO: What should we do with the executive producers?
+     */
+    film.ID = show.ID;
+    film.name = show.name;
+    film.description = show.shortDescription;
+    film.imageURL = show.thumbImageURL;
+    film.director = [self get:show.customProperties forkey:@"Director"];
+    film.producer = [self get:show.customProperties forkey:@"Producer"];
+    film.cinematographer = [self get:show.customProperties forkey:@"Cinematographer"];
+    film.editor  =  [self get:show.customProperties forkey:@"Editor"];
+    film.cast = [self get:show.customProperties forkey:@"Cast"];
+    film.country = [self get:show.customProperties forkey:@"Production Country"];
+    film.language = [self get:show.customProperties forkey:@"Language"];
+    film.genre = [self get:show.customProperties forkey:@"Genre"];
+    return film;
+}
+                                 
+- (Forum *)getForumFrom:(Show *)show
+{
+    Forum *forum = [[Forum alloc] init];
+    return forum;
+}
+
+- (Special *)getSpecialFrom:(Show *)show
+{
+    Special *special = [[Special alloc] init];
+    return special;
+}
+
+                                 
+- (NSString *) get:(NSMutableDictionary *)custom forkey:(NSString*) key
+{
+    NSMutableArray *value = [custom objectForKey:key];
+    if (value == nil) return @"";
+    if ([value count] == 1) return [value objectAtIndex:0];
+    NSMutableString * result = [[NSMutableString alloc] init];
+    for (int i = 0; i < [value count]; i++) {
+        [result appendString:[value objectAtIndex:i]];
+        if (i == [value count] - 1) {
+            break;
+        }
+        [result appendString:@", "];
+    }
+    return result;
 }
 
 - (void) parseShows
@@ -208,111 +493,5 @@
 		[self.shows addObject:show];
 	}
 } // end parseShow
-
-- (NSMutableArray *)getShows
-{
-    return shows;
-}
-
-- (VenueLocation *) getVenueLocation:(Venue *)venue
-{
-    VenueLocation *loc = [[VenueLocation alloc] init];
-    loc.ID = venue.ID;
-    loc.venueAbbreviation = [self venueAbbr:(venue.name)];
-    loc.name = venue.name;
-    loc.location = venue.address;
-    return loc;
-}
-
-- (Schedule *) getSchedule:(Showing *) showing forItem:(ProgramItem *)item
-{
-    Schedule *schedule = [[Schedule alloc] init];
-    schedule.ID = showing.ID;
-    schedule.itemID = item.ID;
-    schedule.title = item.name;
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
-    NSDate *date = [dateFormatter dateFromString:showing.startDate];
-    schedule.startDate = date;
-    
-    [dateFormatter setDateFormat:@"h:mm a"];
-    schedule.startTime = [dateFormatter stringFromDate:date];
-    
-    [dateFormatter setDateFormat:@"EEE, MMM d"];
-    schedule.dateString = [dateFormatter stringFromDate:date];
-    
-    [dateFormatter setDateFormat:@"EEEE, MMMM d"];
-    schedule.longDateString = [dateFormatter stringFromDate:date];
-    
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
-    date = [dateFormatter dateFromString:showing.endDate];
-    schedule.endDate = date;
-    
-    [dateFormatter setDateFormat:@"h:mm a"];
-    schedule.endTime = [dateFormatter stringFromDate:date];
-
-    schedule.venue = [self venueAbbr:showing.venue.name];
-    
-    schedule.venueItem = [showing venue];
-    
-    return schedule;
-}
-
-- (NSString *) venueAbbr:(NSString *)name
-{
-    NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^A-Z0-9]" options:0 error:&error];
-    
-    NSString *modifiedString = [regex stringByReplacingMatchesInString:name options:0 range:NSMakeRange(0, [name length]) withTemplate:@""];
-    return modifiedString;
-}
-
-- (ProgramItem *) getProgramItem:(Show *)show
-{
-    ProgramItem *item = [[ProgramItem alloc] init];
-    item.ID = show.ID;
-    item.name = show.name;
-    item.description = show.shortDescription;
-    return item;
-}
-
-- (Film *) getFilm:(Show *) show
-{
-    Film *film = [[Film alloc] init];
-    /* TODO: tagline and filmInfo seem unused
-     * TODO: What should we do with the executive producers?
-     */
-    film.ID = show.ID;
-    film.name = show.name;
-    film.description = show.shortDescription;
-    film.imageURL = show.thumbImageURL;
-    film.director = [self get:show.customProperties forkey:@"Director"];
-    film.producer = [self get:show.customProperties forkey:@"Producer"];
-    film.cinematographer = [self get:show.customProperties forkey:@"Cinematographer"];
-    film.editor  =  [self get:show.customProperties forkey:@"Editor"];
-    film.cast = [self get:show.customProperties forkey:@"Cast"];
-    film.country = [self get:show.customProperties forkey:@"Production Country"];
-    film.language = [self get:show.customProperties forkey:@"Language"];
-    film.genre = [self get:show.customProperties forkey:@"Genre"];
-    return film;
-}
-
-- (NSString *) get:(NSMutableDictionary *)custom forkey:(NSString*) key
-{
-    NSMutableArray *value = [custom objectForKey:key];
-    if (value == nil) return @"";
-    if ([value count] == 1) return [value objectAtIndex:0];
-    NSMutableString * result = [[NSMutableString alloc] init];
-    for (int i = 0; i < [value count]; i++) {
-        [result appendString:[value objectAtIndex:i]];
-        if (i == [value count] - 1) {
-            break;
-        }
-        [result appendString:@", "];
-    }
-    return result;
-}
 
 @end
