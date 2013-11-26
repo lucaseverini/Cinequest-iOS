@@ -124,25 +124,25 @@
 			if ([[showChild name] isEqualToString:@"ID"]) {
 				show.ID = [showChild stringValue];
 			}
-			if ([[showChild name] isEqualToString:@"Name"]) {
+			else if ([[showChild name] isEqualToString:@"Name"]) {
 				show.name = [showChild stringValue];
 			}
-			if ([[showChild name] isEqualToString:@"Duration"]) {
+			else if ([[showChild name] isEqualToString:@"Duration"]) {
 				show.duration = [[showChild stringValue] intValue];
 			}
-			if ([[showChild name] isEqualToString:@"ShortDescription"]) {
+			else if ([[showChild name] isEqualToString:@"ShortDescription"]) {
 				show.shortDescription = [showChild stringValue];
 			}
-			if ([[showChild name] isEqualToString:@"ThumbImage"]) {
+			else if ([[showChild name] isEqualToString:@"ThumbImage"]) {
 				show.thumbImageURL = [showChild stringValue];
 			}
-			if ([[showChild name] isEqualToString:@"EventImage"]) {
+			else if ([[showChild name] isEqualToString:@"EventImage"]) {
 				show.eventImageURL = [showChild stringValue];
 			}
-			if ([[showChild name] isEqualToString:@"InfoLink"]) {
+			else if ([[showChild name] isEqualToString:@"InfoLink"]) {
 				show.infoLink = [showChild stringValue];
 			}
-			if ([[showChild name] isEqualToString:@"CustomProperties"]) {
+			else if ([[showChild name] isEqualToString:@"CustomProperties"]) {
 				// showChild here is an array of CustomerProperty
 				/* Not sure if this is a safe approach */
 				for (int k = 0; k < [showChild childCount]; k++) {
@@ -163,7 +163,7 @@
 				}
 
 			}
-			if ([[showChild name] isEqualToString:@"CurrentShowings"]) {
+			else if ([[showChild name] isEqualToString:@"CurrentShowings"]) {
 				// showChild here is an array of Showing
 				for (int k = 0; k < [showChild childCount]; k++) {
 					DDXMLElement *showingElement = (DDXMLElement*)[showChild childAtIndex:k];
@@ -175,25 +175,25 @@
 						if ([[showingChild name] isEqualToString:@"ID"]) {
 							showing.ID = [showingChild stringValue];
 						}
-						if ([[showingChild name] isEqualToString:@"StartDate"]) {
+						else if ([[showingChild name] isEqualToString:@"StartDate"]) {
 							showing.startDate = [showingChild stringValue];
 						}
-						if ([[showingChild name] isEqualToString:@"EndDate"]) {
+						else if ([[showingChild name] isEqualToString:@"EndDate"]) {
 							showing.endDate = [showingChild stringValue];
 						}
-						if ([[showingChild name] isEqualToString:@"ShortDescription"]) {
+						else if ([[showingChild name] isEqualToString:@"ShortDescription"]) {
 							showing.shortDescription = [showingChild stringValue];
 						}
-						if ([[showingChild name] isEqualToString:@"Venue"]) {
+						else if ([[showingChild name] isEqualToString:@"Venue"]) {
 							for (int m = 0; m < [showingChild childCount]; m++) {
 								DDXMLElement *venueChild = (DDXMLElement*)[showingChild childAtIndex:m];
 								if ([[venueChild name] isEqualToString:@"VenueID"]) {
 									showing.venue.ID = [venueChild stringValue];
 								}
-								if ([[venueChild name] isEqualToString:@"VenueName"]) {
+								else if ([[venueChild name] isEqualToString:@"VenueName"]) {
 									showing.venue.name = [venueChild stringValue];
 								}
-								if ([[venueChild name] isEqualToString:@"VenueAddress1"]) {
+								else if ([[venueChild name] isEqualToString:@"VenueAddress1"]) {
 									showing.venue.address = [venueChild stringValue];
 								}
 							}
