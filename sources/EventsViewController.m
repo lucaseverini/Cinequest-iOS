@@ -14,6 +14,8 @@
 #import "DDXML.h"
 #import "DataProvider.h"
 
+static NSString *const kEventCellIdentifier = @"EventCell";
+
 
 @implementation EventsViewController
 
@@ -409,75 +411,60 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-	
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
 	
 	NSString *date = [days objectAtIndex:section];
 	NSMutableArray *events = [data objectForKey:date];
 	Schedule *event = [events objectAtIndex:row];
-
-    // set text color
-	UIColor *textColor = [UIColor blackColor];
 	
 	// check if current cell is already added to mySchedule
-	// if it is, display it as blue
-	NSUInteger i, count = [mySchedule count];
-	for (i = 0; i < count; i++)
+	NSUInteger idx, count = [mySchedule count];
+	for (idx = 0; idx < count; idx++)
 	{
-		Schedule *obj = [mySchedule objectAtIndex:i];
-		
-		if (obj.ID == event.ID) 
+		Schedule *schedule = [mySchedule objectAtIndex:idx];
+		if (schedule.ID == event.ID)
 		{
-			// NSLog(@"%@ was added.",obj.title);
-			textColor = [UIColor blueColor];
+			schedule.isSelected = YES;
 			break;
 		}
 	}
 	
-	// get checkbox status
-	BOOL checked = event.isSelected;
-	UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-	NSInteger titleNumLines = 1;
+	UIImage *buttonImage = (event.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
     
-	UILabel *titleLabel;
-	UILabel *timeLabel;
-	UILabel *venueLabel;
-	UIButton *checkButton;
+	UILabel *titleLabel = nil;
+	UILabel *timeLabel = nil;
+	UILabel *venueLabel = nil;
+	UIButton *calendarButton = nil;
 	
-	UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (tempCell == nil)
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellIdentifier];
+    if (cell == nil)
 	{
-		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kEventCellIdentifier];
 		
-		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
+		titleLabel = [UILabel new];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
         titleLabel.font = titleFont;
-		[tempCell.contentView addSubview:titleLabel];
+		[cell.contentView addSubview:titleLabel];
 		
-		timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
+		timeLabel = [UILabel new];
 		timeLabel.tag = CELL_TIME_LABEL_TAG;
         timeLabel.font = timeFont;
-		[tempCell.contentView addSubview:timeLabel];
+		[cell.contentView addSubview:timeLabel];
 		
-		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
+		venueLabel = [UILabel new];
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
         venueLabel.font = venueFont;
-		[tempCell.contentView addSubview:venueLabel];
+		[cell.contentView addSubview:venueLabel];
 		
-		checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		checkButton.frame = CGRectMake(11.0, 16.0, 32.0, 32.0);
-		[checkButton setImage:buttonImage forState:UIControlStateNormal];
-		
-		[checkButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
-		
-		checkButton.backgroundColor = [UIColor clearColor];
-		checkButton.tag = CELL_LEFTBUTTON_TAG;
-		[tempCell.contentView addSubview:checkButton];
+		calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		calendarButton.tag = CELL_LEFTBUTTON_TAG;
+		[calendarButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+		[cell.contentView addSubview:calendarButton];
 	}
 	
-	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
+	NSInteger titleNumLines = 1;
+	titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
 	CGSize size = [event.title sizeWithFont:titleFont];
     if(size.width < 256.0)
     {
@@ -492,46 +479,19 @@
     [titleLabel setNumberOfLines:titleNumLines];
     titleLabel.text = event.title;
     
-    timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-    if(titleNumLines == 1)
-    {
-        [timeLabel setFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
-    }
-    else
-    {
-        [timeLabel setFrame:CGRectMake(52.0, 50.0, 250.0, 20.0)];
-    }
+    timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
+	[timeLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 28.0 : 50.0, 250.0, 20.0)];
     timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", event.dateString, event.startTime, event.endTime];
     
-    venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
-    if(titleNumLines == 1)
-    {
-        [venueLabel setFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
-    }
-    else
-    {
-        [venueLabel setFrame:CGRectMake(52.0, 68.0, 250.0, 20.0)];
-    }
-    venueLabel.text = [NSString stringWithFormat:@"Venue: %@",event.venue];
+    venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
+	[venueLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
+    venueLabel.text = [NSString stringWithFormat:@"Venue: %@", event.venue];
     
-    checkButton = (UIButton*)[tempCell viewWithTag:CELL_LEFTBUTTON_TAG];
-    if(titleNumLines == 1)
-    {
-        [checkButton setFrame:CGRectMake(11.0, 16.0, 32.0, 32.0)];
-    }
-    else
-    {
-        [checkButton setFrame:CGRectMake(11.0, 28.0, 32.0, 32.0)];
-    }
-    [checkButton setImage:buttonImage forState:UIControlStateNormal];
-		
-	if (textColor == [UIColor blueColor]) {
-		checkButton.userInteractionEnabled = YES;
-	} else {
-		checkButton.userInteractionEnabled = YES;
-	}
+    calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
+	[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 32.0 : 54.0, 32, 32.0)];
+	[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 	
-    return tempCell;
+    return cell;
 }
 
 - (void)checkBoxButtonTapped:(id)sender event:(id)touchEvent
