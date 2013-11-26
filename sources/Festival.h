@@ -18,6 +18,11 @@
 @property (strong, nonatomic) NSMutableArray *events;
 @property (strong, nonatomic) NSString *lastChanged;
 
+@property (strong, nonatomic) NSMutableDictionary *sortedSchedules;
+@property (strong, nonatomic) NSMutableDictionary *sortedFilms;
+@property (strong, nonatomic) NSMutableDictionary *sortedEvents;
+@property (strong, nonatomic) NSMutableDictionary *sortedForums;
+
 - (NSMutableArray *) getSchedulesForDay:(NSString *)date;
 - (Film *) getFilmForId:(NSString *)ID;
 - (ProgramItem *) getProgramItemForId:(NSString *)ID;
