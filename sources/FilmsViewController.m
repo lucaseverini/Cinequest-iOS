@@ -758,6 +758,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
     
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    curFilms = [NSMutableArray arrayWithArray:delegate.festival.films];
+	curSchedules = [NSMutableArray arrayWithArray:delegate.festival.schedules];
+	
+	[self prepareData];
+}
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
