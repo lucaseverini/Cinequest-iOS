@@ -4,12 +4,12 @@
 //
 //  Created by Loc Phan on 10/9/09.
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
-//
+// 
 
 @class CinequestAppDelegate;
 @class Schedule;
 
-@interface FilmsViewController : UIViewController < UITableViewDelegate, UITableViewDataSource >
+@interface FilmsViewController : UIViewController < UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate>
 {
 	NSMutableDictionary *data;
 	NSMutableArray *days;
@@ -29,14 +29,17 @@
 	UIFont *venueFont;
     EKCalendar *cinequestCalendar;
     EKEventStore *eventStore;
+	NSMutableArray *curSchedules;
+	NSMutableArray *curFilms;
 }
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
 @property (nonatomic, weak) IBOutlet UISegmentedControl *switchTitle;
 @property (nonatomic, weak) IBOutlet UITableView *filmsTableView;
+@property (nonatomic, weak) IBOutlet UISearchBar *filmSearchBar;
 
 - (IBAction) switchTitle:(id)sender;
-- (IBAction) reloadData:(id)sender;
+- (IBAction) loadData:(id)sender;
 
 - (void) addOrRemoveFilm:(Schedule*)film;
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent;

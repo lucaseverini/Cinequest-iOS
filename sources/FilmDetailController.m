@@ -402,14 +402,16 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				
 			case 1:
 			{
-				MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
-				NSString *friendlyMessage = @"Hey, I found an interesting film from Cinequest. Check it out!";
-				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@",friendlyMessage,[film ID]];
+				MFMailComposeViewController *controller = [MFMailComposeViewController new];
+				NSString *friendlyMessage = @"Hey,\nI found an interesting film from Cinequest festival.\nCheck it out!";
+				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@", friendlyMessage, [film ID]];
 				controller.mailComposeDelegate = self;
 				[controller setSubject:[film name]];
-				[controller setMessageBody:messageBody isHTML:NO]; 
+				[controller setMessageBody:messageBody isHTML:NO];
+				
 				delegate.isPresentingModalView = YES;
 				[self.navigationController presentViewController:controller animated:YES completion:nil];
+				[[[[controller viewControllers] lastObject] navigationItem] setTitle:@"Set the title"];
 				break;
 			}
 				
@@ -485,11 +487,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
-	if (result == MFMailComposeResultSent)
-	{
-		//NSLog(@"It's away!");
-	}
-	
 	delegate.isPresentingModalView = NO;
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -497,14 +494,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
 #pragma mark -
 #pragma mark Social Media Sharing
 
-- (IBAction)pressToShareToFacebook:(id)sender
+- (IBAction) pressToShareToFacebook:(id)sender
 {
     NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@", [film name]];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
-        SLComposeViewController *faceSheet = [SLComposeViewController
-                                              composeViewControllerForServiceType:SLServiceTypeFacebook];
+        SLComposeViewController *faceSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
         [faceSheet setInitialText:postString];
         [self presentViewController:faceSheet animated:YES completion:nil];
     }
@@ -521,14 +517,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
 }
 
-- (IBAction)pressToShareToTwitter:(id)sender
+- (IBAction) pressToShareToTwitter:(id)sender
 {
     NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@", [film name]];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
-        SLComposeViewController *tweetSheet = [SLComposeViewController
-                                               composeViewControllerForServiceType:SLServiceTypeTwitter];
+        SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         [tweetSheet setInitialText:tweetString];
         [self presentViewController:tweetSheet animated:YES completion:nil];
     }
@@ -573,7 +568,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
     [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
 }
 
--(Schedule*)getItemForSender:(id)sender event:(id)touchEvent{
+- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
+{
     NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.detailsTableView];
@@ -623,15 +619,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[alert show];
 }
 
-- (void) launchMapsWithVenue:(Venue*)venueName
+- (void) launchMapsWithVenue:(Venue*)venueN
 {
-	// Please may someone who knows about venues solve this?
-	// We need to find the venue using the venue name contained in the schedule (or whatever other method that works...)
-	// =================================================================================================================
 	NSDictionary *venues = appDelegate.venuesDictionary;
-	// For now takes always the same venue
-	Venue *venue = [venues objectForKey:venueName.ID];
+	Venue *venue = [venues objectForKey:venueN.ID];
 	NSString *nameOfVenue = [[venue.name componentsSeparatedByString:@"-"] firstObject];
+	
 	// Set location to be searched
 	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@",nameOfVenue, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
 		

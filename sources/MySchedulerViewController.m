@@ -12,9 +12,6 @@
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
 
-#define CALENDAR_NAME @"Cinequest"
-#define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
-
 static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 
@@ -364,48 +361,67 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	// Loading Schedule into the TabelViewCells
 	NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
 	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];		
-	Schedule *film = [rowsData objectAtIndex:indexPath.row];
+	Schedule *schedule = [rowsData objectAtIndex:indexPath.row];
 
-	UILabel *titleLabel;
-	UILabel *timeLabel;
-	UILabel *venueLabel;
-	UIButton *calendarButton;
+	UILabel *titleLabel = nil;
+	UILabel *timeLabel = nil;
+	UILabel *venueLabel = nil;
+	UIButton *calendarButton = nil;
 	
-	UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:kScheduleCellIdentifier];
- 	if (tempCell == nil)
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kScheduleCellIdentifier];
+ 	if (cell == nil)
 	{
-		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kScheduleCellIdentifier];
-			 	
-		// tempCell.selectionStyle = UITableViewCellSelectionStyleNone;
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kScheduleCellIdentifier];
 
-		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 2.0, 290.0, 20.0)];
+		titleLabel = [UILabel new];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
 		titleLabel.font = titleFont;
-		[tempCell.contentView addSubview:titleLabel];
+		[cell.contentView addSubview:titleLabel];
 		
-		timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 22.0, 250.0, 20.0)];
+		timeLabel = [UILabel new];
 		timeLabel.tag = CELL_TIME_LABEL_TAG;
 		timeLabel.font = timeFont;
-		[tempCell.contentView addSubview:timeLabel];
+		[cell.contentView addSubview:timeLabel];
 				
-		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 40.0, 250.0, 20.0)];
+		venueLabel = [UILabel new];
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
 		venueLabel.font = venueFont;
-		[tempCell.contentView addSubview:venueLabel];
+		[cell.contentView addSubview:venueLabel];
         
         calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [calendarButton addTarget:self action:@selector(addItemToCalendar:event:) forControlEvents:UIControlEventTouchDown];
-        calendarButton.frame = CGRectMake(256.0, 16.0, 32.0, 32.0);
         calendarButton.tag = CELL_LEFTBUTTON_TAG;
-        [tempCell.contentView addSubview:calendarButton];
+        [calendarButton addTarget:self action:@selector(addItemToCalendar:event:) forControlEvents:UIControlEventTouchDown];
+        [cell.contentView addSubview:calendarButton];
 	}
 	
-	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
-	titleLabel.text = film.title;
+	NSInteger titleNumLines = 1;
+	titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
+	CGSize size = [schedule.title sizeWithFont:titleFont];
+	if(size.width < 256.0)
+	{
+		[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
+	}
+	else
+	{
+		[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 42.0)];
+		titleNumLines = 2;
+	}
 	
-    calendarButton = (UIButton *)[tempCell viewWithTag:CELL_LEFTBUTTON_TAG];
-    
-    if([delegate.arrayCalendarItems containsObject:[NSString stringWithFormat:@"%@-%@",film.itemID,film.ID]])
+	[titleLabel setNumberOfLines:titleNumLines];
+	titleLabel.text = schedule.title;
+	
+	timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
+	[timeLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 28.0 : 50.0, 250.0, 20.0)];
+	timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime];
+	
+	venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
+	[venueLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
+	venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
+	
+	calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
+	[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 16.0 : 28.0, 32.0, 32.0)];
+	
+    if([delegate.arrayCalendarItems containsObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]])
 	{
         [calendarButton setImage:[UIImage imageNamed:@"cal_selected"] forState:UIControlStateNormal];
     }
@@ -413,14 +429,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	{
         [calendarButton setImage:[UIImage imageNamed:@"cal_unselected"] forState:UIControlStateNormal];
     }
-    
-	timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
-	timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", film.dateString, film.startTime, film.endTime];
 	
-	venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
-	venueLabel.text = [NSString stringWithFormat:@"Venue:%@", film.venue];
-	
-    return tempCell;
+    return cell;
 }
 
 #pragma mark -
@@ -489,7 +499,19 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 62.0;
+	NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
+	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
+	Schedule *schedule = [rowsData objectAtIndex:indexPath.row];
+	
+	CGSize size = [schedule.title sizeWithFont:titleFont];
+	if(size.width >= 256.0)
+	{
+		return 88.0;
+	}
+	else
+	{
+		return 66.0;
+	}
 }
 
 #pragma mark -
