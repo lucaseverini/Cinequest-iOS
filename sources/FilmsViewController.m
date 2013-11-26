@@ -762,6 +762,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
     [searchBar resignFirstResponder];
     [self.view endEditing:YES];
+    [self.searchDisplayController setActive:NO animated:YES];
 }
 
 @end
