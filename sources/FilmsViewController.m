@@ -488,7 +488,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
 			
 			calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-			[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 16.0 : 28.0, 32.0, 32.0)];
+			[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 32.0 : 54.0, 32.0, 32.0)];
 			[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 		}
 			break;
