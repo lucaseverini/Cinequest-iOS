@@ -571,8 +571,8 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 			case 1:
 			{
 				MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
-				NSString *friendlyMessage = @"Hey, I found an interesting film from Cinequest. Check it out!";
-				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@",friendlyMessage,myData.itemID];
+				NSString *friendlyMessage = @"Hey,\nI found an interesting event from Cinequest festival.\nCheck it out!";
+				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@", friendlyMessage, myData.itemID];
 				controller.mailComposeDelegate = self;
 				[controller setSubject:myData.title];
 				[controller setMessageBody:messageBody isHTML:NO]; 

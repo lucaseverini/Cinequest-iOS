@@ -13,8 +13,6 @@
 #import "DataProvider.h"
 #import "VenueParser.h"
 
-#define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
-
 
 @implementation CinequestAppDelegate
 
@@ -355,10 +353,10 @@
     }
 }
 
--(void)checkAndCreateCalendar{
-    
+-(void) checkAndCreateCalendar
+{
     EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:self.eventStore];
-    calendar.title = @"Cinequest";
+    calendar.title = CALENDAR_NAME;
     
     //Get the current EKSource in use
     EKSource *theSource = nil;
@@ -383,7 +381,7 @@
             
             for (EKCalendar *iCalendar in caleandarsArray)
             {
-                if ([iCalendar.title isEqualToString:@"Cinequest"] || [iCalendar.calendarIdentifier isEqualToString:self.calendarIdentifier]) {
+                if ([iCalendar.title isEqualToString:CALENDAR_NAME] || [iCalendar.calendarIdentifier isEqualToString:self.calendarIdentifier]) {
                     isCalendar = true;
                     //Get and Save Calendar ID for future use
                     self.calendarIdentifier = iCalendar.calendarIdentifier;

@@ -16,10 +16,6 @@
 #import "Film.h"
 #import "Festival.h"
 
-#define VIEW_BY_DATE	0
-#define VIEW_BY_TITLE	1
-#define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
-
 static NSString *const kDateCellIdentifier = @"DateCell";
 static NSString *const kTitleCellIdentifier = @"TitleCell";
 static char *const kAssociatedScheduleKey = "Schedule";
@@ -30,6 +26,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 @synthesize switchTitle;
 @synthesize filmsTableView;
 @synthesize activity;
+@synthesize filmSearchBar;
 
 #pragma mark -
 #pragma mark Actions
@@ -119,7 +116,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	NSLog(@"Showing details for schedule \"%@\" (ID %@)", schedule.title, schedule.itemID);
 	
-	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Film Detail" andId:schedule.itemID];
+	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Detail" andId:schedule.itemID];
 	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 
@@ -165,7 +162,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[self syncTableDataWithScheduler];
 }
 
-- (IBAction) reloadData:(id)sender
+- (IBAction) loadData:(id)sender
 {
 	// Hide everything, display activity indicator
 	self.filmsTableView.hidden = YES;
@@ -194,25 +191,18 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	mySchedule = [appDelegate mySchedule];
 	cinequestCalendar = delegate.cinequestCalendar;
     eventStore = delegate.eventStore;
-    
+	
+	curSchedules = delegate.festival.schedules;
+ 	curFilms = delegate.festival.films;
+   
 	// Initialize data
 	data = [[NSMutableDictionary alloc] init];
 	days = [[NSMutableArray alloc] init];
 	index = [[NSMutableArray alloc] init];
 	
-	// backedUpDays = [[NSMutableArray alloc] init];
-	// backedUpIndex = [[NSMutableArray alloc] init];
-	// backedUpData = [[NSMutableDictionary alloc] init];
-	
 	// Inialize titles and sorts
 	titlesWithSort = [[NSMutableDictionary alloc] init];
 	sorts = [[NSMutableArray alloc] init];
-
-	if (delegate.isOffSeason)
-	{
-		self.filmsTableView.hidden = YES;
-		return;
-	}
 	
 	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
@@ -220,13 +210,46 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	switcher = VIEW_BY_DATE;
 	
-	self.filmsTableView.tableHeaderView = nil;
+	self.filmsTableView.tableHeaderView = filmSearchBar;
 	self.filmsTableView.tableFooterView = nil;
     
     [switchTitle setTitle:@"Date" forSegmentAtIndex:0];
     [switchTitle setTitle:@"A-Z" forSegmentAtIndex:1];
-    
-	[self reloadData:nil];
+ 
+	[self loadData:nil];
+}
+
+- (void) test
+{
+ 	curFilms = delegate.festival.films;
+ 	curSchedules = delegate.festival.schedules;
+	
+	[activity startAnimating];
+
+	if(NO)
+	{
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@", @"Ginger"];
+		NSMutableArray *foundFilms = [NSMutableArray arrayWithArray:[curFilms filteredArrayUsingPredicate:predicate]];
+		
+		NSMutableArray *filmsToRemove = [NSMutableArray arrayWithArray:curFilms];
+		[filmsToRemove removeObjectsInArray:foundFilms];
+		
+		for(Film *film in filmsToRemove)
+		{
+			[curSchedules removeObjectsInArray:film.schedules];
+		}
+		
+		curFilms = foundFilms;
+	}
+	
+	// Start parsing data
+	[data removeAllObjects];
+	[days removeAllObjects];
+	[index removeAllObjects];
+	[titlesWithSort removeAllObjects];
+	[sorts removeAllObjects];
+	
+	[self prepareData];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -239,14 +262,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) prepareData
 {
-	// FILMS BY TIME
-    [delegate.festival.schedules sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES], nil]];
+	// FILMS BY DATE
+    [curSchedules sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES], nil]];
     NSString *previousDay = @"empty";
 	NSMutableArray *tempArray = [NSMutableArray array];
     
     [delegate populateCalendarEntries];
     
-	for (Schedule *schedule in delegate.festival.schedules)
+	for (Schedule *schedule in curSchedules)
 	{
 		if (![previousDay isEqualToString:schedule.longDateString])
 		{
@@ -268,12 +291,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[data setObject:tempArray forKey:previousDay];
     
 	// FILMS BY TITLES
-    
-    [delegate.festival.films sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES],nil]];
+    [curFilms sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES],nil]];
 	NSString *pre = @"empty";
 	NSMutableArray *temp = [[NSMutableArray alloc] init];
 	
-	for (Film *film in delegate.festival.films)
+	for (Film *film in curFilms)
 	{
 		NSString *sortString = [film.name substringToIndex:1];
 		if(![pre isEqualToString:sortString])
@@ -298,11 +320,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	self.filmsTableView.hidden = NO;
 	[self.filmsTableView reloadData];
-	
-	// back up current data
-    // backedUpDays	= [[NSMutableArray alloc] initWithArray:days copyItems:YES];
-	// backedUpIndex = [[NSMutableArray alloc] initWithArray:index copyItems:YES];
-	// backedUpData	= [[NSMutableDictionary alloc] initWithDictionary:data copyItems:YES];
 	
 	[self syncTableDataWithScheduler];
 }
@@ -443,40 +460,40 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				}
 			}
 			
-			UILabel *titleLabel, *timeLabel, *venueLabel;
-			UIButton *calButton;
+			UILabel *titleLabel = nil;
+			UILabel *timeLabel = nil;
+			UILabel *venueLabel = nil;
+			UIButton *calendarButton = nil;
 			
-			// Get checkbox status
 			UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-			NSInteger titleNumLines = 1;
 			
 			cell = [tableView dequeueReusableCellWithIdentifier:kDateCellIdentifier];
 			if(cell == nil)
 			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDateCellIdentifier];
 				
-				UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
+				UILabel *titleLabel = [UILabel new];
 				titleLabel.tag = CELL_TITLE_LABEL_TAG;
 				titleLabel.font = titleFont;
 				[cell.contentView addSubview:titleLabel];
 				
-				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
+				timeLabel = [UILabel new];
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
 				timeLabel.font = timeFont;
 				[cell.contentView addSubview:timeLabel];
 				
-				venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
+				venueLabel = [UILabel new];
 				venueLabel.tag = CELL_VENUE_LABEL_TAG;
 				venueLabel.font = venueFont;
 				[cell.contentView addSubview:venueLabel];
 				
-				calButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				calButton.frame = CGRectMake(11.0, 16.0, 32.0, 32.0);
-				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
-				calButton.tag = CELL_LEFTBUTTON_TAG;
-				[cell.contentView addSubview:calButton];
+				calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				[calendarButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+				calendarButton.tag = CELL_LEFTBUTTON_TAG;
+				[cell.contentView addSubview:calendarButton];
 			}
 			
+			NSInteger titleNumLines = 1;
 			titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
 			CGSize size = [schedule.title sizeWithFont:titleFont];
 			if(size.width < 256.0)
@@ -493,47 +510,23 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			titleLabel.text = schedule.title;
 			
 			timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
-			if(titleNumLines == 1)
-			{
-				[timeLabel setFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
-			}
-			else
-			{
-				[timeLabel setFrame:CGRectMake(52.0, 50.0, 250.0, 20.0)];
-			}
+			[timeLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 28.0 : 50.0, 250.0, 20.0)];
 			timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime];
 			
 			venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
-			if(titleNumLines == 1)
-			{
-				[venueLabel setFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
-			}
-			else
-			{
-				[venueLabel setFrame:CGRectMake(52.0, 68.0, 250.0, 20.0)];
-			}
+			[venueLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
 			
-			calButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-			if(titleNumLines == 1)
-			{
-				[calButton setFrame:CGRectMake(11.0, 16.0, 32.0, 32.0)];
-			}
-			else
-			{
-				[calButton setFrame:CGRectMake(11.0, 28.0, 32.0, 32.0)];
-			}
-			[calButton setImage:buttonImage forState:UIControlStateNormal];
+			calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
+			[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 16.0 : 28.0, 32.0, 32.0)];
+			[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 		}
 			break;
 			
 		case VIEW_BY_TITLE:
 		{
 			NSString *sort = [sorts objectAtIndex:section];
-/*
-			NSArray *schedules = [[titlesWithSort objectForKey:sort] objectAtIndex:row];
-			Schedule *film = [schedules objectAtIndex:filmIdx];
-*/
+
 			NSInteger filmIdx = 0;
 			NSArray *films = [titlesWithSort objectForKey:sort];
 			Film *film = [films objectAtIndex:[indexPath row]];
@@ -709,6 +702,72 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			return 28.0 + (38 * film.schedules.count);
 		}
 	}
+}
+
+#pragma mark Content Filtering
+
+-(void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+#pragma warning "CHECK correct usage of films and schedules arrays"
+	curFilms = [NSMutableArray arrayWithArray:delegate.festival.films];
+	curSchedules = [NSMutableArray arrayWithArray:delegate.festival.schedules];
+	
+	if(searchText.length != 0)
+	{
+		NSMutableArray *foundFilms = [NSMutableArray array];
+		if(searchText.length != 0)
+		{
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@", searchText];
+			foundFilms = [NSMutableArray arrayWithArray:[curFilms filteredArrayUsingPredicate:predicate]];
+		}
+		
+		NSMutableArray *filmsToRemove = [NSMutableArray arrayWithArray:curFilms];
+		
+		[filmsToRemove removeObjectsInArray:foundFilms];
+				
+		for(Film *film in filmsToRemove)
+		{
+			[curSchedules removeObjectsInArray:film.schedules];
+		}
+		
+		curFilms = foundFilms;
+	}
+	
+	[data removeAllObjects];
+	[days removeAllObjects];
+	[index removeAllObjects];
+	[titlesWithSort removeAllObjects];
+	[sorts removeAllObjects];
+	
+	[self prepareData];
+}
+
+#pragma mark - UISearchDisplayController Delegate Methods
+
+-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+	
+	// Tells the table data source to reload when text changes
+	
+    [self filterContentForSearchText:searchString scope:
+	 
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+	
+	// Return YES to cause the search result table view to be reloaded.
+	
+    return YES;
+}
+
+-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
+	
+	// Tells the table data source to reload when scope bar selection changes
+	
+    [self filterContentForSearchText:self.searchDisplayController.searchBar.text scope:
+	 
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
+	
+	// Return YES to cause the search result table view to be reloaded.
+	
+    return YES;
 }
 
 @end

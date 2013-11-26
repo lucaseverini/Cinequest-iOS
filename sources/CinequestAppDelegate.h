@@ -35,7 +35,13 @@
 
 #define TICKET_LINE @"tel://1-408-295-3378"
 
+#define CALENDAR_NAME @"Cinequest"
+
 #define EMPTY 0
+#define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)
+
+#define VIEW_BY_DATE	0
+#define VIEW_BY_TITLE	1
 
 #define NETWORK_CONNECTION_NONE  0
 #define NETWORK_CONNECTION_WIFI  1

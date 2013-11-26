@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
@@ -8,7 +8,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FilmsViewController">
             <connections>
                 <outlet property="activity" destination="24" id="26"/>
+                <outlet property="filmSearchBar" destination="GZP-of-0qC" id="gW1-wi-mH3"/>
                 <outlet property="filmsTableView" destination="4" id="7by-zA-F4y"/>
+                <outlet property="searchDisplayController" destination="wqa-Dt-LMu" id="mc3-qS-Tjc"/>
                 <outlet property="view" destination="11" id="20"/>
             </connections>
         </placeholder>
@@ -22,6 +24,14 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <searchBar key="tableHeaderView" contentMode="redraw" id="GZP-of-0qC">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                        <textInputTraits key="textInputTraits"/>
+                        <connections>
+                            <outlet property="delegate" destination="-1" id="q7G-jt-UMe"/>
+                        </connections>
+                    </searchBar>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="6"/>
                         <outlet property="delegate" destination="-1" id="7"/>
@@ -46,5 +56,14 @@
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
+        <searchDisplayController id="wqa-Dt-LMu">
+            <connections>
+                <outlet property="delegate" destination="-1" id="CrI-ZO-mFS"/>
+                <outlet property="searchBar" destination="GZP-of-0qC" id="L5w-aJ-j1a"/>
+                <outlet property="searchContentsController" destination="-1" id="Ko2-ir-hm8"/>
+                <outlet property="searchResultsDataSource" destination="-1" id="yAe-eT-bNg"/>
+                <outlet property="searchResultsDelegate" destination="-1" id="4JC-qR-t4P"/>
+            </connections>
+        </searchDisplayController>
     </objects>
 </document>
