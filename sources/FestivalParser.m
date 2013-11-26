@@ -138,15 +138,12 @@
                 Film *film = [self getFilmFrom:show];
                 [shorts setObject:film forKey:show.ID];
                 [self addItem:film to:festival.sortedFilms];
-                // TODO: add film to festival.sortedSchedules when done
             } else if ([eventType containsObject:@"Forum"]) {
                 Forum *forum = [self getForumFrom:show];
                 [shorts setObject:forum forKey:show.ID];
-                // TODO: add forum to festival.sortedForums when done
             } else if ([eventType containsObject:@"Special"]) {
                 Special *special = [self getSpecialFrom:show];
                 [shorts setObject:special forKey:show.ID];
-                // TODO: add special to festival.sortedSpecials when done
             }
         }
     }
@@ -223,7 +220,9 @@
         NSMutableArray *values = [alphabetDictionary objectForKey:firstLetter];
         if (values == nil) {
             values = [NSMutableArray array];
+            [values addObject:item];
             [alphabetDictionary setObject:values forKey:firstLetter];
+            return;
         } else {
             [values addObject:item];
         }
@@ -238,7 +237,9 @@
             values = [festival.sortedSchedules objectForKey:date];
             if (values == nil) {
                 values = [NSMutableArray array];
+                [values addObject:item];
                 [festival.sortedSchedules setObject:values forKey:date];
+                return;
             } else {
                 [values addObject:item];
             }
@@ -246,7 +247,9 @@
             values = [festival.sortedForums objectForKey:date];
             if (values == nil) {
                 values = [NSMutableArray array];
+                [values addObject:item];
                 [festival.sortedForums setObject:values forKey:date];
+                return;
             } else {
                 [values addObject:item];
             }
@@ -254,16 +257,15 @@
             values = [festival.sortedSpecials objectForKey:date];
             if (values == nil) {
                 values = [NSMutableArray array];
+                [values addObject:item];
                 [festival.sortedSpecials setObject:values forKey:date];
+                return;
             } else {
                 [values addObject:item];
             }
         }
     }
 }
-
-
-
 
 - (NSMutableArray *)getShows
 {

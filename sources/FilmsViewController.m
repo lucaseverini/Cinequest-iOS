@@ -287,13 +287,42 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	[titlesWithSort setObject:temp forKey:pre]; */
     
+    // for Date segment
     days = (NSMutableArray*)[[delegate.festival sortedSchedules] allKeys];
-    days = (NSMutableArray*)[days sortedArrayUsingSelector:@selector(compare:)];
-    data = [delegate.festival sortedFilms];
+    days = (NSMutableArray*)[days sortedArrayUsingComparator:^(id object1, id object2) {
+        NSString *day1 = (NSString *)object1;
+        NSString *day2 = (NSString *)object2;
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        
+        [dateFormatter setDateFormat:@"EEEE, MMMM d"];
+        NSDate *date1 = [dateFormatter dateFromString:day1];
+        NSDate *date2 = [dateFormatter dateFromString:day2];
+        
+        return [date1 compare:date2];
+    }];
     
+    data = [delegate.festival sortedSchedules];
+    // sort each array corresponding to each key in data
+    /*for (NSString *date in days) {
+        NSMutableArray *films = [data objectForKey:date];
+        films = (NSMutableArray*)[films sortedArrayUsingComparator:^(id object1, id object2) {
+            Film *film1 = (NSString *)object1;
+            Film *film2 = (NSString *)object2;
+            
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            
+            [dateFormatter setDateFormat:@"EEEE, MMMM d"];
+            NSDate *date1 = [dateFormatter dateFromString:day1];
+            NSDate *date2 = [dateFormatter dateFromString:day2];
+            
+            return [date1 compare:date2];
+        }];
+    } */
+
+    // for A-Z segment
     sorts = (NSMutableArray*)[[delegate.festival sortedFilms] allKeys];
-    titlesWithSort = [delegate.festival sortedFilms];
-    
+    titlesWithSort = [delegate.festival sortedSchedules];
     
     
     for (NSString *date in days) {
@@ -302,7 +331,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
     
     NSLog(@"%@", data);
-    NSLog(@"%@", titlesWithSort);
+    //NSLog(@"%@", titlesWithSort);
     
 	[activity stopAnimating];
 	
