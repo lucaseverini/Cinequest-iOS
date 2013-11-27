@@ -181,7 +181,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 			
 		case CALL_N_EMAIL_SECTION:
-			return 2;
+			return 1;
 			break;
 	}
 }
@@ -197,11 +197,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 			
 		case SOCIAL_MEDIA_SECTION:
-			answer = @"Share to Social Media";
+			answer = @"Share Film Detail";
 			break;
 			
 		case CALL_N_EMAIL_SECTION:
-			answer = @"Actions";
+			answer = @"Ticket Information";
 			break;
 	}
 	
@@ -319,19 +319,29 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
                 UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                fbButton.frame = CGRectMake(40, 10, 32, 32);
+                fbButton.frame = CGRectMake(12.0, 10.0, 32.0, 32.0);
                 [fbButton addTarget:self action:@selector(pressToShareToFacebook:) forControlEvents:UIControlEventTouchDown];
                 [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
-                [fbButton setImage:[UIImage imageNamed:@"facebook-pressed.png"] forState:UIControlStateHighlighted];
                 [cell.contentView addSubview:fbButton];
                 
                 UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				twButton.frame = CGRectMake(92, 10, 32, 32);
+				twButton.frame = CGRectMake(82.0, 10.0, 32.0, 32.0);
 				[twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
-                [twButton setImage:[UIImage imageNamed:@"twitter"] forState:UIControlStateNormal];
-                [twButton setImage:[UIImage imageNamed:@"twitter-pressed.png"] forState:UIControlStateHighlighted];
+                [twButton setImage:[UIImage imageNamed:@"twitter.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:twButton];
-            }
+
+				UIButton *googleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				googleButton.frame = CGRectMake(152.0, 10.0, 32.0, 32.0);
+				[googleButton addTarget:self action:@selector(shareToGooglePlus:) forControlEvents:UIControlEventTouchDown];
+                [googleButton setImage:[UIImage imageNamed:@"googleplus.png"] forState:UIControlStateNormal];
+                [cell.contentView addSubview:googleButton];
+
+				UIButton *mailButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				mailButton.frame = CGRectMake(222.0, 10.0, 32.0, 32.0);
+				[mailButton addTarget:self action:@selector(shareToMail:) forControlEvents:UIControlEventTouchDown];
+                [mailButton setImage:[UIImage imageNamed:@"mail.png"] forState:UIControlStateNormal];
+                [cell.contentView addSubview:mailButton];
+			}
 			
 			break;
 		}
@@ -342,22 +352,18 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			if (cell == nil)
 			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
+
+				UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				phoneButton.frame = CGRectMake(12.0, 10.0, 32.0, 32.0);
+				[phoneButton addTarget:self action:@selector(callTicketLine:) forControlEvents:UIControlEventTouchDown];
+                [phoneButton setImage:[UIImage imageNamed:@"phone-Ticket.png"] forState:UIControlStateNormal];
+                [cell.contentView addSubview:phoneButton];
 				
-				cell.textLabel.font = actionFont;
-			}
-			
-			switch (indexPath.row)
-			{
-				case 0:
-					cell.textLabel.text = @"Call Cinequest Ticketing Line";
-					break;
-					
-				case 1:
-					cell.textLabel.text = @"Email Film Detail";
-					break;
-					
-				default:
-					break;
+				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				linkButton.frame = CGRectMake(82.0, 10.0, 32.0, 32.0);
+				[linkButton addTarget:self action:@selector(goTicketLink:) forControlEvents:UIControlEventTouchDown];
+                [linkButton setImage:[UIImage imageNamed:@"link-Ticket.png"] forState:UIControlStateNormal];
+                [cell.contentView addSubview:linkButton];
 			}
 		}
 			break;
@@ -374,112 +380,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSInteger section = [indexPath section];
-	NSInteger row = [indexPath row];
-	
-	if (section == SCHEDULE_SECTION)
-	{
-		NSMutableArray *schedules = [film schedules];
-		Schedule *schedule = [schedules objectAtIndex:row];
-		
-		[self actionForFilm:schedule];
-	}
-	else if (section == CALL_N_EMAIL_SECTION)
-	{
-		switch (row)
-		{
-			case 0:
-			{
-				UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Application will now exit."
-													message:@"Are you sure?"
-													delegate:self
-													cancelButtonTitle:@"Cancel"
-													otherButtonTitles:@"OK",nil];
-				alert.tag = 2;
-				[alert show];
-				break;
-			}
-				
-			case 1:
-			{
-				MFMailComposeViewController *controller = [MFMailComposeViewController new];
-				NSString *friendlyMessage = @"Hey,\nI found an interesting film from Cinequest festival.\nCheck it out!";
-				NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@", friendlyMessage, [film ID]];
-				controller.mailComposeDelegate = self;
-				[controller setSubject:[film name]];
-				[controller setMessageBody:messageBody isHTML:NO];
-				
-				delegate.isPresentingModalView = YES;
-				[self.navigationController presentViewController:controller animated:YES completion:nil];
-				[[[[controller viewControllers] lastObject] navigationItem] setTitle:@"Set the title"];
-				break;
-			}
-				
-			default:
-				break;
-		}
-	}
-	
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-#pragma mark -
-#pragma mark UIAlertView Delegate
-
-- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-/*
-	if(alertView.tag == 1)
-	{
-		[[self navigationController] popToRootViewControllerAnimated:YES];
-		return;
-	}
-	else if(alertView.tag == 2)
-	{
-		Schedule *schedule = objc_getAssociatedObject(alertView, kAssociatedScheduleKey);
-		
-		switch(buttonIndex)
-		{
-			case 1:			// choice1
-				break;
-				
-			case 2:			// choice2
-				break;
-				
-			case 3:			// choice3
-				if(schedule.presentInScheduler)
-				{
-					[self launchMaps];
-				}
-				else
-				{
-					// Open calendar
-				}
-				break;
-				
-			case 4:			// choice4
-				if(!schedule.presentInScheduler)
-				{
-					[self launchMaps];
-				}
-				break;
-				
-			default:		// Cancel
-				break;
-		}
-	}
-	
-	if (buttonIndex == 1)
-	{
-		[app openURL:[NSURL URLWithString:TICKET_LINE]];
-	}
-	else
-	{
-	}
-	
-	NSIndexPath *tableSelection = [self.detailsTableView indexPathForSelectedRow];
-    [self.detailsTableView deselectRowAtIndexPath:tableSelection animated:YES];
-*/
 }
 
 #pragma mark -
@@ -538,6 +438,32 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		alertView.tag = 4;
         [alertView show];
     }
+}
+
+- (IBAction) shareToMail:(id)sender
+{
+	MFMailComposeViewController *controller = [MFMailComposeViewController new];
+	NSString *friendlyMessage = @"Hey,\nI found an interesting film from Cinequest festival.\nCheck it out!";
+	NSString *messageBody = [NSString stringWithFormat:@"%@\n http://mobile.cinequest.org/event_view.php?eid=%@", friendlyMessage, [film ID]];
+	controller.mailComposeDelegate = self;
+	[controller setSubject:[film name]];
+	[controller setMessageBody:messageBody isHTML:NO];
+	
+	delegate.isPresentingModalView = YES;
+	[self.navigationController presentViewController:controller animated:YES completion:nil];
+	[[[[controller viewControllers] lastObject] navigationItem] setTitle:@"Set the title"];
+}
+
+- (IBAction) shareToGooglePlus:(id)sender
+{
+}
+
+- (IBAction) callTicketLine:(id)sender
+{
+}
+
+- (IBAction) goTicketLink:(id)sender
+{
 }
 
 - (void) mapsButtonTapped:(id)sender event:(id)touchEvent

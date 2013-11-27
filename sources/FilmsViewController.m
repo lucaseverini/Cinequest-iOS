@@ -78,18 +78,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
     return schedule;
 }
 
-- (void) launchMaps
-{
-	// Create an MKMapItem to pass to the Maps app
-	CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(16.775, -3.009);
-	MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate addressDictionary:nil];
-	MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
-	[mapItem setName:@"Cinequest - Venue C12"];
-	
-	// Pass the map item to the Maps app
-	[mapItem openInMapsWithLaunchOptions:nil];
-}
-
 - (IBAction) switchTitle:(id)sender
 {
 	switcher = [sender selectedSegmentIndex];
@@ -171,10 +159,10 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	// Start parsing data
 	[data removeAllObjects];
-	//[days removeAllObjects];
+	[days removeAllObjects];
 	[index removeAllObjects];
 	[titlesWithSort removeAllObjects];
-	//[sorts removeAllObjects];
+	[sorts removeAllObjects];
 	
 	[self performSelectorOnMainThread:@selector(prepareData) withObject:nil waitUntilDone:NO];
 }
@@ -234,7 +222,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) prepareData
 {
 	// FILMS BY DATE
-    /*[curSchedules sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES], nil]];
+    [curSchedules sortUsingDescriptors:[NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES], nil]];
     NSString *previousDay = @"empty";
 	NSMutableArray *tempArray = [NSMutableArray array];
     
@@ -285,53 +273,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		}
 	}
 	
-	[titlesWithSort setObject:temp forKey:pre]; */
-    
-    // for Date segment
-    days = (NSMutableArray*)[[delegate.festival sortedSchedules] allKeys];
-    days = (NSMutableArray*)[days sortedArrayUsingComparator:^(id object1, id object2) {
-        NSString *day1 = (NSString *)object1;
-        NSString *day2 = (NSString *)object2;
-        
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        
-        [dateFormatter setDateFormat:@"EEEE, MMMM d"];
-        NSDate *date1 = [dateFormatter dateFromString:day1];
-        NSDate *date2 = [dateFormatter dateFromString:day2];
-        
-        return [date1 compare:date2];
-    }];
-    
-    data = [delegate.festival sortedSchedules];
-    // sort each array corresponding to each key in data
-    /*for (NSString *date in days) {
-        NSMutableArray *films = [data objectForKey:date];
-        films = (NSMutableArray*)[films sortedArrayUsingComparator:^(id object1, id object2) {
-            Film *film1 = (NSString *)object1;
-            Film *film2 = (NSString *)object2;
-            
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            
-            [dateFormatter setDateFormat:@"EEEE, MMMM d"];
-            NSDate *date1 = [dateFormatter dateFromString:day1];
-            NSDate *date2 = [dateFormatter dateFromString:day2];
-            
-            return [date1 compare:date2];
-        }];
-    } */
-
-    // for A-Z segment
-    sorts = (NSMutableArray*)[[delegate.festival sortedFilms] allKeys];
-    titlesWithSort = [delegate.festival sortedSchedules];
-    
-    
-    for (NSString *date in days) {
-        NSString *day = [[date componentsSeparatedByString:@" "] objectAtIndex:2];
-        [index addObject:day];
-    }
-    
-    NSLog(@"%@", data);
-    //NSLog(@"%@", titlesWithSort);
+	[titlesWithSort setObject:temp forKey:pre];
     
 	[activity stopAnimating];
 	
@@ -462,8 +404,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		{
 			// get film objects using date
 			NSString *dateString = [days objectAtIndex:section];
-			Film *film = [[data objectForKey:dateString] objectAtIndex:row];
-            Schedule *schedule = [film.schedules objectAtIndex:0];
+			Schedule *schedule = [[data objectForKey:dateString] objectAtIndex:row];
 			
 			// check if current cell is already added to mySchedule
 			NSUInteger idx, count = [mySchedule count];
@@ -524,7 +465,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			}
 			
 			[titleLabel setNumberOfLines:titleNumLines];
-			titleLabel.text = film.name;
+			titleLabel.text = schedule.title;
 			
 			timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
 			[timeLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 28.0 : 50.0, 250.0, 20.0)];
@@ -691,8 +632,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	if(switcher == VIEW_BY_DATE)
 	{
 		NSString *dateString = [days objectAtIndex:section];
-        Film *film = [[data objectForKey:dateString] objectAtIndex:row];
-		Schedule *schedule = [film.schedules objectAtIndex:0];
+		Schedule *schedule = [[data objectForKey:dateString] objectAtIndex:row];
 		
 		CGSize size = [schedule.title sizeWithFont:titleFont];
 		if(size.width >= 256.0)
