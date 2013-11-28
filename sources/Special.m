@@ -15,7 +15,8 @@
 	self = [super init];
 	if(self != nil)
 	{
-		super.schedules = [[NSMutableArray alloc] init];
+		super.shortItems = [[NSMutableArray alloc] init];
+        super.schedules = [[NSMutableArray alloc] init];
 	}
 	
     return self;
@@ -23,7 +24,9 @@
 
 - (void) dealloc
 {
+    super.shortItems = nil;
 	super.schedules = nil;
 }
+
 
 @end

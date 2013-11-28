@@ -288,6 +288,7 @@
     film.name = show.name;
     film.description = show.shortDescription;
     film.imageURL = show.thumbImageURL;
+    film.infoLink = show.infoLink;
     film.director = [self get:show.customProperties forkey:@"Director"];
     film.producer = [self get:show.customProperties forkey:@"Producer"];
     film.cinematographer = [self get:show.customProperties forkey:@"Cinematographer"];

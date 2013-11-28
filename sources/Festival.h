@@ -18,10 +18,26 @@
 @property (strong, nonatomic) NSMutableArray *events;
 @property (strong, nonatomic) NSString *lastChanged;
 
-@property (strong, nonatomic) NSMutableDictionary *sortedSchedules;
-@property (strong, nonatomic) NSMutableDictionary *sortedFilms;
-@property (strong, nonatomic) NSMutableDictionary *sortedSpecials;
-@property (strong, nonatomic) NSMutableDictionary *sortedForums;
+// data for Date segment in Films Tab
+@property (strong, nonatomic) NSMutableDictionary *dateToFilmsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedKeysInDateToFilmsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedIndexesInDateToFilmsDictionary;
+
+// data for A-Z segment in Films Tab
+@property (strong, nonatomic) NSMutableDictionary *alphabetToFilmsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedKeysInAlphabetToFilmsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedIndexesInAlphabetToFilmsDictionary;
+
+// data for Forums Tab
+@property (strong, nonatomic) NSMutableDictionary *dateToForumsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedKeysInDateToForumsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedIndexesInDateToForumsDictionary;
+
+// data for Events Tab
+@property (strong, nonatomic) NSMutableDictionary *dateToSpecialsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedKeysInDateToSpecialsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedIndexesInDateToSpecialsDictionary;
+
 
 - (NSMutableArray *) getSchedulesForDay:(NSString *)date;
 - (Film *) getFilmForId:(NSString *)ID;

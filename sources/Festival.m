@@ -21,10 +21,22 @@
 @synthesize lastChanged;
 @synthesize events;
 
-@synthesize sortedSchedules;
-@synthesize sortedFilms;
-@synthesize sortedSpecials;
-@synthesize sortedForums;
+@synthesize dateToFilmsDictionary;
+@synthesize sortedKeysInDateToFilmsDictionary;
+@synthesize sortedIndexesInDateToFilmsDictionary;
+
+@synthesize alphabetToFilmsDictionary;
+@synthesize sortedKeysInAlphabetToFilmsDictionary;
+@synthesize sortedIndexesInAlphabetToFilmsDictionary;
+
+@synthesize dateToForumsDictionary;
+@synthesize sortedKeysInDateToForumsDictionary;
+@synthesize sortedIndexesInDateToForumsDictionary;
+
+@synthesize dateToSpecialsDictionary;
+@synthesize sortedKeysInDateToSpecialsDictionary;
+@synthesize sortedIndexesInDateToSpecialsDictionary;
+
 
 - (id) init
 {
@@ -38,10 +50,21 @@
 		lastChanged = @"";
 		events = [[NSMutableArray alloc] init];
         
-        sortedSchedules = [[NSMutableDictionary alloc] init];
-        sortedFilms = [[NSMutableDictionary alloc] init];
-        sortedForums = [[NSMutableDictionary alloc] init];
-        sortedSpecials = [[NSMutableDictionary alloc] init];
+        dateToFilmsDictionary = [[NSMutableDictionary alloc] init];
+        sortedKeysInDateToFilmsDictionary = [[NSMutableArray alloc] init];
+        sortedIndexesInDateToFilmsDictionary = [[NSMutableArray alloc] init];
+        
+        alphabetToFilmsDictionary = [[NSMutableDictionary alloc] init];
+        sortedKeysInAlphabetToFilmsDictionary = [[NSMutableArray alloc] init];
+        sortedIndexesInDateToFilmsDictionary = [[NSMutableArray alloc] init];
+        
+        dateToForumsDictionary = [[NSMutableDictionary alloc] init];
+        sortedKeysInDateToForumsDictionary = [[NSMutableArray alloc] init];
+        sortedIndexesInDateToForumsDictionary = [[NSMutableArray alloc] init];
+        
+        dateToSpecialsDictionary = [[NSMutableDictionary alloc] init];
+        sortedKeysInDateToSpecialsDictionary = [[NSMutableArray alloc] init];
+        sortedIndexesInDateToSpecialsDictionary = [[NSMutableArray alloc] init];
 	}
 	
     return self;
