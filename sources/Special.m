@@ -10,6 +10,17 @@
 
 @implementation Special
 
+@synthesize genre;
+@synthesize director;
+@synthesize producer;
+@synthesize writer;
+@synthesize cinematographer;
+@synthesize editor;
+@synthesize cast;
+@synthesize country;
+@synthesize language;
+@synthesize filmInfo;
+
 - (id) init
 {
 	self = [super init];

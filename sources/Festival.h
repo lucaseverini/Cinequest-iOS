@@ -15,8 +15,11 @@
 @property (strong, nonatomic) NSMutableArray *films;
 @property (strong, nonatomic) NSMutableArray *schedules;
 @property (strong, nonatomic) NSMutableArray *venueLocations;
-@property (strong, nonatomic) NSMutableArray *events;
+//@property (strong, nonatomic) NSMutableArray *events;
 @property (strong, nonatomic) NSString *lastChanged;
+
+@property (strong, nonatomic) NSMutableArray *forums;
+@property (strong, nonatomic) NSMutableArray *specials;
 
 // data for Date segment in Films Tab
 @property (strong, nonatomic) NSMutableDictionary *dateToFilmsDictionary;
@@ -26,7 +29,7 @@
 // data for A-Z segment in Films Tab
 @property (strong, nonatomic) NSMutableDictionary *alphabetToFilmsDictionary;
 @property (strong, nonatomic) NSMutableArray *sortedKeysInAlphabetToFilmsDictionary;
-@property (strong, nonatomic) NSMutableArray *sortedIndexesInAlphabetToFilmsDictionary;
+//@property (strong, nonatomic) NSMutableArray *sortedIndexesInAlphabetToFilmsDictionary;
 
 // data for Forums Tab
 @property (strong, nonatomic) NSMutableDictionary *dateToForumsDictionary;
@@ -40,7 +43,7 @@
 
 
 - (NSMutableArray *) getSchedulesForDay:(NSString *)date;
-- (Film *) getFilmForId:(NSString *)ID;
+- (Film *)getFilmForId:(NSString *)ID;
 - (ProgramItem *) getProgramItemForId:(NSString *)ID;
 
 @end

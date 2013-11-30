@@ -224,7 +224,7 @@
     return loc;
 }
 
-- (Schedule *) getSchedule:(Showing *) showing forItem:(ProgramItem *)item
+- (Schedule *)getSchedule:(Showing *)showing forItem:(ProgramItem *)item
 {
     Schedule *schedule = [[Schedule alloc] init];
     schedule.ID = showing.ID;

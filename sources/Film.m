@@ -10,7 +10,6 @@
 
 @implementation Film
 
-@synthesize tagline;
 @synthesize genre;
 @synthesize director;
 @synthesize producer;

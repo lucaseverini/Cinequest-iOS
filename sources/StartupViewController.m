@@ -12,6 +12,10 @@
 #import "Reachability.h"
 #import "DataProvider.h"
 #import "NewsViewController.h"
+#import "NewFestivalParser.h"
+#import "Film.h"
+#import "Forum.h"
+#import "Special.h"
 
 @implementation StartupViewController
 
@@ -95,6 +99,89 @@
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
 	^{
 		appDelegate.festival = [[FestivalParser new] parseFestival];
+        
+        // Added to test the NewFestivalParser
+        Festival *newFestival = [[NewFestivalParser new] parseFestival];
+        
+        // uncomment the block below to test the console log for the A-Z segment
+        
+        /* NSLog(@"alphabet keys");
+        NSLog(@"%@", newFestival.sortedKeysInAlphabetToFilmsDictionary);
+        for (NSString *key in newFestival.sortedKeysInAlphabetToFilmsDictionary) {
+            NSLog(@"%@", key);
+            NSArray *films = [newFestival.alphabetToFilmsDictionary objectForKey:key];
+            for (Film *film in films) {
+                NSLog(@"%@", film.name);
+                for (Schedule *schedule in film.schedules) {
+                    NSLog(@"%@ - %@", schedule.dateString, schedule.startTime);
+                }
+            }
+        } */
+        
+        // uncomment the block below to test the console log for the Date segment
+        
+        NSLog(@"date to films keys:");
+        NSLog(@"%@", newFestival.sortedKeysInDateToFilmsDictionary);
+        NSLog(@"date to films indexes");
+        NSLog(@"%@", newFestival.sortedIndexesInDateToFilmsDictionary);
+        
+        for (NSString *key in newFestival.sortedKeysInDateToFilmsDictionary) {
+            NSLog(@"%@", key);
+            NSArray *films = [newFestival.dateToFilmsDictionary objectForKey:key];
+            
+            for (Film *film in films) {
+                Schedule *schedule;
+                for (Schedule *sch in film.schedules) {
+                    if ([sch.longDateString isEqualToString:key])
+                        schedule = sch;
+                }
+                NSLog(@"%@ - %@", film.name, schedule.startTime);
+            }
+            NSLog(@"\n");
+        }
+
+        // uncomment the block below to test the console log for the Forum tab
+        
+        /* NSLog(@"date to forums keys:");
+        NSLog(@"%@", newFestival.sortedKeysInDateToForumsDictionary);
+        NSLog(@"date to films indexes");
+        NSLog(@"%@", newFestival.sortedIndexesInDateToForumsDictionary);
+        for (NSString *key in newFestival.sortedKeysInDateToForumsDictionary) {
+            NSLog(@"%@", key);
+            NSArray *forums = [newFestival.dateToForumsDictionary objectForKey:key];
+            
+            for (Forum *forum in forums) {
+                Schedule *schedule;
+                for (Schedule *sch in forum.schedules) {
+                    if ([sch.longDateString isEqualToString:key])
+                        schedule = sch;
+                }
+                NSLog(@"%@ - %@", forum.name, schedule.startTime);
+            }
+            NSLog(@"\n");
+        } */
+        
+        // uncomment the block below to test the console log for the Event Tab (Event ~ Special)
+        
+        /* NSLog(@"date to specials keys:");
+        NSLog(@"%@", newFestival.sortedKeysInDateToSpecialsDictionary);
+        NSLog(@"date to specials indexes");
+        NSLog(@"%@", newFestival.sortedIndexesInDateToSpecialsDictionary);
+        for (NSString *key in newFestival.sortedKeysInDateToSpecialsDictionary) {
+            NSLog(@"%@", key);
+            NSArray *specials = [newFestival.dateToSpecialsDictionary objectForKey:key];
+         
+            for (Special *special in specials) {
+                Schedule *schedule;
+                for (Schedule *sch in special.schedules) {
+                    if ([sch.longDateString isEqualToString:key])
+                        schedule = sch;
+                }
+                NSLog(@"%@ - %@", special.name, schedule.startTime);
+            }
+            NSLog(@"\n");
+        } */
+        
 	});
 	
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),

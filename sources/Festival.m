@@ -19,7 +19,10 @@
 @synthesize schedules;
 @synthesize venueLocations;
 @synthesize lastChanged;
-@synthesize events;
+//@synthesize events;
+
+@synthesize forums;
+@synthesize specials;
 
 @synthesize dateToFilmsDictionary;
 @synthesize sortedKeysInDateToFilmsDictionary;
@@ -27,7 +30,7 @@
 
 @synthesize alphabetToFilmsDictionary;
 @synthesize sortedKeysInAlphabetToFilmsDictionary;
-@synthesize sortedIndexesInAlphabetToFilmsDictionary;
+//@synthesize sortedIndexesInAlphabetToFilmsDictionary;
 
 @synthesize dateToForumsDictionary;
 @synthesize sortedKeysInDateToForumsDictionary;
@@ -48,7 +51,10 @@
 		schedules = [[NSMutableArray alloc] init];
 		venueLocations = [[NSMutableArray alloc] init];
 		lastChanged = @"";
-		events = [[NSMutableArray alloc] init];
+//		events = [[NSMutableArray alloc] init];
+        
+        forums = [[NSMutableArray alloc]  init];
+        specials = [[NSMutableArray alloc] init];
         
         dateToFilmsDictionary = [[NSMutableDictionary alloc] init];
         sortedKeysInDateToFilmsDictionary = [[NSMutableArray alloc] init];

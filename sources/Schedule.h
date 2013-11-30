@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSString *ID;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *itemID;
+@property (nonatomic, strong) NSString *description;
 @property (nonatomic, strong) NSDate *startDate;		// @"yyyy-MM-dd'T'HH:mm:ss"
 @property (nonatomic, strong) NSString *startTime;		// @"h:mm a"
 @property (nonatomic, strong) NSString *endTime;		// @"h:mm a"

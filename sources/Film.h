@@ -10,7 +10,6 @@
 
 @interface Film : CinequestItem
 
-@property (strong, nonatomic) NSString *tagline;
 @property (strong, nonatomic) NSString *genre;
 @property (strong, nonatomic) NSString *director;
 @property (strong, nonatomic) NSString *producer;

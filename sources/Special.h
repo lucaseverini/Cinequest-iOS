@@ -10,4 +10,15 @@
 
 @interface Special : CinequestItem
 
+@property (strong, nonatomic) NSString *genre;
+@property (strong, nonatomic) NSString *director;
+@property (strong, nonatomic) NSString *producer;
+@property (strong, nonatomic) NSString *writer;
+@property (strong, nonatomic) NSString *cinematographer;
+@property (strong, nonatomic) NSString *editor;
+@property (strong, nonatomic) NSString *cast;
+@property (strong, nonatomic) NSString *country;
+@property (strong, nonatomic) NSString *language;
+@property (strong, nonatomic) NSString *filmInfo;
+
 @end

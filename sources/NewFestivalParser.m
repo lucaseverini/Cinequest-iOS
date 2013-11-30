@@ -37,73 +37,6 @@
     return self;
 }
 
-/* - (Festival*) parseFestival
- {
- [self parseShows];
- 
- Festival *festival = [[Festival alloc] init];
- NSMutableDictionary *shortFilms = [[NSMutableDictionary alloc] init];
- 
- NSMutableSet *uniqueVenues = [[NSMutableSet alloc] init];
- 
- // Remove the partial shows from shows
- // Add them to partialShows, grouped by their title
- 
- NSMutableArray *discardedShows = [[NSMutableArray alloc] init];
- for (Show *show in shows) {
- if ([show.currentShowings count] == 0) {
- [discardedShows addObject:show];
- Film *film = [self getFilm:show];
- [shortFilms setObject:film forKey:show.ID];
- [festival.films addObject:film];
- }
- }
- 
- [shows removeObjectsInArray:discardedShows];
- 
- for (Show *show in shows) {
- ProgramItem *item = [self getProgramItem:show];
- [festival.programItems addObject:item];
- NSMutableArray *typeOfFilm = [show.customProperties objectForKey:@"Type of Film"];
- if (typeOfFilm == nil || ![typeOfFilm containsObject:@"Shorts Program"]) {
- Film *film = [self getFilm:show];
- [item.films addObject:film];
- [festival.films addObject:film];
- }
- 
- // Shows that include only Short Films are not included in festival.films
- // festival.films contains only feature films and short films
- //
- 
- NSMutableArray *shortIDs = [show.customProperties objectForKey:@"ShortID"];
- if (shortIDs != nil) {
- for (NSString *ID in shortIDs) {
- Film *shortFilm = [shortFilms objectForKey:ID];
- [item.films addObject:shortFilm];
- }
- }
- 
- for (Showing *showing in show.currentShowings) {
- Schedule *schedule = [self getSchedule:showing forItem:item];
- [festival.schedules addObject:schedule];
- if (![uniqueVenues containsObject:schedule.venue]) {
- [uniqueVenues addObject:schedule.venue];
- [festival.venueLocations addObject:[self getVenueLocation:showing.venue]];
- }
- for (Film *film in item.films) {
- [film.schedules addObject:schedule];
- }
- }
- 
- 
- }
- 
- appDelegate.festivalParsed = YES;
- 
- return festival;
- }
- */
-
 - (Festival*) parseFestival
 {
     [self parseShows];
@@ -130,20 +63,25 @@
                 // consider a Show with no EventType a Film now
                 // but skip when the xml feed is fixed
                 Film *film = [self getFilmFrom:show];
+                [festival.films addObject:film];
                 [shorts setObject:film forKey:show.ID];
                 [self addItem:film to:festival.alphabetToFilmsDictionary];
             } else if ([eventType count] > 1) {
                 // skipping Show that has more than 1 EventType
+                [errorString appendFormat:@"Show with ID: %@ has more than 1 EventType\n", show.ID];
                 continue;
             } else if ([eventType containsObject:@"Film"]) {
                 Film *film = [self getFilmFrom:show];
+                [festival.films addObject:film];
                 [shorts setObject:film forKey:show.ID];
                 [self addItem:film to:festival.alphabetToFilmsDictionary];
             } else if ([eventType containsObject:@"Forum"]) {
                 Forum *forum = [self getForumFrom:show];
+                [festival.forums addObject:forum];
                 [shorts setObject:forum forKey:show.ID];
             } else if ([eventType containsObject:@"Special"]) {
                 Special *special = [self getSpecialFrom:show];
+                [festival.specials addObject:special];
                 [shorts setObject:special forKey:show.ID];
             }
         }
@@ -160,31 +98,40 @@
             [errorString appendFormat:@"Show with ID: %@ has no EventType\n", show.ID];
             // consider a Show with no EventType a Film now
             // but skip when the xml feed is fixed
+            [errorString appendFormat:@"Show with ID: %@ has no EventType\n", show.ID];
             item = [self getFilmFrom:show];
             [self addItem:item to:festival.alphabetToFilmsDictionary];
+            [festival.films addObject:item];
         } else if ([eventType count] > 1) {
             // skipping Show that has more than 1 EventType
+            [errorString appendFormat:@"Show with ID: %@ has more than 1 EventType\n", show.ID];
             continue;
         } else if ([eventType containsObject:@"Film"]) {
             item = [self getFilmFrom:show];
             [self addItem:item to:festival.alphabetToFilmsDictionary];
+            [festival.films addObject:item];
         } else if ([eventType containsObject:@"Forum"]) {
             item = [self getForumFrom:show];
+            [festival.forums addObject:item];
         } else if ([eventType containsObject:@"Special"]) {
             item = [self getSpecialFrom:show];
+            [festival.specials addObject:item];
         }
         
         NSMutableArray *shortIDs = [show.customProperties objectForKey:@"ShortID"];
         if (shortIDs != nil) {
             for (NSString *ID in shortIDs) {
                 CinequestItem *subItem = [shorts objectForKey:ID];
-                [item.shortItems addObject:subItem];
+                if (subItem != nil) {
+                    [item.shortItems addObject:subItem];
+                }
             }
         }
         
         for (Showing *showing in show.currentShowings) {
             Schedule *schedule = [self getScheduleFrom:showing forItem:item];
             [item.schedules addObject:schedule];
+            [festival.schedules addObject:schedule];
             
             [self addItemToDictionary:item with:schedule in:festival];
             
@@ -200,6 +147,7 @@
         
     }
     
+    // Add short items to the corresponding date Dictionary
     for (CinequestItem *shortItem in [shorts allValues]) {
         for (Schedule *shortItemSchedule in shortItem.schedules) {
             [self addItemToDictionary:shortItem with:shortItemSchedule in:festival];
@@ -211,30 +159,43 @@
     // prepare sorted keys and indexes arrays
     
     // for DateToFilmsDictionary
-    festival.sortedKeysInDateToFilmsDictionary =
-                    [self getSortedKeysFromDictionary:[festival dateToFilmsDictionary]];
-    festival.sortedIndexesInDateToFilmsDictionary =
-                    [self getSortedIndexesFromSortedKeys:[festival sortedKeysInDateToFilmsDictionary]];
+    festival.sortedKeysInDateToFilmsDictionary = [self getSortedKeysFromDateDictionary:[festival dateToFilmsDictionary]];
+    festival.sortedIndexesInDateToFilmsDictionary = [self getSortedIndexesFromSortedKeys:[festival sortedKeysInDateToFilmsDictionary]];
+    for (NSString *key in festival.dateToFilmsDictionary) {
+        NSMutableArray *films = (NSMutableArray *)[festival.dateToFilmsDictionary objectForKey:key];
+        [self sortCinequestItemsByStartDate:films forKey:key];
+    }
     
     // for AlphabetToFilmsDictionary
-    festival.sortedKeysInAlphabetToFilmsDictionary =
-                    [self getSortedKeysFromDictionary:[festival alphabetToFilmsDictionary]];
-    festival.sortedIndexesInAlphabetToFilmsDictionary =
-                    [self getSortedIndexesFromSortedKeys:[festival sortedKeysInAlphabetToFilmsDictionary]];
+    festival.sortedKeysInAlphabetToFilmsDictionary = [self getSortedKeysFromAlphabetDictionary:[festival alphabetToFilmsDictionary]];
+    for (NSString *key in festival.sortedKeysInAlphabetToFilmsDictionary) {
+        NSMutableArray *films = (NSMutableArray*)[festival.alphabetToFilmsDictionary objectForKey:key];
+        [self sortCinequestItemsAlphabetically:films];
+    }
+    
     
     // for DateToForumsDictionary
-    festival.sortedKeysInDateToForumsDictionary = [self getSortedKeysFromDictionary:[festival dateToForumsDictionary]];
+    festival.sortedKeysInDateToForumsDictionary = [self getSortedKeysFromDateDictionary:[festival dateToForumsDictionary]];
     festival.sortedIndexesInDateToForumsDictionary = [self getSortedIndexesFromSortedKeys:[festival sortedKeysInDateToForumsDictionary]];
+    for (NSString *key in festival.dateToForumsDictionary) {
+        NSMutableArray *forums = (NSMutableArray *)[festival.dateToForumsDictionary objectForKey:key];
+        [self sortCinequestItemsByStartDate:forums forKey:key];
+    }
     
     // for DateToSpecialsDictionary
-    festival.sortedKeysInDateToSpecialsDictionary = [self getSortedKeysFromDictionary:[festival dateToSpecialsDictionary]];
+    festival.sortedKeysInDateToSpecialsDictionary = [self getSortedKeysFromDateDictionary:[festival dateToSpecialsDictionary]];
     festival.sortedIndexesInDateToSpecialsDictionary = [self getSortedIndexesFromSortedKeys:[festival sortedKeysInDateToSpecialsDictionary]];
+    for (NSString *key in festival.dateToSpecialsDictionary) {
+        NSMutableArray *specials = (NSMutableArray *)[festival.dateToSpecialsDictionary objectForKey:key];
+        [self sortCinequestItemsByStartDate:specials forKey:key];
+    }
     
     return festival;
 }
 
 
-- (void) addItem:(CinequestItem *)item to:(NSMutableDictionary *)alphabetDictionary {
+- (void) addItem:(CinequestItem *)item to:(NSMutableDictionary *)alphabetDictionary
+{
     NSString *itemName = [item name];
     itemName = [itemName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if ([itemName length] > 0) {
@@ -252,7 +213,8 @@
     }
 }
 
-- (void) addItemToDictionary:(CinequestItem *)item with:(Schedule *)schedule in:(Festival*)festival{
+- (void) addItemToDictionary:(CinequestItem *)item with:(Schedule *)schedule in:(Festival*)festival
+{
     NSString *date = [schedule longDateString];
     NSMutableArray *values;
     if ([date length] > 0) {
@@ -306,12 +268,13 @@
     return loc;
 }
 
-- (Schedule *) getScheduleFrom:(Showing *) showing forItem:(CinequestItem *)item
+- (Schedule *)getScheduleFrom:(Showing *)showing forItem:(CinequestItem *)item
 {
     Schedule *schedule = [[Schedule alloc] init];
     schedule.ID = showing.ID;
     schedule.itemID = item.ID;
     schedule.title = item.name;
+    schedule.description = item.description;
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     
@@ -351,25 +314,15 @@
     return modifiedString;
 }
 
-- (ProgramItem *) getProgramItem:(Show *)show
-{
-    ProgramItem *item = [[ProgramItem alloc] init];
-    item.ID = show.ID;
-    item.name = show.name;
-    item.description = show.shortDescription;
-    return item;
-}
-
 - (Film *)getFilmFrom:(Show *)show
 {
     Film *film = [[Film alloc] init];
-    /* TODO: tagline and filmInfo seem unused
-     * TODO: What should we do with the executive producers?
-     */
+    
     film.ID = show.ID;
     film.name = show.name;
     film.description = show.shortDescription;
     film.imageURL = show.thumbImageURL;
+    film.infoLink = show.infoLink;
     film.director = [self get:show.customProperties forkey:@"Director"];
     film.producer = [self get:show.customProperties forkey:@"Producer"];
     film.cinematographer = [self get:show.customProperties forkey:@"Cinematographer"];
@@ -378,18 +331,41 @@
     film.country = [self get:show.customProperties forkey:@"Production Country"];
     film.language = [self get:show.customProperties forkey:@"Language"];
     film.genre = [self get:show.customProperties forkey:@"Genre"];
+    
     return film;
 }
 
 - (Forum *)getForumFrom:(Show *)show
 {
     Forum *forum = [[Forum alloc] init];
+    
+    forum.ID = show.ID;
+    forum.name = show.name;
+    forum.description = show.shortDescription;
+    forum.imageURL = show.thumbImageURL;
+    forum.infoLink = show.infoLink;
+    
     return forum;
 }
 
 - (Special *)getSpecialFrom:(Show *)show
 {
     Special *special = [[Special alloc] init];
+    
+    special.ID = show.ID;
+    special.name = show.name;
+    special.description = show.shortDescription;
+    special.imageURL = show.thumbImageURL;
+    special.infoLink = show.infoLink;
+    special.director = [self get:show.customProperties forkey:@"Director"];
+    special.producer = [self get:show.customProperties forkey:@"Producer"];
+    special.cinematographer = [self get:show.customProperties forkey:@"Cinematographer"];
+    special.editor  =  [self get:show.customProperties forkey:@"Editor"];
+    special.cast = [self get:show.customProperties forkey:@"Cast"];
+    special.country = [self get:show.customProperties forkey:@"Production Country"];
+    special.language = [self get:show.customProperties forkey:@"Language"];
+    special.genre = [self get:show.customProperties forkey:@"Genre"];
+    
     return special;
 }
 
@@ -410,13 +386,71 @@
     return result;
 }
 
--(NSMutableArray *)getSortedKeysFromDictionary:(NSMutableDictionary *)dictionary {
+-(NSMutableArray *)getSortedKeysFromAlphabetDictionary:(NSMutableDictionary *)dictionary
+{
     NSMutableArray *sortedKeys = [[NSMutableArray alloc] init];
+    sortedKeys = (NSMutableArray *)[[dictionary allKeys] sortedArrayUsingSelector:@selector(compare:)];
     return sortedKeys;
 }
 
--(NSMutableArray *)getSortedIndexesFromSortedKeys:(NSMutableArray *)sortedKeysArray {
+-(void)sortCinequestItemsAlphabetically:(NSMutableArray *)cinequestItems
+{
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [cinequestItems sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+}
+
+-(void)sortCinequestItemsByStartDate:(NSMutableArray *)cinequestItems forKey:(NSString *)key
+{
+    [cinequestItems sortUsingComparator:^(id object1, id object2) {
+        Film *film1 = (Film *)object1;
+        Film *film2 = (Film *)object2;
+        
+        Schedule *schedule1;
+        for (Schedule *schedule in film1.schedules) {
+            if ([schedule.longDateString isEqualToString:key])
+                schedule1 = schedule;
+        }
+        
+        Schedule *schedule2;
+        for (Schedule *schedule in film2.schedules) {
+            if ([schedule.longDateString isEqualToString:key])
+                schedule2 = schedule;
+        }
+        
+        NSDate *date1 = schedule1.startDate;
+        NSDate *date2 = schedule2.startDate;
+        
+        return [date1 compare:date2];
+    }];
+}
+
+-(NSMutableArray *)getSortedKeysFromDateDictionary:(NSMutableDictionary *)dictionary
+{
+    NSMutableArray *sortedKeys = [[NSMutableArray alloc] init];
+    sortedKeys = (NSMutableArray *)[dictionary allKeys];
+    
+    sortedKeys = (NSMutableArray*)[sortedKeys sortedArrayUsingComparator:^(id object1, id object2) {
+        NSString *day1 = (NSString *)object1;
+        NSString *day2 = (NSString *)object2;
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        
+        [dateFormatter setDateFormat:@"EEEE, MMMM d"];
+        NSDate *date1 = [dateFormatter dateFromString:day1];
+        NSDate *date2 = [dateFormatter dateFromString:day2];
+        
+        return [date1 compare:date2];
+    }];
+    
+    return sortedKeys;
+}
+
+-(NSMutableArray *)getSortedIndexesFromSortedKeys:(NSMutableArray *)sortedKeysArray
+{
     NSMutableArray *sortedIndexes = [[NSMutableArray alloc] init];
+    for (NSString *date in sortedKeysArray) {
+        [sortedIndexes addObject:[[date componentsSeparatedByString:@" "] objectAtIndex: 2]];
+    }
     return sortedIndexes;
 }
 
