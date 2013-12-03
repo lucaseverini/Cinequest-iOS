@@ -154,8 +154,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) syncTableDataWithScheduler
 {
+	[delegate populateCalendarEntries];
+	
 	NSInteger sectionCount = [delegate.festival.sortedKeysInDateToFilmsDictionary count];
 	NSInteger myScheduleCount = [mySchedule count];
+	if(myScheduleCount == 0)
+	{
+		return;
+	}
 
 	// Sync current data
 	for (NSUInteger section = 0; section < sectionCount; section++)
@@ -171,7 +177,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			
 			for (NSUInteger schedIdx = 0; schedIdx < scheduleCount; schedIdx++)
 			{
-				Schedule *schedule = [schedules objectAtIndex:row];
+				Schedule *schedule = [schedules objectAtIndex:schedIdx];
 
 				for (NSUInteger idx = 0; idx < myScheduleCount; idx++)
 				{
