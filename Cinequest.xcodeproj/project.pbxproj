@@ -104,6 +104,7 @@
 		C27BC6DB182A3734006F7D25 /* Schedule.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6DA182A3734006F7D25 /* Schedule.m */; };
 		C2B86DF41844C01A0088A958 /* Forum.m in Sources */ = {isa = PBXBuildFile; fileRef = C2B86DF31844C01A0088A958 /* Forum.m */; };
 		C2B86DF71844C0350088A958 /* Special.m in Sources */ = {isa = PBXBuildFile; fileRef = C2B86DF61844C0350088A958 /* Special.m */; };
+		C2B86DFA1847AC560088A958 /* NewFestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2B86DF91847AC560088A958 /* NewFestivalParser.m */; };
 		C2D6DC1A182975E5005A6897 /* Festival.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC19182975E5005A6897 /* Festival.m */; };
 		C2D6DC211829771E005A6897 /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1C1829771E005A6897 /* Show.m */; };
 		C2D6DC221829771E005A6897 /* Showing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC1E1829771E005A6897 /* Showing.m */; };
@@ -263,6 +264,8 @@
 		C2B86DF31844C01A0088A958 /* Forum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Forum.m; path = sources/Forum.m; sourceTree = SOURCE_ROOT; };
 		C2B86DF51844C0350088A958 /* Special.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Special.h; path = sources/Special.h; sourceTree = SOURCE_ROOT; };
 		C2B86DF61844C0350088A958 /* Special.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Special.m; path = sources/Special.m; sourceTree = SOURCE_ROOT; };
+		C2B86DF81847AC560088A958 /* NewFestivalParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewFestivalParser.h; path = sources/NewFestivalParser.h; sourceTree = SOURCE_ROOT; };
+		C2B86DF91847AC560088A958 /* NewFestivalParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewFestivalParser.m; path = sources/NewFestivalParser.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC18182975E5005A6897 /* Festival.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Festival.h; path = sources/Festival.h; sourceTree = SOURCE_ROOT; };
 		C2D6DC19182975E5005A6897 /* Festival.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Festival.m; path = sources/Festival.m; sourceTree = SOURCE_ROOT; };
 		C2D6DC1B1829771E005A6897 /* Show.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Show.h; path = sources/Show.h; sourceTree = SOURCE_ROOT; };
@@ -572,6 +575,8 @@
 				C2B86DF31844C01A0088A958 /* Forum.m */,
 				C2B86DF51844C0350088A958 /* Special.h */,
 				C2B86DF61844C0350088A958 /* Special.m */,
+				C2B86DF81847AC560088A958 /* NewFestivalParser.h */,
+				C2B86DF91847AC560088A958 /* NewFestivalParser.m */,
 			);
 			name = FestivalParser;
 			sourceTree = "<group>";
@@ -775,6 +780,7 @@
 				81B7C4A8184D1358001F4B16 /* MapViewController.m in Sources */,
 				81FBC133182DA37900C01783 /* DataProvider.m in Sources */,
 				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
+				C2B86DFA1847AC560088A958 /* NewFestivalParser.m in Sources */,
 				81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */,
 				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,
 				C2D6DC221829771E005A6897 /* Showing.m in Sources */,

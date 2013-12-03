@@ -13,6 +13,7 @@
 @synthesize ID;
 @synthesize title;
 @synthesize itemID;
+@synthesize description;
 @synthesize venue;
 @synthesize startTime;
 @synthesize endTime;

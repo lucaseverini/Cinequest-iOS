@@ -10,12 +10,24 @@
 
 @implementation Special
 
+@synthesize genre;
+@synthesize director;
+@synthesize producer;
+@synthesize writer;
+@synthesize cinematographer;
+@synthesize editor;
+@synthesize cast;
+@synthesize country;
+@synthesize language;
+@synthesize filmInfo;
+
 - (id) init
 {
 	self = [super init];
 	if(self != nil)
 	{
-		super.schedules = [[NSMutableArray alloc] init];
+		super.shortItems = [[NSMutableArray alloc] init];
+        super.schedules = [[NSMutableArray alloc] init];
 	}
 	
     return self;
@@ -23,7 +35,9 @@
 
 - (void) dealloc
 {
+    super.shortItems = nil;
 	super.schedules = nil;
 }
+
 
 @end

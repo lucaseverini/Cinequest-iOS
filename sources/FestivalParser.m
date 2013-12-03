@@ -224,7 +224,7 @@
     return loc;
 }
 
-- (Schedule *) getSchedule:(Showing *) showing forItem:(ProgramItem *)item
+- (Schedule *)getSchedule:(Showing *)showing forItem:(ProgramItem *)item
 {
     Schedule *schedule = [[Schedule alloc] init];
     schedule.ID = showing.ID;
@@ -288,6 +288,7 @@
     film.name = show.name;
     film.description = show.shortDescription;
     film.imageURL = show.thumbImageURL;
+    film.infoLink = show.infoLink;
     film.director = [self get:show.customProperties forkey:@"Director"];
     film.producer = [self get:show.customProperties forkey:@"Producer"];
     film.cinematographer = [self get:show.customProperties forkey:@"Cinematographer"];
