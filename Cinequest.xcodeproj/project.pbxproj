@@ -58,24 +58,17 @@
 		81B32C99183C2DF8006D2D78 /* logoSJSU.png in Resources */ = {isa = PBXBuildFile; fileRef = 81B32C98183C2DF8006D2D78 /* logoSJSU.png */; };
 		81B7C4A8184D1358001F4B16 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B7C4A6184D1358001F4B16 /* MapViewController.m */; };
 		81B7C4A9184D1358001F4B16 /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B7C4A7184D1358001F4B16 /* MapViewController.xib */; };
-		81BCC7FC18452C95002BFE83 /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7217EBAEED008D2C2C /* NSStringAdditions.m */; };
 		81C52B85182B62F000D2F55D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C52B84182B62F000D2F55D /* Reachability.m */; };
 		81C8B38217EBAB3200033D4F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38117EBAB3200033D4F /* UIKit.framework */; };
 		81C8B38417EBAB3200033D4F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38317EBAB3200033D4F /* Foundation.framework */; };
 		81C8B38617EBAB3200033D4F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38517EBAB3200033D4F /* CoreGraphics.framework */; };
 		81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A917EBABEE00033D4F /* MainWindow.xib */; };
 		81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */; };
-		81C8B3CE17EBAC2C00033D4F /* checkbox-checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */; };
-		81C8B3CF17EBAC2C00033D4F /* checkbox-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BB17EBAC2C00033D4F /* checkbox-pressed.png */; };
-		81C8B3D017EBAC2C00033D4F /* checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BC17EBAC2C00033D4F /* checkbox.png */; };
-		81C8B3D117EBAC2C00033D4F /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BD17EBAC2C00033D4F /* checked.png */; };
-		81C8B3D217EBAC2C00033D4F /* cq_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3BE17EBAC2C00033D4F /* cq_logo.png */; };
 		81C8B3D717EBAC2C00033D4F /* News.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C317EBAC2C00033D4F /* News.png */; };
 		81C8B3D817EBAC2C00033D4F /* events_icon_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C417EBAC2C00033D4F /* events_icon_small.png */; };
 		81C8B3D917EBAC2C00033D4F /* film_icon2.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3C517EBAC2C00033D4F /* film_icon2.png */; };
 		81C8B3DE17EBAC2C00033D4F /* schedule.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3CA17EBAC2C00033D4F /* schedule.png */; };
 		81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3CC17EBAC2C00033D4F /* trans_forums_small.png */; };
-		81C8B3E117EBAC2C00033D4F /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3CD17EBAC2C00033D4F /* unchecked.png */; };
 		81D1EC3B182B892B003DD8BB /* StartupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D1EC39182B892B003DD8BB /* StartupViewController.m */; };
 		81D1EC3E182B8990003DD8BB /* StartupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81D1EC3D182B8990003DD8BB /* StartupViewController.xib */; };
 		81D6705C183E19D8007E9B99 /* iphone_icon_29.png in Resources */ = {isa = PBXBuildFile; fileRef = 81D67055183E19D8007E9B99 /* iphone_icon_29.png */; };
@@ -85,7 +78,6 @@
 		81D67060183E19D8007E9B99 /* iphone_icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 81D67059183E19D8007E9B99 /* iphone_icon_114.png */; };
 		81D67061183E19D8007E9B99 /* iphone_icon_120.png in Resources */ = {isa = PBXBuildFile; fileRef = 81D6705A183E19D8007E9B99 /* iphone_icon_120.png */; };
 		81D67062183E19D8007E9B99 /* iphone_icon_512.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 81D6705B183E19D8007E9B99 /* iphone_icon_512.jpg */; };
-		81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC251829773C005A6897 /* FestivalParser.m */; };
 		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
 		935D58D4183CE0E300BE904F /* VenueParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 935D58D3183CE0E300BE904F /* VenueParser.m */; };
 		935D58D6183CE26000BE904F /* News@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 935D58D5183CE26000BE904F /* News@2x.png */; };
@@ -176,8 +168,6 @@
 		81745A7017EBAEED008D2C2C /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewsViewController.m; path = sources/NewsViewController.m; sourceTree = SOURCE_ROOT; };
 		81745A7117EBAEED008D2C2C /* NSStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSStringAdditions.h; path = sources/NSStringAdditions.h; sourceTree = SOURCE_ROOT; };
 		81745A7217EBAEED008D2C2C /* NSStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSStringAdditions.m; path = sources/NSStringAdditions.m; sourceTree = SOURCE_ROOT; };
-		81745A7317EBAEED008D2C2C /* OldSchedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OldSchedule.h; path = sources/OldSchedule.h; sourceTree = SOURCE_ROOT; };
-		81745A7417EBAEED008D2C2C /* OldSchedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldSchedule.m; path = sources/OldSchedule.m; sourceTree = SOURCE_ROOT; };
 		8180BE6D183AE0FE00DC8997 /* iphone_launch_640_1136.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_launch_640_1136.png; path = images/iphone_launch_640_1136.png; sourceTree = SOURCE_ROOT; };
 		8192CC6117EBC91D00DBE036 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		8192CC6317EBC92D00DBE036 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
@@ -239,6 +229,8 @@
 		81D67059183E19D8007E9B99 /* iphone_icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_icon_114.png; path = images/iphone_icon_114.png; sourceTree = SOURCE_ROOT; };
 		81D6705A183E19D8007E9B99 /* iphone_icon_120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_icon_120.png; path = images/iphone_icon_120.png; sourceTree = SOURCE_ROOT; };
 		81D6705B183E19D8007E9B99 /* iphone_icon_512.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = iphone_icon_512.jpg; path = images/iphone_icon_512.jpg; sourceTree = SOURCE_ROOT; };
+		81F7B15C184E8F8E002B4B56 /* OldSchedule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OldSchedule.h; path = sources/OldSchedule.h; sourceTree = SOURCE_ROOT; };
+		81F7B15D184E8F8E002B4B56 /* OldSchedule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = OldSchedule.m; path = sources/OldSchedule.m; sourceTree = SOURCE_ROOT; };
 		81FBC131182DA37900C01783 /* DataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataProvider.h; path = sources/DataProvider.h; sourceTree = SOURCE_ROOT; };
 		81FBC132182DA37900C01783 /* DataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataProvider.m; path = sources/DataProvider.m; sourceTree = SOURCE_ROOT; };
 		935D58D2183CE0E300BE904F /* VenueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VenueParser.h; path = sources/VenueParser.h; sourceTree = SOURCE_ROOT; };
@@ -350,8 +342,15 @@
 		8199E788182F623F001BCC36 /* Unused */ = {
 			isa = PBXGroup;
 			children = (
-				81745A7317EBAEED008D2C2C /* OldSchedule.h */,
-				81745A7417EBAEED008D2C2C /* OldSchedule.m */,
+				81F7B15E184E94B7002B4B56 /* Images */,
+				C2D6DC1D1829771E005A6897 /* Showing.h */,
+				C2D6DC1E1829771E005A6897 /* Showing.m */,
+				81745A7117EBAEED008D2C2C /* NSStringAdditions.h */,
+				81745A7217EBAEED008D2C2C /* NSStringAdditions.m */,
+				81F7B15C184E8F8E002B4B56 /* OldSchedule.h */,
+				81F7B15D184E8F8E002B4B56 /* OldSchedule.m */,
+				C2D6DC241829773C005A6897 /* FestivalParser.h */,
+				C2D6DC251829773C005A6897 /* FestivalParser.m */,
 				81745A6B17EBAEED008D2C2C /* LogInViewController.h */,
 				81745A6C17EBAEED008D2C2C /* LogInViewController.m */,
 				81C8B3A817EBABEE00033D4F /* LogInViewController.xib */,
@@ -450,9 +449,9 @@
 				81A4963B1845A50C0025CCBB /* link-Ticket.png */,
 				81A4963C1845A50C0025CCBB /* link-Ticket@2x.png */,
 				81A4963D1845A50C0025CCBB /* mail.png */,
+				81A496401845A50C0025CCBB /* mail@2x.png */,
 				81A4963E1845A50C0025CCBB /* googleplus.png */,
 				81A4963F1845A50C0025CCBB /* googleplus@2x.png */,
-				81A496401845A50C0025CCBB /* mail@2x.png */,
 				81A496411845A50C0025CCBB /* maps.png */,
 				81A496421845A50C0025CCBB /* maps@2x.png */,
 				81A496431845A50C0025CCBB /* phone-Ticket.png */,
@@ -462,11 +461,6 @@
 				93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */,
 				93E4E0A2182BB1A200515A84 /* cal_unselected.png */,
 				93E4E0A3182BB1A200515A84 /* cal_unselected@2x.png */,
-				81C8B3BC17EBAC2C00033D4F /* checkbox.png */,
-				81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */,
-				81C8B3BB17EBAC2C00033D4F /* checkbox-pressed.png */,
-				81C8B3BD17EBAC2C00033D4F /* checked.png */,
-				81C8B3CD17EBAC2C00033D4F /* unchecked.png */,
 				81C8B3C317EBAC2C00033D4F /* News.png */,
 				935D58D5183CE26000BE904F /* News@2x.png */,
 				81C8B3C517EBAC2C00033D4F /* film_icon2.png */,
@@ -486,7 +480,6 @@
 				816C4AB4183C160F00BE896C /* Splash4.png */,
 				816C4AB5183C160F00BE896C /* Splash5.png */,
 				81B32C98183C2DF8006D2D78 /* logoSJSU.png */,
-				81C8B3BE17EBAC2C00033D4F /* cq_logo.png */,
 			);
 			name = Images;
 			path = Cinequest;
@@ -499,8 +492,6 @@
 				81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */,
 				81FBC131182DA37900C01783 /* DataProvider.h */,
 				81FBC132182DA37900C01783 /* DataProvider.m */,
-				81745A7117EBAEED008D2C2C /* NSStringAdditions.h */,
-				81745A7217EBAEED008D2C2C /* NSStringAdditions.m */,
 				C271392E1828A36100BF8DCB /* FestivalParser */,
 				C271392418279DE300BF8DCB /* DDXMLFiles */,
 				81C52B82182B62D200D2F55D /* Reachability */,
@@ -527,6 +518,19 @@
 			path = Cinequest;
 			sourceTree = "<group>";
 		};
+		81F7B15E184E94B7002B4B56 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				81C8B3BC17EBAC2C00033D4F /* checkbox.png */,
+				81C8B3BA17EBAC2C00033D4F /* checkbox-checked.png */,
+				81C8B3BB17EBAC2C00033D4F /* checkbox-pressed.png */,
+				81C8B3BD17EBAC2C00033D4F /* checked.png */,
+				81C8B3CD17EBAC2C00033D4F /* unchecked.png */,
+				81C8B3BE17EBAC2C00033D4F /* cq_logo.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
 		C271392418279DE300BF8DCB /* DDXMLFiles */ = {
 			isa = PBXGroup;
 			children = (
@@ -547,8 +551,8 @@
 		C271392E1828A36100BF8DCB /* FestivalParser */ = {
 			isa = PBXGroup;
 			children = (
-				C2D6DC241829773C005A6897 /* FestivalParser.h */,
-				C2D6DC251829773C005A6897 /* FestivalParser.m */,
+				C2B86DF81847AC560088A958 /* NewFestivalParser.h */,
+				C2B86DF91847AC560088A958 /* NewFestivalParser.m */,
 				935D58D2183CE0E300BE904F /* VenueParser.h */,
 				935D58D3183CE0E300BE904F /* VenueParser.m */,
 				C2D6DC2A1829E0F7005A6897 /* CinequestItem.h */,
@@ -563,20 +567,14 @@
 				C2D6DC281829B8BF005A6897 /* Film.m */,
 				C2D6DC1B1829771E005A6897 /* Show.h */,
 				C2D6DC1C1829771E005A6897 /* Show.m */,
-				C2D6DC1D1829771E005A6897 /* Showing.h */,
-				C2D6DC1E1829771E005A6897 /* Showing.m */,
 				C2D6DC1F1829771E005A6897 /* Venue.h */,
 				C2D6DC201829771E005A6897 /* Venue.m */,
 				C27BC6D9182A3734006F7D25 /* Schedule.h */,
 				C27BC6DA182A3734006F7D25 /* Schedule.m */,
-				81745A7317EBAEED008D2C2C /* OldSchedule.h */,
-				81745A7417EBAEED008D2C2C /* OldSchedule.m */,
 				C2B86DF21844C01A0088A958 /* Forum.h */,
 				C2B86DF31844C01A0088A958 /* Forum.m */,
 				C2B86DF51844C0350088A958 /* Special.h */,
 				C2B86DF61844C0350088A958 /* Special.m */,
-				C2B86DF81847AC560088A958 /* NewFestivalParser.h */,
-				C2B86DF91847AC560088A958 /* NewFestivalParser.m */,
 			);
 			name = FestivalParser;
 			sourceTree = "<group>";
@@ -683,15 +681,10 @@
 				816C4AB1183C0AEC00BE896C /* iphone_launch_320_480.png in Resources */,
 				81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */,
 				81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */,
-				81C8B3CE17EBAC2C00033D4F /* checkbox-checked.png in Resources */,
 				81A496521845A50C0025CCBB /* phone-Ticket@2x.png in Resources */,
 				81A4964B1845A50C0025CCBB /* mail.png in Resources */,
-				81C8B3CF17EBAC2C00033D4F /* checkbox-pressed.png in Resources */,
-				81C8B3D017EBAC2C00033D4F /* checkbox.png in Resources */,
 				816C4AB3183C0B4C00BE896C /* iphone_launch_640_960.png in Resources */,
 				81D6705C183E19D8007E9B99 /* iphone_icon_29.png in Resources */,
-				81C8B3D117EBAC2C00033D4F /* checked.png in Resources */,
-				81C8B3D217EBAC2C00033D4F /* cq_logo.png in Resources */,
 				93E4E0A6182BB1A200515A84 /* cal_unselected.png in Resources */,
 				81C8B3D717EBAC2C00033D4F /* News.png in Resources */,
 				81A496471845A50C0025CCBB /* facebook.png in Resources */,
@@ -713,7 +706,6 @@
 				81A4964D1845A50C0025CCBB /* googleplus@2x.png in Resources */,
 				935D58D6183CE26000BE904F /* News@2x.png in Resources */,
 				81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */,
-				81C8B3E117EBAC2C00033D4F /* unchecked.png in Resources */,
 				81D6705D183E19D8007E9B99 /* iphone_icon_57.png in Resources */,
 				81A496501845A50C0025CCBB /* maps@2x.png in Resources */,
 				81A4964E1845A50C0025CCBB /* mail@2x.png in Resources */,
@@ -761,7 +753,6 @@
 				81745A7717EBAEED008D2C2C /* DDXMLElement.m in Sources */,
 				C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */,
 				81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */,
-				81BCC7FC18452C95002BFE83 /* NSStringAdditions.m in Sources */,
 				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
 				C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */,
 				C2B86DF71844C0350088A958 /* Special.m in Sources */,
@@ -781,7 +772,6 @@
 				81FBC133182DA37900C01783 /* DataProvider.m in Sources */,
 				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
 				C2B86DFA1847AC560088A958 /* NewFestivalParser.m in Sources */,
-				81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */,
 				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,
 				C2D6DC221829771E005A6897 /* Showing.m in Sources */,
 			);

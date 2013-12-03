@@ -74,14 +74,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
-    
-	if(delegate.isOffSeason)
-	{
-		offSeasonLabel.hidden = NO;
-		self.scheduleTableView.hidden = YES;
-		return;
-	}
-	
+ 	
     //display an Edit button in the navigation bar for this view controller.
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
 																							target:self
@@ -97,13 +90,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-	delegate = appDelegate;
-	if (delegate.isOffSeason)
-	{
-		return;
-	}
-	
+  	
     [self getDataForTable];
     [self reloadCalendarItems];
 }
@@ -506,11 +493,11 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	CGSize size = [schedule.title sizeWithFont:titleFont];
 	if(size.width >= 256.0)
 	{
-		return 88.0;
+		return 90.0;
 	}
 	else
 	{
-		return 66.0;
+		return 68.0;
 	}
 }
 

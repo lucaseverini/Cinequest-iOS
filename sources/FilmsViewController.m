@@ -484,11 +484,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		CGSize size = [film.name sizeWithFont:titleFont];
 		if(size.width >= 256.0)
 		{
-			return 88.0;
+			return 90.0;
 		}
 		else
 		{
-			return 66.0;
+			return 68.0;
 		}
 	}
 	else // VIEW_BY_TITLE
@@ -500,11 +500,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		CGSize size = [film.name sizeWithFont:titleFont];
 		if(size.width >= 256.0)
 		{
-			return 50.0 + (38 * film.schedules.count);
+			return 52.0 + (38 * film.schedules.count);
 		}
 		else
 		{
-			return 28.0 + (38 * film.schedules.count);
+			return 30.0 + (38 * film.schedules.count);
 		}
 	}
 }

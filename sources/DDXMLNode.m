@@ -1,12 +1,21 @@
+//
+//  DDXMLNode.m
+//  Cinequest
+//
+//  Created by Luca Severini on 12/2/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
+//
+
 #import "DDXMLNode.h"
 #import "DDXMLElement.h"
 #import "DDXMLDocument.h"
-#import "NSStringAdditions.h"
 #import "DDXMLPrivate.h"
 
 #import <libxml/xpath.h>
 #import <libxml/xpathInternals.h>
 #include <objc/runtime.h>
+
+#define xmlChar(s) (xmlChar*)[s UTF8String]
 
 
 @implementation DDXMLNode
@@ -57,7 +66,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 
 + (id)attributeWithName:(NSString *)name stringValue:(NSString *)stringValue
 {
-	xmlAttrPtr attr = xmlNewProp(NULL, [name xmlChar], [stringValue xmlChar]);
+	xmlAttrPtr attr = xmlNewProp(NULL, xmlChar(name), xmlChar(stringValue));
 	
 	if(attr == NULL) return nil;
 	
@@ -66,7 +75,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 
 + (id)attributeWithName:(NSString *)name URI:(NSString *)URI stringValue:(NSString *)stringValue
 {
-	xmlAttrPtr attr = xmlNewProp(NULL, [name xmlChar], [stringValue xmlChar]);
+	xmlAttrPtr attr = xmlNewProp(NULL, xmlChar(name), xmlChar(stringValue));
 	
 	if(attr == NULL) return nil;
 	
@@ -79,9 +88,9 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 + (id)namespaceWithName:(NSString *)name stringValue:(NSString *)stringValue
 {
 	// If the user passes a nil or empty string name, they are trying to create a default namespace
-	const xmlChar *xmlName = [name length] > 0 ? [name xmlChar] : NULL;
+	const xmlChar *xmlName = [name length] > 0 ? xmlChar(name) : NULL;
 	
-	xmlNsPtr ns = xmlNewNs(NULL, [stringValue xmlChar], xmlName);
+	xmlNsPtr ns = xmlNewNs(NULL, xmlChar(stringValue), xmlName);
 	
 	if(ns == NULL) return nil;
 	
@@ -90,7 +99,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 
 + (id)processingInstructionWithName:(NSString *)name stringValue:(NSString *)stringValue
 {
-	xmlNodePtr procInst = xmlNewPI([name xmlChar], [stringValue xmlChar]);
+	xmlNodePtr procInst = xmlNewPI(xmlChar(name), xmlChar(stringValue));
 	
 	if(procInst == NULL) return nil;
 	
@@ -99,7 +108,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 
 + (id)commentWithStringValue:(NSString *)stringValue
 {
-	xmlNodePtr comment = xmlNewComment([stringValue xmlChar]);
+	xmlNodePtr comment = xmlNewComment(xmlChar(stringValue));
 	
 	if(comment == NULL) return nil;
 	
@@ -108,7 +117,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 
 + (id)textWithStringValue:(NSString *)stringValue
 {
-	xmlNodePtr text = xmlNewText([stringValue xmlChar]);
+	xmlNodePtr text = xmlNewText(xmlChar(stringValue));
 	
 	if(text == NULL) return nil;
 	
@@ -347,12 +356,12 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		xmlNsPtr ns = (xmlNsPtr)genericPtr;
 		
 		xmlFree((xmlChar *)ns->prefix);
-		ns->prefix = xmlStrdup([name xmlChar]);
+		ns->prefix = xmlStrdup(xmlChar(name));
 	}
 	else
 	{
 		// The xmlNodeSetName function works for both nodes and attributes
-		xmlNodeSetName((xmlNodePtr)genericPtr, [name xmlChar]);
+		xmlNodeSetName((xmlNodePtr)genericPtr, xmlChar(name));
 	}
 }
 
@@ -384,7 +393,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		xmlNsPtr ns = (xmlNsPtr)genericPtr;
 		
 		xmlFree((xmlChar *)ns->href);
-		ns->href = xmlEncodeSpecialChars(NULL, [string xmlChar]);
+		ns->href = xmlEncodeSpecialChars(NULL, xmlChar(string));
 	}
 	else if([self isXmlAttrPtr])
 	{
@@ -392,13 +401,13 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		
 		if(attr->children != NULL)
 		{
-			xmlChar *escapedString = xmlEncodeSpecialChars(attr->doc, [string xmlChar]);
+			xmlChar *escapedString = xmlEncodeSpecialChars(attr->doc, xmlChar(string));
 			xmlNodeSetContent((xmlNodePtr)attr, escapedString);
 			xmlFree(escapedString);
 		}
 		else
 		{
-			xmlNodePtr text = xmlNewText([string xmlChar]);
+			xmlNodePtr text = xmlNewText(xmlChar(string));
 			attr->children = text;
 		}
 	}
@@ -410,7 +419,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		// Therefore, we need to remove them properly first.
 		[[self class] removeAllChildrenFromNode:(xmlNodePtr)node];
 		
-		xmlChar *escapedString = xmlEncodeSpecialChars(node->doc, [string xmlChar]);
+		xmlChar *escapedString = xmlEncodeSpecialChars(node->doc, xmlChar(string));
 		xmlNodeSetContent((xmlNodePtr)node, escapedString);
 		xmlFree(escapedString);
 	}
@@ -919,7 +928,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		if(URI)
 		{
 			// Create a new xmlNsPtr, add it to the nsDef list, and make ns point to it
-			xmlNsPtr ns = xmlNewNs(NULL, [URI xmlChar], NULL);
+			xmlNsPtr ns = xmlNewNs(NULL, xmlChar(URI), NULL);
 			ns->next = node->nsDef;
 			node->nsDef = ns;
 			node->ns = ns;
@@ -940,7 +949,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		if(URI)
 		{
 			// Create a new xmlNsPtr, and make ns point to it
-			xmlNsPtr ns = xmlNewNs(NULL, [URI xmlChar], NULL);
+			xmlNsPtr ns = xmlNewNs(NULL, xmlChar(URI), NULL);
 			attr->ns = ns;
 		}
 	}
@@ -1074,7 +1083,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 	else
 	{
 		NSMutableString *result = [NSMutableString stringWithUTF8String:(const char *)bufferPtr->content];
-		CFStringTrimWhitespace((CFMutableStringRef)result);
+		[result stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		
 		xmlBufferFree(bufferPtr);
 		
@@ -1130,7 +1139,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		}
 	}
 	
-	xpathObj = xmlXPathEvalExpression([xpath xmlChar], xpathCtx);
+	xpathObj = xmlXPathEvalExpression(xmlChar(xpath), xpathCtx);
 	
 	NSArray *result;
 	
@@ -1808,7 +1817,7 @@ static void MyErrorHandler(void * userData, xmlErrorPtr error);
 		[lastErrorValue getValue:&lastError];
 		
 		int errCode = lastError.code;
-		NSString *errMsg = [[NSString stringWithFormat:@"%s", lastError.message] trimWhitespace];
+		NSString *errMsg = [[NSString stringWithFormat:@"%s", lastError.message] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		
 		NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
 			

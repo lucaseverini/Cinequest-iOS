@@ -33,16 +33,15 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
 	{
-        // Custom initialization
     }
     return self;
 }
 
 - (void) viewDidLoad
 {
-	[app setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-	
     [super viewDidLoad];
+
+	[app setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];	
 }
 
 - (void) viewDidDisappear:(BOOL)animated

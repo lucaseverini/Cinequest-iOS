@@ -1,6 +1,15 @@
+//
+//  DDXMLElement.m
+//  Cinequest
+//
+//  Created by Luca Severini on 12/2/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
+//
+
 #import "DDXMLElement.h"
-#import "NSStringAdditions.h"
 #import "DDXMLPrivate.h"
+
+#define xmlChar(s) (xmlChar*)[s UTF8String]
 
 
 @implementation DDXMLElement
@@ -9,7 +18,7 @@
 {
 	// Note: Make every guarantee that genericPtr is not null
 	
-	xmlNodePtr node = xmlNewNode(NULL, [name xmlChar]);
+	xmlNodePtr node = xmlNewNode(NULL, xmlChar(name));
 	if(node == NULL)
 	{
 		return nil;
@@ -22,7 +31,7 @@
 {
 	// Note: Make every guarantee that genericPtr is not null
 	
-	xmlNodePtr node = xmlNewNode(NULL, [name xmlChar]);
+	xmlNodePtr node = xmlNewNode(NULL, xmlChar(name));
 	if(node == NULL)
 	{
 		return nil;
@@ -38,7 +47,7 @@
 {
 	// Note: Make every guarantee that genericPtr is not null
 	
-	xmlNodePtr node = xmlNewNode(NULL, [name xmlChar]);
+	xmlNodePtr node = xmlNewNode(NULL, xmlChar(name));
 	if(node == NULL)
 	{
 		return nil;
@@ -126,7 +135,7 @@
 	if([prefix length] > 0)
 	{
 		xmlNodePtr node = (xmlNodePtr)genericPtr;
-		xmlNsPtr ns = xmlSearchNs(node->doc, node, [prefix xmlChar]);
+		xmlNsPtr ns = xmlSearchNs(node->doc, node, xmlChar(prefix));
 		if(ns != NULL)
 		{
 			NSString *uri = [NSString stringWithUTF8String:((const char *)ns->href)];
@@ -184,17 +193,17 @@
 			BOOL match = NO;
 			if(uri == nil)
 			{
-				match = xmlStrEqual(child->name, [name xmlChar]);
+				match = xmlStrEqual(child->name, xmlChar(name));
 			}
 			else
 			{
-				BOOL nameMatch = xmlStrEqual(child->name, [name xmlChar]);
-				BOOL localNameMatch = xmlStrEqual(child->name, [localName xmlChar]);
+				BOOL nameMatch = xmlStrEqual(child->name, xmlChar(name));
+				BOOL localNameMatch = xmlStrEqual(child->name, xmlChar(localName));
 				
 				BOOL uriMatch = NO;
 				if(child->ns != NULL)
 				{
-					uriMatch = xmlStrEqual(child->ns->href, [uri xmlChar]);
+					uriMatch = xmlStrEqual(child->ns->href, xmlChar(uri));
 				}
 				
 				if(hasPrefix)
@@ -253,7 +262,7 @@
 	xmlAttrPtr attr = ((xmlNodePtr)genericPtr)->properties;
 	while(attr != NULL)
 	{
-		if(xmlStrEqual(attr->name, [name xmlChar]))
+		if(xmlStrEqual(attr->name, xmlChar(name)))
 		{
 			[self removeAttribute:attr];
 			return;
@@ -282,7 +291,7 @@
 	xmlAttrPtr attr = ((xmlNodePtr)genericPtr)->properties;
 	while(attr != NULL)
 	{
-		if(xmlStrEqual([name xmlChar], attr->name))
+		if(xmlStrEqual(xmlChar(name), attr->name))
 		{
 			return [DDXMLNode nodeWithPrimitive:(xmlKindPtr)attr];
 		}
@@ -364,7 +373,7 @@
 - (void)removeNamespaceForPrefix:(NSString *)name
 {
 	// If name is nil or the empty string, the user is wishing to remove the default namespace
-	const xmlChar *xmlName = [name length] > 0 ? [name xmlChar] : NULL;
+	const xmlChar *xmlName = [name length] > 0 ? xmlChar(name) : NULL;
 	
 	xmlNsPtr ns = ((xmlNodePtr)genericPtr)->nsDef;
 	while(ns != NULL)
@@ -413,7 +422,7 @@
 		xmlNsPtr ns = ((xmlNodePtr)genericPtr)->nsDef;
 		while(ns != NULL)
 		{
-			if(xmlStrEqual(ns->prefix, [prefix xmlChar]))
+			if(xmlStrEqual(ns->prefix, xmlChar(prefix)))
 			{
 				return [DDXMLNode nodeWithPrimitive:(xmlKindPtr)ns nsParent:(xmlNodePtr)genericPtr];
 			}
@@ -446,7 +455,7 @@
 	xmlNsPtr ns = nodePtr->nsDef;
 	while(ns != NULL)
 	{
-		if(xmlStrEqual(ns->prefix, [prefix xmlChar]))
+		if(xmlStrEqual(ns->prefix, xmlChar(prefix)))
 		{
 			return [DDXMLNode nodeWithPrimitive:(xmlKindPtr)ns nsParent:nodePtr];
 		}
@@ -492,7 +501,7 @@
 	xmlNsPtr ns = nodePtr->nsDef;
 	while(ns != NULL)
 	{
-		if(xmlStrEqual(ns->href, [uri xmlChar]))
+		if(xmlStrEqual(ns->href, xmlChar(uri)))
 		{
 			if(ns->prefix != NULL)
 			{

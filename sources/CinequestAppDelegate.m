@@ -94,9 +94,6 @@
         self.dictSavedEventsInCalendar = [NSMutableDictionary dictionaryWithContentsOfURL:url];
         NSLog(@"Content from Cache:%@",self.dictSavedEventsInCalendar);
     }
-    else{
-        
-    }
 }
 
 //Saves the Calendar.plist file to Documents Directory to keep track of save items in calendar
@@ -137,11 +134,6 @@
     self.venuesDictionary = [[VenueParser new] parseVenues];
     // Print Venue Dictionary
     // NSLog(@"Venues Dictionary:%@", self.venuesDictionary);
-}
-
-- (void) jumpToScheduler
-{
-	tabBar.selectedIndex = 4;
 }
 
 #pragma mark -

@@ -54,12 +54,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
 
-	if (delegate.isOffSeason)
-	{
-		self.eventsTableView.hidden = YES;
-		return;
-	}
-
 	[self reloadData:nil];
 }
 
@@ -87,49 +81,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	[index removeAllObjects];
 	
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
-}
-
-- (void)addEvents:(id)sender
-{
-	int counter = 0;
-	for (int section = 0; section < [days count]; section++) 
-	{
-		NSString *day = [days objectAtIndex:section];
-		NSMutableArray *rows = [data objectForKey:day];
-		for (int row = 0; row < [rows count];row++ )
-		{
-			Schedule *item = [rows objectAtIndex:row];
-			if(item.isSelected)
-			{
-				// NSLog(@"%@",item.title);
-				Schedule *schedule = item;
-				
-				BOOL isAlreadyAdded = NO;
-				for(int i=0; i < [mySchedule count]; i++) {
-					Schedule *obj = [mySchedule objectAtIndex:i];
-					if (obj.ID == schedule.ID)
-					{
-						isAlreadyAdded = YES;
-						// NSLog(@"%@ ID: %d",schedule.title,schedule.ID);
-						break;
-					}
-				}
-				if (!isAlreadyAdded) 
-				{
-					[mySchedule addObject:schedule];
-					counter++;
-				}
-			}
-		}
-	}
-		
-	if (counter != 0)
-	{
-		[self syncTableDataWithScheduler];
-		[self.eventsTableView reloadData];
-
-		[delegate jumpToScheduler];
-	}
 }
 
 - (void)refine:(id)sender
@@ -569,11 +520,11 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     CGSize size = [schedule.title sizeWithFont:titleFont];
     if(size.width >= 256.0)
     {
-        return 88.0;
+        return 90.0;
     }
     else
     {
-        return 66.0;
+        return 68.0;
     }
 }
 

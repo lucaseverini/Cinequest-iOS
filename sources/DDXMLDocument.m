@@ -1,3 +1,11 @@
+//
+//  DDXMLDocument.m
+//  Cinequest
+//
+//  Created by Luca Severini on 12/2/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
+//
+
 #import "DDXMLDocument.h"
 #import "NSStringAdditions.h"
 #import "DDXMLPrivate.h"

@@ -1,9 +1,15 @@
+//
+//  DDXMLElement.h
+//  Cinequest
+//
+//  Created by Luca Severini on 12/2/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
+//
+
 #import "DDXMLNode.h"
 
 
 @interface DDXMLElement : DDXMLNode
-{
-}
 
 - (id)initWithName:(NSString *)name;
 - (id)initWithName:(NSString *)name URI:(NSString *)URI;

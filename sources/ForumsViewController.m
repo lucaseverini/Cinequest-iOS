@@ -46,12 +46,6 @@
 	backedUpDays	= [[NSMutableArray alloc] init];
 	backedUpIndex	= [[NSMutableArray alloc] init];
 	backedUpData	= [[NSMutableDictionary alloc] init]; 
-	
-	if (delegate.isOffSeason)
-	{
-		self.forumsTableView.hidden = YES;
-		return;
-	}
 
 	[self reloadData:nil];
 }
@@ -259,7 +253,7 @@
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)reloadData:(id)sender
+- (IBAction) reloadData:(id)sender
 {
 	[days removeAllObjects];
 	[data removeAllObjects];
@@ -272,115 +266,7 @@
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 }
 
-- (void)addEvents:(id)sender
-{
-	int counter = 0;
-	for (int section = 0; section < [days count]; section++) 
-	{
-		NSString *day = [days objectAtIndex:section];
-		NSMutableArray *rows = [data objectForKey:day];
-		for (int row = 0; row < [rows count];row++ ) {
-			Schedule *item = [rows objectAtIndex:row];
-			if (item.isSelected) 
-			{
-				//NSLog(@"%@",item.title);
-				Schedule *schedule = item;
-				
-				BOOL isAlreadyAdded = NO;
-				for (int i=0; i < [mySchedule count]; i++) {
-					Schedule *obj = [mySchedule objectAtIndex:i];
-					if (obj.ID == schedule.ID) {
-						isAlreadyAdded = YES;
-						//NSLog(@"%@ ID: %d",schedule.title,schedule.ID);
-						break;
-					}
-				}
-				if (!isAlreadyAdded) 
-				{
-					[mySchedule addObject:schedule];
-					counter++;
-				}
-			}
-		}
-	}
-	[self syncTableDataWithScheduler];
-	[self.forumsTableView reloadData];
-	if (counter != 0) {
-		[delegate jumpToScheduler];
-	}
-}
-
-- (void)refine:(id)sender
-{
-	// Back button
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-																			  style:UIBarButtonItemStyleDone
-																			 target:self
-																			 action:@selector(back:)];
-	// Remove rows
-	NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-	NSMutableArray *itemsBeingDeleted = [[NSMutableArray alloc] init];
-	
-	for (int section = 0; section < [days count]; section++)
-	{
-		NSString *day = [days objectAtIndex:section];
-		NSMutableArray *rows = [data objectForKey:day];
-		
-		for (int row = 0; row < [rows count]; row++) 
-		{
-			Schedule *item = [rows objectAtIndex:row];
-			if (!item.isSelected) 
-			{
-				[indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-				[itemsBeingDeleted addObject:item];
-			}
-			else {
-				//NSLog(@"%@ - %@",item.time,item.title);
-			}
-			
-		}
-		[rows removeObjectsInArray:itemsBeingDeleted];
-		[itemsBeingDeleted removeAllObjects];
-	}
-	
-	// Remove sections
-	NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
-	
-	int i = 0;
-	for (NSString *day in days) 
-	{
-		NSMutableArray *rows = [data objectForKey:day];
-		if ([rows count] == EMPTY) 
-		{
-			[data removeObjectForKey:day];
-			[indexSet addIndex:i];
-		}
-		i++;
-	}
-	[days removeObjectsAtIndexes:indexSet];
-	[index removeObjectsAtIndexes:indexSet];
-	
-	// Start updating table
-	[self.forumsTableView beginUpdates];
-	
-	[self.forumsTableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
-	
-	[self.forumsTableView deleteSections:indexSet withRowAnimation:NO];
-	
-	[self.forumsTableView endUpdates];
-	
-	// add push animation
-	CATransition *transition = [CATransition animation];
-	transition.type = kCATransitionPush;
-	transition.subtype = kCATransitionFromTop;
-	transition.duration = 0.3;
-	[[self.forumsTableView layer] addAnimation:transition forKey:nil];
-	
-	// reload data
-	[self.forumsTableView reloadData];
-}
-
-- (void)back:(id)sender
+- (void) back:(id)sender
 {
 	// reload data
 	[days removeAllObjects];
@@ -595,11 +481,11 @@
     CGSize size = [schedule.title sizeWithFont:titleFont];
     if(size.width >= 256.0)
     {
-        return 88.0;
+        return 90.0;
     }
     else
     {
-        return 66.0;
+        return 68.0;
     }
 }
 
