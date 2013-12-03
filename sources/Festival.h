@@ -23,12 +23,12 @@
 
 // data for Date segment in Films Tab
 @property (strong, nonatomic) NSMutableDictionary *dateToFilmsDictionary;
-@property (strong, nonatomic) NSMutableArray *sortedKeysInDateToFilmsDictionary;
-@property (strong, nonatomic) NSMutableArray *sortedIndexesInDateToFilmsDictionary;
+@property (strong, nonatomic) NSMutableArray *sortedKeysInDateToFilmsDictionary;			// Sections
+@property (strong, nonatomic) NSMutableArray *sortedIndexesInDateToFilmsDictionary;			// Films
 
 // data for A-Z segment in Films Tab
-@property (strong, nonatomic) NSMutableDictionary *alphabetToFilmsDictionary;
-@property (strong, nonatomic) NSMutableArray *sortedKeysInAlphabetToFilmsDictionary;
+@property (strong, nonatomic) NSMutableDictionary *alphabetToFilmsDictionary;				// Films
+@property (strong, nonatomic) NSMutableArray *sortedKeysInAlphabetToFilmsDictionary;		// Sections
 //@property (strong, nonatomic) NSMutableArray *sortedIndexesInAlphabetToFilmsDictionary;
 
 // data for Forums Tab

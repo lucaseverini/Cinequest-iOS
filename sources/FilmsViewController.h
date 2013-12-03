@@ -12,14 +12,6 @@
 
 @interface FilmsViewController : UIViewController < UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate>
 {
-	NSMutableDictionary *data;
-	NSMutableArray *days;
-	NSMutableArray *index;
-	NSMutableDictionary *backedUpData;
-	NSMutableArray *backedUpDays;
-	NSMutableArray *backedUpIndex;
-	NSMutableDictionary *titlesWithSort;
-	NSMutableArray *sorts;
 	NSMutableArray *mySchedule;
 	NSInteger switcher;
 	CinequestAppDelegate *delegate;
@@ -40,9 +32,6 @@
 @property (nonatomic, weak) IBOutlet UISearchBar *filmSearchBar;
 
 - (IBAction) switchTitle:(id)sender;
-- (IBAction) loadData:(id)sender;
-
-- (void) addOrRemoveFilm:(Schedule*)film;
-- (void) calendarButtonTapped:(id)sender event:(id)touchEvent;
+- (IBAction) calendarButtonTapped:(id)sender event:(id)touchEvent;
 
 @end

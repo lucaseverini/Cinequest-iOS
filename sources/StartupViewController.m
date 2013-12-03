@@ -98,10 +98,10 @@
 
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
 	^{
-		appDelegate.festival = [[FestivalParser new] parseFestival];
+		appDelegate.festival = [[NewFestivalParser new] parseFestival];
         
         // Added to test the NewFestivalParser
-        Festival *newFestival = [[NewFestivalParser new] parseFestival];
+        //Festival *newFestival = [[NewFestivalParser new] parseFestival];
         
         // uncomment the block below to test the console log for the A-Z segment
         
@@ -121,13 +121,13 @@
         // uncomment the block below to test the console log for the Date segment
         
         NSLog(@"date to films keys:");
-        NSLog(@"%@", newFestival.sortedKeysInDateToFilmsDictionary);
+        NSLog(@"%@", appDelegate.festival.sortedKeysInDateToFilmsDictionary);
         NSLog(@"date to films indexes");
-        NSLog(@"%@", newFestival.sortedIndexesInDateToFilmsDictionary);
+        NSLog(@"%@", appDelegate.festival.sortedIndexesInDateToFilmsDictionary);
         
-        for (NSString *key in newFestival.sortedKeysInDateToFilmsDictionary) {
+        for (NSString *key in appDelegate.festival.sortedKeysInDateToFilmsDictionary) {
             NSLog(@"%@", key);
-            NSArray *films = [newFestival.dateToFilmsDictionary objectForKey:key];
+            NSArray *films = [appDelegate.festival.dateToFilmsDictionary objectForKey:key];
             
             for (Film *film in films) {
                 Schedule *schedule;
