@@ -158,6 +158,10 @@ static char *const kAssociatedScheduleKey = "Schedule";
     
 	NSInteger sectionCount = [delegate.festival.sortedKeysInDateToFilmsDictionary count];
 	NSInteger myScheduleCount = [mySchedule count];
+	if(myScheduleCount == 0)
+	{
+		return;
+	}
 
 	// Sync current data
 	for (NSUInteger section = 0; section < sectionCount; section++)
