@@ -219,11 +219,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 			
 		case SOCIAL_MEDIA_SECTION:
-			return 50.0;
+			return 70.0;
 			break;
 			
 		case CALL_N_EMAIL_SECTION:
-			return 50.0;
+			return 70.0;
 			break;
 			
 		default:
@@ -320,28 +320,53 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
                 UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                fbButton.frame = CGRectMake(12.0, 10.0, 32.0, 32.0);
+                fbButton.frame = CGRectMake(24.0, 10.0, 32.0, 32.0);
                 [fbButton addTarget:self action:@selector(pressToShareToFacebook:) forControlEvents:UIControlEventTouchDown];
                 [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:fbButton];
                 
+                UILabel *lblFacebook = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 42.0, 56.0, 20)];
+                lblFacebook.text = @"Facebook";
+                [lblFacebook setFont:[UIFont systemFontOfSize:12.0]];
+                [lblFacebook setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblFacebook];
+                
                 UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				twButton.frame = CGRectMake(82.0, 10.0, 32.0, 32.0);
+				twButton.frame = CGRectMake(104.0, 10.0, 32.0, 32.0);
 				[twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
                 [twButton setImage:[UIImage imageNamed:@"twitter.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:twButton];
 
+                UILabel *lblTwitter = [[UILabel alloc] initWithFrame:CGRectMake(92.0, 42.0, 56.0, 20)];
+                lblTwitter.text = @"Twitter";
+                [lblTwitter setFont:[UIFont systemFontOfSize:12.0]];
+                [lblTwitter setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblTwitter];
+
 				UIButton *googleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				googleButton.frame = CGRectMake(152.0, 10.0, 32.0, 32.0);
+				googleButton.frame = CGRectMake(192.0, 10.0, 32.0, 32.0);
 				[googleButton addTarget:self action:@selector(shareToGooglePlus:) forControlEvents:UIControlEventTouchDown];
                 [googleButton setImage:[UIImage imageNamed:@"googleplus.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:googleButton];
+                
+                UILabel *lblGoogle = [[UILabel alloc] initWithFrame:CGRectMake(180.0, 42.0, 56.0, 20)];
+                lblGoogle.text = @"Google+";
+                [lblGoogle setFont:[UIFont systemFontOfSize:12.0]];
+                [lblGoogle setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblGoogle];
 
 				UIButton *mailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				mailButton.frame = CGRectMake(222.0, 10.0, 32.0, 32.0);
+				mailButton.frame = CGRectMake(272.0, 10.0, 32.0, 32.0);
 				[mailButton addTarget:self action:@selector(shareToMail:) forControlEvents:UIControlEventTouchDown];
                 [mailButton setImage:[UIImage imageNamed:@"mail.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:mailButton];
+                
+                UILabel *lblMail = [[UILabel alloc] initWithFrame:CGRectMake(260.0, 42.0, 56.0, 20)];
+                lblMail.text = @"Email";
+                [lblMail setFont:[UIFont systemFontOfSize:12.0]];
+                [lblMail setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblMail];
+                
 			}
 			
 			break;
@@ -355,16 +380,28 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
 
 				UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				phoneButton.frame = CGRectMake(12.0, 10.0, 32.0, 32.0);
+				phoneButton.frame = CGRectMake(20.0, 10.0, 32.0, 32.0);
 				[phoneButton addTarget:self action:@selector(callTicketLine:) forControlEvents:UIControlEventTouchDown];
                 [phoneButton setImage:[UIImage imageNamed:@"phone-Ticket.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:phoneButton];
+                
+                UILabel *lblPhone = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 42.0, 56.0, 20)];
+                lblPhone.text = @"Call CQ";
+                [lblPhone setFont:[UIFont systemFontOfSize:12.0]];
+                [lblPhone setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblPhone];
 				
 				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				linkButton.frame = CGRectMake(82.0, 10.0, 32.0, 32.0);
+				linkButton.frame = CGRectMake(110.0, 10.0, 32.0, 32.0);
 				[linkButton addTarget:self action:@selector(goTicketLink:) forControlEvents:UIControlEventTouchDown];
                 [linkButton setImage:[UIImage imageNamed:@"link-Ticket.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:linkButton];
+                
+                UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(100.0, 42.0, 56.0, 20)];
+                lblWebsite.text = @"Website";
+                [lblWebsite setFont:[UIFont systemFontOfSize:12.0]];
+                [lblWebsite setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblWebsite];
 			}
 		}
 			break;

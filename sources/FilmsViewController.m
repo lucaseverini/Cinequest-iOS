@@ -154,6 +154,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) syncTableDataWithScheduler
 {
+    [delegate populateCalendarEntries];
+    
 	NSInteger sectionCount = [delegate.festival.sortedKeysInDateToFilmsDictionary count];
 	NSInteger myScheduleCount = [mySchedule count];
 
@@ -171,7 +173,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			
 			for (NSUInteger schedIdx = 0; schedIdx < scheduleCount; schedIdx++)
 			{
-				Schedule *schedule = [schedules objectAtIndex:row];
+				Schedule *schedule = [schedules objectAtIndex:schedIdx];
 
 				for (NSUInteger idx = 0; idx < myScheduleCount; idx++)
 				{
@@ -313,7 +315,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
 			[venueLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
-			
+            
 			calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
 			[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 32.0 : 54.0, 32.0, 32.0)];
 			[calendarButton setImage:buttonImage forState:UIControlStateNormal];

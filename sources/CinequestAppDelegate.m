@@ -248,29 +248,6 @@
 }
 
 #pragma mark -
-#pragma mark TabBarController delegate
-
-- (BOOL) tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
-{
-	curTabIndex = [tabBarController selectedIndex];
-	
-	return YES;
-}
-
-- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
-{
-	if(curTabIndex != [tabBarController selectedIndex])
-	{
-		CATransition *animation = [CATransition animation];
-		[animation setType:kCATransitionReveal];
-		[animation setSubtype:curTabIndex > [tabBarController selectedIndex] ? kCATransitionFromLeft : kCATransitionFromRight];
-		[animation setDuration:0.5];
-		[animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-		[self.window.layer addAnimation:animation forKey:nil];
-	}
-}
-
-#pragma mark -
 #pragma mark Access Calendar
 
 // Check the authorization status of our application for Calendar
