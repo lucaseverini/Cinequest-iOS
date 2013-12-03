@@ -24,6 +24,7 @@
     EKEventStore *eventStore;
 	NSMutableArray *curSchedules;
 	NSMutableArray *curFilms;
+    BOOL isSearching;
 }
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
