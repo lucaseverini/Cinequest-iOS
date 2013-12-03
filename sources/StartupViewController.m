@@ -99,13 +99,10 @@
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
 	^{
 		appDelegate.festival = [[NewFestivalParser new] parseFestival];
-        
-        // Added to test the NewFestivalParser
-        //Festival *newFestival = [[NewFestivalParser new] parseFestival];
-        
+
         // uncomment the block below to test the console log for the A-Z segment
-        
-        /* NSLog(@"alphabet keys");
+/*
+		NSLog(@"alphabet keys");
         NSLog(@"%@", newFestival.sortedKeysInAlphabetToFilmsDictionary);
         for (NSString *key in newFestival.sortedKeysInAlphabetToFilmsDictionary) {
             NSLog(@"%@", key);
@@ -116,10 +113,10 @@
                     NSLog(@"%@ - %@", schedule.dateString, schedule.startTime);
                 }
             }
-        } */
-        
+        }
+*/
         // uncomment the block below to test the console log for the Date segment
-        
+/*
         NSLog(@"date to films keys:");
         NSLog(@"%@", appDelegate.festival.sortedKeysInDateToFilmsDictionary);
         NSLog(@"date to films indexes");
@@ -139,10 +136,10 @@
             }
             NSLog(@"\n");
         }
-
+*/
         // uncomment the block below to test the console log for the Forum tab
-        
-        /* NSLog(@"date to forums keys:");
+/*
+        NSLog(@"date to forums keys:");
         NSLog(@"%@", newFestival.sortedKeysInDateToForumsDictionary);
         NSLog(@"date to films indexes");
         NSLog(@"%@", newFestival.sortedIndexesInDateToForumsDictionary);
@@ -159,11 +156,11 @@
                 NSLog(@"%@ - %@", forum.name, schedule.startTime);
             }
             NSLog(@"\n");
-        } */
-        
+        }
+*/
         // uncomment the block below to test the console log for the Event Tab (Event ~ Special)
-        
-        /* NSLog(@"date to specials keys:");
+/*
+        NSLog(@"date to specials keys:");
         NSLog(@"%@", newFestival.sortedKeysInDateToSpecialsDictionary);
         NSLog(@"date to specials indexes");
         NSLog(@"%@", newFestival.sortedIndexesInDateToSpecialsDictionary);
@@ -180,8 +177,8 @@
                 NSLog(@"%@ - %@", special.name, schedule.startTime);
             }
             NSLog(@"\n");
-        } */
-        
+        }
+*/
 	});
 	
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),

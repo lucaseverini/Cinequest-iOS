@@ -308,9 +308,9 @@
 - (NSString *) venueAbbr:(NSString *)name
 {
     NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^A-Z0-9]" options:0 error:&error];
-    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^A-Z0-9\\-]" options:0 error:&error];
     NSString *modifiedString = [regex stringByReplacingMatchesInString:name options:0 range:NSMakeRange(0, [name length]) withTemplate:@""];
+	
     return modifiedString;
 }
 
