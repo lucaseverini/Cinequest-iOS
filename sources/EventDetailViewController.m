@@ -102,7 +102,7 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 - (void) parseNewsData
 {
 	NSString *name = [dataDictionary objectForKey:@"name"];
-	NSString *image = [appDelegate.dataProvider cacheImage:[dataDictionary objectForKey:@"image"]];
+	NSString *image = [appDelegate.dataProvider cacheImage:[dataDictionary objectForKey:@"eventImage"]];
 	NSString *description = [dataDictionary objectForKey:@"description"];
 	NSString *info = [[dataDictionary objectForKey:@"info"] lowercaseString];
 	NSString *weba = [NSString stringWithFormat:web_news, name, image, description];

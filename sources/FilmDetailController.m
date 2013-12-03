@@ -14,6 +14,7 @@
 #import "Festival.h"
 #import "Film.h"
 #import "Venue.h"
+#import "MapViewController.h"
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
@@ -471,7 +472,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
 	if(schedule != nil)
 	{
-		[self launchMapsWithVenue:schedule.venueItem];
+		[self showMapWithVenue:schedule.venueItem];
 	}
 	else
 	{
@@ -545,40 +546,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[alert show];
 }
 
-- (void) launchMapsWithVenue:(Venue*)venueN
+- (void) showMapWithVenue:(Venue*)venue
 {
-	NSDictionary *venues = appDelegate.venuesDictionary;
-	Venue *venue = [venues objectForKey:venueN.ID];
-	NSString *nameOfVenue = [[venue.name componentsSeparatedByString:@"-"] firstObject];
-	
-	// Set location to be searched
-	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@",nameOfVenue, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
-		
-	CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-	[geocoder geocodeAddressString:location completionHandler:
-	^(NSArray *placemarks, NSError *error)
-	{
-		if(error == nil)
-		{
-			NSLog(@"Shows location of venue %@ in maps", venue.shortName);
-
-			// Convert the CLPlacemark to an MKPlacemark
-			// Note: There's no error checking for a failed geocode
-			CLPlacemark *geocodedPlacemark = [placemarks objectAtIndex:0];
-			MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:geocodedPlacemark.location.coordinate addressDictionary:geocodedPlacemark.addressDictionary];
-
-			// Create a map item for the geocoded address to pass to Maps app
-			MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
-			[mapItem setName:venue.name];
-			
-			// Pass the map item to the Maps app
-			[mapItem openInMapsWithLaunchOptions:nil];
-		}
-		else
-		{
-			NSLog(@"Location of venue %@ not found", venue.shortName);
-		}
-	}];
+	MapViewController *mapViewController = [[MapViewController alloc] initWithNibName:@"MapViewController" andVenue:venue];
+	mapViewController.hidesBottomBarWhenPushed = YES;
+	[[self navigationController] pushViewController:mapViewController animated:YES];
 }
 
 @end

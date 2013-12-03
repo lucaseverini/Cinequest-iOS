@@ -56,6 +56,8 @@
 		81B12C6C182B759E000D5200 /* MySchedulerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */; };
 		81B32C91183C2AF9006D2D78 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81B32C90183C2AF9006D2D78 /* Default-568h@2x.png */; };
 		81B32C99183C2DF8006D2D78 /* logoSJSU.png in Resources */ = {isa = PBXBuildFile; fileRef = 81B32C98183C2DF8006D2D78 /* logoSJSU.png */; };
+		81B7C4A8184D1358001F4B16 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B7C4A6184D1358001F4B16 /* MapViewController.m */; };
+		81B7C4A9184D1358001F4B16 /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B7C4A7184D1358001F4B16 /* MapViewController.xib */; };
 		81BCC7FC18452C95002BFE83 /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 81745A7217EBAEED008D2C2C /* NSStringAdditions.m */; };
 		81C52B85182B62F000D2F55D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 81C52B84182B62F000D2F55D /* Reachability.m */; };
 		81C8B38217EBAB3200033D4F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38117EBAB3200033D4F /* UIKit.framework */; };
@@ -194,6 +196,9 @@
 		81A496441845A50C0025CCBB /* phone-Ticket@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "phone-Ticket@2x.png"; path = "images/phone-Ticket@2x.png"; sourceTree = SOURCE_ROOT; };
 		81B32C90183C2AF9006D2D78 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "images/Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
 		81B32C98183C2DF8006D2D78 /* logoSJSU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoSJSU.png; path = images/logoSJSU.png; sourceTree = SOURCE_ROOT; };
+		81B7C4A5184D1358001F4B16 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapViewController.h; path = sources/MapViewController.h; sourceTree = SOURCE_ROOT; };
+		81B7C4A6184D1358001F4B16 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapViewController.m; path = sources/MapViewController.m; sourceTree = SOURCE_ROOT; };
+		81B7C4A7184D1358001F4B16 /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MapViewController.xib; path = sources/MapViewController.xib; sourceTree = SOURCE_ROOT; };
 		81C52B83182B62F000D2F55D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = sources/Reachability.h; sourceTree = SOURCE_ROOT; };
 		81C52B84182B62F000D2F55D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = sources/Reachability.m; sourceTree = SOURCE_ROOT; };
 		81C8B37E17EBAB3200033D4F /* Cinequest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cinequest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -425,6 +430,7 @@
 				81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */,
 				81C8B3A617EBABEE00033D4F /* ForumsViewController.xib */,
 				81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */,
+				81B7C4A7184D1358001F4B16 /* MapViewController.xib */,
 			);
 			name = Resources;
 			path = Cinequest;
@@ -511,6 +517,8 @@
 				81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */,
 				81745A6F17EBAEED008D2C2C /* NewsViewController.h */,
 				81745A7017EBAEED008D2C2C /* NewsViewController.m */,
+				81B7C4A5184D1358001F4B16 /* MapViewController.h */,
+				81B7C4A6184D1358001F4B16 /* MapViewController.m */,
 			);
 			name = Sources;
 			path = Cinequest;
@@ -693,6 +701,7 @@
 				81C8B3DE17EBAC2C00033D4F /* schedule.png in Resources */,
 				81A496461845A50C0025CCBB /* twitter@2x.png in Resources */,
 				81B32C99183C2DF8006D2D78 /* logoSJSU.png in Resources */,
+				81B7C4A9184D1358001F4B16 /* MapViewController.xib in Resources */,
 				93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */,
 				816C4AB6183C160F00BE896C /* Splash4.png in Resources */,
 				93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */,
@@ -763,6 +772,7 @@
 				81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */,
 				81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */,
 				81C52B85182B62F000D2F55D /* Reachability.m in Sources */,
+				81B7C4A8184D1358001F4B16 /* MapViewController.m in Sources */,
 				81FBC133182DA37900C01783 /* DataProvider.m in Sources */,
 				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
 				81DD65B51832B5F700BDC8C5 /* FestivalParser.m in Sources */,

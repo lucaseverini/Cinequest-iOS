@@ -37,7 +37,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	news = [NSMutableArray new];
 
 	self.newsTableView.tableHeaderView = nil;
-	self.newsTableView.tableFooterView = nil;
 		
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 }
@@ -101,8 +100,9 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 				
 				NSString *name = @"";
 				NSString *description = @"";
-				NSString *imageUrl = @"";
+				NSString *eventImageUrl = @"";
 				NSString *info = @"";
+				NSString *thumbImageUrl = @"";
 							
 				NSInteger subNode2Count = [newsNode childCount];
 				if(subNode2Count != 0)
@@ -122,19 +122,24 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 						}
 						else if ([subNodename isEqualToString:@"EventImage"])
 						{
-							imageUrl = [newsSubNode stringValue];
+							eventImageUrl = [newsSubNode stringValue];
 						}
 						else if ([subNodename isEqualToString:@"InfoLink"])
 						{
 							info = [newsSubNode stringValue];
+						}
+						else if ([subNodename isEqualToString:@"ThumbImage"])
+						{
+							thumbImageUrl = [newsSubNode stringValue];
 						}
 					}
 				
 					NSMutableDictionary *newsItem = [NSMutableDictionary new];
 					[newsItem setObject:name forKey:@"name"];
 					[newsItem setObject:description forKey:@"description"];
-					[newsItem setObject:imageUrl forKey:@"image"];
+					[newsItem setObject:eventImageUrl forKey:@"eventImage"];
 					[newsItem setObject:info forKey:@"info"];
+					[newsItem setObject:thumbImageUrl forKey:@"thumbImage"];
 					
 					[news addObject:newsItem];
 				}
@@ -169,20 +174,46 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSUInteger row = [indexPath row];
+	NSMutableDictionary *newsData = [news objectAtIndex:row];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kNewsCellIdentifier];
     if(cell == nil)
 	{
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kNewsCellIdentifier];
-    }
-    
-	NSMutableDictionary *newsData = [news objectAtIndex:row];
-									 
-	cell.textLabel.text = [newsData objectForKey:@"name"];
-	cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-	cell.textLabel.numberOfLines = 2;
+	}
+	else
+	{
+		[[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+	}
+	
+	CGSize imgSize = CGSizeMake(0.0, 0.0);
+	NSString *imageUrl = [newsData objectForKey:@"thumbImage"];
+	if(imageUrl.length != 0)
+	{
+		imageUrl = [appDelegate.dataProvider cacheImage:imageUrl];
+		if(imageUrl.length != 0)
+		{
+			UIImage *image = [UIImage imageWithContentsOfFile:[[NSURL URLWithString:imageUrl] path]];
+			imgSize = [image size];
+			
+			UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(15.0, 6.0, imgSize.width, imgSize.height)];
+			imageView.tag = CELL_IMAGE_TAG;
+			imageView.image = image;
+			[cell.contentView addSubview:imageView];
+		}
+	}
+	
+	CGRect titleFrame = CGRectMake(15.0, 4.0 + imgSize.height, 290.0, 48.0);
+		
+	UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
+	titleLabel.tag = CELL_TITLE_LABEL_TAG;
+	titleLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+	titleLabel.numberOfLines = 2;
+	titleLabel.text = [newsData objectForKey:@"name"];
+	[cell.contentView addSubview:titleLabel];
 	
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	
     return cell;
 }
@@ -203,7 +234,24 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 54.0;
+	NSMutableDictionary *newsData = [news objectAtIndex:[indexPath row]];
+	NSString *imageUrl = [newsData objectForKey:@"thumbImage"];
+	if(imageUrl.length != 0)
+	{
+		return 158.0;
+	}
+	else
+	{
+		return 54.0;
+	}
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+	return 0.01f;		// This will create a "invisible" footer
 }
 
 @end
+
+
+
