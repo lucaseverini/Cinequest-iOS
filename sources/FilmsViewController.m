@@ -321,7 +321,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
             
 			calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-			[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 32.0 : 54.0, 32.0, 32.0)];
+			[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 8.0 : 24.0, 44.0, 44.0)];
 			[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 		}
 			break;
@@ -375,7 +375,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				[cell.contentView addSubview:venueLabel];
 				
 				UIButton *calButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				calButton.frame = CGRectMake(11.0, hPos + 4, 32.0, 32.0);
+				calButton.frame = CGRectMake(11.0, hPos, 40.0, 40.0);
 				calButton.tag = CELL_LEFTBUTTON_TAG + filmIdx;
 				UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];;
 				[calButton setImage:buttonImage forState:UIControlStateNormal];
@@ -513,6 +513,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 -(void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
+    NSLog(@"Searching:%d",isSearching);
+    NSMutableDictionary *dictSortKeyForSearch = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+    NSMutableDictionary *dictDateToFilm = [delegate.festival.dateToFilmsDictionary mutableCopy];
+    
+    
+//    Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
+//    Schedule *schedule = [film.schedules firstObject];
+    
 #pragma warning "CHECK correct usage of films and schedules arrays"
 	curFilms = [NSMutableArray arrayWithArray:delegate.festival.films];
 	curSchedules = [NSMutableArray arrayWithArray:delegate.festival.schedules];
@@ -542,7 +550,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 #pragma mark - UISearchDisplayController Delegate Methods
 
 -(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-	
+	    NSLog(@"shouldReloadTableForSearchString Searching:%d",isSearching);
 	// Tells the table data source to reload when text changes
 	
     [self filterContentForSearchText:searchString scope:
@@ -555,7 +563,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 }
 
 -(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
-	
+	    NSLog(@"shouldReloadTableForSearchScope Searching:%d",isSearching);
 	// Tells the table data source to reload when scope bar selection changes
 	
     [self filterContentForSearchText:self.searchDisplayController.searchBar.text scope:
@@ -587,15 +595,24 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
+    isSearching = NO;
     curFilms = [NSMutableArray arrayWithArray:delegate.festival.films];
 	curSchedules = [NSMutableArray arrayWithArray:delegate.festival.schedules];
+    NSLog(@"Searching:%d",isSearching);
 }
 
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    isSearching = NO;
     [searchBar resignFirstResponder];
     [self.view endEditing:YES];
     [self.searchDisplayController setActive:NO animated:YES];
+    NSLog(@"Searching:%d",isSearching);
+}
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
+    isSearching = YES;
+    NSLog(@"Searching:%d",isSearching);
+    return YES;
 }
 
 @end

@@ -34,7 +34,7 @@
 #define SOCIAL_MEDIA_SECTION	 1
 #define CALL_N_EMAIL_SECTION     2
 
-#define TICKET_LINE @"tel://1-408-295-3378"
+#define TICKET_LINE @"tel:1-408-295-3378"
 
 #define CALENDAR_NAME @"Cinequest"
 
