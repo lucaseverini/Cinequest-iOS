@@ -60,7 +60,7 @@
 {
     [super viewWillAppear:animated];
 	
-	NSString *venueName = [[venue.name componentsSeparatedByString:@"-"] firstObject];
+	NSString *venueName = [[venue.name componentsSeparatedByString:@"-"] objectAtIndex:0];
 	
 	// Set location to be searched
 	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@", venueName, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
@@ -130,6 +130,8 @@
 - (IBAction) openInMaps:(id)sender
 {
 	[self.mapItem openInMapsWithLaunchOptions:nil];
+	
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction) directions:(id)sender
@@ -139,6 +141,13 @@
 
 - (void) showRouteFrom:(id<MKAnnotation>)from to:(id<MKAnnotation>)to
 {
+	if(![appDelegate connectedToNetwork])
+	{
+#pragma message "Better to show a popup to warn the user?"
+		NSLog(@"NO CONNECTION. Can't show route");
+		return;
+	}
+
     routes = [self calculateRoutesFrom:from.coordinate to:to.coordinate];
     NSInteger numberOfSteps = routes.count;
 	
@@ -150,7 +159,16 @@
     }
 	
 	MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:numberOfSteps];
-	[mapView addOverlay:polyLine level:MKOverlayLevelAboveRoads];
+	if([mapView respondsToSelector:@selector(addOverlay:level:)])
+	{
+#ifdef __IPHONE_7_0
+		[mapView addOverlay:polyLine level:MKOverlayLevelAboveRoads]; 	// This code compiles only with iOS SDK version 7 or later
+#endif
+	}
+	else
+	{
+		[mapView addOverlay:polyLine];
+	}
 	
     [self centerMap];
 }
