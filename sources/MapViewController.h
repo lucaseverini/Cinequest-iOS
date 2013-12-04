@@ -25,7 +25,8 @@
 @property (nonatomic, strong) Venue *venue;
 @property (nonatomic, strong) MKMapItem *mapItem;
 @property (nonatomic, strong) MKPlacemark *placemark;
-@property (nonatomic, strong) MKPointAnnotation *annotation;
+@property (nonatomic, strong) MKPointAnnotation *venueAnnotation;
+@property (nonatomic, assign) BOOL showRouteInOverlayOrAnnotation;	// Show route in overlay or in annotation
 
 - (IBAction) openInMaps:(id)sender;
 - (IBAction) directions:(id)sender;

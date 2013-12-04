@@ -9,6 +9,8 @@
 #import "CinequestAppDelegate.h"
 #import "MapViewController.h"
 #import "Venue.h"
+#import "NVPolylineAnnotation.h"
+#import "NVPolylineAnnotationView.h"
 
 
 @implementation MapViewController
@@ -20,8 +22,9 @@
 @synthesize bottomBar;
 @synthesize mapItem;
 @synthesize placemark;
-@synthesize annotation;
+@synthesize venueAnnotation;
 @synthesize venue;
+@synthesize showRouteInOverlayOrAnnotation;
 
 - (id) initWithNibName:(NSString*)nibName andVenue:(Venue*)theVenue
 {
@@ -30,6 +33,8 @@
 	{
 		NSDictionary *venues = appDelegate.venuesDictionary;
 		self.venue = [venues objectForKey:theVenue.ID];
+		
+		showRouteInOverlayOrAnnotation = YES;
 	}
 	
     return self;
@@ -78,18 +83,18 @@
 			CLPlacemark *geocodedPlacemark = [placemarks objectAtIndex:0];
 			placemark = [[MKPlacemark alloc] initWithCoordinate:geocodedPlacemark.location.coordinate addressDictionary:geocodedPlacemark.addressDictionary];
 
-			annotation = [MKPointAnnotation new];
-			annotation.coordinate = placemark.coordinate;
-			annotation.title = venueName;
-			annotation.subtitle = nil;
+			venueAnnotation = [MKPointAnnotation new];
+			venueAnnotation.coordinate = placemark.coordinate;
+			venueAnnotation.title = venueName;
+			venueAnnotation.subtitle = nil;
 
 			// Create a map item for the geocoded address to pass to Maps app
 			mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
 			[mapItem setName:venue.name];
 
-			[mapView addAnnotation:annotation];
+			[mapView addAnnotation:venueAnnotation];
 
-			MKCoordinateRegion thisRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 1610 * 3, 1610 * 3); // 3 miles
+			MKCoordinateRegion thisRegion = MKCoordinateRegionMakeWithDistance(venueAnnotation.coordinate, 1610 * 3, 1610 * 3); // 3 miles
 			[mapView setRegion:thisRegion animated:NO];
 		}
 		else
@@ -101,41 +106,44 @@
 
 - (void) mapView:(MKMapView*)aMapView didAddAnnotationViews:(NSArray*)views
 {
-	[aMapView selectAnnotation:annotation animated:YES];
+	[aMapView selectAnnotation:venueAnnotation animated:YES];
 }
 
-- (MKAnnotationView*) mapView:(MKMapView*)aMapView viewForAnnotation:(id<MKAnnotation>)theAnnotation
+- (MKAnnotationView*) mapView:(MKMapView*)aMapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-	if(theAnnotation != self.annotation)
+	if([annotation isKindOfClass:[NVPolylineAnnotation class]])
+	{
+		return [[NVPolylineAnnotationView alloc] initWithAnnotation:annotation mapView:mapView];
+	}
+	else if(annotation == self.venueAnnotation)
+	{
+		NSString *title = annotation.title;
+		
+		MKPinAnnotationView *pinView = (MKPinAnnotationView*)[aMapView dequeueReusableAnnotationViewWithIdentifier:title];
+		if(pinView == nil)
+		{
+			pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:title];
+		}
+		
+		pinView.canShowCallout = YES;
+		pinView.animatesDrop = YES;
+		
+		return pinView;
+	}
+	else
 	{
 		return nil;
 	}
-	
-    NSString *title = theAnnotation.title;
-	
-    MKPinAnnotationView *pinView = (MKPinAnnotationView*)[aMapView dequeueReusableAnnotationViewWithIdentifier:title];
-	if(pinView == nil)
-	{
-		pinView = [[MKPinAnnotationView alloc] initWithAnnotation:theAnnotation reuseIdentifier:title];
-	}
-	
-	pinView.canShowCallout = YES;
-	pinView.animatesDrop = YES;
-	
-	return pinView;
 }
 
 - (IBAction) openInMaps:(id)sender
 {
-	// Pass the map item to the Maps app
 	[self.mapItem openInMapsWithLaunchOptions:nil];
 }
 
 - (IBAction) directions:(id)sender
 {
-	NSLog(@"directions");
-	
-	[self showRouteFrom:mapView.userLocation to:annotation];
+	[self showRouteFrom:mapView.userLocation to:venueAnnotation];
 }
 
 - (void) showRouteFrom:(id<MKAnnotation>)from to:(id<MKAnnotation>)to
@@ -147,12 +155,19 @@
     for(NSInteger index = 0; index < numberOfSteps; index++)
     {
         CLLocation *location = [routes objectAtIndex:index];
-        CLLocationCoordinate2D coordinate = location.coordinate;
-        coordinates[index] = coordinate;
+        coordinates[index] = location.coordinate;
     }
 	
-    MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:numberOfSteps];
-    [mapView addOverlay:polyLine];
+	if(showRouteInOverlayOrAnnotation)
+	{
+		MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:numberOfSteps];
+		[mapView addOverlay:polyLine level:MKOverlayLevelAboveRoads];
+	}
+	else
+	{
+		NVPolylineAnnotation *annotation = [[NVPolylineAnnotation alloc] initWithCoordinates:coordinates count:numberOfSteps mapView:mapView];
+		[mapView addAnnotation:annotation];
+	}
 	
     [self centerMap];
 }
@@ -171,7 +186,6 @@
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"points:\\\"([^\\\"]*)\\\"" options:0 error:NULL];
 	NSTextCheckingResult *match = [regex firstMatchInString:apiResponse options:0 range:NSMakeRange(0, [apiResponse length])];
 	NSString *encodedPoints = [apiResponse substringWithRange:[match rangeAtIndex:1]];
-    // NSString *encodedPoints = [apiResponse stringByMatching:@"points:\\\"([^\\\"]*)\\\"" capture:1L];
 	
     return [self decodePolyLine:[encodedPoints mutableCopy]];
 }
@@ -209,9 +223,7 @@
         lng += dlng;
         NSNumber *latitude = [[NSNumber alloc] initWithFloat:lat * 1e-5];
         NSNumber *longitude = [[NSNumber alloc] initWithFloat:lng * 1e-5];
-        //printf("[%f,", [latitude doubleValue]);
-        //printf("%f]", [longitude doubleValue]);
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]];
+		CLLocation *loc = [[CLLocation alloc] initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]];
         [array addObject:loc];
     }
 	
@@ -264,8 +276,8 @@
 - (MKOverlayView*) mapView:(MKMapView*)mapView viewForOverlay:(id<MKOverlay>)overlay
 {
     MKPolylineView *polylineView = [[MKPolylineView alloc] initWithPolyline:overlay];
-    polylineView.strokeColor = [UIColor blueColor];
-    polylineView.lineWidth = 5.0;
+    polylineView.strokeColor = [UIColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:0.8];
+    polylineView.lineWidth = 10.0;
 	
     return polylineView;
 }
