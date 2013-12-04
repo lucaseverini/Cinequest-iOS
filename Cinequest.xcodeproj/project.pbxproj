@@ -78,8 +78,6 @@
 		81D67060183E19D8007E9B99 /* iphone_icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 81D67059183E19D8007E9B99 /* iphone_icon_114.png */; };
 		81D67061183E19D8007E9B99 /* iphone_icon_120.png in Resources */ = {isa = PBXBuildFile; fileRef = 81D6705A183E19D8007E9B99 /* iphone_icon_120.png */; };
 		81D67062183E19D8007E9B99 /* iphone_icon_512.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 81D6705B183E19D8007E9B99 /* iphone_icon_512.jpg */; };
-		81F7B165184ECC81002B4B56 /* NVPolylineAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 81F7B160184EBE3C002B4B56 /* NVPolylineAnnotation.m */; };
-		81F7B166184ECC81002B4B56 /* NVPolylineAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 81F7B162184EBE3C002B4B56 /* NVPolylineAnnotationView.m */; };
 		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
 		935D58D4183CE0E300BE904F /* VenueParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 935D58D3183CE0E300BE904F /* VenueParser.m */; };
 		935D58D6183CE26000BE904F /* News@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 935D58D5183CE26000BE904F /* News@2x.png */; };
@@ -349,6 +347,10 @@
 			isa = PBXGroup;
 			children = (
 				81F7B15E184E94B7002B4B56 /* Images */,
+				81F7B15F184EBE3C002B4B56 /* NVPolylineAnnotation.h */,
+				81F7B160184EBE3C002B4B56 /* NVPolylineAnnotation.m */,
+				81F7B161184EBE3C002B4B56 /* NVPolylineAnnotationView.h */,
+				81F7B162184EBE3C002B4B56 /* NVPolylineAnnotationView.m */,
 				C2D6DC1D1829771E005A6897 /* Showing.h */,
 				C2D6DC1E1829771E005A6897 /* Showing.m */,
 				81745A7117EBAEED008D2C2C /* NSStringAdditions.h */,
@@ -519,10 +521,6 @@
 				81745A7017EBAEED008D2C2C /* NewsViewController.m */,
 				81B7C4A5184D1358001F4B16 /* MapViewController.h */,
 				81B7C4A6184D1358001F4B16 /* MapViewController.m */,
-				81F7B15F184EBE3C002B4B56 /* NVPolylineAnnotation.h */,
-				81F7B160184EBE3C002B4B56 /* NVPolylineAnnotation.m */,
-				81F7B161184EBE3C002B4B56 /* NVPolylineAnnotationView.h */,
-				81F7B162184EBE3C002B4B56 /* NVPolylineAnnotationView.m */,
 			);
 			name = Sources;
 			path = Cinequest;
@@ -766,7 +764,6 @@
 				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
 				C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */,
 				C2B86DF71844C0350088A958 /* Special.m in Sources */,
-				81F7B165184ECC81002B4B56 /* NVPolylineAnnotation.m in Sources */,
 				C2D6DC291829B8BF005A6897 /* Film.m in Sources */,
 				81745A7C17EBAEED008D2C2C /* EventDetailViewController.m in Sources */,
 				81D1EC3B182B892B003DD8BB /* StartupViewController.m in Sources */,
@@ -781,7 +778,6 @@
 				81C52B85182B62F000D2F55D /* Reachability.m in Sources */,
 				81B7C4A8184D1358001F4B16 /* MapViewController.m in Sources */,
 				81FBC133182DA37900C01783 /* DataProvider.m in Sources */,
-				81F7B166184ECC81002B4B56 /* NVPolylineAnnotationView.m in Sources */,
 				C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */,
 				C2B86DFA1847AC560088A958 /* NewFestivalParser.m in Sources */,
 				8149DFCD17EBB5780092F8F9 /* main.m in Sources */,

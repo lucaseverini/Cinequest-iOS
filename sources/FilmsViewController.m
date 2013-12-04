@@ -7,11 +7,9 @@
 // 
 
 #import "FilmsViewController.h"
-#import "NewsViewController.h"
 #import "FilmDetailController.h"
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
-#import "DDXML.h"
 #import "DataProvider.h"
 #import "Film.h"
 #import "Festival.h"
@@ -513,10 +511,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 -(void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
-    NSLog(@"Searching:%d",isSearching);
-    NSMutableDictionary *dictSortKeyForSearch = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
-    NSMutableDictionary *dictDateToFilm = [delegate.festival.dateToFilmsDictionary mutableCopy];
-    
+    NSLog(@"Searching:%d", isSearching);
     
 //    Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 //    Schedule *schedule = [film.schedules firstObject];

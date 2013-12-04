@@ -184,7 +184,7 @@
 	if([reach isReachable])
 	{
 		SCNetworkReachabilityFlags flags = [reach reachabilityFlags];
-		if(kSCNetworkReachabilityFlagsTransientConnection)
+		if(flags & kSCNetworkReachabilityFlagsTransientConnection)
 		{
 			networkConnection = NETWORK_CONNECTION_PHONE;
 		}
@@ -344,18 +344,16 @@
         if (result) {
             self.calendarIdentifier = calendar.calendarIdentifier;
             
-            NSArray *caleandarsArray = [NSArray array];
-            caleandarsArray = [self.eventStore calendarsForEntityType:EKEntityTypeEvent];
-            BOOL isCalendar = false;
-            
+            NSArray *caleandarsArray = [self.eventStore calendarsForEntityType:EKEntityTypeEvent];
             for (EKCalendar *iCalendar in caleandarsArray)
             {
-                if ([iCalendar.title isEqualToString:CALENDAR_NAME] || [iCalendar.calendarIdentifier isEqualToString:self.calendarIdentifier]) {
-                    isCalendar = true;
-                    //Get and Save Calendar ID for future use
+                if ([iCalendar.title isEqualToString:CALENDAR_NAME] || [iCalendar.calendarIdentifier isEqualToString:self.calendarIdentifier])
+				{
+                    // Get and Save Calendar ID for future use
                     self.calendarIdentifier = iCalendar.calendarIdentifier;
                     [[NSUserDefaults standardUserDefaults] setValue:self.calendarIdentifier forKey:@"CalendarID"];
                     self.cinequestCalendar = [self.eventStore calendarWithIdentifier:self.calendarIdentifier];
+					
                     break;
                 }
             }

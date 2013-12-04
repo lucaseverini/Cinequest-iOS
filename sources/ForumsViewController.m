@@ -325,8 +325,6 @@
 	NSString *date = [days objectAtIndex:section];
 	NSMutableArray *events = [data objectForKey:date];
 	Schedule *event = [events objectAtIndex:row];
-    // set text color
-	UIColor *textColor = [UIColor blackColor];
 	
 	// check if current cell is already added to mySchedule
 	// if it is, display it as blue
@@ -336,8 +334,6 @@
 		
 		if (obj.ID == event.ID) 
 		{
-			//NSLog(@"%@ was added.",obj.title);
-			textColor = [UIColor blueColor];
 			event.isSelected = YES;
 			break;
 		}

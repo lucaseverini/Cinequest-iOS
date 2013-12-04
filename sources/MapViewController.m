@@ -9,8 +9,6 @@
 #import "CinequestAppDelegate.h"
 #import "MapViewController.h"
 #import "Venue.h"
-#import "NVPolylineAnnotation.h"
-#import "NVPolylineAnnotationView.h"
 
 
 @implementation MapViewController
@@ -24,7 +22,6 @@
 @synthesize placemark;
 @synthesize venueAnnotation;
 @synthesize venue;
-@synthesize showRouteInOverlayOrAnnotation;
 
 - (id) initWithNibName:(NSString*)nibName andVenue:(Venue*)theVenue
 {
@@ -33,8 +30,6 @@
 	{
 		NSDictionary *venues = appDelegate.venuesDictionary;
 		self.venue = [venues objectForKey:theVenue.ID];
-		
-		showRouteInOverlayOrAnnotation = YES;
 	}
 	
     return self;
@@ -70,7 +65,7 @@
 	// Set location to be searched
 	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@", venueName, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
 	
-	CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+	CLGeocoder *geocoder = [CLGeocoder new];
 	[geocoder geocodeAddressString:location completionHandler:
 	^(NSArray *placemarks, NSError *error)
 	{
@@ -111,11 +106,7 @@
 
 - (MKAnnotationView*) mapView:(MKMapView*)aMapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-	if([annotation isKindOfClass:[NVPolylineAnnotation class]])
-	{
-		return [[NVPolylineAnnotationView alloc] initWithAnnotation:annotation mapView:mapView];
-	}
-	else if(annotation == self.venueAnnotation)
+	if(annotation == self.venueAnnotation)
 	{
 		NSString *title = annotation.title;
 		
@@ -158,16 +149,8 @@
         coordinates[index] = location.coordinate;
     }
 	
-	if(showRouteInOverlayOrAnnotation)
-	{
-		MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:numberOfSteps];
-		[mapView addOverlay:polyLine level:MKOverlayLevelAboveRoads];
-	}
-	else
-	{
-		NVPolylineAnnotation *annotation = [[NVPolylineAnnotation alloc] initWithCoordinates:coordinates count:numberOfSteps mapView:mapView];
-		[mapView addAnnotation:annotation];
-	}
+	MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:numberOfSteps];
+	[mapView addOverlay:polyLine level:MKOverlayLevelAboveRoads];
 	
     [self centerMap];
 }
@@ -193,36 +176,46 @@
 - (NSMutableArray*) decodePolyLine:(NSMutableString*)encoded
 {
     [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\" options:NSLiteralSearch range:NSMakeRange(0, [encoded length])];
+	
     NSInteger len = [encoded length];
     NSInteger index = 0;
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    NSInteger lat=0;
-    NSInteger lng=0;
-    while (index < len)
+    NSInteger lat = 0;
+    NSInteger lng = 0;
+    NSMutableArray *array = [NSMutableArray new];
+	
+    while(index < len)
     {
-        NSInteger b;
+        NSInteger ch = 0;
+		
         NSInteger shift = 0;
         NSInteger result = 0;
         do
         {
-            b = [encoded characterAtIndex:index++] - 63;
-            result |= (b & 0x1f) << shift;
+            ch = [encoded characterAtIndex:index++] - 63;
+            result |= (ch & 0x1f) << shift;
             shift += 5;
-        } while (b >= 0x20);
-        NSInteger dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        }
+		while (ch >= 0x20);
+        
+		NSInteger dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
         lat += dlat;
+		
         shift = 0;
         result = 0;
         do
         {
-            b = [encoded characterAtIndex:index++] - 63;
-            result |= (b & 0x1f) << shift;
+            ch = [encoded characterAtIndex:index++] - 63;
+            result |= (ch & 0x1f) << shift;
             shift += 5;
-        } while (b >= 0x20);
+        }
+		while (ch >= 0x20);
+		
         NSInteger dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
         lng += dlng;
+		
         NSNumber *latitude = [[NSNumber alloc] initWithFloat:lat * 1e-5];
         NSNumber *longitude = [[NSNumber alloc] initWithFloat:lng * 1e-5];
+		
 		CLLocation *loc = [[CLLocation alloc] initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]];
         [array addObject:loc];
     }

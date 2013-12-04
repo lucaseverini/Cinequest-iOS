@@ -388,8 +388,7 @@
 
 -(NSMutableArray *)getSortedKeysFromAlphabetDictionary:(NSMutableDictionary *)dictionary
 {
-    NSMutableArray *sortedKeys = [[NSMutableArray alloc] init];
-    sortedKeys = (NSMutableArray *)[[dictionary allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    NSMutableArray *sortedKeys = (NSMutableArray *)[[dictionary allKeys] sortedArrayUsingSelector:@selector(compare:)];
     return sortedKeys;
 }
 
@@ -426,10 +425,11 @@
 
 -(NSMutableArray *)getSortedKeysFromDateDictionary:(NSMutableDictionary *)dictionary
 {
-    NSMutableArray *sortedKeys = [[NSMutableArray alloc] init];
-    sortedKeys = (NSMutableArray *)[dictionary allKeys];
+    NSMutableArray *sortedKeys = (NSMutableArray *)[dictionary allKeys];
     
-    sortedKeys = (NSMutableArray*)[sortedKeys sortedArrayUsingComparator:^(id object1, id object2) {
+    sortedKeys = (NSMutableArray*)[sortedKeys sortedArrayUsingComparator:
+	^(id object1, id object2)
+	{
         NSString *day1 = (NSString *)object1;
         NSString *day2 = (NSString *)object2;
         
