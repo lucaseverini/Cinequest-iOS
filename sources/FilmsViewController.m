@@ -61,7 +61,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		{
 			NSString *day = [appDelegate.festival.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
 			Film *film = [[appDelegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			schedule = [film.schedules firstObject];
+			schedule = [film.schedules objectAtIndex:0];
 		}
 		else // VIEW_BY_TITLE
 		{
@@ -247,7 +247,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			// get film objects using date
 			NSString *day = [delegate.festival.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
 			Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			Schedule *schedule = [film.schedules firstObject];
+			Schedule *schedule = [film.schedules objectAtIndex:0];
 			
 			// check if current cell is already added to mySchedule
 			NSUInteger idx, count = [mySchedule count];
@@ -445,7 +445,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		{
 			NSString *day = [delegate.festival.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
 			Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			Schedule *schedule = [film.schedules firstObject];
+			Schedule *schedule = [film.schedules objectAtIndex:0];
 			
 			[self showFilmDetails:schedule];
 		}
