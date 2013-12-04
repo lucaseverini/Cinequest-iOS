@@ -128,7 +128,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	switcher = VIEW_BY_DATE;
 	
-	self.filmsTableView.tableHeaderView = filmSearchBar;
+	self.filmsTableView.tableHeaderView = nil;
 	self.filmsTableView.tableFooterView = nil;
     
     filmSearchBar.delegate = self;
