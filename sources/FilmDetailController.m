@@ -181,7 +181,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			return 1;
 			break;
 			
-		case CALL_N_EMAIL_SECTION:
+		case TICKET_INFO_SECTION:
 			return 1;
 			break;
 	}
@@ -201,7 +201,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			answer = @"Share Film Detail";
 			break;
 			
-		case CALL_N_EMAIL_SECTION:
+		case TICKET_INFO_SECTION:
 			answer = @"Ticket Information";
 			break;
 	}
@@ -222,7 +222,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			return 70.0;
 			break;
 			
-		case CALL_N_EMAIL_SECTION:
+		case TICKET_INFO_SECTION:
 			return 70.0;
 			break;
 			
@@ -272,8 +272,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
 			if (cell == nil)
 			{
-				// init cell
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ScheduleCell"];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
 				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 4.0, 250.0, 20.0)];
 				timeLabel.tag = CELL_TIME_LABEL_TAG;
@@ -332,52 +332,64 @@ static char *const kAssociatedScheduleKey = "Schedule";
                 [cell.contentView addSubview:lblFacebook];
                 
                 UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				twButton.frame = CGRectMake(100.0, 6.0, 40.0, 40.0);
+				twButton.frame = CGRectMake(80.0, 6.0, 40.0, 40.0);
 				[twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
                 [twButton setImage:[UIImage imageNamed:@"twitter.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:twButton];
 
-                UILabel *lblTwitter = [[UILabel alloc] initWithFrame:CGRectMake(92.0, 46.0, 56.0, 20)];
+                UILabel *lblTwitter = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
                 lblTwitter.text = @"Twitter";
                 [lblTwitter setFont:[UIFont systemFontOfSize:12.0]];
                 [lblTwitter setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblTwitter];
 
 				UIButton *googleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				googleButton.frame = CGRectMake(188.0, 6.0, 40.0, 40.0);
+				googleButton.frame = CGRectMake(140.0, 6.0, 40.0, 40.0);
 				[googleButton addTarget:self action:@selector(shareToGooglePlus:) forControlEvents:UIControlEventTouchDown];
                 [googleButton setImage:[UIImage imageNamed:@"googleplus.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:googleButton];
                 
-                UILabel *lblGoogle = [[UILabel alloc] initWithFrame:CGRectMake(180.0, 46.0, 56.0, 20)];
+                UILabel *lblGoogle = [[UILabel alloc] initWithFrame:CGRectMake(132.0, 46.0, 56.0, 20)];
                 lblGoogle.text = @"Google+";
                 [lblGoogle setFont:[UIFont systemFontOfSize:12.0]];
                 [lblGoogle setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblGoogle];
 
 				UIButton *mailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				mailButton.frame = CGRectMake(268.0, 6.0, 40.0, 40.0);
+				mailButton.frame = CGRectMake(200.0, 6.0, 40.0, 40.0);
 				[mailButton addTarget:self action:@selector(shareToMail:) forControlEvents:UIControlEventTouchDown];
                 [mailButton setImage:[UIImage imageNamed:@"mail.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:mailButton];
                 
-                UILabel *lblMail = [[UILabel alloc] initWithFrame:CGRectMake(260.0, 46.0, 56.0, 20)];
+                UILabel *lblMail = [[UILabel alloc] initWithFrame:CGRectMake(192.0, 46.0, 56.0, 20)];
                 lblMail.text = @"Email";
                 [lblMail setFont:[UIFont systemFontOfSize:12.0]];
                 [lblMail setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblMail];
-                
+
+				UIButton *messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				messageButton.frame = CGRectMake(260.0, 6.0, 40.0, 40.0);
+				[messageButton addTarget:self action:@selector(shareToMessage:) forControlEvents:UIControlEventTouchDown];
+                [messageButton setImage:[UIImage imageNamed:@"message.png"] forState:UIControlStateNormal];
+                [cell.contentView addSubview:messageButton];
+
+				UILabel *lblMessage = [[UILabel alloc] initWithFrame:CGRectMake(252.0, 46.0, 56.0, 20)];
+                lblMessage.text = @"Message";
+                [lblMessage setFont:[UIFont systemFontOfSize:12.0]];
+                [lblMessage setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblMessage];
 			}
 			
 			break;
 		}
 			
-		case CALL_N_EMAIL_SECTION:
+		case TICKET_INFO_SECTION:
 		{
 			cell = [tableView dequeueReusableCellWithIdentifier:ActionsIdentifier];
 			if (cell == nil)
 			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
 				UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				phoneButton.frame = CGRectMake(20.0,6.0, 40.0, 40.0);
@@ -392,12 +404,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
                 [cell.contentView addSubview:lblPhone];
 				
 				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				linkButton.frame = CGRectMake(100.0, 6.0, 40.0, 40.0);
+				linkButton.frame = CGRectMake(80.0, 6.0, 40.0, 40.0);
 				[linkButton addTarget:self action:@selector(goTicketLink:) forControlEvents:UIControlEventTouchDown];
                 [linkButton setImage:[UIImage imageNamed:@"link-Ticket.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:linkButton];
                 
-                UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(92.0, 46.0, 56.0, 20)];
+                UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
                 lblWebsite.text = @"Website";
                 [lblWebsite setFont:[UIFont systemFontOfSize:12.0]];
                 [lblWebsite setTextAlignment:NSTextAlignmentCenter];
@@ -434,7 +446,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (IBAction) pressToShareToFacebook:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name],[film infoLink]];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
@@ -450,14 +462,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
                                   delegate:self
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles:nil];
-		alertView.tag = 3;
         [alertView show];
     }
 }
 
 - (IBAction) pressToShareToTwitter:(id)sender
 {
-    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name],[film infoLink]];
+    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
@@ -473,34 +484,67 @@ static char *const kAssociatedScheduleKey = "Schedule";
                                   delegate:self
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles:nil];
-		alertView.tag = 4;
         [alertView show];
     }
 }
 
 - (IBAction) shareToMail:(id)sender
-{
-	
-    if ([MFMailComposeViewController canSendMail]) {
+{	
+    if ([MFMailComposeViewController canSendMail])
+	{
         MFMailComposeViewController *controller = [MFMailComposeViewController new];
-        NSString *friendlyMessage = @"Hey,\nI found an interesting film from Cinequest festival.\nCheck it out!";
-        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, [film name],[film infoLink]];
         controller.mailComposeDelegate = self;
-        [controller setSubject:[film name]];
+		
+        NSString *friendlyMessage = @"Hey,\nI found an interesting film from Cinequest festival.\nCheck it out!";
+        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, [film name], [film infoLink]];
+        
+		[controller setSubject:[film name]];
         [controller setMessageBody:messageBody isHTML:NO];
         
         delegate.isPresentingModalView = YES;
         [self.navigationController presentViewController:controller animated:YES completion:nil];
         [[[[controller viewControllers] lastObject] navigationItem] setTitle:@"Set the title"];
     }
-    else{
+    else
+	{
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"Sorry"
-                                  message:@"You can't send a email right now, make sure your device has an internet connection and you have at least one Email account setup"
+                                  message:@"You can't send an email right now, make sure your device has an internet connection and you have at least one Email account setup"
                                   delegate:self
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles: nil];
-		alertView.tag = 4;
+        [alertView show];
+    }
+}
+
+- (IBAction) shareToMessage:(id)sender
+{
+	if([MFMessageComposeViewController canSendText])
+	{
+        MFMessageComposeViewController *controller = [MFMessageComposeViewController new];
+        controller.messageComposeDelegate = self;
+
+        NSString *friendlyMessage = @"Hey,\nI found an interesting film from Cinequest festival.\nCheck it out!";
+        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, [film name], [film infoLink]];
+        
+		if([controller respondsToSelector:@selector(setSubject:)])
+		{
+			[controller setSubject:[film name]];
+		}
+		
+        [controller setBody:messageBody];
+        
+        delegate.isPresentingModalView = YES;
+        [self.navigationController presentViewController:controller animated:YES completion:nil];
+    }
+    else
+	{
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't send a message right now, make sure your device has a phone or an internet connection"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles: nil];
         [alertView show];
     }
 }
@@ -512,12 +556,20 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (IBAction) callTicketLine:(id)sender
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:TICKET_LINE]];
+/*
+	// Test to try return to the app after the phone call
+	UIWebView *callWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, 0.0, 1.0, 1.0)];
+	[[sender superview] addSubview:callWebView];
+	
+	NSURL *telURL = [NSURL URLWithString:TICKET_LINE];
+	[callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
+*/
+	[app openURL:[NSURL URLWithString:TICKET_LINE]];
 }
 
 - (IBAction) goTicketLink:(id)sender
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[film infoLink]]];
+    [app openURL:[NSURL URLWithString:[film infoLink]]];
 }
 
 - (void) mapsButtonTapped:(id)sender event:(id)touchEvent
@@ -565,45 +617,35 @@ static char *const kAssociatedScheduleKey = "Schedule";
     return schedule;
 }
 
-- (void) actionForFilm:(Schedule*)schedule
-{
-	schedule.presentInScheduler = !schedule.isSelected;
-	schedule.presentInCalendar = !schedule.isSelected;
-	
-	NSString *choice1 = nil;
-	NSString *choice2 = nil;
-	NSString *choice3 = nil;
-	NSString *choice4 = nil;
-	
-	if(schedule.presentInScheduler)
-	{
-		choice1 = schedule.presentInCalendar ? @"Remove from My Schedule & Calendar" : @"Remove from My Schedule";
-		choice2 = schedule.presentInCalendar ? @"Show in Calendar" : @"Add to Calendar";
-		choice3 = @"Show Venue location in Maps";
-	}
-	else
-	{
-		choice1 = @"Add to My Schedule";
-		choice2 = @"Add to My Schedule and Calendar";
-		choice3 = @"Show in Calendar";
-		choice4 = @"Show Venue location in Maps";
-	}
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self
-										  cancelButtonTitle:@"Cancel"
-										  otherButtonTitles:choice1, choice2, choice3, choice4, nil];
-	
-	objc_setAssociatedObject(alert, kAssociatedScheduleKey, schedule, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-	
-	alert.tag = 2;
-	[alert show];
-}
-
 - (void) showMapWithVenue:(Venue*)venue
 {
 	MapViewController *mapViewController = [[MapViewController alloc] initWithNibName:@"MapViewController" andVenue:venue];
 	mapViewController.hidesBottomBarWhenPushed = YES;
 	[[self navigationController] pushViewController:mapViewController animated:YES];
+}
+
+- (void) messageComposeViewController:(MFMessageComposeViewController*)controller didFinishWithResult:(MessageComposeResult)result
+{
+    switch(result)
+	{
+        case MessageComposeResultCancelled:
+            break;
+            
+        case MessageComposeResultFailed:
+        {
+            UIAlertView *warningAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to send message!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [warningAlert show];
+            break;
+        }
+            
+        case MessageComposeResultSent:
+            break;
+            
+        default:
+            break;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

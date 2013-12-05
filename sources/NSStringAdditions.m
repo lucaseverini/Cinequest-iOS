@@ -8,7 +8,7 @@
 	return (const xmlChar *)[self UTF8String];
 }
 
-- (NSString *)trimWhitespace
+- (NSString*) trimWhitespace
 {
 	NSMutableString *mStr = [self mutableCopy];
 	CFStringTrimWhitespace((CFMutableStringRef)mStr);

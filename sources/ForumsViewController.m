@@ -350,7 +350,8 @@
 	
 	UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	
-    if (tempCell == nil) {
+    if (tempCell == nil)
+	{
 		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
 										   reuseIdentifier:CellIdentifier];
 		
@@ -446,9 +447,8 @@
 #pragma mark -
 #pragma mark UITableView Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-	
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
 	

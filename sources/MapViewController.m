@@ -188,7 +188,7 @@
 	NSTextCheckingResult *match = [regex firstMatchInString:apiResponse options:0 range:NSMakeRange(0, [apiResponse length])];
 	NSString *encodedPoints = [apiResponse substringWithRange:[match rangeAtIndex:1]];
 	
-    return [self decodePolyLine:[encodedPoints mutableCopy]];
+    return [self decodePolyLine:[encodedPoints copy]];
 }
 
 - (NSMutableArray*) decodePolyLine:(NSMutableString*)encoded

@@ -30,11 +30,11 @@
 #define CELL_IMAGE_TAG			6
 #define CELL_LEFTBUTTON_TAG		100
 
-#define SCHEDULE_SECTION         0
-#define SOCIAL_MEDIA_SECTION	 1
-#define CALL_N_EMAIL_SECTION     2
+#define SCHEDULE_SECTION        0
+#define SOCIAL_MEDIA_SECTION	1
+#define TICKET_INFO_SECTION     2
 
-#define TICKET_LINE @"tel:1-408-295-3378"
+#define TICKET_LINE @"telprompt://1-408-295-3378"
 
 #define CALENDAR_NAME @"Cinequest"
 

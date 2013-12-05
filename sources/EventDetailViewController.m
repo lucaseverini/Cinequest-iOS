@@ -333,7 +333,7 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 				return 1;
 				break;
 				
-			case CALL_N_EMAIL_SECTION:
+			case TICKET_INFO_SECTION:
 				return 2;
 				break;
 		}
@@ -369,7 +369,7 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 				return  @"Share to Social Media";
 				break;
 				
-			case CALL_N_EMAIL_SECTION:
+			case TICKET_INFO_SECTION:
 				return  @"Actions";
 				break;
 		}
@@ -391,7 +391,7 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 			return 50.0;
 			break;
 			
-		case CALL_N_EMAIL_SECTION:
+		case TICKET_INFO_SECTION:
 			return 50.0;
 			break;
 			

@@ -392,6 +392,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     if (cell == nil)
 	{
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kEventCellIdentifier];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		
 		titleLabel = [UILabel new];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;

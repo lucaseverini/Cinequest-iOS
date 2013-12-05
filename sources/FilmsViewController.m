@@ -124,11 +124,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	cinequestCalendar = delegate.cinequestCalendar;
     eventStore = delegate.eventStore;
 	
-	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary copy];
-	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary copy];
-	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary copy];
- 	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary copy];
-	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary copy];
+	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
+	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary mutableCopy];
+ 	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
+	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
   	
 	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
@@ -252,7 +252,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		case VIEW_BY_DATE:
 		{
-			// get film objects using date
 			NSString *day = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
 			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 			Schedule *schedule = [film.schedules objectAtIndex:0];
@@ -280,7 +279,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			if(cell == nil)
 			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDateCellIdentifier];
-				
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
 				UILabel *titleLabel = [UILabel new];
 				titleLabel.tag = CELL_TITLE_LABEL_TAG;
 				titleLabel.font = titleFont;
@@ -334,8 +334,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			
 		case VIEW_BY_TITLE:
 		{
-			NSString *sort = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
-			NSArray *films = [self.alphabetToFilmsDictionary objectForKey:sort];
+			NSString *letter = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+			NSArray *films = [self.alphabetToFilmsDictionary objectForKey:letter];
 			Film *film = [films objectAtIndex:[indexPath row]];
 			NSArray *schedules = film.schedules;
 			
@@ -519,38 +519,61 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 -(void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
-    NSLog(@"Searching:%d", isSearching);
-
-	self.sortedKeysInDateToFilmsDictionary = [NSMutableArray arrayWithArray:delegate.festival.sortedKeysInDateToFilmsDictionary];
-	self.dateToFilmsDictionary = [NSMutableDictionary dictionaryWithDictionary:delegate.festival.dateToFilmsDictionary];
-	
-#pragma warning "sortedKeysInDateToFilmsDictionary IS NOT A MUTABLEARRAY!!"
-
 	if(searchText.length != 0)
 	{
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@", searchText];
-
 		NSMutableArray *keysToDelete = [NSMutableArray new];
 		
-		for(NSString *day in self.sortedKeysInDateToFilmsDictionary)
+		if(switcher == VIEW_BY_DATE)
 		{
-			NSArray *films = [self.dateToFilmsDictionary objectForKey:day];
-			NSArray *foundFilms = [NSMutableArray arrayWithArray:[films filteredArrayUsingPredicate:predicate]];
-			if(films.count != foundFilms.count)
+			self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+			self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
+
+			for(NSString *day in self.sortedKeysInDateToFilmsDictionary)
 			{
-				if(foundFilms.count == 0)
+				NSArray *films = [self.dateToFilmsDictionary objectForKey:day];
+				NSArray *foundFilms = [NSMutableArray arrayWithArray:[films filteredArrayUsingPredicate:predicate]];
+				if(films.count != foundFilms.count)
 				{
-					[keysToDelete addObject:day];
-					[self.dateToFilmsDictionary removeObjectForKey:day];
-				}
-				else
-				{
-					[self.dateToFilmsDictionary setObject:foundFilms forKey:day];
+					if(foundFilms.count == 0)
+					{
+						[keysToDelete addObject:day];
+						[self.dateToFilmsDictionary removeObjectForKey:day];
+					}
+					else
+					{
+						[self.dateToFilmsDictionary setObject:foundFilms forKey:day];
+					}
 				}
 			}
+
+			[self.sortedKeysInDateToFilmsDictionary removeObjectsInArray:keysToDelete];
 		}
-		
-		[self.sortedKeysInDateToFilmsDictionary removeObjectsInArray:keysToDelete];
+		else	// VIEW_BY_TITLE
+		{
+			self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
+			self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
+			
+			for(NSString *letter in self.sortedKeysInAlphabetToFilmsDictionary)
+			{
+				NSArray *films = [self.alphabetToFilmsDictionary objectForKey:letter];
+				NSArray *foundFilms = [NSMutableArray arrayWithArray:[films filteredArrayUsingPredicate:predicate]];
+				if(films.count != foundFilms.count)
+				{
+					if(foundFilms.count == 0)
+					{
+						[keysToDelete addObject:letter];
+						[self.alphabetToFilmsDictionary removeObjectForKey:letter];
+					}
+					else
+					{
+						[self.alphabetToFilmsDictionary setObject:foundFilms forKey:letter];
+					}
+				}
+			}
+
+			[self.sortedKeysInAlphabetToFilmsDictionary removeObjectsInArray:keysToDelete];
+		}
 	}
 	
 	[self.filmsTableView reloadData];
@@ -558,29 +581,23 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 #pragma mark - UISearchDisplayController Delegate Methods
 
--(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-	    NSLog(@"shouldReloadTableForSearchString Searching:%d",isSearching);
-	// Tells the table data source to reload when text changes
-	
+-(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
     [self filterContentForSearchText:searchString scope:
 	 
-     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+	[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
 	
 	// Return YES to cause the search result table view to be reloaded.
-	
     return YES;
 }
 
--(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
-	    NSLog(@"shouldReloadTableForSearchScope Searching:%d",isSearching);
-	// Tells the table data source to reload when scope bar selection changes
-	
+-(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
+{
     [self filterContentForSearchText:self.searchDisplayController.searchBar.text scope:
 	 
-     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
+	[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
 	
 	// Return YES to cause the search result table view to be reloaded.
-	
     return YES;
 }
 
@@ -606,8 +623,16 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
     isSearching = NO;
  
-	self.sortedKeysInDateToFilmsDictionary = [NSMutableArray arrayWithArray:delegate.festival.sortedKeysInDateToFilmsDictionary];
-	self.dateToFilmsDictionary = [NSMutableDictionary dictionaryWithDictionary:delegate.festival.dateToFilmsDictionary];
+	if(switcher == VIEW_BY_DATE)
+	{
+		self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+		self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
+	}
+	else // VIEW_BY_TITLE
+	{
+		self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
+		self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
+	}
 	
 	[self.filmsTableView reloadData];
 }
@@ -615,14 +640,16 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     isSearching = NO;
+	
     [searchBar resignFirstResponder];
+	
     [self.view endEditing:YES];
-    NSLog(@"Searching:%d",isSearching);
 }
 
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
+- (BOOL) searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
     isSearching = YES;
-    NSLog(@"Searching:%d",isSearching);
+	
     return YES;
 }
 
