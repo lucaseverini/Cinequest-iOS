@@ -25,6 +25,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 @synthesize filmsTableView;
 @synthesize activity;
 @synthesize filmSearchBar;
+@synthesize dateToFilmsDictionary;
+@synthesize sortedKeysInDateToFilmsDictionary;
+@synthesize sortedIndexesInDateToFilmsDictionary;
+@synthesize alphabetToFilmsDictionary;
+@synthesize sortedKeysInAlphabetToFilmsDictionary;
 
 #pragma mark -
 #pragma mark Actions
@@ -59,14 +64,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		if(switcher == VIEW_BY_DATE) // VIEW_BY_DATE
 		{
-			NSString *day = [appDelegate.festival.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
-			Film *film = [[appDelegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
+			NSString *day = [self.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
+			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 			schedule = [film.schedules objectAtIndex:0];
 		}
 		else // VIEW_BY_TITLE
 		{
-			NSString *sort = [appDelegate.festival.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
-			NSArray *films = [appDelegate.festival.alphabetToFilmsDictionary objectForKey:sort];
+			NSString *sort = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+			NSArray *films = [self.alphabetToFilmsDictionary objectForKey:sort];
 			Film *film = [films objectAtIndex:[indexPath row]];
 			schedule = (Schedule*)[film.schedules objectAtIndex:[(UIButton*)sender tag] - CELL_LEFTBUTTON_TAG];
 		}
@@ -119,9 +124,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	cinequestCalendar = delegate.cinequestCalendar;
     eventStore = delegate.eventStore;
 	
-	curSchedules = delegate.festival.schedules;
- 	curFilms = delegate.festival.films;
-   	
+	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary copy];
+	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary copy];
+	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary copy];
+ 	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary copy];
+	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary copy];
+  	
 	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
@@ -154,7 +162,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
     [delegate populateCalendarEntries];
     
-	NSInteger sectionCount = [delegate.festival.sortedKeysInDateToFilmsDictionary count];
+	NSInteger sectionCount = [self.sortedKeysInDateToFilmsDictionary count];
 	NSInteger myScheduleCount = [mySchedule count];
 	if(myScheduleCount == 0)
 	{
@@ -164,8 +172,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	// Sync current data
 	for (NSUInteger section = 0; section < sectionCount; section++)
 	{
-		NSString *day = [delegate.festival.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
-		NSMutableArray *films =  [delegate.festival.dateToFilmsDictionary objectForKey:day];
+		NSString *day = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
+		NSMutableArray *films =  [self.dateToFilmsDictionary objectForKey:day];
 		NSInteger filmsCount = [films count];
 
 		for (NSUInteger row = 0; row < filmsCount; row++)
@@ -197,11 +205,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	switch(switcher)
 	{
 		case VIEW_BY_DATE:
-			return [delegate.festival.sortedKeysInDateToFilmsDictionary count];
+			return [self.sortedKeysInDateToFilmsDictionary count];
 			break;
 			
 		case VIEW_BY_TITLE:
-			return [delegate.festival.sortedKeysInAlphabetToFilmsDictionary count];
+			return [self.sortedKeysInAlphabetToFilmsDictionary count];
 			break;
 			
 		default:
@@ -216,15 +224,15 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		case VIEW_BY_DATE:
 		{
-            NSString *day = [delegate.festival.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
-			return [[delegate.festival.dateToFilmsDictionary objectForKey:day] count];
+            NSString *day = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
+			return [[self.dateToFilmsDictionary objectForKey:day] count];
 		}
 			break;
 			
 		case VIEW_BY_TITLE:
 		{
-			NSString *sort = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
-			return [[delegate.festival.alphabetToFilmsDictionary objectForKey:sort] count];
+			NSString *sort = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+			return [[self.alphabetToFilmsDictionary objectForKey:sort] count];
 		}
 			break;
 
@@ -245,8 +253,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		case VIEW_BY_DATE:
 		{
 			// get film objects using date
-			NSString *day = [delegate.festival.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
-			Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
+			NSString *day = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
+			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 			Schedule *schedule = [film.schedules objectAtIndex:0];
 			
 			// check if current cell is already added to mySchedule
@@ -326,8 +334,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			
 		case VIEW_BY_TITLE:
 		{
-			NSString *sort = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
-			NSArray *films = [delegate.festival.alphabetToFilmsDictionary objectForKey:sort];
+			NSString *sort = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+			NSArray *films = [self.alphabetToFilmsDictionary objectForKey:sort];
 			Film *film = [films objectAtIndex:[indexPath row]];
 			NSArray *schedules = film.schedules;
 			
@@ -397,11 +405,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	switch (switcher)
 	{
 		case VIEW_BY_DATE:
-			result = [delegate.festival.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
+			result = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
 			break;
 			
 		case VIEW_BY_TITLE:
-			result = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+			result = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
 			break;
 			
 		default:
@@ -418,11 +426,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	switch (switcher)
 	{
 		case VIEW_BY_DATE:
-			result = delegate.festival.sortedIndexesInDateToFilmsDictionary;
+			result = self.sortedIndexesInDateToFilmsDictionary;
 			break;
 			
 		case VIEW_BY_TITLE:
-			result = delegate.festival.sortedKeysInAlphabetToFilmsDictionary;
+			result = self.sortedKeysInAlphabetToFilmsDictionary;
 			break;
 			
 		default:
@@ -443,8 +451,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		case VIEW_BY_DATE:
 		{
-			NSString *day = [delegate.festival.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
-			Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
+			NSString *day = [self.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
+			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 			Schedule *schedule = [film.schedules objectAtIndex:0];
 			
 			[self showFilmDetails:schedule];
@@ -453,8 +461,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			
 		case VIEW_BY_TITLE:
 		{
-			NSString *sort = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
-			NSArray *films = [delegate.festival.alphabetToFilmsDictionary objectForKey:sort];
+			NSString *sort = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+			NSArray *films = [self.alphabetToFilmsDictionary objectForKey:sort];
 			Film *film = [films objectAtIndex:[indexPath row]];
 			
 			Schedule *schedule = [film.schedules objectAtIndex:0];
@@ -476,8 +484,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 	if(switcher == VIEW_BY_DATE)
 	{
-		NSString *day = [delegate.festival.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
-		Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
+		NSString *day = [self.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
+		Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 		
 		CGSize size = [film.name sizeWithFont:titleFont];
 		if(size.width >= 256.0)
@@ -491,8 +499,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	}
 	else // VIEW_BY_TITLE
 	{
-		NSString *sort = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
-		NSArray *films = [delegate.festival.alphabetToFilmsDictionary objectForKey:sort];
+		NSString *sort = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+		NSArray *films = [self.alphabetToFilmsDictionary objectForKey:sort];
 		Film *film = [films objectAtIndex:[indexPath row]];
 
 		CGSize size = [film.name sizeWithFont:titleFont];
@@ -512,34 +520,40 @@ static char *const kAssociatedScheduleKey = "Schedule";
 -(void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
     NSLog(@"Searching:%d", isSearching);
-    
-//    Film *film = [[delegate.festival.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-//    Schedule *schedule = [film.schedules firstObject];
-    
-#pragma warning "CHECK correct usage of films and schedules arrays"
-	curFilms = [NSMutableArray arrayWithArray:delegate.festival.films];
-	curSchedules = [NSMutableArray arrayWithArray:delegate.festival.schedules];
+
+	self.sortedKeysInDateToFilmsDictionary = [NSMutableArray arrayWithArray:delegate.festival.sortedKeysInDateToFilmsDictionary];
+	self.dateToFilmsDictionary = [NSMutableDictionary dictionaryWithDictionary:delegate.festival.dateToFilmsDictionary];
 	
+#pragma warning "sortedKeysInDateToFilmsDictionary IS NOT A MUTABLEARRAY!!"
+
 	if(searchText.length != 0)
 	{
-		NSMutableArray *foundFilms = [NSMutableArray array];
-		if(searchText.length != 0)
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@", searchText];
+
+		NSMutableArray *keysToDelete = [NSMutableArray new];
+		
+		for(NSString *day in self.sortedKeysInDateToFilmsDictionary)
 		{
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name beginswith[c] %@", searchText];
-			foundFilms = [NSMutableArray arrayWithArray:[curFilms filteredArrayUsingPredicate:predicate]];
+			NSArray *films = [self.dateToFilmsDictionary objectForKey:day];
+			NSArray *foundFilms = [NSMutableArray arrayWithArray:[films filteredArrayUsingPredicate:predicate]];
+			if(films.count != foundFilms.count)
+			{
+				if(foundFilms.count == 0)
+				{
+					[keysToDelete addObject:day];
+					[self.dateToFilmsDictionary removeObjectForKey:day];
+				}
+				else
+				{
+					[self.dateToFilmsDictionary setObject:foundFilms forKey:day];
+				}
+			}
 		}
 		
-		NSMutableArray *filmsToRemove = [NSMutableArray arrayWithArray:curFilms];
-		
-		[filmsToRemove removeObjectsInArray:foundFilms];
-				
-		for(Film *film in filmsToRemove)
-		{
-			[curSchedules removeObjectsInArray:film.schedules];
-		}
-		
-		curFilms = foundFilms;
+		[self.sortedKeysInDateToFilmsDictionary removeObjectsInArray:keysToDelete];
 	}
+	
+	[self.filmsTableView reloadData];
 }
 
 #pragma mark - UISearchDisplayController Delegate Methods
@@ -591,9 +605,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     isSearching = NO;
-    curFilms = [NSMutableArray arrayWithArray:delegate.festival.films];
-	curSchedules = [NSMutableArray arrayWithArray:delegate.festival.schedules];
-    NSLog(@"Searching:%d",isSearching);
+ 
+	self.sortedKeysInDateToFilmsDictionary = [NSMutableArray arrayWithArray:delegate.festival.sortedKeysInDateToFilmsDictionary];
+	self.dateToFilmsDictionary = [NSMutableDictionary dictionaryWithDictionary:delegate.festival.dateToFilmsDictionary];
+	
+	[self.filmsTableView reloadData];
 }
 
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -601,9 +617,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
     isSearching = NO;
     [searchBar resignFirstResponder];
     [self.view endEditing:YES];
-    [self.searchDisplayController setActive:NO animated:YES];
     NSLog(@"Searching:%d",isSearching);
 }
+
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
     isSearching = YES;
     NSLog(@"Searching:%d",isSearching);

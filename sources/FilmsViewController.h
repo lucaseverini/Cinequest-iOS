@@ -22,8 +22,6 @@
 	UIFont *venueFont;
     EKCalendar *cinequestCalendar;
     EKEventStore *eventStore;
-	NSMutableArray *curSchedules;
-	NSMutableArray *curFilms;
     BOOL isSearching;
 }
 
@@ -31,6 +29,12 @@
 @property (nonatomic, weak) IBOutlet UISegmentedControl *switchTitle;
 @property (nonatomic, weak) IBOutlet UITableView *filmsTableView;
 @property (nonatomic, weak) IBOutlet UISearchBar *filmSearchBar;
+
+@property (nonatomic, strong) NSMutableDictionary *dateToFilmsDictionary;
+@property (nonatomic, strong) NSMutableArray *sortedKeysInDateToFilmsDictionary;			// Sections
+@property (nonatomic, strong) NSMutableArray *sortedIndexesInDateToFilmsDictionary;			// Films
+@property (nonatomic, strong) NSMutableDictionary *alphabetToFilmsDictionary;				// Films
+@property (nonatomic, strong) NSMutableArray *sortedKeysInAlphabetToFilmsDictionary;		// Sections
 
 - (IBAction) switchTitle:(id)sender;
 - (IBAction) calendarButtonTapped:(id)sender event:(id)touchEvent;
