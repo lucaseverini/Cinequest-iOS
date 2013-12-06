@@ -90,54 +90,54 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 	NSString *weba = [NSString stringWithFormat:web, [film name], cachedImage, [film description]];
 
-    if (film.genre != nil && ![film.genre isEqualToString:@""])
+    if (film.genre.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Genre</b>: %@<br/>",film.genre];
 	}
 	
-    if (film.director != nil && ![film.genre isEqualToString:@""])
+    if (film.director.length != 0)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Director</b>: %@<br/>",film.director];
 	}
 	
-    if (film.producer != nil && ![film.producer isEqualToString:@""])
+    if (film.producer.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Producer</b>: %@<br/>",film.producer];
 	}
 	
-    if (film.writer != nil && ![film.writer isEqualToString:@""])
+    if (film.writer.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Writer</b>: %@<br/>",film.writer];
 	}
 	
-    if (film.cinematographer != nil && ![film.cinematographer isEqualToString:@""])
+    if (film.cinematographer.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Cinematographer</b>: %@<br/>",film.cinematographer];
 	}
 	
-    if (film.editor != nil && ![film.editor isEqualToString:@""])
+    if (film.editor.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Editor</b>: %@<br/>",film.editor];
 	}
 	
-    if (film.cast != nil && ![film.cast isEqualToString:@""])
+    if (film.cast.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Cast</b>: %@<br/>",film.cast];
 	}
 	
-    if (film.country != nil && ![film.country isEqualToString:@""])
+    if (film.country.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Country</b>: %@<br/>",film.country];
 	}
 	
-    if (film.language != nil && ![film.language isEqualToString:@""])
+    if (film.language.length)
 	{
-        weba = [weba stringByAppendingFormat:@"<b>Language</b>: %@<br/>",film.language];
+        weba = [weba stringByAppendingFormat:@"<b>Language</b>: %@<br/>", film.language];
 	}
 	
-    if (film.filmInfo != nil && ![film.filmInfo isEqualToString:@""])
+    if (film.filmInfo.length)
 	{
-        weba = [weba stringByAppendingFormat:@"<b>Film Info</b>: %@<br/>",film.filmInfo];
+        weba = [weba stringByAppendingFormat:@"<b>Film Info</b>: %@<br/>", film.filmInfo];
 	}
 
 	[webView loadHTMLString:weba baseURL:nil];

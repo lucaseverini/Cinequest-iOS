@@ -47,7 +47,8 @@
 	NSLog(@"App folder: %@", NSHomeDirectory());
 #endif // TARGET_IPHONE_SIMULATOR
 		
-    if (!self.mySchedule) {
+    if (!self.mySchedule)
+	{
         self.mySchedule = [NSMutableArray array];
     }
     
@@ -77,13 +78,15 @@
 	return YES;
 }
 
--(void)applicationDidEnterBackground:(UIApplication *)application{
+- (void) applicationDidEnterBackground:(UIApplication *)application
+{
     [self saveCalendarToDocuments];
 }
 
--(void)applicationDidBecomeActive:(UIApplication *)application{
-    
-    if (!self.dictSavedEventsInCalendar) {
+- (void) applicationDidBecomeActive:(UIApplication *)application
+{
+    if (!self.dictSavedEventsInCalendar)
+	{
         self.dictSavedEventsInCalendar = [[NSMutableDictionary alloc] init];
     }
     
@@ -97,7 +100,8 @@
 }
 
 //Saves the Calendar.plist file to Documents Directory to keep track of save items in calendar
--(void) saveCalendarToDocuments{
+- (void) saveCalendarToDocuments
+{
     NSError *error = nil;
     NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -231,9 +235,6 @@
         // Pass back the Documents dir
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         docsDir = [NSURL fileURLWithPath:[paths objectAtIndex:0] isDirectory:YES];
-        
-        // Pass back the Documents dir
-        // rootDir = [fsManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
     }
     
     return docsDir;
@@ -279,9 +280,9 @@
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning"
 															message:@"Permission was not granted for Calendar"
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
+															delegate:nil
+															cancelButtonTitle:@"OK"
+															otherButtonTitles:nil];
             [alert show];
         }
             break;
@@ -295,17 +296,16 @@
 - (void) requestCalendarAccess
 {
     [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:
-     ^(BOOL granted, NSError *error)
-     {
-         if(granted)
-         {
-             CinequestAppDelegate * __weak weakSelf = self;
-             // Let's ensure that our code will be executed from the main queue
-             dispatch_async(dispatch_get_main_queue(),
-                            ^{
-                                // The user has granted access to their Calendar; let's populate our UI with all events occuring in the next 24 hours.
-                                [weakSelf accessGrantedForCalendar];
-                            });
+	^(BOOL granted, NSError *error)
+	{
+		if(granted)
+		{
+			// Let's ensure that our code will be executed from the main queue
+			dispatch_async(dispatch_get_main_queue(),
+			^{
+				 // The user has granted access to their Calendar; let's populate our UI with all events occuring in the next 24 hours.
+				 [appDelegate accessGrantedForCalendar];
+			});
          }
      }];
 }
@@ -316,13 +316,14 @@
     // Let's get the default calendar associated with our event store
     self.calendarIdentifier = [[NSUserDefaults standardUserDefaults] stringForKey:@"CalendarID"];
     self.cinequestCalendar = [self.eventStore calendarWithIdentifier:self.calendarIdentifier];
-    NSLog(@"Identifier:%@ Calendar:%@",self.calendarIdentifier, self.cinequestCalendar);
-    if (!self.cinequestCalendar) {
+    NSLog(@"Identifier:%@ Calendar:%@", self.calendarIdentifier, self.cinequestCalendar);
+    if (!self.cinequestCalendar)
+	{
         [self checkAndCreateCalendar];
     }
 }
 
--(void) checkAndCreateCalendar
+- (void) checkAndCreateCalendar
 {
     EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:self.eventStore];
     calendar.title = CALENDAR_NAME;
@@ -331,17 +332,22 @@
     EKSource *theSource = nil;
     theSource = self.eventStore.defaultCalendarForNewEvents.source;
     
-    if (theSource) {
+    if (theSource)
+	{
         calendar.source = theSource;
-    } else {
+    }
+	else
+	{
         NSLog(@"Error: Local source not available");
         return;
     }
     
-    if (!self.cinequestCalendar) {
+    if (!self.cinequestCalendar)
+	{
         NSError *error = nil;
         BOOL result = [self.eventStore saveCalendar:calendar commit:YES error:&error];
-        if (result) {
+        if (result)
+		{
             self.calendarIdentifier = calendar.calendarIdentifier;
             
             NSArray *caleandarsArray = [self.eventStore calendarsForEntityType:EKEntityTypeEvent];
@@ -353,17 +359,18 @@
                     self.calendarIdentifier = iCalendar.calendarIdentifier;
                     [[NSUserDefaults standardUserDefaults] setValue:self.calendarIdentifier forKey:@"CalendarID"];
                     self.cinequestCalendar = [self.eventStore calendarWithIdentifier:self.calendarIdentifier];
-					
                     break;
                 }
             }
         }
-        else {
+        else
+		{
             NSLog(@"Error saving calendar: %@.", error);
         }
     }
-    else{
-        NSLog(@"Calendar found with :%@",self.cinequestCalendar);
+    else
+	{
+        NSLog(@"Calendar found with :%@", self.cinequestCalendar);
     }
 }
 
@@ -371,10 +378,11 @@
 #pragma mark -
 #pragma mark Event Add/Delete from Calendar
 
-- (void) addToDeviceCalendar:(Schedule*)film{
+- (void) addToDeviceCalendar:(Schedule*)film
+{
     NSDate *startDate = [film.startDate dateByAddingTimeInterval:ONE_YEAR];
     NSDate *endDate = [film.endDate dateByAddingTimeInterval:ONE_YEAR];
-    NSString *uniqueIDForEvent = [NSString stringWithFormat:@"%@-%@",film.itemID,film.ID];
+    NSString *uniqueIDForEvent = [NSString stringWithFormat:@"%@-%@", film.itemID, film.ID];
     if ([self.arrayCalendarItems containsObject:uniqueIDForEvent])
     {
         NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
@@ -392,9 +400,9 @@
                 if(success)
                 {
                     [self.arrayCalendarItems removeObject:uniqueIDForEvent];
-                    [self.dictSavedEventsInCalendar removeObjectForKey:[NSString stringWithFormat:@"%@-%@",film.itemID,film.ID]];
+                    [self.dictSavedEventsInCalendar removeObjectForKey:[NSString stringWithFormat:@"%@-%@", film.itemID,film.ID]];
                     [self.arrCalendarIdentifiers removeObject:stringID];
-                    NSLog( @"Event %@ with ID:%@ deleted successfully", eventToCheck.title,[NSString stringWithFormat:@"%@-%@",film.itemID,film.ID]);
+                    NSLog( @"Event %@ with ID:%@ deleted successfully", eventToCheck.title,[NSString stringWithFormat:@"%@-%@", film.itemID,film.ID]);
                     NSLog(@"Dictionary is after delete:%@",self.dictSavedEventsInCalendar);
                 }
                 break;
@@ -404,7 +412,7 @@
     else
     {
         EKEvent *newEvent = [EKEvent eventWithEventStore:self.eventStore];
-        newEvent.title = [NSString stringWithFormat:@"%@",film.title];
+        newEvent.title = [NSString stringWithFormat:@"%@", film.title];
         newEvent.location = film.venue;
         newEvent.startDate = startDate;
         newEvent.endDate = endDate;
@@ -422,14 +430,17 @@
         NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
         //set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
         NSArray *events_Array = [self.eventStore eventsMatchingPredicate:predicateForEvents];
-        for (EKEvent *event in events_Array) {
-            if (![self.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@",film.itemID,film.ID]]) {
-                [self.dictSavedEventsInCalendar setObject:event.eventIdentifier forKey:[NSString stringWithFormat:@"%@-%@",film.itemID,film.ID]];
+        for (EKEvent *event in events_Array)
+		{
+            if (![self.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", film.itemID, film.ID]])
+			{
+                [self.dictSavedEventsInCalendar setObject:event.eventIdentifier forKey:[NSString stringWithFormat:@"%@-%@", film.itemID, film.ID]];
                 [self.arrCalendarIdentifiers addObject:event.eventIdentifier];
                 NSLog(@"Item added to Calednar Dictionary");
             }
         }
     }
+	
     [self saveCalendarToDocuments];
 }
 
@@ -475,21 +486,27 @@
 
 - (void) populateCalendarEntries
 {
-    if (!self.mySchedule) {
+    if (!self.mySchedule)
+	{
         self.mySchedule = [NSMutableArray array];
     }
     
-    if ([mySchedule count] == 0 && [[self.dictSavedEventsInCalendar allKeys] count]>0) {
-        for (Schedule *schedule in self.festival.schedules) {
-            NSString *stringID = [NSString stringWithFormat:@"%@-%@",schedule.itemID,schedule.ID];
-            if ([[self.dictSavedEventsInCalendar allKeys] containsObject:stringID]) {
+    if ([mySchedule count] == 0 && [[self.dictSavedEventsInCalendar allKeys] count] > 0)
+	{
+        for (Schedule *schedule in self.festival.schedules)
+		{
+            NSString *stringID = [NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID];
+            if ([[self.dictSavedEventsInCalendar allKeys] containsObject:stringID])
+			{
                 EKEvent *event = [self.eventStore eventWithIdentifier:[self.dictSavedEventsInCalendar objectForKey:stringID]];
-                if (event) {
+                if (event)
+				{
                     schedule.isSelected = YES;
                     [mySchedule addObject:schedule];
                     [self.arrayCalendarItems addObject:stringID];
                 }
-                else{
+                else
+				{
                     [self.dictSavedEventsInCalendar removeObjectForKey:stringID];
                 }
             }

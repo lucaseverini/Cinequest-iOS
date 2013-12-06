@@ -261,7 +261,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			for(idx = 0; idx < count; idx++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if(obj.ID == schedule.ID)//&& [obj.title isEqualToString:film.title] && [obj.date compare:film.date] == NSOrderedSame
+				if(obj.ID == schedule.ID)
 				{
 					schedule.isSelected = YES;
 					break;
@@ -506,11 +506,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		CGSize size = [film.name sizeWithFont:titleFont];
 		if(size.width >= 256.0)
 		{
-			return 52.0 + (38 * film.schedules.count);
+			return 52.0 + (38.0 * film.schedules.count);
 		}
 		else
 		{
-			return 30.0 + (38 * film.schedules.count);
+			return 30.0 + (38.0 * film.schedules.count);
 		}
 	}
 }
@@ -519,6 +519,17 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 -(void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
+	if(switcher == VIEW_BY_DATE)
+	{
+		self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+		self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
+	}
+	else // VIEW_BY_TITLE
+	{
+		self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
+		self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
+	}
+	
 	if(searchText.length != 0)
 	{
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@", searchText];
@@ -526,9 +537,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		
 		if(switcher == VIEW_BY_DATE)
 		{
-			self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
-			self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
-
 			for(NSString *day in self.sortedKeysInDateToFilmsDictionary)
 			{
 				NSArray *films = [self.dateToFilmsDictionary objectForKey:day];
@@ -548,12 +556,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			}
 
 			[self.sortedKeysInDateToFilmsDictionary removeObjectsInArray:keysToDelete];
+			
+			NSLog(@"%@", self.sortedKeysInDateToFilmsDictionary);
+			NSLog(@"%@", self.dateToFilmsDictionary);
 		}
 		else	// VIEW_BY_TITLE
 		{
-			self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
-			self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
-			
 			for(NSString *letter in self.sortedKeysInAlphabetToFilmsDictionary)
 			{
 				NSArray *films = [self.alphabetToFilmsDictionary objectForKey:letter];
@@ -621,8 +629,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
-    isSearching = NO;
- 
 	if(switcher == VIEW_BY_DATE)
 	{
 		self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
@@ -639,8 +645,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    isSearching = NO;
-	
     [searchBar resignFirstResponder];
 	
     [self.view endEditing:YES];
@@ -648,8 +652,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (BOOL) searchBarShouldBeginEditing:(UISearchBar *)searchBar
 {
-    isSearching = YES;
-	
     return YES;
 }
 

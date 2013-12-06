@@ -22,7 +22,6 @@
 	UIFont *venueFont;
     EKCalendar *cinequestCalendar;
     EKEventStore *eventStore;
-    BOOL isSearching;
 }
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
