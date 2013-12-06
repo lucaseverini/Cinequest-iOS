@@ -148,11 +148,11 @@
     }
     
     // Add short items to the corresponding date Dictionary
-    for (CinequestItem *shortItem in [shorts allValues]) {
+    /* for (CinequestItem *shortItem in [shorts allValues]) {
         for (Schedule *shortItemSchedule in shortItem.schedules) {
             [self addItemToDictionary:shortItem with:shortItemSchedule in:festival];
         }
-    }
+    } */
     
     appDelegate.festivalParsed = YES;
     
