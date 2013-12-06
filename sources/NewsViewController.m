@@ -31,7 +31,8 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
     [super viewDidLoad];
 	
 	self.title = @"News";
-
+    [self setNavigationBar];
+    
 	tabBarAnimation = YES;
 		
 	news = [NSMutableArray new];
@@ -69,6 +70,16 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 		
 		tabBarAnimation = NO;
 	}
+}
+
+#pragma mark -
+#pragma mark - Private Methods
+
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
 }
 
 - (void) startParsingXML

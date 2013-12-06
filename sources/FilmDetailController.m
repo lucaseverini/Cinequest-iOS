@@ -57,13 +57,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	self.detailsTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
-
+    [self setNavigationBar];
+    
 	actionFont = [UIFont systemFontOfSize:16.0f];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
 
 	self.activityIndicator.color = [UIColor grayColor];
-	
+    
 	[(UIWebView*)self.detailsTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
 
 	[self.activityIndicator startAnimating];
@@ -82,6 +83,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	[super viewWillAppear:animated];
     [self.detailsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];    
+}
+
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
 }
 
 - (void) loadData

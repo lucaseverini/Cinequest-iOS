@@ -36,9 +36,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-	
+
 	self.title = @"Events";
-	
+    [self setNavigationBar];
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
@@ -53,6 +53,11 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
+    
+    // Set color of index integers to colorRed
+    if ([eventsTableView respondsToSelector:@selector(setSectionIndexColor:)]) {
+        eventsTableView.sectionIndexColor = [UIColor redColor]; // some color
+    }
 
 	[self reloadData:nil];
 }
@@ -190,6 +195,13 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 
 #pragma mark -
 #pragma mark Private Methods
+
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
+}
 
 - (void) startParsingXML
 {
