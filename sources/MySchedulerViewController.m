@@ -33,6 +33,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 @synthesize retrievedTimeStamp;
 @synthesize status;
 @synthesize offSeasonLabel;
+@synthesize switchTitle;
 
 - (void) didReceiveMemoryWarning
 {
@@ -59,8 +60,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 {
 	[super viewDidLoad];
     
-    [self setNavigationBar];
-    
 	// Get mySchedule array
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
@@ -76,17 +75,25 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
- 	
+ 		
     //display an Edit button in the navigation bar for this view controller.
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-																							target:self
-																							action:@selector(edit)];
-	// harold's variables
-	confirmedList	= [[NSMutableArray alloc] init];
-	movedList		= [[NSMutableArray alloc] init];
-	removedList		= [[NSMutableArray alloc] init];	
-	currentColor	= [UIColor blackColor];
-	masterList		= [NSArray arrayWithObjects:confirmedList, movedList, removedList, nil];
+																						   target:self
+																						   action:@selector(edit)];
+
+	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
+	[switchTitle insertSegmentWithTitle:@"My Schedule" atIndex:0 animated:NO];
+	[switchTitle setSelectedSegmentIndex:0];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	self.navigationItem.titleView = switchTitle;
+
+    // Set color of index integers to colorRed
+    if ([scheduleTableView respondsToSelector:@selector(setSectionIndexColor:)])
+	{
+        scheduleTableView.sectionIndexColor = [UIColor redColor];
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -104,13 +111,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 #pragma mark -
 #pragma mark Private Methods
-
--(void)setNavigationBar{
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor = [UIColor redColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
-    self.navigationController.navigationBar.translucent = NO;
-}
 
 #pragma mark -
 #pragma mark Actions

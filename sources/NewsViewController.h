@@ -11,8 +11,10 @@
 	BOOL tabBarAnimation;
 }
 
-@property (nonatomic, weak) UITableView *newsTableView;
-@property (nonatomic, weak) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
+@property (nonatomic, strong) IBOutlet UITableView *newsTableView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+
 @property (nonatomic, strong) NSMutableArray *news;
 
 @end

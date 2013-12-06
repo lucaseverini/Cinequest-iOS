@@ -40,8 +40,6 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 	self = [super init];
 	if(self != nil)
 	{
-		self.title = @"Detail";
-
 		showNewsDetail = YES;
 		
 		dataDictionary = [NSMutableDictionary dictionaryWithDictionary:news];
@@ -55,8 +53,6 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 	self = [super init];
 	if(self != nil)
 	{
-		self.title = @"Detail";
-		
 		showEventDetail = YES;
 		
 		eventId = eventID;
@@ -75,7 +71,6 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 {
 	[super viewDidLoad];
     
-    [self setNavigationBar];
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 
@@ -84,6 +79,14 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 
 	self.activityIndicator.color = [UIColor grayColor];
 	
+	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
+	[switchTitle insertSegmentWithTitle:@"Detail" atIndex:0 animated:NO];
+	[switchTitle setSelectedSegmentIndex:0];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	self.navigationItem.titleView = switchTitle;
+
 	[(UIWebView*)self.detailsTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
 
 	[self.activityIndicator startAnimating];
@@ -98,13 +101,6 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 	}
 	
 	[self.detailsTableView reloadData];
-}
-
--(void)setNavigationBar{
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor = [UIColor redColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
-    self.navigationController.navigationBar.translucent = NO;
 }
 
 - (void) parseNewsData

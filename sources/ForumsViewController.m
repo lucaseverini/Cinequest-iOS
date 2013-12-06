@@ -21,6 +21,7 @@
 @synthesize data;
 @synthesize forumsTableView;
 @synthesize activityIndicator;
+@synthesize switchTitle;
 
 - (void)didReceiveMemoryWarning
 {
@@ -34,8 +35,6 @@
 {
     [super viewDidLoad];
 	
-	self.title = @"Forums";
-	
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
@@ -48,9 +47,18 @@
 	backedUpData	= [[NSMutableDictionary alloc] init]; 
 
     // Set color of index integers to colorRed
-    if ([forumsTableView respondsToSelector:@selector(setSectionIndexColor:)]) {
-        forumsTableView.sectionIndexColor = [UIColor redColor]; // some color
+    if ([forumsTableView respondsToSelector:@selector(setSectionIndexColor:)])
+	{
+        forumsTableView.sectionIndexColor = [UIColor redColor];
     }
+
+	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
+	[switchTitle insertSegmentWithTitle:@"Forums" atIndex:0 animated:NO];
+	[switchTitle setSelectedSegmentIndex:0];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	self.navigationItem.titleView = switchTitle;
 
 	[self reloadData:nil];
 }
@@ -64,13 +72,6 @@
 
 #pragma mark -
 #pragma mark Private Methods
-
--(void)setNavigationBar{
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor = [UIColor redColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
-    self.navigationController.navigationBar.translucent = NO;
-}
 
 - (void)syncTableDataWithScheduler {
 	NSUInteger i, count = [mySchedule count];
@@ -360,27 +361,27 @@
 	UILabel *venueLabel;
 	UIButton *checkButton;
 	
-	UITableViewCell *tempCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	
-    if (tempCell == nil)
+    if (cell == nil)
 	{
-		tempCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-										   reuseIdentifier:CellIdentifier];
-		
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
 		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
         titleLabel.font = titleFont;
-		[tempCell.contentView addSubview:titleLabel];
+		[cell.contentView addSubview:titleLabel];
 		
 		timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
 		timeLabel.tag = CELL_TIME_LABEL_TAG;
         timeLabel.font = timeFont;
-		[tempCell.contentView addSubview:timeLabel];
+		[cell.contentView addSubview:timeLabel];
 		
 		venueLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
         venueLabel.font = venueFont;
-		[tempCell.contentView addSubview:venueLabel];
+		[cell.contentView addSubview:venueLabel];
 		
 		checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		checkButton.frame = CGRectMake(11.0, 16.0, 32.0, 32.0);
@@ -392,11 +393,11 @@
 		
 		checkButton.backgroundColor = [UIColor clearColor];
 		checkButton.tag = CELL_LEFTBUTTON_TAG;
-		[tempCell.contentView addSubview:checkButton];
+		[cell.contentView addSubview:checkButton];
 		
 	}
 	
-	titleLabel = (UILabel*)[tempCell viewWithTag:CELL_TITLE_LABEL_TAG];
+	titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
 	CGSize size = [event.title sizeWithFont:titleFont];
     if(size.width < 256.0)
     {
@@ -411,7 +412,7 @@
     [titleLabel setNumberOfLines:titleNumLines];
     titleLabel.text = event.title;
     
-    timeLabel = (UILabel*)[tempCell viewWithTag:CELL_TIME_LABEL_TAG];
+    timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
     if(titleNumLines == 1)
     {
         [timeLabel setFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
@@ -422,7 +423,7 @@
     }
     timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", event.dateString, event.startTime, event.endTime];
     
-    venueLabel = (UILabel*)[tempCell viewWithTag:CELL_VENUE_LABEL_TAG];
+    venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
     if(titleNumLines == 1)
     {
         [venueLabel setFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
@@ -433,7 +434,7 @@
     }
     venueLabel.text = [NSString stringWithFormat:@"Venue: %@",event.venue];
     
-    checkButton = (UIButton*)[tempCell viewWithTag:CELL_LEFTBUTTON_TAG];
+    checkButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
     if(titleNumLines == 1)
     {
         [checkButton setFrame:CGRectMake(11.0, 16.0, 32.0, 32.0)];
@@ -444,7 +445,7 @@
     }
     [checkButton setImage:buttonImage forState:UIControlStateNormal];
     
-    return tempCell;
+    return cell;
 }
 
 - (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {

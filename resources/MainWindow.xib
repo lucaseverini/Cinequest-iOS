@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
@@ -48,11 +48,14 @@
                     <nil key="simulatedDestinationMetrics"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="PrU-1T-q5C">
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="0.061403572560000001" blue="0.08498495817" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <viewControllers>
                         <viewController nibName="NewsViewController" id="pA5-d3-IdW" customClass="NewsViewController">
                             <extendedEdge key="edgesForExtendedLayout"/>
-                            <navigationItem key="navigationItem" id="YcL-Tj-K8h"/>
+                            <navigationItem key="navigationItem" id="YcL-Tj-K8h">
+                                <nil key="title"/>
+                            </navigationItem>
                             <nil key="simulatedStatusBarMetrics"/>
                             <nil key="simulatedTopBarMetrics"/>
                             <nil key="simulatedBottomBarMetrics"/>
@@ -75,19 +78,19 @@
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="128">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="0.061403572560000001" blue="0.08498495817" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <viewControllers>
                         <viewController nibName="FilmsViewController" id="126" customClass="FilmsViewController">
                             <extendedEdge key="edgesForExtendedLayout"/>
                             <toolbarItems/>
                             <navigationItem key="navigationItem" id="127">
-                                <nil key="title"/>
                                 <segmentedControl key="titleView" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="155">
-                                    <rect key="frame" x="85" y="8" width="151" height="29"/>
+                                    <rect key="frame" x="63" y="8" width="195" height="29"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <segments>
-                                        <segment title="Date"/>
-                                        <segment title="A - Z"/>
+                                        <segment title="Films by Date"/>
+                                        <segment title="Films by Title"/>
                                     </segments>
                                     <connections>
                                         <action selector="switchTitle:" destination="126" eventType="valueChanged" id="156"/>
@@ -117,12 +120,15 @@
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="135">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="0.061403572560000001" blue="0.08498495817" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <viewControllers>
                         <viewController nibName="EventsViewController" id="133" customClass="EventsViewController">
                             <extendedEdge key="edgesForExtendedLayout"/>
                             <toolbarItems/>
-                            <navigationItem key="navigationItem" title="Item" id="134"/>
+                            <navigationItem key="navigationItem" id="134">
+                                <nil key="title"/>
+                            </navigationItem>
                             <nil key="simulatedStatusBarMetrics"/>
                             <nil key="simulatedTopBarMetrics"/>
                             <nil key="simulatedBottomBarMetrics"/>
@@ -143,12 +149,15 @@
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="140">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="0.061403572560000001" blue="0.08498495817" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <viewControllers>
                         <viewController nibName="ForumsViewController" id="138" customClass="ForumsViewController">
                             <extendedEdge key="edgesForExtendedLayout"/>
                             <toolbarItems/>
-                            <navigationItem key="navigationItem" title="Forums" id="139"/>
+                            <navigationItem key="navigationItem" id="139">
+                                <nil key="title"/>
+                            </navigationItem>
                             <nil key="simulatedStatusBarMetrics"/>
                             <nil key="simulatedTopBarMetrics"/>
                             <nil key="simulatedBottomBarMetrics"/>
@@ -169,12 +178,15 @@
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="154">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="0.061403572560000001" blue="0.08498495817" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <viewControllers>
                         <viewController nibName="MySchedulerViewController" id="152" customClass="MySchedulerViewController">
                             <extendedEdge key="edgesForExtendedLayout"/>
                             <toolbarItems/>
-                            <navigationItem key="navigationItem" title="My Schedule" id="153"/>
+                            <navigationItem key="navigationItem" id="153">
+                                <nil key="title"/>
+                            </navigationItem>
                             <nil key="simulatedStatusBarMetrics"/>
                             <nil key="simulatedTopBarMetrics"/>
                             <nil key="simulatedBottomBarMetrics"/>

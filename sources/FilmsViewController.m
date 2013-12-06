@@ -115,10 +115,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) viewDidLoad
 {
-	self.title = @"Films";
-	
     [super viewDidLoad];
-	[self setNavigationBar];
     
 	delegate = appDelegate;
 	mySchedule = [delegate mySchedule];
@@ -135,25 +132,24 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
 	
-	switcher = VIEW_BY_DATE;
-	
 	self.filmsTableView.tableHeaderView = nil;
 	self.filmsTableView.tableFooterView = nil;
     
-    filmSearchBar.delegate = self;
-    
     [self setSearchKeyAsDone];
     
-    [switchTitle setTitle:@"Date" forSegmentAtIndex:0];
-    [switchTitle setTitle:@"A-Z" forSegmentAtIndex:1];
-    [switchTitle setTintColor:[UIColor redColor]];
-    
-    
     // Set color of index integers to colorRed
-    if ([filmsTableView respondsToSelector:@selector(setSectionIndexColor:)]) {
-        filmsTableView.sectionIndexColor = [UIColor redColor]; // some color
+    if ([filmsTableView respondsToSelector:@selector(setSectionIndexColor:)])
+	{
+        filmsTableView.sectionIndexColor = [UIColor redColor];
     }
+	
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
     
+    // Change the searchbar in FilmViewController to have "Cancel in colorRed font
+    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];
+    
+    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateHighlighted];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -166,13 +162,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 }
 
 #pragma mark - Private Methods
-
--(void)setNavigationBar{
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor = [UIColor redColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
-    self.navigationController.navigationBar.translucent = NO;
-}
 
 - (void) syncTableDataWithScheduler
 {
@@ -361,6 +350,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			if(cell == nil)
 			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kTitleCellIdentifier];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			}
 			else
 			{

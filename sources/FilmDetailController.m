@@ -57,11 +57,18 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	self.detailsTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
-    [self setNavigationBar];
     
 	actionFont = [UIFont systemFontOfSize:16.0f];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
+	
+	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
+	[switchTitle insertSegmentWithTitle:@"Detail" atIndex:0 animated:NO];
+	[switchTitle setSelectedSegmentIndex:0];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	self.navigationItem.titleView = switchTitle;
 
 	self.activityIndicator.color = [UIColor grayColor];
     
@@ -83,13 +90,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	[super viewWillAppear:animated];
     [self.detailsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];    
-}
-
--(void)setNavigationBar{
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor = [UIColor redColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
-    self.navigationController.navigationBar.translucent = NO;
 }
 
 - (void) loadData

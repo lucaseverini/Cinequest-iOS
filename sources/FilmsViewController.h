@@ -24,10 +24,10 @@
     EKEventStore *eventStore;
 }
 
-@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activity;
-@property (nonatomic, weak) IBOutlet UISegmentedControl *switchTitle;
-@property (nonatomic, weak) IBOutlet UITableView *filmsTableView;
-@property (nonatomic, weak) IBOutlet UISearchBar *filmSearchBar;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
+@property (nonatomic, strong) IBOutlet UITableView *filmsTableView;
+@property (nonatomic, strong) IBOutlet UISearchBar *filmSearchBar;
 
 @property (nonatomic, strong) NSMutableDictionary *dateToFilmsDictionary;
 @property (nonatomic, strong) NSMutableArray *sortedKeysInDateToFilmsDictionary;			// Sections

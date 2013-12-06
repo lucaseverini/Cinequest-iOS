@@ -24,6 +24,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 @synthesize eventsTableView;
 @synthesize index;
 @synthesize activityIndicator;
+@synthesize switchTitle;
 
 - (void)didReceiveMemoryWarning
 {
@@ -37,8 +38,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 {
     [super viewDidLoad];
 
-	self.title = @"Events";
-    [self setNavigationBar];
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
@@ -55,9 +54,18 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	venueFont = timeFont;
     
     // Set color of index integers to colorRed
-    if ([eventsTableView respondsToSelector:@selector(setSectionIndexColor:)]) {
-        eventsTableView.sectionIndexColor = [UIColor redColor]; // some color
+    if ([eventsTableView respondsToSelector:@selector(setSectionIndexColor:)])
+	{
+        eventsTableView.sectionIndexColor = [UIColor redColor];
     }
+
+	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
+	[switchTitle insertSegmentWithTitle:@"Events" atIndex:0 animated:NO];
+	[switchTitle setSelectedSegmentIndex:0];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	self.navigationItem.titleView = switchTitle;
 
 	[self reloadData:nil];
 }
@@ -195,13 +203,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 
 #pragma mark -
 #pragma mark Private Methods
-
--(void)setNavigationBar{
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor = [UIColor redColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
-    self.navigationController.navigationBar.translucent = NO;
-}
 
 - (void) startParsingXML
 {

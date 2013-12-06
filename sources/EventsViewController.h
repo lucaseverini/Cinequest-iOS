@@ -20,8 +20,10 @@
 	UIFont *venueFont;
 }
 
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 @property (nonatomic, strong) IBOutlet UITableView *eventsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+
 @property (nonatomic, strong) NSMutableArray *index;
 @property (nonatomic, strong) NSMutableArray *days;
 @property (nonatomic, strong) NSMutableDictionary *data;

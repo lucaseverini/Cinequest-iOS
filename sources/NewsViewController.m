@@ -20,6 +20,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 @synthesize newsTableView;
 @synthesize activityIndicator;
 @synthesize news;
+@synthesize switchTitle;
 
 - (void) didReceiveMemoryWarning
 {
@@ -29,9 +30,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-	
-	self.title = @"News";
-    [self setNavigationBar];
     
 	tabBarAnimation = YES;
 		
@@ -40,6 +38,14 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	self.newsTableView.tableHeaderView = nil;
 		
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
+
+	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
+	[switchTitle insertSegmentWithTitle:@"News" atIndex:0 animated:NO];
+	[switchTitle setSelectedSegmentIndex:0];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	self.navigationItem.titleView = switchTitle;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -74,13 +80,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 #pragma mark -
 #pragma mark - Private Methods
-
--(void)setNavigationBar{
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor = [UIColor redColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
-    self.navigationController.navigationBar.translucent = NO;
-}
 
 - (void) startParsingXML
 {
