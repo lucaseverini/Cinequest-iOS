@@ -36,9 +36,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-	
+
 	self.title = @"Events";
-	
+    [self setNavigationBar];
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
@@ -195,6 +195,13 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 
 #pragma mark -
 #pragma mark Private Methods
+
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
+}
 
 - (void) startParsingXML
 {

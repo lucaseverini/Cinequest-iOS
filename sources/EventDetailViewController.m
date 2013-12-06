@@ -74,7 +74,8 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-
+    
+    [self setNavigationBar];
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 
@@ -97,6 +98,13 @@ static NSString *kActionsCellIdentifier= @"ActionCell";
 	}
 	
 	[self.detailsTableView reloadData];
+}
+
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
 }
 
 - (void) parseNewsData

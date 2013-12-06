@@ -65,6 +65,13 @@
 #pragma mark -
 #pragma mark Private Methods
 
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
+}
+
 - (void)syncTableDataWithScheduler {
 	NSUInteger i, count = [mySchedule count];
 	

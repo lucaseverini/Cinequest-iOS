@@ -59,6 +59,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 {
 	[super viewDidLoad];
     
+    [self setNavigationBar];
+    
 	// Get mySchedule array
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
@@ -98,6 +100,16 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+#pragma mark -
+#pragma mark Private Methods
+
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
 }
 
 #pragma mark -

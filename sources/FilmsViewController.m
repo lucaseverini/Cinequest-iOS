@@ -118,7 +118,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	self.title = @"Films";
 	
     [super viewDidLoad];
-	
+	[self setNavigationBar];
+    
 	delegate = appDelegate;
 	mySchedule = [delegate mySchedule];
 	cinequestCalendar = delegate.cinequestCalendar;
@@ -165,6 +166,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
 }
 
 #pragma mark - Private Methods
+
+-(void)setNavigationBar{
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    self.navigationController.navigationBar.translucent = NO;
+}
 
 - (void) syncTableDataWithScheduler
 {

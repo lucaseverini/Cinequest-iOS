@@ -10,6 +10,7 @@
 #import "MapViewController.h"
 #import "Venue.h"
 
+#define ALTITUDE 2000.0
 
 @implementation MapViewController
 
@@ -89,8 +90,14 @@
 
 			[mapView addAnnotation:venueAnnotation];
 
-			MKCoordinateRegion thisRegion = MKCoordinateRegionMakeWithDistance(venueAnnotation.coordinate, 1610 * 3, 1610 * 3); // 3 miles
-			[mapView setRegion:thisRegion animated:NO];
+            MKMapCamera* camera = [MKMapCamera
+                                   cameraLookingAtCenterCoordinate:(CLLocationCoordinate2D)venueAnnotation.coordinate
+                                   fromEyeCoordinate:(CLLocationCoordinate2D)venueAnnotation.coordinate
+                                   eyeAltitude:(CLLocationDistance)ALTITUDE];
+            [mapView setCamera:camera animated:NO];
+            
+//			MKCoordinateRegion thisRegion = MKCoordinateRegionMakeWithDistance(venueAnnotation.coordinate, 1610 * 3, 1610 * 3); // 3 miles
+//			[mapView setRegion:thisRegion animated:NO];
 		}
 		else
 		{
