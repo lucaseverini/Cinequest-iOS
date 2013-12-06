@@ -47,6 +47,11 @@
 	backedUpIndex	= [[NSMutableArray alloc] init];
 	backedUpData	= [[NSMutableDictionary alloc] init]; 
 
+    // Set color of index integers to colorRed
+    if ([forumsTableView respondsToSelector:@selector(setSectionIndexColor:)]) {
+        forumsTableView.sectionIndexColor = [UIColor redColor]; // some color
+    }
+
 	[self reloadData:nil];
 }
 

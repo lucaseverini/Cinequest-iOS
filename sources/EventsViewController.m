@@ -53,6 +53,11 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
+    
+    // Set color of index integers to colorRed
+    if ([eventsTableView respondsToSelector:@selector(setSectionIndexColor:)]) {
+        eventsTableView.sectionIndexColor = [UIColor redColor]; // some color
+    }
 
 	[self reloadData:nil];
 }

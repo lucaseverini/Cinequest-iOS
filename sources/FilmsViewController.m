@@ -145,6 +145,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
     
     [switchTitle setTitle:@"Date" forSegmentAtIndex:0];
     [switchTitle setTitle:@"A-Z" forSegmentAtIndex:1];
+    [switchTitle setTintColor:[UIColor redColor]];
+    
+    
+    // Set color of index integers to colorRed
+    if ([filmsTableView respondsToSelector:@selector(setSectionIndexColor:)]) {
+        filmsTableView.sectionIndexColor = [UIColor redColor]; // some color
+    }
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated
