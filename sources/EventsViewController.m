@@ -24,7 +24,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 @synthesize eventsTableView;
 @synthesize index;
 @synthesize activityIndicator;
-@synthesize switchTitle;
 
 - (void)didReceiveMemoryWarning
 {
@@ -52,14 +51,8 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
-    
-    // Set color of index integers to colorRed
-    if ([eventsTableView respondsToSelector:@selector(setSectionIndexColor:)])
-	{
-        eventsTableView.sectionIndexColor = [UIColor redColor];
-    }
-
-	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+  
+	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
 	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"Events" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];

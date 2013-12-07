@@ -20,7 +20,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 @synthesize newsTableView;
 @synthesize activityIndicator;
 @synthesize news;
-@synthesize switchTitle;
 
 - (void) didReceiveMemoryWarning
 {
@@ -39,7 +38,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 		
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 
-	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
 	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"News" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];

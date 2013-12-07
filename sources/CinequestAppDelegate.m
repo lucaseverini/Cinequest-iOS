@@ -13,7 +13,6 @@
 #import "DataProvider.h"
 #import "VenueParser.h"
 
-
 @implementation CinequestAppDelegate
 
 @synthesize window;
@@ -43,26 +42,12 @@
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-#if TARGET_IPHONE_SIMULATOR
-	NSLog(@"App folder: %@", NSHomeDirectory());
-#endif // TARGET_IPHONE_SIMULATOR
-		
+	[self collectContextInformation];
+	
     if (!self.mySchedule)
 	{
         self.mySchedule = [NSMutableArray array];
     }
-    
-	deviceIdiom = [[UIDevice currentDevice] userInterfaceIdiom];
-	NSLog(@"UI idiom: %ld %@", (long)deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
-	NSLog(@"Device name: %@", [[UIDevice currentDevice] name]);
-	NSLog(@"Device model: %@", [[UIDevice currentDevice] model]);
-	
-	CGSize screenSize = [[UIScreen mainScreen] currentMode].size;
-	retinaDisplay = (screenSize.height >= 1536.0);
-	iPhone4Display = (screenSize.height == 960.0);
-	NSLog(@"Screen size: %gx%g %@", screenSize.width, screenSize.height, retinaDisplay ? @"(Retina)" : @"");
-
-	OSVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
 
 	StartupViewController *startupViewController = [[StartupViewController alloc] initWithNibName:@"StartupViewController" bundle:nil];
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:startupViewController];
@@ -74,7 +59,12 @@
 	tabBar.delegate = self;
 	
 	[self startReachability:MAIN_FEED];
-	
+	    
+    // Change the searchbar in FilmViewController to have "Cancel in colorRed font
+    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];
+    
+    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateHighlighted];
+
 	return YES;
 }
 
@@ -512,6 +502,37 @@
             }
         }
     }
+}
+
+
+- (void) collectContextInformation
+{
+#if TARGET_IPHONE_SIMULATOR
+	NSLog(@"App folder: %@", NSHomeDirectory());
+#endif // TARGET_IPHONE_SIMULATOR
+	
+	NSDictionary *pList = [[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"]];
+	NSLog(@"Cinequest App Version %@ (built %s %s)", [pList objectForKey:@"CFBundleShortVersionString"], __DATE__, __TIME__);
+
+	NSLog(@"Device name: %@", [[UIDevice currentDevice] name]);
+	
+	struct utsname systemInfo;
+    uname(&systemInfo);
+	NSLog(@"Device model: %@ (%s)", [[UIDevice currentDevice] model], systemInfo.machine);
+	
+	OSVersion = [[UIDevice currentDevice] systemVersion];
+	NSLog(@"iOS Version: %@", OSVersion);
+	
+	NSLog(@"64-bit: %@", sizeof(long) == 8 ? @"Yes" : @"No");
+	
+	CGSize screenSize = [[UIScreen mainScreen] currentMode].size;
+	retinaDisplay = (screenSize.height >= 1536.0);
+	iPhone4Display = (screenSize.height == 960.0);
+	NSLog(@"Screen size: %gx%g %@", screenSize.width, screenSize.height, retinaDisplay ? @"(Retina)" : @"");
+	NSLog(@"Screen scale: %g", [UIScreen mainScreen].scale);
+	
+	deviceIdiom = [[UIDevice currentDevice] userInterfaceIdiom];
+	NSLog(@"UI idiom: %ld %@", (long)deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
 }
 
 @end

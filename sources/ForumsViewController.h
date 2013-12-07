@@ -20,7 +20,6 @@
 	UIFont *venueFont;    
 }
 
-@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 @property (nonatomic, strong) IBOutlet UITableView *forumsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 

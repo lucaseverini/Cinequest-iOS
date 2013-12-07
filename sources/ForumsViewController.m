@@ -21,7 +21,6 @@
 @synthesize data;
 @synthesize forumsTableView;
 @synthesize activityIndicator;
-@synthesize switchTitle;
 
 - (void)didReceiveMemoryWarning
 {
@@ -46,13 +45,7 @@
 	backedUpIndex	= [[NSMutableArray alloc] init];
 	backedUpData	= [[NSMutableDictionary alloc] init]; 
 
-    // Set color of index integers to colorRed
-    if ([forumsTableView respondsToSelector:@selector(setSectionIndexColor:)])
-	{
-        forumsTableView.sectionIndexColor = [UIColor redColor];
-    }
-
-	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
 	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"Forums" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];

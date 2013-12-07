@@ -15,16 +15,6 @@
 static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 
-@interface MySchedulerViewController ()
-/*
-@property (nonatomic, strong) EKEventStore *eventStore;
-@property (nonatomic, strong) EKCalendar *defaultCalendar;
-@property (nonatomic, strong) EKCalendar *cinequestCalendar;
-@property (nonatomic, copy) NSString *calendarIdentifier;
-@property (nonatomic, strong) NSMutableArray *arrCalendarItems;
-*/
-@end
-
 @implementation MySchedulerViewController
 
 @synthesize scheduleTableView;
@@ -33,7 +23,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 @synthesize retrievedTimeStamp;
 @synthesize status;
 @synthesize offSeasonLabel;
-@synthesize switchTitle;
 
 - (void) didReceiveMemoryWarning
 {
@@ -81,19 +70,13 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 																						   target:self
 																						   action:@selector(edit)];
 
-	switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
 	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"My Schedule" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
-
-    // Set color of index integers to colorRed
-    if ([scheduleTableView respondsToSelector:@selector(setSectionIndexColor:)])
-	{
-        scheduleTableView.sectionIndexColor = [UIColor redColor];
-    }
 }
 
 - (void) viewWillAppear:(BOOL)animated

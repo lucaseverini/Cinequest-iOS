@@ -105,8 +105,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) showFilmDetails:(Schedule*)schedule
 {
-	NSLog(@"Showing details for schedule \"%@\" (ID %@)", schedule.title, schedule.itemID);
-	
 	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Detail" andId:schedule.itemID];
 	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
@@ -136,20 +134,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	self.filmsTableView.tableFooterView = nil;
     
     [self setSearchKeyAsDone];
-    
-    // Set color of index integers to colorRed
-    if ([filmsTableView respondsToSelector:@selector(setSectionIndexColor:)])
-	{
-        filmsTableView.sectionIndexColor = [UIColor redColor];
-    }
 	
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
-    
-    // Change the searchbar in FilmViewController to have "Cancel in colorRed font
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];
-    
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateHighlighted];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -406,44 +393,38 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
-	NSString *result;
-	
 	switch (switcher)
 	{
 		case VIEW_BY_DATE:
-			result = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
+			return [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
 			break;
 			
 		case VIEW_BY_TITLE:
-			result = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
+			return [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
 			break;
 			
 		default:
+			return @"";
 			break;
 	}
-	
-	return result;
 }
 
 - (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
 {
-	NSArray *result;
-	
 	switch (switcher)
 	{
 		case VIEW_BY_DATE:
-			result = self.sortedIndexesInDateToFilmsDictionary;
+			return self.sortedIndexesInDateToFilmsDictionary;
 			break;
 			
 		case VIEW_BY_TITLE:
-			result = self.sortedKeysInAlphabetToFilmsDictionary;
+			return self.sortedKeysInAlphabetToFilmsDictionary;
 			break;
 			
 		default:
+			return nil;
 			break;
 	}
-	
-	return result;
 }
 
 #pragma mark - UITableView Delegate
@@ -523,11 +504,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 #pragma mark Content Filtering
 
--(void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+- (void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
 	if(switcher == VIEW_BY_DATE)
 	{
 		self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+		self.sortedIndexesInDateToFilmsDictionary = [self sortedIndexesFromSortedKeys:sortedKeysInDateToFilmsDictionary];
 		self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
 	}
 	else // VIEW_BY_TITLE
@@ -552,6 +534,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 					if(foundFilms.count == 0)
 					{
 						[keysToDelete addObject:day];
+						
 						[self.dateToFilmsDictionary removeObjectForKey:day];
 					}
 					else
@@ -563,8 +546,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 			[self.sortedKeysInDateToFilmsDictionary removeObjectsInArray:keysToDelete];
 			
-			NSLog(@"%@", self.sortedKeysInDateToFilmsDictionary);
-			NSLog(@"%@", self.dateToFilmsDictionary);
+			self.sortedIndexesInDateToFilmsDictionary = [self sortedIndexesFromSortedKeys:sortedKeysInDateToFilmsDictionary];
 		}
 		else	// VIEW_BY_TITLE
 		{
@@ -597,19 +579,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 -(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
-    [self filterContentForSearchText:searchString scope:
+ 	[self filterContentForSearchText:searchString scope:
 	 
 	[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
-	
-	// Return YES to cause the search result table view to be reloaded.
-    return YES;
-}
-
--(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
-{
-    [self filterContentForSearchText:self.searchDisplayController.searchBar.text scope:
-	 
-	[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
 	
 	// Return YES to cause the search result table view to be reloaded.
     return YES;
@@ -638,6 +610,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	if(switcher == VIEW_BY_DATE)
 	{
 		self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+		self.sortedIndexesInDateToFilmsDictionary = [self sortedIndexesFromSortedKeys:self.sortedKeysInDateToFilmsDictionary];
 		self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
 	}
 	else // VIEW_BY_TITLE
@@ -646,6 +619,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
 	}
 	
+	[self.filmsTableView setSectionIndexMinimumDisplayRowCount:0];
 	[self.filmsTableView reloadData];
 }
 
@@ -659,6 +633,17 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (BOOL) searchBarShouldBeginEditing:(UISearchBar *)searchBar
 {
     return YES;
+}
+
+- (NSMutableArray*) sortedIndexesFromSortedKeys:(NSMutableArray*)sortedKeysArray
+{
+    NSMutableArray *sortedIndexes = [NSMutableArray new];
+    for(NSString *date in sortedKeysArray)
+	{
+        [sortedIndexes addObject:[[date componentsSeparatedByString:@" "] objectAtIndex: 2]];
+    }
+	
+    return sortedIndexes;
 }
 
 @end

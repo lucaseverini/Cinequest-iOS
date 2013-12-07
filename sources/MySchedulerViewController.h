@@ -32,7 +32,6 @@
 	UIFont *venueFont;    
 }
 
-@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 @property (nonatomic, strong) IBOutlet UITableView *scheduleTableView;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
 

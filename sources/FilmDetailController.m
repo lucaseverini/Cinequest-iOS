@@ -402,7 +402,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				phoneButton.frame = CGRectMake(20.0,6.0, 40.0, 40.0);
 				[phoneButton addTarget:self action:@selector(callTicketLine:) forControlEvents:UIControlEventTouchDown];
-                [phoneButton setImage:[UIImage imageNamed:@"phone-Ticket.png"] forState:UIControlStateNormal];
+                [phoneButton setImage:[UIImage imageNamed:@"phone.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:phoneButton];
                 
                 UILabel *lblPhone = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
@@ -414,7 +414,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				linkButton.frame = CGRectMake(80.0, 6.0, 40.0, 40.0);
 				[linkButton addTarget:self action:@selector(goTicketLink:) forControlEvents:UIControlEventTouchDown];
-                [linkButton setImage:[UIImage imageNamed:@"link-Ticket.png"] forState:UIControlStateNormal];
+                [linkButton setImage:[UIImage imageNamed:@"browser.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:linkButton];
                 
                 UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];

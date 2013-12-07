@@ -45,7 +45,13 @@
 {
     [super viewDidLoad];
 	
-	self.title = @"Venue Location";
+	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
+	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
+	[switchTitle insertSegmentWithTitle:@"Venue Location" atIndex:0 animated:NO];
+	[switchTitle setSelectedSegmentIndex:0];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	self.navigationItem.titleView = switchTitle;
 
     trackingBtn = [[MKUserTrackingBarButtonItem alloc] initWithMapView:self.mapView];
     UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -55,6 +61,8 @@
     [self.bottomBar setItems:bottomBarItems animated:NO];
 
     [self.mapView setUserTrackingMode:MKUserTrackingModeNone animated:NO];
+	
+	self.mapView.hidden = YES;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -95,12 +103,16 @@
                                    fromEyeCoordinate:(CLLocationCoordinate2D)venueAnnotation.coordinate
                                    eyeAltitude:(CLLocationDistance)ALTITUDE];
             [mapView setCamera:camera animated:NO];
+			
+			self.mapView.hidden = NO;
             
-//			MKCoordinateRegion thisRegion = MKCoordinateRegionMakeWithDistance(venueAnnotation.coordinate, 1610 * 3, 1610 * 3); // 3 miles
-//			[mapView setRegion:thisRegion animated:NO];
+			MKCoordinateRegion thisRegion = MKCoordinateRegionMakeWithDistance(venueAnnotation.coordinate, 1610 * 3, 1610 * 3); // 3 miles
+			[mapView setRegion:thisRegion animated:NO];
 		}
 		else
 		{
+			self.mapView.hidden = NO;
+
 			NSLog(@"Location of venue %@ not found", venue.shortName);
 		}
 	}];
@@ -195,7 +207,7 @@
 	NSTextCheckingResult *match = [regex firstMatchInString:apiResponse options:0 range:NSMakeRange(0, [apiResponse length])];
 	NSString *encodedPoints = [apiResponse substringWithRange:[match rangeAtIndex:1]];
 	
-    return [self decodePolyLine:[encodedPoints copy]];
+    return [self decodePolyLine:[encodedPoints mutableCopy]];
 }
 
 - (NSMutableArray*) decodePolyLine:(NSMutableString*)encoded
@@ -256,9 +268,62 @@
     CLLocationDegrees minLat = 90.0;
     CLLocationDegrees minLon = 180.0;
 	
-    for(int idx = 0; idx < routes.count; idx++)
+	CLLocation *start =  [routes firstObject];
+	CLLocation *end =  [routes lastObject];
+	
+	// Compute the area the map view will be centered upon
+	CGFloat startLat = start.coordinate.latitude;
+	CGFloat startLon = start.coordinate.longitude;
+	CGFloat endLat = end.coordinate.latitude;
+	CGFloat endLon = end.coordinate.longitude;
+
+	if(start.coordinate.latitude < end.coordinate.latitude)
+	{
+		// Dec start latitude
+		startLat -= 0.01;
+		// Inc end latitude
+		endLat += 0.01;
+	}
+	else
+	{
+		// Inc start latitude
+		startLat += 0.01;
+		// Dec end latitude
+		endLat -= 0.01;
+	}
+	
+	if(start.coordinate.longitude < end.coordinate.longitude)
+	{
+		// Dec start longitude
+		startLon -= 0.01;
+		// Inc end longitude
+		endLon += 0.01;
+	}
+	else
+	{
+		// Inc start longitude
+		startLon += 0.01;
+		// Dec end longitude
+		endLon -= 0.01;
+	}
+	
+	NSInteger count = routes.count;
+    for(NSInteger idx = 0; idx < count; idx++)
     {
-        CLLocation* currentLocation = [routes objectAtIndex:idx];
+        CLLocation* currentLocation;
+		
+		if(idx == 0)
+		{
+			currentLocation = [[CLLocation alloc] initWithLatitude:startLat longitude:startLon];
+		}
+		else if(idx == count - 1)
+		{
+			currentLocation = [[CLLocation alloc] initWithLatitude:endLat longitude:endLon];
+		}
+		else
+		{
+			currentLocation = [routes objectAtIndex:idx];
+		}
 		
         if(currentLocation.coordinate.latitude > maxLat)
 		{
@@ -285,8 +350,8 @@
     region.center.longitude = (maxLon + minLon) / 2.0;
     region.span.latitudeDelta = 0.01;
     region.span.longitudeDelta = 0.01;
-    region.span.latitudeDelta = ((maxLat - minLat)< 0.0) ? 100.0 : (maxLat - minLat);
-    region.span.longitudeDelta = ((maxLon - minLon)< 0.0) ? 100.0 : (maxLon - minLon);
+    region.span.latitudeDelta = ((maxLat - minLat) < 0.0) ? 100.0 : (maxLat - minLat);
+    region.span.longitudeDelta = ((maxLon - minLon) < 0.0) ? 100.0 : (maxLon - minLon);
 	
     [mapView setRegion:region animated:YES];
 }

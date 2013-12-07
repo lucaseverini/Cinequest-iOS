@@ -73,7 +73,7 @@
 @property (nonatomic, strong) Reachability *reachability;
 @property (atomic, assign) NSInteger networkConnection;	// 0: No connection, 1: WiFi, 2: Phone data
 @property (nonatomic, strong) DataProvider *dataProvider;
-@property (nonatomic, assign) float OSVersion;
+@property (nonatomic, strong) NSString *OSVersion;
 @property (nonatomic, assign) BOOL retinaDisplay;
 @property (nonatomic, assign) BOOL iPhone4Display;
 @property (nonatomic, assign) NSInteger deviceIdiom;

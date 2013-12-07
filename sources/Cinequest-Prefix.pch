@@ -1,4 +1,12 @@
 //
+//  Cinequest-Prefix.pch
+//  CineQuest
+//
+//  Created by Luca Severini on 10/23/13.
+//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//
+
+//
 // Prefix header for all source files of the 'Cinequest' target in the 'Cinequest' project
 //
 
@@ -14,3 +22,5 @@
 	#import <Social/Social.h>
 	#import <MapKit/MapKit.h>
 #endif
+
+#import <sys/utsname.h>
