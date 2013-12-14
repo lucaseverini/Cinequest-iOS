@@ -26,6 +26,7 @@
 		8163D499185C49AD0035F67F /* Films_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8163D497185C49AD0035F67F /* Films_black@2x.png */; };
 		8163D49C185C49BA0035F67F /* Events_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 8163D49A185C49BA0035F67F /* Events_black.png */; };
 		8163D49D185C49BA0035F67F /* Events_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8163D49B185C49BA0035F67F /* Events_black@2x.png */; };
+		8163D49F185C5DAD0035F67F /* team.png in Resources */ = {isa = PBXBuildFile; fileRef = 8163D49E185C5DAD0035F67F /* team.png */; };
 		816C4AB1183C0AEC00BE896C /* iphone_launch_320_480.png in Resources */ = {isa = PBXBuildFile; fileRef = 816C4AB0183C0AEC00BE896C /* iphone_launch_320_480.png */; };
 		816C4AB3183C0B4C00BE896C /* iphone_launch_640_960.png in Resources */ = {isa = PBXBuildFile; fileRef = 816C4AB2183C0B4C00BE896C /* iphone_launch_640_960.png */; };
 		816C4AB6183C160F00BE896C /* Splash4.png in Resources */ = {isa = PBXBuildFile; fileRef = 816C4AB4183C160F00BE896C /* Splash4.png */; };
@@ -150,6 +151,7 @@
 		8163D497185C49AD0035F67F /* Films_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Films_black@2x.png"; path = "images/Films_black@2x.png"; sourceTree = SOURCE_ROOT; };
 		8163D49A185C49BA0035F67F /* Events_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Events_black.png; path = images/Events_black.png; sourceTree = SOURCE_ROOT; };
 		8163D49B185C49BA0035F67F /* Events_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Events_black@2x.png"; path = "images/Events_black@2x.png"; sourceTree = SOURCE_ROOT; };
+		8163D49E185C5DAD0035F67F /* team.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = team.png; path = images/team.png; sourceTree = SOURCE_ROOT; };
 		816C4AB0183C0AEC00BE896C /* iphone_launch_320_480.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_launch_320_480.png; path = images/iphone_launch_320_480.png; sourceTree = SOURCE_ROOT; };
 		816C4AB2183C0B4C00BE896C /* iphone_launch_640_960.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_launch_640_960.png; path = images/iphone_launch_640_960.png; sourceTree = SOURCE_ROOT; };
 		816C4AB4183C160F00BE896C /* Splash4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Splash4.png; path = images/Splash4.png; sourceTree = SOURCE_ROOT; };
@@ -473,6 +475,7 @@
 		81C8B3B917EBAC1600033D4F /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8163D49E185C5DAD0035F67F /* team.png */,
 				813CB475183E1FAF00974776 /* Images.xcassets */,
 				8163D49A185C49BA0035F67F /* Events_black.png */,
 				8163D49B185C49BA0035F67F /* Events_black@2x.png */,
@@ -733,6 +736,7 @@
 				81C8B3D717EBAC2C00033D4F /* News.png in Resources */,
 				8163D499185C49AD0035F67F /* Films_black@2x.png in Resources */,
 				81A496471845A50C0025CCBB /* facebook.png in Resources */,
+				8163D49F185C5DAD0035F67F /* team.png in Resources */,
 				8163D495185C499A0035F67F /* Schedule_black@2x.png in Resources */,
 				81B32C91183C2AF9006D2D78 /* Default-568h@2x.png in Resources */,
 				81C8B3D817EBAC2C00033D4F /* events_icon_small.png in Resources */,

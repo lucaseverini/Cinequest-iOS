@@ -22,6 +22,7 @@
 	UIFont *venueFont;
     EKCalendar *cinequestCalendar;
     EKEventStore *eventStore;
+	BOOL statusBarHidden;
 }
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;

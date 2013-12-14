@@ -19,6 +19,36 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 static char *const kAssociatedScheduleKey = "Schedule";
 
 
+@implementation UIView (private)
+
+- (void) removeAnimationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
+{
+    if ([animationID isEqualToString:@"fadeout"])
+	{
+        // Restore the opacity
+        CGFloat originalOpacity = [(__bridge_transfer NSNumber *)context floatValue];
+        self.layer.opacity = originalOpacity;
+		
+        [self removeFromSuperview];
+    }
+}
+
+- (void) removeFromSuperviewAnimated
+{
+    [UIView beginAnimations:@"fadeout" context:(__bridge_retained void *)[NSNumber numberWithFloat:self.layer.opacity]];
+	
+    [UIView setAnimationDuration:1.0];
+    [UIView setAnimationDidStopSelector:@selector(removeAnimationDidStop:finished:context:)];
+    [UIView setAnimationDelegate:self];
+	
+    self.layer.opacity = 0;
+	
+    [UIView commitAnimations];
+}
+
+@end
+
+
 @implementation FilmsViewController
 
 @synthesize switchTitle;
@@ -137,6 +167,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	
+	statusBarHidden = NO;
+}
+
+- (BOOL) prefersStatusBarHidden
+{
+	return statusBarHidden;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -579,6 +616,40 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 -(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
+	if([searchString caseInsensitiveCompare:@"CS175"] == NSOrderedSame)
+	{
+		NSLog(@"Show Team picture");
+		
+		UIImageView *teamView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"team" ofType:@"png"]]];
+		teamView.userInteractionEnabled = YES;
+		[teamView setFrame:appDelegate.window.frame];
+
+		UITapGestureRecognizer *tappedImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTouched:)];
+		tappedImage.numberOfTapsRequired = 1;
+		[teamView addGestureRecognizer:tappedImage];
+		
+		self.filmSearchBar.text = @"";
+		[self.view endEditing:YES];
+		[self.filmSearchBar resignFirstResponder];
+
+		statusBarHidden = YES;
+        [self prefersStatusBarHidden];
+        [self setNeedsStatusBarAppearanceUpdate];
+
+		teamView.alpha = 0.0;
+		[appDelegate.window addSubview:teamView];
+		[UIView animateWithDuration:1.0
+		animations:^
+		{
+			teamView.alpha = 1.0;
+		}
+		completion:(void (^)(BOOL finished))^
+		{
+		}];
+		
+		return NO;
+	}
+	
  	[self filterContentForSearchText:searchString scope:
 	 
 	[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
@@ -644,6 +715,21 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
 	
     return sortedIndexes;
+}
+
+#pragma mark - Image Tapping Action
+
+- (void) imageTouched:(id)sender
+{
+	UITapGestureRecognizer *gesture = (UITapGestureRecognizer*)sender;
+
+	NSLog(@"Dismiss Team picture");
+	
+	[gesture.view removeFromSuperviewAnimated];
+
+	statusBarHidden = NO;
+	[self prefersStatusBarHidden];
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 @end
