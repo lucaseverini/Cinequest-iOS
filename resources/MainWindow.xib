@@ -40,7 +40,7 @@
             <viewControllers>
                 <navigationController autoresizesArchivedViewToFullSize="NO" title="News" nibName="" automaticallyAdjustsScrollViewInsets="NO" id="0AN-a8-eS5">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="News" image="News.png" id="iri-el-E4T"/>
+                    <tabBarItem key="tabBarItem" title="News" image="News_black.png" id="iri-el-E4T"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
@@ -66,7 +66,7 @@
                 </navigationController>
                 <navigationController autoresizesArchivedViewToFullSize="NO" title="Films" automaticallyAdjustsScrollViewInsets="NO" id="124">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Films" image="film_icon2.png" id="125">
+                    <tabBarItem key="tabBarItem" title="Films" image="Films_black.png" id="125">
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
                     </tabBarItem>
                     <toolbarItems/>
@@ -110,7 +110,7 @@
                 </navigationController>
                 <navigationController title="Events" id="131">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Events" image="events_icon_small.png" id="132"/>
+                    <tabBarItem key="tabBarItem" title="Events" image="Events_black.png" id="132"/>
                     <toolbarItems/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
@@ -139,7 +139,7 @@
                 </navigationController>
                 <navigationController title="Forums" id="136">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Forums" image="trans_forums_small.png" id="137"/>
+                    <tabBarItem key="tabBarItem" title="Forums" image="Forums_black.png" id="137"/>
                     <toolbarItems/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
@@ -168,7 +168,7 @@
                 </navigationController>
                 <navigationController title="My Schedule" id="150">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="My Schedule" image="schedule.png" id="151"/>
+                    <tabBarItem key="tabBarItem" title="My Schedule" image="Schedule_black.png" id="151"/>
                     <toolbarItems/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
@@ -199,10 +199,10 @@
         </tabBarController>
     </objects>
     <resources>
-        <image name="News.png" width="25" height="25"/>
-        <image name="events_icon_small.png" width="30" height="30"/>
-        <image name="film_icon2.png" width="30" height="30"/>
-        <image name="schedule.png" width="30" height="30"/>
-        <image name="trans_forums_small.png" width="30" height="30"/>
+        <image name="Events_black.png" width="30" height="30"/>
+        <image name="Films_black.png" width="30" height="30"/>
+        <image name="Forums_black.png" width="30" height="30"/>
+        <image name="News_black.png" width="25" height="25"/>
+        <image name="Schedule_black.png" width="30" height="30"/>
     </resources>
 </document>

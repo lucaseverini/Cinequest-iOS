@@ -210,7 +210,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 			
 		case TICKET_INFO_SECTION:
-			answer = @"Ticket Information";
+			answer = @"Information & Ticket";
 			break;
 	}
 	
@@ -399,29 +399,29 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-				UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				phoneButton.frame = CGRectMake(20.0,6.0, 40.0, 40.0);
-				[phoneButton addTarget:self action:@selector(callTicketLine:) forControlEvents:UIControlEventTouchDown];
-                [phoneButton setImage:[UIImage imageNamed:@"phone.png"] forState:UIControlStateNormal];
-                [cell.contentView addSubview:phoneButton];
-                
-                UILabel *lblPhone = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
-                lblPhone.text = @"Call CQ";
-                [lblPhone setFont:[UIFont systemFontOfSize:12.0]];
-                [lblPhone setTextAlignment:NSTextAlignmentCenter];
-                [cell.contentView addSubview:lblPhone];
-				
 				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				linkButton.frame = CGRectMake(80.0, 6.0, 40.0, 40.0);
+				linkButton.frame = CGRectMake(20.0, 6.0, 40.0, 40.0);
 				[linkButton addTarget:self action:@selector(goTicketLink:) forControlEvents:UIControlEventTouchDown];
                 [linkButton setImage:[UIImage imageNamed:@"browser.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:linkButton];
                 
-                UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
+                UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
                 lblWebsite.text = @"Website";
                 [lblWebsite setFont:[UIFont systemFontOfSize:12.0]];
                 [lblWebsite setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblWebsite];
+
+				UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+				phoneButton.frame = CGRectMake(80.0,6.0, 40.0, 40.0);
+				[phoneButton addTarget:self action:@selector(callTicketLine:) forControlEvents:UIControlEventTouchDown];
+                [phoneButton setImage:[UIImage imageNamed:@"phone.png"] forState:UIControlStateNormal];
+                [cell.contentView addSubview:phoneButton];
+                
+                UILabel *lblPhone = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
+                lblPhone.text = @"Call CQ";
+                [lblPhone setFont:[UIFont systemFontOfSize:12.0]];
+                [lblPhone setTextAlignment:NSTextAlignmentCenter];
+                [cell.contentView addSubview:lblPhone];
 			}
 		}
 			break;

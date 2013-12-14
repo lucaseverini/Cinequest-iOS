@@ -42,6 +42,8 @@
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
+	[self startReachability:MAIN_FEED];
+
 	[self collectContextInformation];
 	
     if (!self.mySchedule)
@@ -57,10 +59,19 @@
     [self.window makeKeyAndVisible];
 	
 	tabBar.delegate = self;
-	
-	[self startReachability:MAIN_FEED];
-	    
-    // Change the searchbar in FilmViewController to have "Cancel in colorRed font
+
+	for(UITabBarItem *item in tabBar.tabBar.items)
+	{
+		// Force to draw the image of tabbar items with their own color
+		item.selectedImage = item.image;
+		item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+		
+		// Force to draw the title of tabbar items with black or red if selected
+		[item setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextColor, nil] forState:UIControlStateNormal];
+		[item setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], UITextAttributeTextColor, nil] forState:UIControlStateSelected];
+	}
+	       
+	// Change the searchbar in FilmViewController to have "Cancel in colorRed font
     [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];
     
     [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateHighlighted];
