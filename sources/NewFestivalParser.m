@@ -469,7 +469,7 @@
     DDXMLElement *atsFeed = [xmlDoc rootElement];
 	if([atsFeed childCount] >= 3)
 	{
-		DDXMLElement *arrayOfShows = (DDXMLElement*)[atsFeed childAtIndex:2]; // hard-coding index
+		DDXMLElement *arrayOfShows = (DDXMLElement*)[atsFeed childAtIndex:2];
 		for (int idx = 0; idx < [arrayOfShows childCount]; idx++)
 		{
 			DDXMLElement *showElement = (DDXMLElement*)[arrayOfShows childAtIndex:idx];
