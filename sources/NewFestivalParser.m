@@ -258,7 +258,7 @@
 }
 
 
-- (VenueLocation *) getVenueLocation:(Venue *)venue
+- (VenueLocation*) getVenueLocation:(Venue *)venue
 {
     VenueLocation *loc = [[VenueLocation alloc] init];
     loc.ID = venue.ID;
@@ -268,7 +268,7 @@
     return loc;
 }
 
-- (Schedule *)getScheduleFrom:(Showing *)showing forItem:(CinequestItem *)item
+- (Schedule*) getScheduleFrom:(Showing *)showing forItem:(CinequestItem *)item
 {
     Schedule *schedule = [[Schedule alloc] init];
     schedule.ID = showing.ID;
@@ -305,7 +305,7 @@
     return schedule;
 }
 
-- (NSString *) venueAbbr:(NSString *)name
+- (NSString*) venueAbbr:(NSString *)name
 {
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^A-Z0-9\\-]" options:0 error:&error];
@@ -314,7 +314,7 @@
     return modifiedString;
 }
 
-- (Film *)getFilmFrom:(Show *)show
+- (Film*) getFilmFrom:(Show *)show
 {
     Film *film = [[Film alloc] init];
     
@@ -335,7 +335,7 @@
     return film;
 }
 
-- (Forum *)getForumFrom:(Show *)show
+- (Forum*) getForumFrom:(Show *)show
 {
     Forum *forum = [[Forum alloc] init];
     
@@ -348,7 +348,7 @@
     return forum;
 }
 
-- (Special *)getSpecialFrom:(Show *)show
+- (Special*) getSpecialFrom:(Show *)show
 {
     Special *special = [[Special alloc] init];
     
@@ -370,7 +370,7 @@
 }
 
 
-- (NSString *) get:(NSMutableDictionary *)custom forkey:(NSString*) key
+- (NSString*) get:(NSMutableDictionary *)custom forkey:(NSString*) key
 {
     NSMutableArray *value = [custom objectForKey:key];
     if (value == nil) return @"";
@@ -386,19 +386,19 @@
     return result;
 }
 
--(NSMutableArray *)getSortedKeysFromAlphabetDictionary:(NSMutableDictionary *)dictionary
+- (NSMutableArray*) getSortedKeysFromAlphabetDictionary:(NSMutableDictionary *)dictionary
 {
     NSMutableArray *sortedKeys = (NSMutableArray *)[[dictionary allKeys] sortedArrayUsingSelector:@selector(compare:)];
     return sortedKeys;
 }
 
--(void)sortCinequestItemsAlphabetically:(NSMutableArray *)cinequestItems
+- (void) sortCinequestItemsAlphabetically:(NSMutableArray *)cinequestItems
 {
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     [cinequestItems sortUsingDescriptors:[NSArray arrayWithObject:sort]];
 }
 
--(void)sortCinequestItemsByStartDate:(NSMutableArray *)cinequestItems forKey:(NSString *)key
+- (void) sortCinequestItemsByStartDate:(NSMutableArray *)cinequestItems forKey:(NSString *)key
 {
     [cinequestItems sortUsingComparator:^(id object1, id object2) {
         Film *film1 = (Film *)object1;
@@ -423,7 +423,7 @@
     }];
 }
 
--(NSMutableArray *)getSortedKeysFromDateDictionary:(NSMutableDictionary *)dictionary
+- (NSMutableArray*) getSortedKeysFromDateDictionary:(NSMutableDictionary *)dictionary
 {
     NSMutableArray *sortedKeys = (NSMutableArray *)[dictionary allKeys];
     
@@ -445,12 +445,14 @@
     return sortedKeys;
 }
 
--(NSMutableArray *)getSortedIndexesFromSortedKeys:(NSMutableArray *)sortedKeysArray
+- (NSMutableArray*) getSortedIndexesFromSortedKeys:(NSMutableArray *)sortedKeysArray
 {
     NSMutableArray *sortedIndexes = [[NSMutableArray alloc] init];
-    for (NSString *date in sortedKeysArray) {
+    for (NSString *date in sortedKeysArray)
+	{
         [sortedIndexes addObject:[[date componentsSeparatedByString:@" "] objectAtIndex: 2]];
     }
+	
     return sortedIndexes;
 }
 
@@ -465,102 +467,129 @@
     
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:htmldata options:0 error:nil];
     DDXMLElement *atsFeed = [xmlDoc rootElement];
-    DDXMLElement *arrayOfShows = (DDXMLElement*)[atsFeed childAtIndex:2]; // hard-coding index
-    
-    for (int i = 0; i < [arrayOfShows childCount]; i++) {
-        DDXMLElement *showElement = (DDXMLElement*)[arrayOfShows childAtIndex:i];
-        
-        Show *show = [[Show alloc] init];
-        
-        for (int j = 0; j<[showElement childCount]; j++) {
-            /* Should I declare showChild outside this block? */
-            DDXMLElement *showChild = (DDXMLElement*)[showElement childAtIndex:j];
-            if ([[showChild name] isEqualToString:@"ID"]) {
-                show.ID = [showChild stringValue];
-            }
-            else if ([[showChild name] isEqualToString:@"Name"]) {
-                show.name = [showChild stringValue];
-            }
-            else if ([[showChild name] isEqualToString:@"Duration"]) {
-                show.duration = [[showChild stringValue] intValue];
-            }
-            else if ([[showChild name] isEqualToString:@"ShortDescription"]) {
-                show.shortDescription = [showChild stringValue];
-            }
-            else if ([[showChild name] isEqualToString:@"ThumbImage"]) {
-                show.thumbImageURL = [showChild stringValue];
-            }
-            else if ([[showChild name] isEqualToString:@"EventImage"]) {
-                show.eventImageURL = [showChild stringValue];
-            }
-            else if ([[showChild name] isEqualToString:@"InfoLink"]) {
-                show.infoLink = [showChild stringValue];
-            }
-            else if ([[showChild name] isEqualToString:@"CustomProperties"]) {
-                // showChild here is an array of CustomerProperty
-                /* Not sure if this is a safe approach */
-                for (int k = 0; k < [showChild childCount]; k++) {
-                    DDXMLElement *customProperty = (DDXMLElement*)[showChild childAtIndex:k];
-                    if ([[[customProperty childAtIndex:0] name] isEqualToString:@"Name"]) {
-                        NSString *customPropertyName = [[customProperty childAtIndex:0] stringValue];
-                        NSMutableArray *values = [show.customProperties objectForKey:customPropertyName];
-                        if (values == nil) {
-                            values = [NSMutableArray array];
-                            [show.customProperties setObject:values forKey:customPropertyName];
-                        }
-                        
-                        if ([[[customProperty childAtIndex:4] name] isEqualToString:@"Value"]) {
-                            NSString *customPropertyValue = [[customProperty childAtIndex:4] stringValue];
-                            [values addObject:customPropertyValue];
-                        }
-                    }
-                }
-                
-            }
-            else if ([[showChild name] isEqualToString:@"CurrentShowings"]) {
-                // showChild here is an array of Showing
-                for (int k = 0; k < [showChild childCount]; k++) {
-                    DDXMLElement *showingElement = (DDXMLElement*)[showChild childAtIndex:k];
-                    Showing *showing = [[Showing alloc] init];
-                    
-                    for (int l = 0; l < [showingElement childCount]; l++) {
-                        DDXMLElement *showingChild = (DDXMLElement*)[showingElement childAtIndex:l];
-                        
-                        if ([[showingChild name] isEqualToString:@"ID"]) {
-                            showing.ID = [showingChild stringValue];
-                        }
-                        else if ([[showingChild name] isEqualToString:@"StartDate"]) {
-                            showing.startDate = [showingChild stringValue];
-                        }
-                        else if ([[showingChild name] isEqualToString:@"EndDate"]) {
-                            showing.endDate = [showingChild stringValue];
-                        }
-                        else if ([[showingChild name] isEqualToString:@"ShortDescription"]) {
-                            showing.shortDescription = [showingChild stringValue];
-                        }
-                        else if ([[showingChild name] isEqualToString:@"Venue"]) {
-                            for (int m = 0; m < [showingChild childCount]; m++) {
-                                DDXMLElement *venueChild = (DDXMLElement*)[showingChild childAtIndex:m];
-                                if ([[venueChild name] isEqualToString:@"VenueID"]) {
-                                    showing.venue.ID = [venueChild stringValue];
-                                }
-                                else if ([[venueChild name] isEqualToString:@"VenueName"]) {
-                                    showing.venue.name = [venueChild stringValue];
-                                }
-                                else if ([[venueChild name] isEqualToString:@"VenueAddress1"]) {
-                                    showing.venue.address = [venueChild stringValue];
-                                }
-                            }
-                        }
-                    }
-                    
-                    [show.currentShowings addObject:showing];
-                }
-            }
-            
-        }
-        [self.shows addObject:show];
+	if([atsFeed childCount] >= 3)
+	{
+		DDXMLElement *arrayOfShows = (DDXMLElement*)[atsFeed childAtIndex:2]; // hard-coding index
+		for (int idx = 0; idx < [arrayOfShows childCount]; idx++)
+		{
+			DDXMLElement *showElement = (DDXMLElement*)[arrayOfShows childAtIndex:idx];
+			
+			Show *show = [[Show alloc] init];
+			for (int elemIdx = 0; elemIdx < [showElement childCount]; elemIdx++)
+			{
+				/* Should I declare showChild outside this block? */
+				DDXMLElement *showChild = (DDXMLElement*)[showElement childAtIndex:elemIdx];
+				if ([[showChild name] isEqualToString:@"ID"])
+				{
+					show.ID = [showChild stringValue];
+				}
+				else if ([[showChild name] isEqualToString:@"Name"])
+				{
+					show.name = [showChild stringValue];
+				}
+				else if ([[showChild name] isEqualToString:@"Duration"])
+				{
+					show.duration = [[showChild stringValue] intValue];
+				}
+				else if ([[showChild name] isEqualToString:@"ShortDescription"])
+				{
+					show.shortDescription = [showChild stringValue];
+				}
+				else if ([[showChild name] isEqualToString:@"ThumbImage"])
+				{
+					show.thumbImageURL = [showChild stringValue];
+				}
+				else if ([[showChild name] isEqualToString:@"EventImage"])
+				{
+					show.eventImageURL = [showChild stringValue];
+				}
+				else if ([[showChild name] isEqualToString:@"InfoLink"])
+				{
+					show.infoLink = [showChild stringValue];
+				}
+				else if ([[showChild name] isEqualToString:@"CustomProperties"])
+				{
+					// showChild here is an array of CustomerProperty
+					// Not sure if this is a safe approach
+					for (int childIdx = 0; childIdx < [showChild childCount]; childIdx++)
+					{
+						DDXMLElement *customProperty = (DDXMLElement*)[showChild childAtIndex:childIdx];
+						if ([[[customProperty childAtIndex:0] name] isEqualToString:@"Name"])
+						{
+							NSString *customPropertyName = [[customProperty childAtIndex:0] stringValue];
+							NSMutableArray *values = [show.customProperties objectForKey:customPropertyName];
+							if (values == nil)
+							{
+								values = [NSMutableArray array];
+								[show.customProperties setObject:values forKey:customPropertyName];
+							}
+							
+							if ([[[customProperty childAtIndex:4] name] isEqualToString:@"Value"])
+							{
+								NSString *customPropertyValue = [[customProperty childAtIndex:4] stringValue];
+								[values addObject:customPropertyValue];
+							}
+						}
+					}
+					
+				}
+				else if ([[showChild name] isEqualToString:@"CurrentShowings"])
+				{
+					// showChild here is an array of Showing
+					for (int childIdx = 0; childIdx < [showChild childCount]; childIdx++)
+					{
+						DDXMLElement *showingElement = (DDXMLElement*)[showChild childAtIndex:childIdx];
+						Showing *showing = [[Showing alloc] init];
+						
+						for (int childElemIdx = 0; childElemIdx < [showingElement childCount]; childElemIdx++)
+						{
+							DDXMLElement *showingChild = (DDXMLElement*)[showingElement childAtIndex:childElemIdx];
+							
+							if ([[showingChild name] isEqualToString:@"ID"])
+							{
+								showing.ID = [showingChild stringValue];
+							}
+							else if ([[showingChild name] isEqualToString:@"StartDate"])
+							{
+								showing.startDate = [showingChild stringValue];
+							}
+							else if ([[showingChild name] isEqualToString:@"EndDate"])
+							{
+								showing.endDate = [showingChild stringValue];
+							}
+							else if ([[showingChild name] isEqualToString:@"ShortDescription"])
+							{
+								showing.shortDescription = [showingChild stringValue];
+							}
+							else if ([[showingChild name] isEqualToString:@"Venue"])
+							{
+								for (int showingChildIdx = 0; showingChildIdx < [showingChild childCount]; showingChildIdx++)
+								{
+									DDXMLElement *venueChild = (DDXMLElement*)[showingChild childAtIndex:showingChildIdx];
+									if ([[venueChild name] isEqualToString:@"VenueID"])
+									{
+										showing.venue.ID = [venueChild stringValue];
+									}
+									else if ([[venueChild name] isEqualToString:@"VenueName"])
+									{
+										showing.venue.name = [venueChild stringValue];
+									}
+									else if ([[venueChild name] isEqualToString:@"VenueAddress1"])
+									{
+										showing.venue.address = [venueChild stringValue];
+									}
+								}
+							}
+						}
+						
+						[show.currentShowings addObject:showing];
+					}
+				}
+			}
+			
+			[self.shows addObject:show];
+		}
     }
-} // end parseShow
+}
 
 @end

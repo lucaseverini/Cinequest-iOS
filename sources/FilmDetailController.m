@@ -15,10 +15,39 @@
 #import "Film.h"
 #import "Venue.h"
 #import "MapViewController.h"
+#import "GPlusLoginViewController.h"
+#import "GPlusComposeViewController.h"
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
 static char *const kAssociatedScheduleKey = "Schedule";
+
+
+@implementation NSString (GTMNSStringURLArgumentsAdditions)
+
+- (NSString*) gtm_stringByEscapingForURLArgument
+{
+	// Encode all the reserved characters, per RFC 3986 (<http://www.ietf.org/rfc/rfc3986.txt>)
+	CFStringRef escaped = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+                                            (CFStringRef)self,
+                                            NULL,
+                                            (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+                                            kCFStringEncodingUTF8);
+	return CFBridgingRelease(escaped);
+}
+
+- (NSString*) gtm_stringByUnescapingFromURLArgument
+{
+	NSMutableString *resultString = [NSMutableString stringWithString:self];
+	[resultString replaceOccurrencesOfString:@"+"
+										withString:@" "
+										options:NSLiteralSearch
+										range:NSMakeRange(0, [resultString length])];
+	
+	return [resultString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+}
+
+@end
 
 
 @implementation FilmDetailController
@@ -194,6 +223,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 	}
 }
+
+#pragma mark -
+#pragma mark UITableView delegate
 
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
@@ -433,71 +465,97 @@ static char *const kAssociatedScheduleKey = "Schedule";
     return cell;
 }
 
-#pragma mark -
-#pragma mark UITableView delegate
-
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 }
 
 #pragma mark -
-#pragma mark MFMailComposeViewController Delegate
+#pragma mark Browser integration
 
-- (void) mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+- (IBAction) goTicketLink:(id)sender
 {
-	delegate.isPresentingModalView = NO;
-	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [app openURL:[NSURL URLWithString:[film infoLink]]];
 }
 
 #pragma mark -
-#pragma mark Social Media Sharing
+#pragma mark Phone call integration
 
-- (IBAction) pressToShareToFacebook:(id)sender
+- (IBAction) callTicketLine:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
-    
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
-    {
-        SLComposeViewController *faceSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-        [faceSheet setInitialText:postString];
-        [self presentViewController:faceSheet animated:YES completion:nil];
-    }
-    else
-    {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Sorry"
-                                  message:@"You can't post on Facebook right now, make sure your device has an internet connection and you have at least one FB account setup"
-                                  delegate:self
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil];
-        [alertView show];
-    }
+/*
+	// Test to try return to the app after the phone call
+	UIWebView *callWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, 0.0, 1.0, 1.0)];
+	[[sender superview] addSubview:callWebView];
+	
+	NSURL *telURL = [NSURL URLWithString:TICKET_LINE];
+	[callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
+*/
+	[app openURL:[NSURL URLWithString:TICKET_LINE]];
 }
 
-- (IBAction) pressToShareToTwitter:(id)sender
+#pragma mark -
+#pragma mark Calendar Integration
+
+- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
-    NSString *tweetString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
+	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+    schedule.isSelected ^= YES;
     
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
-    {
-        SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-        [tweetSheet setInitialText:tweetString];
-        [self presentViewController:tweetSheet animated:YES completion:nil];
-    }
-    else
-    {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Sorry"
-                                  message:@"You can't send a tweet right now, make sure your device has an internet connection and you have at least one Twitter account setup"
-                                  delegate:self
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil];
-        [alertView show];
-    }
+    //Call to Delegate to Add/Remove from Calendar
+    [delegate addToDeviceCalendar:schedule];
+    [delegate addOrRemoveFilm:schedule];
+    
+    NSLog(@"Schedule:ID+ItemID:%@-%@",schedule.ID,schedule.itemID);
+    UIButton *checkBoxButton = (UIButton*)sender;
+    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+    [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
 }
+
+#pragma mark -
+#pragma mark Maps Integration
+
+- (void) mapsButtonTapped:(id)sender event:(id)touchEvent
+{
+	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+	if(schedule != nil)
+	{
+		[self showMapWithVenue:schedule.venueItem];
+	}
+	else
+	{
+		NSLog(@"Schedule is nil!!");
+	}
+}
+
+- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
+{
+    NSSet *touches = [touchEvent allTouches];
+	UITouch *touch = [touches anyObject];
+	CGPoint currentTouchPosition = [touch locationInView:self.detailsTableView];
+	NSIndexPath *indexPath = [self.detailsTableView indexPathForRowAtPoint:currentTouchPosition];
+	NSInteger row = [indexPath row];
+	Schedule *schedule = nil;
+	if(indexPath != nil)
+	{
+		NSMutableArray *schedules = [film schedules];
+		schedule = [schedules objectAtIndex:row];
+    }
+    
+    return schedule;
+}
+
+- (void) showMapWithVenue:(Venue*)venue
+{
+	MapViewController *mapViewController = [[MapViewController alloc] initWithNibName:@"MapViewController" andVenue:venue];
+	mapViewController.hidesBottomBarWhenPushed = YES;
+	[[self navigationController] pushViewController:mapViewController animated:YES];
+}
+
+#pragma mark -
+#pragma mark Mail Sharing Delegate
 
 - (IBAction) shareToMail:(id)sender
-{	
+{
     if ([MFMailComposeViewController canSendMail])
 	{
         MFMailComposeViewController *controller = [MFMailComposeViewController new];
@@ -525,13 +583,22 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
 }
 
+- (void) mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+{
+	delegate.isPresentingModalView = NO;
+	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark -
+#pragma mark Message Sharing Delegate
+
 - (IBAction) shareToMessage:(id)sender
 {
 	if([MFMessageComposeViewController canSendText])
 	{
         MFMessageComposeViewController *controller = [MFMessageComposeViewController new];
         controller.messageComposeDelegate = self;
-
+		
         NSString *friendlyMessage = @"Hey,\nI found an interesting film from Cinequest festival.\nCheck it out!";
         NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, [film name], [film infoLink]];
         
@@ -557,81 +624,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
 }
 
-- (IBAction) shareToGooglePlus:(id)sender
-{
-    
-}
-
-- (IBAction) callTicketLine:(id)sender
-{
-/*
-	// Test to try return to the app after the phone call
-	UIWebView *callWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, 0.0, 1.0, 1.0)];
-	[[sender superview] addSubview:callWebView];
-	
-	NSURL *telURL = [NSURL URLWithString:TICKET_LINE];
-	[callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
-*/
-	[app openURL:[NSURL URLWithString:TICKET_LINE]];
-}
-
-- (IBAction) goTicketLink:(id)sender
-{
-    [app openURL:[NSURL URLWithString:[film infoLink]]];
-}
-
-- (void) mapsButtonTapped:(id)sender event:(id)touchEvent
-{
-	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
-	if(schedule != nil)
-	{
-		[self showMapWithVenue:schedule.venueItem];
-	}
-	else
-	{
-		NSLog(@"Schedule is nil!!");
-	}
-}
-
-- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
-{
-	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
-    schedule.isSelected ^= YES;
-    
-    //Call to Delegate to Add/Remove from Calendar
-    [delegate addToDeviceCalendar:schedule];
-    [delegate addOrRemoveFilm:schedule];
-    
-    NSLog(@"Schedule:ID+ItemID:%@-%@",schedule.ID,schedule.itemID);
-    UIButton *checkBoxButton = (UIButton*)sender;
-    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-    [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
-}
-
-- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
-{
-    NSSet *touches = [touchEvent allTouches];
-	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.detailsTableView];
-	NSIndexPath *indexPath = [self.detailsTableView indexPathForRowAtPoint:currentTouchPosition];
-	NSInteger row = [indexPath row];
-	Schedule *schedule = nil;
-	if(indexPath != nil)
-	{
-		NSMutableArray *schedules = [film schedules];
-		schedule = [schedules objectAtIndex:row];
-    }
-    
-    return schedule;
-}
-
-- (void) showMapWithVenue:(Venue*)venue
-{
-	MapViewController *mapViewController = [[MapViewController alloc] initWithNibName:@"MapViewController" andVenue:venue];
-	mapViewController.hidesBottomBarWhenPushed = YES;
-	[[self navigationController] pushViewController:mapViewController animated:YES];
-}
-
 - (void) messageComposeViewController:(MFMessageComposeViewController*)controller didFinishWithResult:(MessageComposeResult)result
 {
     switch(result)
@@ -654,6 +646,238 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark -
+#pragma mark Social Media Sharing integration
+
+- (IBAction) pressToShareToFacebook:(id)sender
+{
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void)
+	{
+		UIViewController *rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+		NSLog(@"%@", NSStringFromCGRect(rootViewController.view.frame));
+		UIView *view = (UIView*)[rootViewController.view.subviews firstObject];
+		UIView *subview = (UIView*)[view.subviews firstObject];
+		UIView *subview2 = (UIView*)[subview.subviews firstObject];
+		UIView *subview3 = (UIView*)[subview2.subviews firstObject];
+		NSLog(@"%@", subview3.subviews);
+    });
+    
+	NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        SLComposeViewController *faceSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [faceSheet setInitialText:postString];
+		
+        [self presentViewController:faceSheet animated:YES completion:nil];
+	}
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't post on Facebook right now, make sure your device has an internet connection and you have at least one FB account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
+}
+
+- (IBAction) pressToShareToTwitter:(id)sender
+{
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    {
+        SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [tweetSheet setInitialText:postString];
+        [self presentViewController:tweetSheet animated:YES completion:nil];
+    }
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't send a tweet right now, make sure your device has an internet connection and you have at least one Twitter account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
+}
+
+- (IBAction) shareToGooglePlus:(id)sender
+{
+/*
+	GPlusComposeViewController *gPlusSheet = [GPlusComposeViewController new];
+	
+	[self presentViewController:gPlusSheet animated:YES completion:nil];
+	
+	return;
+	
+	if(googleSignIn == nil)
+	{
+		googleSignIn = [GPPSignIn sharedInstance];
+		googleSignIn.delegate = self;
+		googleSignIn.clientID = GOOGLEPLUS_CLIENTID;
+		googleSignIn.shouldFetchGooglePlusUser = NO;
+		googleSignIn.shouldFetchGoogleUserEmail = NO;
+	}
+	
+	BOOL result = [googleSignIn trySilentAuthentication];
+	NSLog(@"Google+ status: %d", result);
+
+	GPlusLoginViewController *loginViewController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" bundle:nil];
+    [loginViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+	[loginViewController setModalPresentationStyle:UIModalPresentationPageSheet];
+	[self presentViewController:loginViewController animated:YES completion:nil];
+*/
+	[self presentModalViewController];
+}
+
+- (void) finishedWithAuth:(GTMOAuth2Authentication*)auth error:(NSError *)error
+{
+	if (error)
+	{
+		NSLog(@"Google+ status: Authentication error: %@", error);
+		return;
+	}
+
+}
+
+- (void) didDisconnectWithError:(NSError*)error
+{
+	if(error)
+	{
+		NSLog(@"Google+ status: Failed to disconnect: %@", error);
+	}
+	else
+	{
+		NSLog(@"Google+ status: Disconnected");
+	}
+}
+
+- (UIViewController*) presentModalViewController
+{
+	GPlusLoginViewController *loginController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" bundle:nil];
+/*
+	loginController.modalPresentationStyle = UIModalPresentationFormSheet;
+	loginController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	[self presentViewController:loginController animated:YES completion:nil];
+	loginController.view.bounds = CGRectMake(0, 0, 200, 200);
+*/
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:loginController];
+	navController.modalPresentationStyle = UIModalPresentationFormSheet;
+	navController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	[self presentViewController:navController animated:YES completion:nil];
+	
+	return nil;
+	
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ROFL"
+                                                    message:@"Dee dee doo doo."
+													delegate:self
+													cancelButtonTitle:@"OK"
+													otherButtonTitles:nil];
+
+	UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 30, 30)];
+	[alert addSubview:aView];
+
+	[alert show];
+	
+	return nil;
+
+	//UIView *placeholderview = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 30, 30)];
+	//[self.view addSubview:placeholderview];
+	
+	UIActionSheet *aaSheet = [[UIActionSheet alloc] initWithTitle:@"Google+" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"", nil];
+
+	[aaSheet showFromRect:CGRectMake(0, 0, 320, 300) inView:self.view animated:YES];
+	//[aaSheet showInView:placeholderview];
+
+	[aaSheet.layer setCornerRadius:20.0];
+	[aaSheet setFrame:CGRectMake(10.0, 120.0, 300.0, 300.0)];
+	
+	return nil;
+	
+	UIActionSheet *aSheet = [UIActionSheet new];
+	aSheet.delegate = self;
+
+	[aSheet.layer setCornerRadius:20.0];
+	[aSheet.layer setShadowColor:[UIColor blackColor].CGColor];
+	[aSheet.layer setShadowOpacity:0.8];
+	[aSheet.layer setShadowRadius:3.0];
+	[aSheet.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
+/*
+	GPlusLoginViewController *loginController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" andActionSheet:aSheet];
+	
+	UIView *loginView = loginController.view;
+	[loginView.layer setCornerRadius:20.0];
+
+	CGRect parentFrame = self.view.frame;
+	CGRect viewFrame = loginView.frame;
+	viewFrame.origin.y = 120.0;
+	viewFrame.origin.x = (parentFrame.size.width - viewFrame.size.width) / 2.0;
+
+	[aSheet showFromRect:viewFrame inView:self.view animated:YES];
+	[aSheet setFrame:viewFrame];
+
+	[aSheet addSubview:loginView];
+
+    return loginController;
+*/
+	return nil;
+}
+
+- (void) willPresentActionSheet:(UIActionSheet*)actionSheet
+{
+/*
+	GPlusLoginViewController *loginController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" andActionSheet:actionSheet];
+	
+	UIView *loginView = loginController.view;
+	[loginView.layer setCornerRadius:10.0];
+		
+	CGRect parentFrame = self.view.frame;
+	CGRect viewFrame = loginView.frame;
+	viewFrame.origin.y = 120.0;
+	viewFrame.size.height = 400.0;
+	viewFrame.origin.x = (parentFrame.size.width - viewFrame.size.width) / 2.0;
+*/
+	// [actionSheet setFrame:CGRectMake(10.0, 120.0, 300.0, 350.0)];
+
+	// [actionSheet addSubview:loginView];
+
+    for (UIView *subview in actionSheet.subviews)
+	{
+        if([subview isKindOfClass:[UIButton class]])
+		{
+            UIButton *button = (UIButton *)subview;
+            [button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        }
+    }
+}
+
+- (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	NSLog(@"actionSheet");
+}
+
+// Called when we cancel a view (eg. the user clicks the Home button). This is not called when the user clicks the cancel button.
+// If not defined in the delegate, we simulate a click in the cancel button
+- (void) actionSheetCancel:(UIActionSheet *)actionSheet
+{
+	NSLog(@"actionSheetCancel");
+}
+
+- (void) willPresentAlertView:(UIAlertView*)alertView
+{
+	NSLog(@"%@", alertView.subviews);
+}
+
+- (void) didPresentAlertView:(UIAlertView*)alertView
+{
+	NSLog(@"%@", alertView.subviews);
 }
 
 @end

@@ -524,6 +524,7 @@
 	
 	NSDictionary *pList = [[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"]];
 	NSLog(@"Cinequest App Version %@ (built %s %s)", [pList objectForKey:@"CFBundleShortVersionString"], __DATE__, __TIME__);
+	NSLog(@"Bundle ID: %@", [pList objectForKey:@"CFBundleIdentifier"]);
 
 	NSLog(@"Device name: %@", [[UIDevice currentDevice] name]);
 	

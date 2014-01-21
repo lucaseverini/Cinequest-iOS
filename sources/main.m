@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "CinequestAppDelegate.h"
 
 int main(int argc, char *argv[])

@@ -6,13 +6,17 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
+#import <GooglePlus/GooglePlus.h>
+#import <GoogleOpenSource/GoogleOpenSource.h>
+
+
 @class CinequestAppDelegate;
 @class Schedule;
 @class FBSession;
 @class Film;
 @class ProgramItem;
 
-@interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate>
+@interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, UIActionSheetDelegate, UIAlertViewDelegate>
 {
 	NSUInteger filmId;
 	Schedule *myFilmData;
@@ -23,6 +27,7 @@
 	UIFont *timeFont;
 	UIFont *venueFont;
 	UIFont *actionFont;
+	GPPSignIn *googleSignIn;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;

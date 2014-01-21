@@ -48,6 +48,8 @@
 #define NETWORK_CONNECTION_WIFI  1
 #define NETWORK_CONNECTION_PHONE 2
 
+#define GOOGLEPLUS_CLIENTID	@"452265719636-qbqmhro0t3j9jip1npl69a3er7biidd2.apps.googleusercontent.com";
+
 #define appDelegate ((CinequestAppDelegate*)[[UIApplication sharedApplication] delegate])
 #define app [UIApplication sharedApplication]
 
