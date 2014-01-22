@@ -392,13 +392,13 @@
 			name = Libraries;
 			sourceTree = "<group>";
 		};
-		815A275118161BDE00D9CDCE /* Bugs/Features log */ = {
+		815A275118161BDE00D9CDCE /* Bugs/Features/ToDo */ = {
 			isa = PBXGroup;
 			children = (
 				815A275018161A5500D9CDCE /* New Features and Bugs.webloc */,
 				81F530D718903E8A00B4A65E /* ToDo.txt */,
 			);
-			name = "Bugs/Features log";
+			name = Bugs/Features/ToDo;
 			sourceTree = "<group>";
 		};
 		81745A8717EBAFAE008D2C2C /* Supporting Files */ = {
@@ -459,7 +459,7 @@
 		81C8B37517EBAB3200033D4F = {
 			isa = PBXGroup;
 			children = (
-				815A275118161BDE00D9CDCE /* Bugs/Features log */,
+				815A275118161BDE00D9CDCE /* Bugs/Features/ToDo */,
 				81C8B43C17EBAC9100033D4F /* Sources */,
 				81C8B3A017EBABAA00033D4F /* Resources */,
 				81C8B3B917EBAC1600033D4F /* Images */,
