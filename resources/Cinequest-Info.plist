@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string>iphone_icon57_57</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.cinequest.app_2014</string>
+	<string>com.google.GooglePlusPlatformSample</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -30,10 +30,10 @@
 			<key>CFBundleURLIconFile</key>
 			<string>iphone_icon_58</string>
 			<key>CFBundleURLName</key>
-			<string>org.cinequest.app_2014</string>
+			<string>com.google.GooglePlusPlatformSample</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>org.cinequest.app_2014</string>
+				<string>com.google.GooglePlusPlatformSample</string>
 			</array>
 		</dict>
 	</array>

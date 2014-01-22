@@ -64,7 +64,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 #pragma mark - UIViewController Methods
 
-- (id) initWithTitle:(NSString*)name andId:(NSString*)Id
+- (id) initWithTitle:(NSString*)title andId:(NSString*)Id
 {
 	self = [super init];
 	if(self != nil)
@@ -72,7 +72,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		delegate = appDelegate;
 		mySchedule = delegate.mySchedule;
 		
-		self.navigationItem.title = name;
+		self.navigationItem.title = title;
 		
 		film = [delegate.festival getFilmForId:Id];
 	}
@@ -94,17 +94,18 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	self.detailsTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
     
-	actionFont = [UIFont systemFontOfSize:16.0f];
+	titleFont = [UIFont systemFontOfSize:14.0];
+	actionFont = [UIFont systemFontOfSize:16.0];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
 	
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle insertSegmentWithTitle:@"Detail" atIndex:0 animated:NO];
+	[switchTitle insertSegmentWithTitle:[NSString stringWithFormat:@"%@ Detail", self.navigationItem.title] atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
-
+	
 	self.activityIndicator.color = [UIColor grayColor];
     
 	[(UIWebView*)self.detailsTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
@@ -125,7 +126,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	[super viewWillAppear:animated];
 			
-    [self.detailsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];    
+    [self.detailsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void) loadData
@@ -273,7 +274,22 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	switch (section)
 	{
 		case SHORT_PROGRAM_SECTION:
-			return 50.0;
+		{
+			NSInteger row = [indexPath row];
+			
+			Film *shortFilm = [[film shortItems] objectAtIndex:row];
+			assert(shortFilm);
+
+			CGSize size = [shortFilm.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
+			if(size.width >= 292.0)
+			{
+				return 42.0;
+			}
+			else
+			{
+				return 26.0;
+			}
+		}
 			break;
 
 		case SCHEDULE_SECTION:
@@ -308,19 +324,41 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		case SHORT_PROGRAM_SECTION:
 		{
+			NSInteger row = [indexPath row];
+			
+			Film *shortFilm = [[film shortItems] objectAtIndex:row];
+			assert(shortFilm);
+
 			cell = [tableView dequeueReusableCellWithIdentifier:ShortProgCellID];
 			if (cell == nil)
 			{
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ShortProgCellID];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			}
+			else
+			{
+				[[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+			}
+
+			NSInteger titleNumLines = 1;
+			CGSize size = [shortFilm.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
+			if(size.width >= 292.0)
+			{
+				titleNumLines = 2;
+			}
 			
+			UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleNumLines == 1 ? CGRectMake(16.0, 4.0, 292.0, 18.0) : CGRectMake(16.0, 4.0, 292.0, 34.0)];
+			titleLabel.tag = CELL_TITLE_LABEL_TAG;
+			[titleLabel setNumberOfLines:titleNumLines];
+			titleLabel.font = titleFont;
+			titleLabel.text = shortFilm.name;
+			[cell.contentView addSubview:titleLabel];
+
 			break;
 		}
 			
 		case SCHEDULE_SECTION:
 		{
-			// get row number
 			NSInteger row = [indexPath row];
 			
 			// get all schedules
@@ -494,6 +532,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 			
 		default:
+			NSLog(@"Unknown section %ld", section);
 			break;
 	}
 	
@@ -509,12 +548,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		case SHORT_PROGRAM_SECTION:
 		{
-			NSLog(@"Short Programs for film %@", film.name);
-			Film *shortProgram = [[film shortItems] objectAtIndex:row];
-			Schedule *schedule = [shortProgram.schedules objectAtIndex:0];
-			NSLog(@"%@", shortProgram.name);
-			NSLog(@"%@", [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime]);
-			NSLog(@"%@", [NSString stringWithFormat:@"Venue: %@", schedule.venue]);
+			Film *shortFilm = [[film shortItems] objectAtIndex:row];
+			[self showShortFilmDetails:shortFilm];
 			break;
 		}
 	}
@@ -851,6 +886,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	GPlusDialogView *dialogView = [[GPlusDialogView alloc] initWithContent:navController];
 	
     [dialogView show];
+}
+
+- (void) showShortFilmDetails:(Film*)shortFilm
+{
+	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Short Film" andId:shortFilm.ID];
+	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 
 @end

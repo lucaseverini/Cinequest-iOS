@@ -1,3 +1,4 @@
+
 1) No subsection in news detail. Show only the information, no schedule, social or ticket info.
 2) For news with InfoLink field containing an ID the detail must show that film/event exactly the same way it would be showed from film or event tab.
 3) The bottom bar must be gray like the top navigation bar.

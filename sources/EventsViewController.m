@@ -88,7 +88,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 }
 
-- (void)refine:(id)sender
+- (void) refine:(id)sender
 {
 	// Back button
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"

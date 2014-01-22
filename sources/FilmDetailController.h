@@ -21,6 +21,7 @@
 	UIButton *postThisButton;
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
+	UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
 	UIFont *actionFont;
@@ -32,6 +33,6 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) Film *film;
 
-- (id) initWithTitle:(NSString*)name andId:(NSString*)filmID;
+- (id) initWithTitle:(NSString*)title andId:(NSString*)filmID;
 
 @end

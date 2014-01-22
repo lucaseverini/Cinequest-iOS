@@ -135,7 +135,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) showFilmDetails:(Schedule*)schedule
 {
-	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Detail" andId:schedule.itemID];
+	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Film" andId:schedule.itemID];
 	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 
