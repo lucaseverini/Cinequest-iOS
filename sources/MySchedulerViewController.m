@@ -71,10 +71,9 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 																						   action:@selector(edit)];
 
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"My Schedule" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];
-	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
 }
@@ -378,7 +377,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	
 	NSInteger titleNumLines = 1;
 	titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
-	CGSize size = [schedule.title sizeWithFont:titleFont];
+	CGSize size = [schedule.title sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 	if(size.width < 256.0)
 	{
 		[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
@@ -485,7 +484,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
 	Schedule *schedule = [rowsData objectAtIndex:indexPath.row];
 	
-	CGSize size = [schedule.title sizeWithFont:titleFont];
+	CGSize size = [schedule.title sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 	if(size.width >= 256.0)
 	{
 		return 90.0;

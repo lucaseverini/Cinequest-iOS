@@ -165,7 +165,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
     
     [self setSearchKeyAsDone];
 	
-	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	
 	statusBarHidden = NO;
@@ -333,7 +333,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			
 			NSInteger titleNumLines = 1;
 			titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
-			CGSize size = [film.name sizeWithFont:titleFont];
+			CGSize size = [film.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 			if(size.width < 256.0)
 			{
 				[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
@@ -353,7 +353,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			
 			venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
 			[venueLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
-			venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
+			venueLabel.text = [NSString stringWithFormat:@"Venue: %@", schedule.venue];
             
 			calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
 			[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 8.0 : 24.0, 44.0, 44.0)];
@@ -382,7 +382,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			}
 			
 			NSInteger titleNumLines = 1;
-			CGSize size = [film.name sizeWithFont:titleFont];
+			CGSize size = [film.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 			if(size.width >= 256.0)
 			{
 				titleNumLines = 2;
@@ -448,6 +448,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
 {
+#pragma message "** OS bug **"
+	// Temporary fix for crash in [self.filmsTableView reloadData] usually caused by Google+-related code
+	// http://stackoverflow.com/questions/18918986/uitableview-section-index-related-crashes-under-ios-7
+	// return nil;
+	
 	switch (switcher)
 	{
 		case VIEW_BY_DATE:
@@ -511,7 +516,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		NSString *day = [self.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
 		Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 		
-		CGSize size = [film.name sizeWithFont:titleFont];
+		CGSize size = [film.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 		if(size.width >= 256.0)
 		{
 			return 90.0;
@@ -527,7 +532,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		NSArray *films = [self.alphabetToFilmsDictionary objectForKey:sort];
 		Film *film = [films objectAtIndex:[indexPath row]];
 
-		CGSize size = [film.name sizeWithFont:titleFont];
+		CGSize size = [film.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 		if(size.width >= 256.0)
 		{
 			return 52.0 + (38.0 * film.schedules.count);
@@ -622,6 +627,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		
 		UIImageView *teamView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"team" ofType:@"png"]]];
 		teamView.userInteractionEnabled = YES;
+		teamView.contentMode = UIViewContentModeCenter;
 		[teamView setFrame:appDelegate.window.frame];
 
 		UITapGestureRecognizer *tappedImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTouched:)];

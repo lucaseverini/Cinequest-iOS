@@ -2,8 +2,8 @@
 //  CinequestAppDelegate.h
 //  Cinequest
 //
-//  Created by Loc Phan on 1/10/10.
-//  Copyright __MyCompanyName__ 2010. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #define FILMSBYTIME		@"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone"
@@ -30,9 +30,10 @@
 #define CELL_IMAGE_TAG			6
 #define CELL_LEFTBUTTON_TAG		100
 
-#define SCHEDULE_SECTION        0
-#define SOCIAL_MEDIA_SECTION	1
-#define TICKET_INFO_SECTION     2
+#define SHORT_PROGRAM_SECTION   0
+#define SCHEDULE_SECTION        1
+#define SOCIAL_MEDIA_SECTION	2
+#define TICKET_INFO_SECTION     3
 
 #define TICKET_LINE @"telprompt://1-408-295-3378"
 
@@ -48,6 +49,8 @@
 #define NETWORK_CONNECTION_WIFI  1
 #define NETWORK_CONNECTION_PHONE 2
 
+// #define GOOGLEPLUS_CLIENTID	@"452265719636-qbqmhro0t3j9jip1npl69a3er7biidd2.apps.googleusercontent.com";
+// #define GOOGLEPLUS_CLIENTID	@"470208679525-9nYBufiT7puYS3jIkOe49Rv6.apps.googleusercontent.com";
 #define GOOGLEPLUS_CLIENTID	@"452265719636-qbqmhro0t3j9jip1npl69a3er7biidd2.apps.googleusercontent.com";
 
 #define appDelegate ((CinequestAppDelegate*)[[UIApplication sharedApplication] delegate])

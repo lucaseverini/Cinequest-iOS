@@ -2,8 +2,8 @@
 //  NewsViewController.m
 //  CineQuest
 //
-//  Created by Loc Phan on 10/9/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "NewsViewController.h"
@@ -39,10 +39,9 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
 
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"News" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];
-	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
 }

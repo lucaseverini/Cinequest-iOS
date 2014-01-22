@@ -2,8 +2,8 @@
 //  CinequestAppDelegate.m
 //  Cinequest
 //
-//  Created by Loc Phan on 1/10/10.
-//  Copyright __MyCompanyName__ 2010. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "CinequestAppDelegate.h"
@@ -60,6 +60,9 @@
 	
 	tabBar.delegate = self;
 
+	// Force to draw the tabbar items in red color
+	[[UITabBar appearance] setTintColor:[UIColor redColor]];
+
 	for(UITabBarItem *item in tabBar.tabBar.items)
 	{
 		// Force to draw the image of tabbar items with their own color
@@ -67,14 +70,15 @@
 		item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 		
 		// Force to draw the title of tabbar items with black or red if selected
-		[item setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextColor, nil] forState:UIControlStateNormal];
-		[item setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], UITextAttributeTextColor, nil] forState:UIControlStateSelected];
+		[item setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor], NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
+		[item setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
 	}
-	       
-	// Change the searchbar in FilmViewController to have "Cancel in colorRed font
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];
-    
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, nil] forState:UIControlStateHighlighted];
+
+	// Change the font color of Cancel button in the searchbar of FilmViewController to colorRed
+	NSShadow *shadow = [NSShadow new];
+	[shadow setShadowColor: [UIColor redColor]];
+	[shadow setShadowOffset: CGSizeMake(0.0, 1.0)];
+	[[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor redColor], NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
 
 	return YES;
 }
@@ -96,7 +100,7 @@
     if ([fileManager fileExistsAtPath:[url path]])
     {
         self.dictSavedEventsInCalendar = [NSMutableDictionary dictionaryWithContentsOfURL:url];
-        NSLog(@"Content from Cache:%@",self.dictSavedEventsInCalendar);
+        // NSLog(@"Content from Cache:%@", self.dictSavedEventsInCalendar);
     }
 }
 
@@ -106,30 +110,34 @@
     NSError *error = nil;
     NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:[url path]]) {
-        
+    if ([fileManager fileExistsAtPath:[url path]])
+	{
         NSLog(@"Dictionary is:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
         
         [fileManager removeItemAtURL:url error:&error];
         BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
-        NSLog(@"Dictionary is after update:%@",[NSMutableDictionary dictionaryWithContentsOfURL:url]);
+        NSLog(@"Dictionary is after update:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
         
-        if (flag) {
+        if (flag)
+		{
             NSLog(@"Success saving file");
         }
-        else{
+        else
+		{
             NSLog(@"Fail saving file");
         }
     }
-    else{
+    else
+	{
         BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
-        if (flag) {
+        if (flag)
+		{
             NSLog(@"Success saving file");
         }
-        else{
+        else
+		{
             NSLog(@"Fail saving file");
         }
-        
     }
 }
 
@@ -515,7 +523,6 @@
     }
 }
 
-
 - (void) collectContextInformation
 {
 #if TARGET_IPHONE_SIMULATOR
@@ -545,6 +552,11 @@
 	
 	deviceIdiom = [[UIDevice currentDevice] userInterfaceIdiom];
 	NSLog(@"UI idiom: %ld %@", (long)deviceIdiom, deviceIdiom == UIUserInterfaceIdiomPhone ? @"(iPhone)" : @"(iPad)");
+}
+
+- (BOOL) application:(UIApplication*)application openURL:(NSURL*)url sourceApplication:(NSString*)sourceApplication annotation:(id)annotation
+{
+    return [GPPURLHandler handleURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
 @end

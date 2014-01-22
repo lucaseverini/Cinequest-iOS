@@ -2,8 +2,8 @@
 //  LoadDataViewController.m
 //  CineQuest
 //
-//  Created by Loc Phan on 10/8/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "LoadDataViewController.h"

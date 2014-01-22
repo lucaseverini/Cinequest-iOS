@@ -2,8 +2,8 @@
 //  FilmDetailController.m
 //  CineQuest
 //
-//  Created by Loc Phan on 10/12/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "FilmDetailController.h"
@@ -15,8 +15,8 @@
 #import "Film.h"
 #import "Venue.h"
 #import "MapViewController.h"
-#import "GPlusLoginViewController.h"
-#import "GPlusComposeViewController.h"
+#import "GPlusDialogView.h"
+#import "GPlusDialogViewController.h"
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
@@ -84,6 +84,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	[super viewDidLoad];
 	
+	[GPPSignIn sharedInstance].delegate = self;
+	[GPPSignIn sharedInstance].clientID = GOOGLEPLUS_CLIENTID;
+	[GPPSignIn sharedInstance].shouldFetchGooglePlusUser = YES;
+	[GPPSignIn sharedInstance].shouldFetchGoogleUserEmail = YES;
+	[GPPSignIn sharedInstance].shouldFetchGoogleUserID = YES;
+	[GPPSignIn sharedInstance].scopes = @[ kGTLAuthScopePlusLogin ];
+
 	self.detailsTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
     
@@ -92,10 +99,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	venueFont = timeFont;
 	
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"Detail" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];
-	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
 
@@ -118,6 +124,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+			
     [self.detailsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];    
 }
 
@@ -199,7 +206,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 3;
+	return 4;
 }
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -208,6 +215,10 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		default:
 			return 1;
+			break;
+
+		case SHORT_PROGRAM_SECTION:
+			return [[film shortItems] count];
 			break;
 
 		case SCHEDULE_SECTION:
@@ -233,6 +244,13 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	switch(section)
 	{
+		case SHORT_PROGRAM_SECTION:
+			if([[film shortItems] count] > 0)
+			{
+				answer = @"Short Programs";
+			}
+			break;
+			
 		case SCHEDULE_SECTION:
 			answer = @"Schedules";
 			break;
@@ -254,6 +272,10 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	NSInteger section = [indexPath section];
 	switch (section)
 	{
+		case SHORT_PROGRAM_SECTION:
+			return 50.0;
+			break;
+
 		case SCHEDULE_SECTION:
 			return 50.0;
 			break;
@@ -274,15 +296,28 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	static NSString *ShortProgCellID	= @"ShortProgCell";
 	static NSString *ScheduleCellID		= @"ScheduleCell";
 	static NSString *FacebookIdentifier = @"FBCell";
 	static NSString *ActionsIdentifier	= @"ActCell";
 	
+	UITableViewCell *cell = nil;
 	NSInteger section = [indexPath section];
 	
-	UITableViewCell *cell;
 	switch (section)
 	{
+		case SHORT_PROGRAM_SECTION:
+		{
+			cell = [tableView dequeueReusableCellWithIdentifier:ShortProgCellID];
+			if (cell == nil)
+			{
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ShortProgCellID];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			}
+			
+			break;
+		}
+			
 		case SCHEDULE_SECTION:
 		{
 			// get row number
@@ -312,7 +347,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
 			if (cell == nil)
 			{
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ScheduleCell"];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ScheduleCellID];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
 				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 4.0, 250.0, 20.0)];
@@ -467,6 +502,22 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	NSInteger section = [indexPath section];
+	NSInteger row = [indexPath row];
+
+	switch (section)
+	{
+		case SHORT_PROGRAM_SECTION:
+		{
+			NSLog(@"Short Programs for film %@", film.name);
+			Film *shortProgram = [[film shortItems] objectAtIndex:row];
+			Schedule *schedule = [shortProgram.schedules objectAtIndex:0];
+			NSLog(@"%@", shortProgram.name);
+			NSLog(@"%@", [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime]);
+			NSLog(@"%@", [NSString stringWithFormat:@"Venue: %@", schedule.venue]);
+			break;
+		}
+	}
 }
 
 #pragma mark -
@@ -688,6 +739,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (IBAction) pressToShareToTwitter:(id)sender
 {
+	// [[GPPSignIn sharedInstance] signOut];
+	//  return;
+	
     NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
@@ -710,164 +764,70 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (IBAction) shareToGooglePlus:(id)sender
 {
-/*
-	GPlusComposeViewController *gPlusSheet = [GPlusComposeViewController new];
-	
-	[self presentViewController:gPlusSheet animated:YES completion:nil];
-	
-	return;
-	
-	if(googleSignIn == nil)
-	{
-		googleSignIn = [GPPSignIn sharedInstance];
-		googleSignIn.delegate = self;
-		googleSignIn.clientID = GOOGLEPLUS_CLIENTID;
-		googleSignIn.shouldFetchGooglePlusUser = NO;
-		googleSignIn.shouldFetchGoogleUserEmail = NO;
-	}
-	
-	BOOL result = [googleSignIn trySilentAuthentication];
-	NSLog(@"Google+ status: %d", result);
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", [film name], [film infoLink]];
 
-	GPlusLoginViewController *loginViewController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" bundle:nil];
-    [loginViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-	[loginViewController setModalPresentationStyle:UIModalPresentationPageSheet];
-	[self presentViewController:loginViewController animated:YES completion:nil];
-*/
-	[self presentModalViewController];
+	googlePlusConnectionDone = 0;
+	if(![[GPPSignIn sharedInstance] trySilentAuthentication])
+	{
+		[self loginAndPost:postString];
+	}
+	else
+	{
+		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+		while(googlePlusConnectionDone == 0)
+		{
+			[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		}
+
+		id<GPPNativeShareBuilder> shareBuilder = [[GPPShare sharedInstance] nativeShareDialog];
+		[shareBuilder setPrefillText:postString];
+		[shareBuilder open];
+	}
 }
 
-- (void) finishedWithAuth:(GTMOAuth2Authentication*)auth error:(NSError *)error
+- (void) finishedWithAuth:(GTMOAuth2Authentication*)auth error:(NSError*)error
 {
-	if (error)
+	if (error != nil)
 	{
-		NSLog(@"Google+ status: Authentication error: %@", error);
-		return;
+		NSLog(@"Google+ Authentication error: %@", error);
+		
+		googlePlusConnectionDone = -1;
 	}
-
+	else
+	{
+		NSLog(@"Google+ Authentication OK");
+		
+		googlePlusConnectionDone = 1;
+	}
 }
 
 - (void) didDisconnectWithError:(NSError*)error
 {
-	if(error)
+	if (error != nil)
 	{
-		NSLog(@"Google+ status: Failed to disconnect: %@", error);
+		NSLog(@"Google+ Failed to disconnect: %@", error);
 	}
 	else
 	{
-		NSLog(@"Google+ status: Disconnected");
+		NSLog(@"Google+ Disconnected");
 	}
 }
 
-- (UIViewController*) presentModalViewController
+- (void) finishedSharingWithError:(NSError*)error
 {
-	GPlusLoginViewController *loginController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" bundle:nil];
-/*
-	loginController.modalPresentationStyle = UIModalPresentationFormSheet;
-	loginController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self presentViewController:loginController animated:YES completion:nil];
-	loginController.view.bounds = CGRectMake(0, 0, 200, 200);
-*/
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:loginController];
-	navController.modalPresentationStyle = UIModalPresentationFormSheet;
-	navController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self presentViewController:navController animated:YES completion:nil];
-	
-	return nil;
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ROFL"
-                                                    message:@"Dee dee doo doo."
-													delegate:self
-													cancelButtonTitle:@"OK"
-													otherButtonTitles:nil];
-
-	UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 30, 30)];
-	[alert addSubview:aView];
-
-	[alert show];
-	
-	return nil;
-
-	//UIView *placeholderview = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 30, 30)];
-	//[self.view addSubview:placeholderview];
-	
-	UIActionSheet *aaSheet = [[UIActionSheet alloc] initWithTitle:@"Google+" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"", nil];
-
-	[aaSheet showFromRect:CGRectMake(0, 0, 320, 300) inView:self.view animated:YES];
-	//[aaSheet showInView:placeholderview];
-
-	[aaSheet.layer setCornerRadius:20.0];
-	[aaSheet setFrame:CGRectMake(10.0, 120.0, 300.0, 300.0)];
-	
-	return nil;
-	
-	UIActionSheet *aSheet = [UIActionSheet new];
-	aSheet.delegate = self;
-
-	[aSheet.layer setCornerRadius:20.0];
-	[aSheet.layer setShadowColor:[UIColor blackColor].CGColor];
-	[aSheet.layer setShadowOpacity:0.8];
-	[aSheet.layer setShadowRadius:3.0];
-	[aSheet.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
-/*
-	GPlusLoginViewController *loginController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" andActionSheet:aSheet];
-	
-	UIView *loginView = loginController.view;
-	[loginView.layer setCornerRadius:20.0];
-
-	CGRect parentFrame = self.view.frame;
-	CGRect viewFrame = loginView.frame;
-	viewFrame.origin.y = 120.0;
-	viewFrame.origin.x = (parentFrame.size.width - viewFrame.size.width) / 2.0;
-
-	[aSheet showFromRect:viewFrame inView:self.view animated:YES];
-	[aSheet setFrame:viewFrame];
-
-	[aSheet addSubview:loginView];
-
-    return loginController;
-*/
-	return nil;
+	NSLog(@"Google+ Sharing error: %@", error);
 }
 
-- (void) willPresentActionSheet:(UIActionSheet*)actionSheet
+- (void) finishedSharing:(BOOL)shared
 {
-/*
-	GPlusLoginViewController *loginController = [[GPlusLoginViewController alloc] initWithNibName:@"GPlusLoginViewController" andActionSheet:actionSheet];
-	
-	UIView *loginView = loginController.view;
-	[loginView.layer setCornerRadius:10.0];
-		
-	CGRect parentFrame = self.view.frame;
-	CGRect viewFrame = loginView.frame;
-	viewFrame.origin.y = 120.0;
-	viewFrame.size.height = 400.0;
-	viewFrame.origin.x = (parentFrame.size.width - viewFrame.size.width) / 2.0;
-*/
-	// [actionSheet setFrame:CGRectMake(10.0, 120.0, 300.0, 350.0)];
-
-	// [actionSheet addSubview:loginView];
-
-    for (UIView *subview in actionSheet.subviews)
+	if (shared)
 	{
-        if([subview isKindOfClass:[UIButton class]])
-		{
-            UIButton *button = (UIButton *)subview;
-            [button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        }
-    }
-}
-
-- (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	NSLog(@"actionSheet");
-}
-
-// Called when we cancel a view (eg. the user clicks the Home button). This is not called when the user clicks the cancel button.
-// If not defined in the delegate, we simulate a click in the cancel button
-- (void) actionSheetCancel:(UIActionSheet *)actionSheet
-{
-	NSLog(@"actionSheetCancel");
+		NSLog(@"Google+ Post shared");
+	}
+	else
+	{
+		NSLog(@"Google+ Podst canceled");
+	}
 }
 
 - (void) willPresentAlertView:(UIAlertView*)alertView
@@ -878,6 +838,19 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) didPresentAlertView:(UIAlertView*)alertView
 {
 	NSLog(@"%@", alertView.subviews);
+}
+
+- (void) loginAndPost:(NSString*)postString
+{
+	GPlusDialogViewController *viewController = [[GPlusDialogViewController alloc] initWithNibName:@"GPlusDialogViewController" bundle:nil];
+	viewController.postMessage = postString;
+	
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+	[navController.view setFrame:CGRectMake(0, 0, viewController.view.frame.size.width, navController.view.frame.size.height)];
+	
+	GPlusDialogView *dialogView = [[GPlusDialogView alloc] initWithContent:navController];
+	
+    [dialogView show];
 }
 
 @end

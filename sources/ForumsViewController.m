@@ -2,8 +2,8 @@
 //  ForumsViewController.m
 //  CineQuest
 //
-//  Created by Loc Phan on 10/9/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "ForumsViewController.h"
@@ -45,11 +45,12 @@
 	backedUpIndex	= [[NSMutableArray alloc] init];
 	backedUpData	= [[NSMutableDictionary alloc] init]; 
 
+	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"Forums" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];
-	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
 
@@ -66,8 +67,9 @@
 #pragma mark -
 #pragma mark Private Methods
 
-- (void)syncTableDataWithScheduler {
-	NSUInteger i, count = [mySchedule count];
+- (void) syncTableDataWithScheduler
+{
+	NSUInteger count = [mySchedule count];
 	
 	// Sync current data
 	for (int section = 0; section < [days count]; section++) 
@@ -78,18 +80,16 @@
 		{
 			Schedule *event = [rows objectAtIndex:row];
 			//event.isSelected = NO;
-			for (i = 0; i < count; i++) 
+			for (int idx = 0; idx < count; idx++)
 			{
-				Schedule *obj = [mySchedule objectAtIndex:i];
+				Schedule *obj = [mySchedule objectAtIndex:idx];
 				//NSLog(@"obj id:%d, event id:%d",obj.ID,event.ID);
 				if (obj.ID == event.ID) 
 				{
 					//NSLog(@"Added: %@. Time: %@",obj.title,obj.timeString);
 					event.isSelected = YES;
 				}
-				
 			}
-			
 		}
 	}
 	
@@ -102,22 +102,20 @@
 		{
 			Schedule *event = [rows objectAtIndex:row];
 			//event.isSelected = NO;
-			for (i = 0; i < count; i++) 
+			for (int idx = 0; idx < count; idx++)
 			{
-				Schedule *obj = [mySchedule objectAtIndex:i];
+				Schedule *obj = [mySchedule objectAtIndex:idx];
 				if (obj.ID == event.ID) 
 				{
 					//NSLog(@"Added: %@.",obj.title);
 					event.isSelected = YES;
-					
 				}
 			}
-			
 		}
 	}
 }
 
-- (void)startParsingXML
+- (void) startParsingXML
 {
 	NSData *xmldata = [[appDelegate dataProvider] forums];
 	
@@ -127,13 +125,17 @@
 	NSInteger childCount = [rootElement childCount];
 	NSString *previousDay = @"empty";
 	NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-	//NSLog(@"%d",childCount);
-	for (int i = 0; i < childCount; i++) {
+
+	for (int i = 0; i < childCount; i++)
+	{
 		DDXMLElement *child = (DDXMLElement*)[rootElement childAtIndex:i];
 		NSDictionary *attributes;
-		if ([child respondsToSelector:@selector(attributesAsDictionary)]) {
+		if ([child respondsToSelector:@selector(attributesAsDictionary)])
+		{
 			attributes = [child attributesAsDictionary];
-		} else {
+		}
+		else
+		{
 			continue;
 		}
 		
@@ -146,28 +148,26 @@
 		NSString *venue		= [attributes objectForKey:@"venue"];
 		
 		Schedule *forum		= [[Schedule alloc] init];
-		
 		forum.ID			= ID;
 		forum.itemID		= prg_id;
-		
 		forum.type		= type;
 		forum.title		= title;
 		forum.venue		= venue;
 		
-		//Start time
+		// Start time
 		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 		NSDate *date = [dateFormatter dateFromString:start];
 		forum.startDate = date;
 		[dateFormatter setDateFormat:@"hh:mm a"];
 		forum.startTime = [dateFormatter stringFromDate:date];
-		//Date
+		// Date
 		[dateFormatter setDateFormat:@"EEE, MMMM d"];
 		NSString *dateString = [dateFormatter stringFromDate:date];
 		forum.dateString = dateString;
         [dateFormatter setDateFormat:@"EEEE, MMMM d"];
         forum.longDateString = [dateFormatter stringFromDate:date];
-		//End Time
+		// End Time
 		[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
 		date = [dateFormatter dateFromString:end];
 		forum.endDate = date;
@@ -209,8 +209,8 @@
 	self.forumsTableView.tableHeaderView = nil;
 }
 
-- (void)checkBoxButtonTapped:(id)sender event:(id)touchEvent {
-	
+- (void) checkBoxButtonTapped:(id)sender event:(id)touchEvent
+{
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:self.forumsTableView];
@@ -309,20 +309,21 @@
 #pragma mark -
 #pragma mark UITableView Datasource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
     return [days count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	
+- (NSInteger) tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
+{
 	NSString *day = [days objectAtIndex:section];
 	NSMutableArray *forums = [data objectForKey:day];
 	
     return [forums count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *CellIdentifier = @"Cell";
 	
 	NSUInteger section = [indexPath section];
@@ -391,7 +392,7 @@
 	}
 	
 	titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
-	CGSize size = [event.title sizeWithFont:titleFont];
+	CGSize size = [event.title sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
     if(size.width < 256.0)
     {
         [titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
@@ -441,19 +442,21 @@
     return cell;
 }
 
-- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section {
+- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+{
 	NSString *day = [days objectAtIndex:section];
 	return day;
 }
 
-- (NSArray*)sectionIndexTitlesForTableView:(UITableView*)tableView {
+- (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
+{
 	return index;
 }
 
 #pragma mark -
 #pragma mark UITableView Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
@@ -480,7 +483,7 @@
     NSString *dateString = [days objectAtIndex:section];
     Schedule *schedule = [[data objectForKey:dateString] objectAtIndex:row];
     
-    CGSize size = [schedule.title sizeWithFont:titleFont];
+    CGSize size = [schedule.title sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
     if(size.width >= 256.0)
     {
         return 90.0;

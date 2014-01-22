@@ -2,8 +2,8 @@
 //  EventsViewController.m
 //  CineQuest
 //
-//  Created by Loc Phan on 10/9/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "EventsViewController.h"
@@ -53,10 +53,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	venueFont = timeFont;
   
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle setSegmentedControlStyle:UISegmentedControlStyleBar];
 	[switchTitle insertSegmentWithTitle:@"Events" atIndex:0 animated:NO];
 	[switchTitle setSelectedSegmentIndex:0];
-	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:UITextAttributeFont];
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
 
@@ -423,7 +422,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	
 	NSInteger titleNumLines = 1;
 	titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
-	CGSize size = [event.title sizeWithFont:titleFont];
+	CGSize size = [event.title sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
     if(size.width < 256.0)
     {
         [titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
@@ -524,7 +523,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     NSString *dateString = [days objectAtIndex:section];
     Schedule *schedule = [[data objectForKey:dateString] objectAtIndex:row];
     
-    CGSize size = [schedule.title sizeWithFont:titleFont];
+    CGSize size = [schedule.title sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
     if(size.width >= 256.0)
     {
         return 90.0;

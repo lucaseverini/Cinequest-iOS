@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string>iphone_icon57_57</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.cinequest.app_2014</string>
+	<string>com.google.GooglePlusPlatformSample</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -22,8 +22,23 @@
 	<string>3.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLIconFile</key>
+			<string>iphone_icon_58</string>
+			<key>CFBundleURLName</key>
+			<string>com.google.GooglePlusPlatformSample</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.google.GooglePlusPlatformSample</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>3.0 (1-20-2014)</string>
+	<string>3.0 (1-22-2014)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>

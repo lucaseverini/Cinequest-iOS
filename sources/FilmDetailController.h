@@ -2,12 +2,9 @@
 //  FilmDetailController.h
 //  CineQuest
 //
-//  Created by Loc Phan on 10/12/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
-
-#import <GooglePlus/GooglePlus.h>
-#import <GoogleOpenSource/GoogleOpenSource.h>
 
 
 @class CinequestAppDelegate;
@@ -16,7 +13,7 @@
 @class Film;
 @class ProgramItem;
 
-@interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, UIActionSheetDelegate, UIAlertViewDelegate>
+@interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, GPPShareDelegate, UIAlertViewDelegate>
 {
 	NSUInteger filmId;
 	Schedule *myFilmData;
@@ -27,7 +24,7 @@
 	UIFont *timeFont;
 	UIFont *venueFont;
 	UIFont *actionFont;
-	GPPSignIn *googleSignIn;
+	NSInteger googlePlusConnectionDone;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;

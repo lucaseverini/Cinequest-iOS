@@ -6,18 +6,26 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-@interface GPlusLoginViewController : UIViewController
+@class GPPSignInButton;
+
+@interface GPlusLoginViewController : UIViewController <GPPSignInDelegate>
 {
 	// UIActionSheet *parentSheet;
+	BOOL googlePlusConnected;
 }
 
 @property (nonatomic, strong) UIActionSheet *parentSheet;
 
+@property (nonatomic, strong) IBOutlet GPPSignInButton *signInButton;
+@property (nonatomic, strong) IBOutlet UIButton *signOutButton;
 @property (nonatomic, strong) IBOutlet UIButton *cancelButton;
-@property (nonatomic, strong) IBOutlet UIButton *signInButton;
+@property (nonatomic, strong) IBOutlet UILabel *statusLabel;
+@property (nonatomic, strong) IBOutlet UILabel *nameLabel;
+@property (nonatomic, strong) IBOutlet UILabel *emailLabel;
 
 - (id) initWithNibName:(NSString*)nibNameOrNil andActionSheet:(UIActionSheet*)aSheet;
 
 - (IBAction) cancelSignIn:(id)sender;
+- (IBAction) signOut:(id)sender;
 
 @end
