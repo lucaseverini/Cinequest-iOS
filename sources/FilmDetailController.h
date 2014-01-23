@@ -17,8 +17,6 @@
 {
 	NSUInteger filmId;
 	Schedule *myFilmData;
-	FBSession *_session;
-	UIButton *postThisButton;
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
 	UIFont *titleFont;

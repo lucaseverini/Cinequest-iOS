@@ -77,6 +77,13 @@ static NSString *kActionsCellID	= @"ActionsCell";
 {
 	[super viewDidLoad];
     
+	[GPPSignIn sharedInstance].delegate = self;
+	[GPPSignIn sharedInstance].clientID = GOOGLEPLUS_CLIENTID;
+	[GPPSignIn sharedInstance].shouldFetchGooglePlusUser = YES;
+	[GPPSignIn sharedInstance].shouldFetchGoogleUserEmail = YES;
+	[GPPSignIn sharedInstance].shouldFetchGoogleUserID = YES;
+	[GPPSignIn sharedInstance].scopes = @[ kGTLAuthScopePlusLogin ];
+
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 

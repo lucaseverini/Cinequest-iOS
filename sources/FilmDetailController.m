@@ -62,7 +62,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 @synthesize activityIndicator;
 @synthesize film;
 
-- (void)didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }

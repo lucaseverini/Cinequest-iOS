@@ -18,7 +18,6 @@
 	NSString *eventId;
 	NSString *infoLink;
 	NSMutableDictionary *dataDictionary;
-	UIButton *postThisButton;
 	BOOL showNewsDetail;
 	BOOL showEventDetail;
 	UIFont *titleFont;
