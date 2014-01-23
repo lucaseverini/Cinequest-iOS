@@ -13,7 +13,7 @@
 @class Film;
 @class ProgramItem;
 
-@interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, GPPShareDelegate, UIAlertViewDelegate>
+@interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, GPPShareDelegate>
 {
 	NSUInteger filmId;
 	Schedule *myFilmData;

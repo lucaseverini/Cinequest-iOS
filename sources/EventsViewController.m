@@ -14,8 +14,8 @@
 #import "DDXML.h"
 #import "DataProvider.h"
 
-static NSString *const kEventCellIdentifier = @"EventCell";
 
+static NSString *const kEventCellIdentifier = @"EventCell";
 
 @implementation EventsViewController
 
@@ -86,78 +86,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	[index removeAllObjects];
 	
 	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
-}
-
-- (void) refine:(id)sender
-{
-	// Back button
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-																				style:UIBarButtonItemStyleDone
-																				target:self
-																				action:@selector(back:)];
-	// Remove rows
-	NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-	NSMutableArray *itemsBeingDeleted = [[NSMutableArray alloc] init];
-	
-	for (int section = 0; section < [days count]; section++)
-	{
-		NSString *day = [days objectAtIndex:section];
-		NSMutableArray *rows = [data objectForKey:day];
-		
-		for (int row = 0; row < [rows count]; row++) 
-		{
-			Schedule *item = [rows objectAtIndex:row];
-			if (!item.isSelected) 
-			{
-				[indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-				[itemsBeingDeleted addObject:item];
-			}
-			else
-			{
-				//NSLog(@"%@ - %@",item.time,item.title);
-			}
-			
-		}
-		
-		[rows removeObjectsInArray:itemsBeingDeleted];
-		[itemsBeingDeleted removeAllObjects];
-	}
-	
-	// Remove sections
-	NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
-	
-	int i = 0;
-	for (NSString *day in days) 
-	{
-		NSMutableArray *rows = [data objectForKey:day];
-		if ([rows count] == EMPTY) 
-		{
-			[data removeObjectForKey:day];
-			[indexSet addIndex:i];
-		}
-		i++;
-	}
-	[days removeObjectsAtIndexes:indexSet];
-	[index removeObjectsAtIndexes:indexSet];
-	
-	// Start updating table
-	[self.eventsTableView beginUpdates];
-	
-	[self.eventsTableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:NO];
-	
-	[self.eventsTableView deleteSections:indexSet withRowAnimation:NO];
-	
-	[self.eventsTableView endUpdates];
-	
-	// add push animation
-	CATransition *transition = [CATransition animation];
-	transition.type = kCATransitionPush;
-	transition.subtype = kCATransitionFromTop;
-	transition.duration = 0.3;
-	[[self.eventsTableView layer] addAnimation:transition forKey:nil];
-	
-	// reload data
-	[self.eventsTableView reloadData];
 }
 
 - (void)back:(id)sender
@@ -253,7 +181,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 		[dateFormatter setDateFormat:@"hh:mm a"];
 		event.startTime = [dateFormatter stringFromDate:date];
 		//Date
-		[dateFormatter setDateFormat:@"EEE, MMMM d"];
+		[dateFormatter setDateFormat:@"EEE, MMM d"];
 		NSString *dateString = [dateFormatter stringFromDate:date];
 		event.dateString = dateString;
         [dateFormatter setDateFormat:@"EEEE, MMMM d"];
@@ -352,12 +280,12 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 #pragma mark -
 #pragma mark UITableView DataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [days count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSString *day = [days objectAtIndex:section];
 	NSMutableArray *events = [data objectForKey:day];
@@ -365,7 +293,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     return [events count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
@@ -375,8 +303,8 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	Schedule *event = [events objectAtIndex:row];
 	
 	// check if current cell is already added to mySchedule
-	NSUInteger idx, count = [mySchedule count];
-	for (idx = 0; idx < count; idx++)
+	NSUInteger count = [mySchedule count];
+	for (int idx = 0; idx < count; idx++)
 	{
 		Schedule *schedule = [mySchedule objectAtIndex:idx];
 		if (schedule.ID == event.ID)
@@ -387,7 +315,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	}
 	
 	UIImage *buttonImage = (event.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-    
 	UILabel *titleLabel = nil;
 	UILabel *timeLabel = nil;
 	UILabel *venueLabel = nil;
@@ -445,13 +372,13 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     venueLabel.text = [NSString stringWithFormat:@"Venue: %@", event.venue];
     
     calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-	[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 32.0 : 54.0, 32, 32.0)];
+	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 8.0 : 24.0, 44.0, 44.0)];
 	[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 	
     return cell;
 }
 
-- (void)checkBoxButtonTapped:(id)sender event:(id)touchEvent
+- (void) checkBoxButtonTapped:(id)sender event:(id)touchEvent
 {
 	NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
@@ -483,13 +410,13 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	}
 }
 
-- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
 	NSString *day = [days objectAtIndex:section];
 	return day;
 }
 
-- (NSArray*)sectionIndexTitlesForTableView:(UITableView*)tableView
+- (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
 {
 	return index;
 }
@@ -497,7 +424,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 #pragma mark -
 #pragma mark UITableView delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];

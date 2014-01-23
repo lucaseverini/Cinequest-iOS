@@ -14,6 +14,8 @@
 #import "DataProvider.h"
 
 
+static NSString *const kForumCellIdentifier = @"ForumCell";
+
 @implementation ForumsViewController
 
 @synthesize days;
@@ -22,7 +24,7 @@
 @synthesize forumsTableView;
 @synthesize activityIndicator;
 
-- (void)didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
@@ -41,11 +43,13 @@
 	data = [[NSMutableDictionary alloc] init];
 	days = [[NSMutableArray alloc] init];
 	index = [[NSMutableArray alloc] init];
-	backedUpDays	= [[NSMutableArray alloc] init];
-	backedUpIndex	= [[NSMutableArray alloc] init];
-	backedUpData	= [[NSMutableDictionary alloc] init]; 
+	backedUpDays = [[NSMutableArray alloc] init];
+	backedUpIndex = [[NSMutableArray alloc] init];
+	backedUpData = [[NSMutableDictionary alloc] init];
 
-	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+    titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	venueFont = timeFont;
 
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
 	[switchTitle insertSegmentWithTitle:@"Forums" atIndex:0 animated:NO];
@@ -162,7 +166,7 @@
 		[dateFormatter setDateFormat:@"hh:mm a"];
 		forum.startTime = [dateFormatter stringFromDate:date];
 		// Date
-		[dateFormatter setDateFormat:@"EEE, MMMM d"];
+		[dateFormatter setDateFormat:@"EEE, MMM d"];
 		NSString *dateString = [dateFormatter stringFromDate:date];
 		forum.dateString = dateString;
         [dateFormatter setDateFormat:@"EEEE, MMMM d"];
@@ -181,8 +185,6 @@
 			[days addObject:previousDay];
 			
 			[index addObject:[[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]];
-			
-			//NSLog(@"%@", [[previousDay componentsSeparatedByString:@" "] objectAtIndex: 2]);
 			
 			tempArray = [[NSMutableArray alloc] init];
 			[tempArray addObject:forum];
@@ -324,8 +326,6 @@
 
 - (UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-	
 	NSUInteger section = [indexPath section];
 	NSUInteger row = [indexPath row];
 	
@@ -334,10 +334,10 @@
 	Schedule *event = [events objectAtIndex:row];
 	
 	// check if current cell is already added to mySchedule
-	// if it is, display it as blue
-	NSUInteger i, count = [mySchedule count];
-	for (i = 0; i < count; i++) {
-		Schedule *obj = [mySchedule objectAtIndex:i];
+	NSUInteger count = [mySchedule count];
+	for (int idx = 0; idx < count; idx++)
+	{
+		Schedule *obj = [mySchedule objectAtIndex:idx];
 		
 		if (obj.ID == event.ID) 
 		{
@@ -346,20 +346,17 @@
 		}
 	}
 	
-	// get checkbox status
-	BOOL checked = event.isSelected;
-    UIImage *buttonImage = (checked) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+    UIImage *buttonImage = (event.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
     NSInteger titleNumLines = 1;
-	UILabel *titleLabel;
-	UILabel *timeLabel;
-	UILabel *venueLabel;
-	UIButton *checkButton;
+	UILabel *titleLabel = nil;
+	UILabel *timeLabel = nil;
+	UILabel *venueLabel = nil;
+	UIButton *calendarButton = nil;
 	
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kForumCellIdentifier];
     if (cell == nil)
 	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kForumCellIdentifier];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
 		titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 6.0, 250.0, 20.0)];
@@ -377,18 +374,14 @@
         venueLabel.font = venueFont;
 		[cell.contentView addSubview:venueLabel];
 		
-		checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		checkButton.frame = CGRectMake(11.0, 16.0, 32.0, 32.0);
-		[checkButton setImage:buttonImage forState:UIControlStateNormal];
+		calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		calendarButton.frame = CGRectMake(11.0, 16.0, 32.0, 32.0);
+		[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 		
-		[checkButton addTarget:self 
-						action:@selector(checkBoxButtonTapped:event:)
-			  forControlEvents:UIControlEventTouchUpInside];
-		
-		checkButton.backgroundColor = [UIColor clearColor];
-		checkButton.tag = CELL_LEFTBUTTON_TAG;
-		[cell.contentView addSubview:checkButton];
-		
+		[calendarButton addTarget:self action:@selector(checkBoxButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+		calendarButton.backgroundColor = [UIColor clearColor];
+		calendarButton.tag = CELL_LEFTBUTTON_TAG;
+		[cell.contentView addSubview:calendarButton];
 	}
 	
 	titleLabel = (UILabel*)[cell viewWithTag:CELL_TITLE_LABEL_TAG];
@@ -407,37 +400,16 @@
     titleLabel.text = event.title;
     
     timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
-    if(titleNumLines == 1)
-    {
-        [timeLabel setFrame:CGRectMake(52.0, 28.0, 250.0, 20.0)];
-    }
-    else
-    {
-        [timeLabel setFrame:CGRectMake(52.0, 50.0, 250.0, 20.0)];
-    }
+	[timeLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 28.0 : 50.0, 250.0, 20.0)];
     timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", event.dateString, event.startTime, event.endTime];
     
     venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
-    if(titleNumLines == 1)
-    {
-        [venueLabel setFrame:CGRectMake(52.0, 46.0, 250.0, 20.0)];
-    }
-    else
-    {
-        [venueLabel setFrame:CGRectMake(52.0, 68.0, 250.0, 20.0)];
-    }
-    venueLabel.text = [NSString stringWithFormat:@"Venue: %@",event.venue];
+	[venueLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
+    venueLabel.text = [NSString stringWithFormat:@"Venue: %@", event.venue];
     
-    checkButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-    if(titleNumLines == 1)
-    {
-        [checkButton setFrame:CGRectMake(11.0, 16.0, 32.0, 32.0)];
-    }
-    else
-    {
-        [checkButton setFrame:CGRectMake(11.0, 28.0, 32.0, 32.0)];
-    }
-    [checkButton setImage:buttonImage forState:UIControlStateNormal];
+    calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
+	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 8.0 : 24.0, 44.0, 44.0)];
+	[calendarButton setImage:buttonImage forState:UIControlStateNormal];
     
     return cell;
 }

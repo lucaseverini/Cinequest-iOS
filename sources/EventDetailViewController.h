@@ -6,20 +6,26 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
+
 @class Schedule;
 @class CinequestAppDelegate;
 
-@interface EventDetailViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, UIAlertViewDelegate>
+@interface EventDetailViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, GPPShareDelegate>
 {
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
 	Schedule *myData;
 	NSString *eventId;
-	NSURL *dataLink;
+	NSString *infoLink;
 	NSMutableDictionary *dataDictionary;
 	UIButton *postThisButton;
 	BOOL showNewsDetail;
 	BOOL showEventDetail;
+	UIFont *titleFont;
+	UIFont *timeFont;
+	UIFont *venueFont;
+	UIFont *actionFont;
+	NSInteger googlePlusConnectionDone;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;

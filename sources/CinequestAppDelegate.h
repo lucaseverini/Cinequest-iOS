@@ -33,7 +33,7 @@
 #define SHORT_PROGRAM_SECTION   0
 #define SCHEDULE_SECTION        1
 #define SOCIAL_MEDIA_SECTION	2
-#define TICKET_INFO_SECTION     3
+#define ACTION_SECTION			3
 
 #define TICKET_LINE @"telprompt://1-408-295-3378"
 
@@ -49,9 +49,8 @@
 #define NETWORK_CONNECTION_WIFI  1
 #define NETWORK_CONNECTION_PHONE 2
 
-// #define GOOGLEPLUS_CLIENTID	@"452265719636-qbqmhro0t3j9jip1npl69a3er7biidd2.apps.googleusercontent.com";
-// #define GOOGLEPLUS_CLIENTID	@"470208679525-9nYBufiT7puYS3jIkOe49Rv6.apps.googleusercontent.com";
-#define GOOGLEPLUS_CLIENTID	@"452265719636-qbqmhro0t3j9jip1npl69a3er7biidd2.apps.googleusercontent.com";
+// #define GOOGLEPLUS_CLIENTID	@"470208679525-9nYBufiT7puYS3jIkOe49Rv6.apps.googleusercontent.com";	// org.cinequest
+#define GOOGLEPLUS_CLIENTID	@"452265719636-qbqmhro0t3j9jip1npl69a3er7biidd2.apps.googleusercontent.com"; // com.google.GooglePlusPlatformSample
 
 #define appDelegate ((CinequestAppDelegate*)[[UIApplication sharedApplication] delegate])
 #define app [UIApplication sharedApplication]

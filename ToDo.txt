@@ -14,3 +14,8 @@
 11) To implement points 9 and 10 the parsing of main xml feed and film class must be changed completely.
 12) Add CrashLytics framework to help Cinequest people to track problems with the app.
 13) Implementing a shell script to build app automatically.
+14) Up to 3 lines for the title in Forums list 
+
+Bugs: 
+1) Film schedule doesn't update from detail view
+2) Schedule deletion in MySchedule doesn't work

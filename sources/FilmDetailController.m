@@ -18,9 +18,14 @@
 #import "GPlusDialogView.h"
 #import "GPlusDialogViewController.h"
 
+
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
 static char *const kAssociatedScheduleKey = "Schedule";
+static NSString *kShortProgCellID = @"ShortProgCell";
+static NSString *kScheduleCellID = @"ScheduleCell";
+static NSString *kSocialMediaCellID = @"SocialMediaCell";
+static NSString *kActionsCellID	= @"ActionsCell";
 
 
 @implementation NSString (GTMNSStringURLArgumentsAdditions)
@@ -214,10 +219,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	switch (section)
 	{
-		default:
-			return 1;
-			break;
-
 		case SHORT_PROGRAM_SECTION:
 			return [[film shortItems] count];
 			break;
@@ -230,10 +231,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			return 1;
 			break;
 			
-		case TICKET_INFO_SECTION:
+		case ACTION_SECTION:
 			return 1;
 			break;
 	}
+	
+	return 0;
 }
 
 #pragma mark -
@@ -241,31 +244,31 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
-	NSString *answer = nil;
+	NSString *title = nil;
 	
 	switch(section)
 	{
 		case SHORT_PROGRAM_SECTION:
 			if([[film shortItems] count] > 0)
 			{
-				answer = @"Short Programs";
+				title = @"Short Programs";
 			}
 			break;
 			
 		case SCHEDULE_SECTION:
-			answer = @"Schedules";
+			title = @"Schedule";
 			break;
 			
 		case SOCIAL_MEDIA_SECTION:
-			answer = @"Share Film Detail";
+			title = @"Share Film Detail";
 			break;
 			
-		case TICKET_INFO_SECTION:
-			answer = @"Information & Ticket";
+		case ACTION_SECTION:
+			title = @"Information & Ticket";
 			break;
 	}
 	
-    return answer;
+    return title;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -300,7 +303,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			return 70.0;
 			break;
 			
-		case TICKET_INFO_SECTION:
+		case ACTION_SECTION:
 			return 70.0;
 			break;
 			
@@ -312,11 +315,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *ShortProgCellID	= @"ShortProgCell";
-	static NSString *ScheduleCellID		= @"ScheduleCell";
-	static NSString *FacebookIdentifier = @"FBCell";
-	static NSString *ActionsIdentifier	= @"ActCell";
-	
 	UITableViewCell *cell = nil;
 	NSInteger section = [indexPath section];
 	
@@ -329,10 +327,10 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			Film *shortFilm = [[film shortItems] objectAtIndex:row];
 			assert(shortFilm);
 
-			cell = [tableView dequeueReusableCellWithIdentifier:ShortProgCellID];
+			cell = [tableView dequeueReusableCellWithIdentifier:kShortProgCellID];
 			if (cell == nil)
 			{
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ShortProgCellID];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kShortProgCellID];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			}
 			else
@@ -379,13 +377,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			UILabel *venueLabel = nil;
 			UIButton *calButton = nil;
 			UIButton *mapsButton = nil;
-			
 			UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
 
-			cell = [tableView dequeueReusableCellWithIdentifier:ScheduleCellID];
+			cell = [tableView dequeueReusableCellWithIdentifier:kScheduleCellID];
 			if (cell == nil)
 			{
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ScheduleCellID];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kScheduleCellID];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
 				timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(52.0, 4.0, 250.0, 20.0)];
@@ -426,15 +423,15 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		
 		case SOCIAL_MEDIA_SECTION:
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:FacebookIdentifier];
+			cell = [tableView dequeueReusableCellWithIdentifier:kSocialMediaCellID];
 			if (cell == nil)
 			{
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FacebookIdentifier];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kSocialMediaCellID];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
                 UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
                 fbButton.frame = CGRectMake(20.0, 6.0, 40.0, 40.0);
-                [fbButton addTarget:self action:@selector(pressToShareToFacebook:) forControlEvents:UIControlEventTouchDown];
+                [fbButton addTarget:self action:@selector(shareToFacebook:) forControlEvents:UIControlEventTouchDown];
                 [fbButton setImage:[UIImage imageNamed:@"facebook.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:fbButton];
                 
@@ -446,7 +443,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
                 
                 UIButton *twButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				twButton.frame = CGRectMake(80.0, 6.0, 40.0, 40.0);
-				[twButton addTarget:self action:@selector(pressToShareToTwitter:) forControlEvents:UIControlEventTouchDown];
+				[twButton addTarget:self action:@selector(shareToTwitter:) forControlEvents:UIControlEventTouchDown];
                 [twButton setImage:[UIImage imageNamed:@"twitter.png"] forState:UIControlStateNormal];
                 [cell.contentView addSubview:twButton];
 
@@ -496,12 +493,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 		}
 			
-		case TICKET_INFO_SECTION:
+		case ACTION_SECTION:
 		{
-			cell = [tableView dequeueReusableCellWithIdentifier:ActionsIdentifier];
+			cell = [tableView dequeueReusableCellWithIdentifier:kActionsCellID];
 			if (cell == nil)
 			{
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ActionsIdentifier];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kActionsCellID];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
 				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -553,6 +550,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			break;
 		}
 	}
+}
+
+- (void) showShortFilmDetails:(Film*)shortFilm
+{
+	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Short Film" andId:shortFilm.ID];
+	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 
 #pragma mark -
@@ -737,7 +740,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 #pragma mark -
 #pragma mark Social Media Sharing integration
 
-- (IBAction) pressToShareToFacebook:(id)sender
+- (IBAction) shareToFacebook:(id)sender
 {
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void)
@@ -772,7 +775,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
     }
 }
 
-- (IBAction) pressToShareToTwitter:(id)sender
+- (IBAction) shareToTwitter:(id)sender
 {
 	// [[GPPSignIn sharedInstance] signOut];
 	//  return;
@@ -886,12 +889,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	GPlusDialogView *dialogView = [[GPlusDialogView alloc] initWithContent:navController];
 	
     [dialogView show];
-}
-
-- (void) showShortFilmDetails:(Film*)shortFilm
-{
-	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Short Film" andId:shortFilm.ID];
-	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 
 @end
