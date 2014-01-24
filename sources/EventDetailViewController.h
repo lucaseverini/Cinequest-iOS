@@ -7,6 +7,7 @@
 //
 
 
+@class Special;
 @class Schedule;
 @class CinequestAppDelegate;
 
@@ -14,8 +15,7 @@
 {
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
-	Schedule *myData;
-	NSString *eventId;
+	NSString *eventName;
 	NSString *infoLink;
 	NSMutableDictionary *dataDictionary;
 	BOOL showNewsDetail;
@@ -30,8 +30,9 @@
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) IBOutlet UITableView *detailsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) Special *event;
 
 - (id) initWithNews:(NSDictionary*)news;
-- (id) initWithEvent:(NSString*)name andDataObject:(id)dataObject andId:(NSString*)eventID;
+- (id) initWithTitle:(NSString*)title andId:(NSString*)Id;
 
 @end

@@ -10,6 +10,7 @@
 #import "CinequestAppDelegate.h"
 #import "DDXML.h"
 #import "Schedule.h"
+#import "Special.h"
 #import "DataProvider.h"
 #import "MapViewController.h"
 #import "GPlusDialogView.h"
@@ -17,8 +18,8 @@
 
 
 #define web_news @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
-#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p>%@</p>"
 #define web_paragraph @"<p>%@</p>"
+#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
 static NSString *kScheduleCellID = @"ScheduleCell";
 static NSString *kSocialMediaCellID = @"SocialMediaCell";
@@ -30,6 +31,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 @synthesize detailsTableView;
 @synthesize webView;
 @synthesize activityIndicator;
+@synthesize event;
 
 - (void) didReceiveMemoryWarning
 {
@@ -52,25 +54,22 @@ static NSString *kActionsCellID	= @"ActionsCell";
     return self;
 }
 
-- (id) initWithEvent:(NSString*)name andDataObject:(Schedule*)dataObject andId:(NSString*)eventID;
+- (id) initWithTitle:(NSString*)title andId:(NSString*)Id
 {
 	self = [super init];
 	if(self != nil)
 	{
+		delegate = appDelegate;
+		mySchedule = delegate.mySchedule;
+		
+		self.navigationItem.title = title;
+		
+		event = [delegate.festival getEventForId:Id];
+
 		showEventDetail = YES;
-		
-		eventId = eventID;
-		dataDictionary = [[NSMutableDictionary  alloc] init];
-		
-		myData = [[Schedule alloc] init];
-		myData.ID = dataObject.ID;
-		myData.title = dataObject.title;
-		myData.itemID = dataObject.itemID;
-		
-		infoLink = [NSString stringWithFormat:@"http://mobile.cinequest.org/event_view.php?eid=%@", myData.itemID];
-    }
+	}
 	
-    return self;
+	return self;
 }
 
 - (void) viewDidLoad
@@ -112,9 +111,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	{
 		[self performSelectorOnMainThread:@selector(parseNewsData) withObject:nil waitUntilDone:NO];
 	}
-	else if(showEventDetail)
+	else
 	{
-		[self performSelectorOnMainThread:@selector(parseEventData) withObject:nil waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
 	}
 	
 	[self.detailsTableView reloadData];
@@ -140,100 +139,15 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	[self.webView loadHTMLString:weba baseURL:nil];
 }
 
-- (void) parseEventData
+
+- (void) loadData
 {
-	NSData *data = [[appDelegate dataProvider] eventDetail:eventId];
+	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[event imageURL]];
 	
-	DDXMLDocument *xmlDocument = [[DDXMLDocument alloc] initWithData:data options:0 error:nil];
-	DDXMLNode *rootElement = [xmlDocument rootElement];
-	//NSLog(@"%d",[rootElement childCount]);
-	
-	for (int i=0;i<[rootElement childCount]; i++)
-	{
-		DDXMLNode *element = [rootElement childAtIndex:i];
-		NSString *elementName = [element name];
-		//NSLog(@"elementName: %@",elementName);
-		if ([elementName isEqualToString:@"title"])
-		{
-			NSString *theTitle = [element stringValue];
-			[dataDictionary setObject:theTitle forKey:@"Title"];
-			continue;
-		}
-		if ([elementName isEqualToString:@"schedules"])
-		{
-			NSMutableArray *schedules	= [[NSMutableArray alloc] init];
-			for (int j=0;j<[element childCount]; j++)
-			{
-				DDXMLElement *scheduleNode = (DDXMLElement*)[element childAtIndex:j];
-				if([[scheduleNode name] isEqualToString:@"schedule"])
-				{
-					NSDictionary *atts = [scheduleNode attributesAsDictionary];
-					
-					NSString *ID			= [atts objectForKey:@"id"];
-					NSString *prg_item_id	= [atts objectForKey:@"program_item_id"];
-					NSString *start_time	= [atts objectForKey:@"start_time"];
-					NSString *end_time		= [atts objectForKey:@"end_time"];
-					NSString *venue			= [atts objectForKey:@"venue"];
-					
-					Schedule *event = [[Schedule alloc] init];
-					event.title		= [dataDictionary objectForKey:@"Title"];
-					event.ID		= ID;
-					event.itemID	= prg_item_id;
-					event.type		= @"event";
-					event.venue		= venue;
-					
-					//Start Time
-					NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
-					[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-					NSDate *formatterDate = [inputFormatter dateFromString:start_time];
-					event.startDate = formatterDate;
-					[inputFormatter setDateFormat:@"hh:mm a"];
-					event.startTime = [inputFormatter stringFromDate:formatterDate];
-					//Date
-					[inputFormatter setDateFormat:@"EEE, MMM d"];
-					event.dateString = [inputFormatter stringFromDate:formatterDate];
-					
-					//End Time
-					[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-					formatterDate = [inputFormatter dateFromString:end_time];
-					event.endDate = formatterDate;
-					[inputFormatter setDateFormat:@"hh:mm a"];
-					event.endTime = [inputFormatter stringFromDate:formatterDate];
-					
-					[schedules addObject:event];
-				}
-			}
-			
-			[dataDictionary setObject:schedules forKey:@"Schedules"];
-			continue;
-		}
-		
-		if ([elementName isEqualToString:@"description"] 
-			&& ![[element stringValue] isEqualToString:@""])
-		{
-			NSString *description = [element stringValue];
-			[dataDictionary setObject:description forKey:@"Description"];
-			continue;
-		}
-		
-		if ([elementName isEqualToString:@"film"])
-		{
-			for (int j=0; j<[element childCount]; j++)
-			{
-				DDXMLNode *childOfElement = [element childAtIndex:j];
-				if ([[childOfElement name] isEqualToString:@"description"])
-				{
-					NSString *description = [childOfElement stringValue];
-					[dataDictionary setObject:description forKey:@"Description"];
-				}
-			}
-		}
-	}
-	
-	NSString *weba = [NSString stringWithFormat:web, [dataDictionary objectForKey:@"Title"], [dataDictionary objectForKey:@"Description"]];	
+	NSString *weba = [NSString stringWithFormat:web, [event name], cachedImage, [event description]];
 	weba = [self htmlEntityDecode:weba]; // Render HTML properly
 	
-	[self.webView loadHTMLString:weba baseURL:nil];
+	[webView loadHTMLString:weba baseURL:nil];
 }
 
 #pragma mark -
@@ -305,7 +219,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	if (addedCount > 0) 
 	{
 		alert = [[UIAlertView alloc] initWithTitle:@"Attention!"
-											message:[NSString stringWithFormat:@"%@ is added to your schedule.",myData.title]
+											message:[NSString stringWithFormat:@"%@ is added to your schedule.",eventName]
 											delegate:nil
 											cancelButtonTitle:@"OK"
 											otherButtonTitles:nil];
@@ -444,7 +358,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 		NSInteger row = [indexPath row];
 		
 		// get all schedules
-		NSMutableArray *schedules = [dataDictionary objectForKey:@"Schedules"];
+		NSMutableArray *schedules = [event schedules];
 		Schedule *schedule = [schedules objectAtIndex:row];
 		
 		NSUInteger count = [mySchedule count];
@@ -705,9 +619,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
         controller.mailComposeDelegate = self;
 		
         NSString *friendlyMessage = @"Hey,\nI found an interesting event from Cinequest festival.\nCheck it out!";
-        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, myData.title, infoLink];
+        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, eventName, infoLink];
         
-		[controller setSubject:myData.title];
+		[controller setSubject:eventName];
         [controller setMessageBody:messageBody isHTML:NO];
         
         delegate.isPresentingModalView = YES;
@@ -743,11 +657,11 @@ static NSString *kActionsCellID	= @"ActionsCell";
         controller.messageComposeDelegate = self;
 		
         NSString *friendlyMessage = @"Hey,\nI found an interesting event from Cinequest festival.\nCheck it out!";
-        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, myData.title, infoLink];
+        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, eventName, infoLink];
         
 		if([controller respondsToSelector:@selector(setSubject:)])
 		{
-			[controller setSubject:myData.title];
+			[controller setSubject:eventName];
 		}
 		
         [controller setBody:messageBody];
@@ -808,7 +722,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 					   NSLog(@"%@", subview3.subviews);
 				   });
     
-	NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", myData.title, infoLink];
+	NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", eventName, infoLink];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
@@ -831,7 +745,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) shareToTwitter:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", myData.title, infoLink];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", eventName, infoLink];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
@@ -853,7 +767,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) shareToGooglePlus:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", myData.title, infoLink];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", eventName, infoLink];
 	
 	googlePlusConnectionDone = 0;
 	if(![[GPPSignIn sharedInstance] trySilentAuthentication])

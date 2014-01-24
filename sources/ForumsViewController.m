@@ -434,17 +434,11 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	NSUInteger row = [indexPath row];
 	
 	NSString *date = [days objectAtIndex:section];
-	
 	NSMutableArray *forums = [data objectForKey:date];
-	
 	Schedule *forum = [forums objectAtIndex:row];
 
-	NSString *eventId = [NSString stringWithFormat:@"%@", forum.itemID];
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:forum.title
-																						andDataObject:forum
-																						andId:eventId];
-	[self.navigationController pushViewController:eventDetail animated:YES];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+	// EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:@"Event" andId:schedule.itemID];
+	// [self.navigationController pushViewController:eventDetail animated:YES];
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

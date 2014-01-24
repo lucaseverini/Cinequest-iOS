@@ -363,8 +363,8 @@ static NSString *kActionsCellID	= @"ActionsCell";
 			NSMutableArray *schedules = [film schedules];
 			Schedule *schedule = [schedules objectAtIndex:row];
 						
-			NSUInteger idx, count = [mySchedule count];
-			for (idx = 0; idx < count; idx++)
+			NSUInteger count = [mySchedule count];
+			for (int idx = 0; idx < count; idx++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:idx];
 				if (obj.ID == schedule.ID)

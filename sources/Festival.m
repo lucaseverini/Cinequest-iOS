@@ -9,6 +9,7 @@
 #import "Festival.h"
 #import "Schedule.h"
 #import "Film.h"
+#import "Special.h"
 #import "ProgramItem.h"
 
 
@@ -51,7 +52,6 @@
 		schedules = [[NSMutableArray alloc] init];
 		venueLocations = [[NSMutableArray alloc] init];
 		lastChanged = @"";
-//		events = [[NSMutableArray alloc] init];
         
         forums = [[NSMutableArray alloc]  init];
         specials = [[NSMutableArray alloc] init];
@@ -81,7 +81,7 @@
     NSMutableArray *result = [[NSMutableArray alloc] init];
     for (int i = 0; i < [schedules count]; i++)
 	{
-        Schedule *schedule = (Schedule *) [schedules objectAtIndex:i];
+        Schedule *schedule = [schedules objectAtIndex:i];
         if ([schedule.startTime hasPrefix:date])
 		{
             [result addObject:schedule];
@@ -91,11 +91,25 @@
     return result;
 }
 
+- (Special *) getEventForId:(NSString *)ID
+{
+    for (int i = 0; i < [specials count]; i++)
+	{
+        Special *event = [specials objectAtIndex:i];
+        if ([event.ID isEqualToString:ID])
+		{
+            return event;
+		}
+    }
+	
+    return nil;
+}
+
 - (Film *) getFilmForId:(NSString *)ID
 {
     for (int i = 0; i < [films count]; i++)
 	{
-        Film *film = (Film *) [films objectAtIndex:i];
+        Film *film = [films objectAtIndex:i];
         if ([film.ID isEqualToString:ID])
 		{
             return film;

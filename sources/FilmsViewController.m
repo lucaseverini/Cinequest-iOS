@@ -75,9 +75,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
     [self syncTableDataWithScheduler];
     
     NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@", schedule.itemID, schedule.ID, mySchedule);
-    UIButton *checkBoxButton = (UIButton*)sender;
+    UIButton *calendarButton = (UIButton*)sender;
     UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-    [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
+    [calendarButton setImage:buttonImage forState:UIControlStateNormal];
 }
 
 - (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
@@ -286,8 +286,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			Schedule *schedule = [film.schedules objectAtIndex:0];
 			
 			// check if current cell is already added to mySchedule
-			NSUInteger idx, count = [mySchedule count];
-			for(idx = 0; idx < count; idx++)
+			NSUInteger count = [mySchedule count];
+			for(int idx = 0; idx < count; idx++)
 			{
 				Schedule *obj = [mySchedule objectAtIndex:idx];
 				if(obj.ID == schedule.ID)

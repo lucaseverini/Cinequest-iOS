@@ -15,8 +15,6 @@
 
 @interface FilmDetailController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, GPPShareDelegate>
 {
-	NSUInteger filmId;
-	Schedule *myFilmData;
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
 	UIFont *titleFont;
