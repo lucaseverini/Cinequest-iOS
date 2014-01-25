@@ -10,6 +10,7 @@
 #import "Schedule.h"
 #import "Film.h"
 #import "Special.h"
+#import "Forum.h"
 #import "ProgramItem.h"
 
 
@@ -20,7 +21,6 @@
 @synthesize schedules;
 @synthesize venueLocations;
 @synthesize lastChanged;
-//@synthesize events;
 
 @synthesize forums;
 @synthesize specials;
@@ -76,12 +76,12 @@
     return self;
 }
 
-- (NSMutableArray *) getSchedulesForDay:(NSString *)date
+- (NSMutableArray*) getSchedulesForDay:(NSString *)date
 {
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    for (int i = 0; i < [schedules count]; i++)
+    NSMutableArray *result = [NSMutableArray new];
+	
+    for(Schedule *schedule in schedules)
 	{
-        Schedule *schedule = [schedules objectAtIndex:i];
         if ([schedule.startTime hasPrefix:date])
 		{
             [result addObject:schedule];
@@ -91,44 +91,54 @@
     return result;
 }
 
-- (Special *) getEventForId:(NSString *)ID
+- (Special*) getEventForId:(NSString *)ID
 {
-    for (int i = 0; i < [specials count]; i++)
+	for(Special* event in specials)
 	{
-        Special *event = [specials objectAtIndex:i];
         if ([event.ID isEqualToString:ID])
 		{
             return event;
 		}
-    }
+	}
 	
     return nil;
 }
 
-- (Film *) getFilmForId:(NSString *)ID
+- (Forum*) getForumForId:(NSString *)ID
 {
-    for (int i = 0; i < [films count]; i++)
+ 	for(Forum* forum in forums)
 	{
-        Film *film = [films objectAtIndex:i];
+        if ([forum.ID isEqualToString:ID])
+		{
+            return forum;
+		}
+	}
+	
+    return nil;
+}
+
+- (Film*) getFilmForId:(NSString *)ID
+{
+ 	for(Film* film in films)
+	{
         if ([film.ID isEqualToString:ID])
 		{
             return film;
 		}
-    }
+	}
 	
     return nil;
 }
 
-- (ProgramItem *) getProgramItemForId:(NSString *)ID
+- (ProgramItem*) getProgramItemForId:(NSString *)ID
 {
-    for (int i = 0; i < [programItems count]; i++)
+ 	for(ProgramItem* item in programItems)
 	{
-        ProgramItem *item = (ProgramItem *) [programItems objectAtIndex:i];
         if ([item.ID isEqualToString:ID])
 		{
             return item;
 		}
-    }
+	}
 	
     return nil;
 }

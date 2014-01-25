@@ -1,15 +1,15 @@
 //
-//  EventDetailViewController.m
+//  ForumDetailViewController.m
 //  CineQuest
 //
-//  Created by Luca Severini on 10/1/13.
+//  Created by Luca Severini on 1/24/14.
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import "EventDetailViewController.h"
 #import "CinequestAppDelegate.h"
+#import "ForumDetailViewController.h"
 #import "Schedule.h"
-#import "Special.h"
+#import "Forum.h"
 #import "DataProvider.h"
 #import "MapViewController.h"
 #import "GPlusDialogView.h"
@@ -23,12 +23,12 @@ static NSString *kSocialMediaCellID = @"SocialMediaCell";
 static NSString *kActionsCellID	= @"ActionsCell";
 
 
-@implementation EventDetailViewController
+@implementation ForumDetailViewController
 
 @synthesize detailTableView;
 @synthesize webView;
 @synthesize activityIndicator;
-@synthesize event;
+@synthesize forum;
 
 - (void) didReceiveMemoryWarning
 {
@@ -48,7 +48,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 		
 		self.navigationItem.title = title;
 		
-		event = [delegate.festival getEventForId:Id];
+		forum = [delegate.festival getForumForId:Id];
 	}
 	
 	return self;
@@ -96,9 +96,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (void) loadData
 {
-	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[event imageURL]];
+	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[forum imageURL]];
 	
-	NSString *weba = [NSString stringWithFormat:web, [event name], cachedImage, [event description]];
+	NSString *weba = [NSString stringWithFormat:web, [forum name], cachedImage, [forum description]];
 	weba = [self htmlEntityDecode:weba]; // Render HTML properly
 	
 	[webView loadHTMLString:weba baseURL:nil];
@@ -115,7 +115,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	
 	if(indexPath != nil)
 	{
-		NSMutableArray *schedules = [event schedules];
+		NSMutableArray *schedules = [forum schedules];
 		schedule = [schedules objectAtIndex:row];
     }
     
@@ -234,7 +234,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 			NSInteger row = [indexPath row];
 			
 			// get all schedules
-			NSMutableArray *schedules = [event schedules];
+			NSMutableArray *schedules = [forum schedules];
 			Schedule *schedule = [schedules objectAtIndex:row];
 			
 			NSUInteger count = [mySchedule count];
@@ -448,7 +448,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
     schedule.isSelected ^= YES;
     
-    //Call to Delegate to Add/Remove from Calendar
+    // Call to Delegate to Add/Remove from Calendar
     [delegate addToDeviceCalendar:schedule];
     [delegate addOrRemoveFilm:schedule];
     
@@ -491,7 +491,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
         MFMailComposeViewController *controller = [MFMailComposeViewController new];
         controller.mailComposeDelegate = self;
 		
-        NSString *friendlyMessage = @"Hey,\nI found an interesting event from Cinequest festival.\nCheck it out!";
+        NSString *friendlyMessage = @"Hey,\nI found an interesting forum from Cinequest festival.\nCheck it out!";
         NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, eventName, infoLink];
         
 		[controller setSubject:eventName];
@@ -529,7 +529,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
         MFMessageComposeViewController *controller = [MFMessageComposeViewController new];
         controller.messageComposeDelegate = self;
 		
-        NSString *friendlyMessage = @"Hey,\nI found an interesting event from Cinequest festival.\nCheck it out!";
+        NSString *friendlyMessage = @"Hey,\nI found an interesting forum from Cinequest festival.\nCheck it out!";
         NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, eventName, infoLink];
         
 		if([controller respondsToSelector:@selector(setSubject:)])
@@ -595,7 +595,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 					   NSLog(@"%@", subview3.subviews);
 				   });
     
-	NSString *postString = [NSString stringWithFormat:@"I'm planning to attend the event %@\n%@", eventName, infoLink];
+	NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", eventName, infoLink];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
@@ -618,7 +618,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) shareToTwitter:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to attend the event %@\n%@", eventName, infoLink];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", eventName, infoLink];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
@@ -640,7 +640,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) shareToGooglePlus:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to attend the event %@\n%@", eventName, infoLink];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", eventName, infoLink];
 	
 	googlePlusConnectionDone = 0;
 	if(![[GPPSignIn sharedInstance] trySilentAuthentication])

@@ -19,6 +19,7 @@
 
 @property (nonatomic, strong) IBOutlet UITableView *eventsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 
 @property (nonatomic, strong) NSMutableDictionary *dateToEventsDictionary;
 @property (nonatomic, strong) NSMutableArray *sortedKeysInDateToEventsDictionary;

@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EventDetailViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NewsDetailViewController">
             <connections>
                 <outlet property="activityIndicator" destination="16" id="zt5-ZY-5pQ"/>
-                <outlet property="detailTableView" destination="4" id="Pun-PO-e9v"/>
+                <outlet property="detailTableView" destination="4" id="Da9-9p-NgW"/>
                 <outlet property="view" destination="1" id="3"/>
                 <outlet property="webView" destination="13" id="14"/>
             </connections>

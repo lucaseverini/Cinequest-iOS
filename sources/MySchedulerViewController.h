@@ -2,8 +2,8 @@
 //  MySchedulerViewController.h
 //  CineQuest
 //
-//  Created by someone on 11/5/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 @class CinequestAppDelegate;
@@ -34,6 +34,7 @@
 
 @property (nonatomic, strong) IBOutlet UITableView *scheduleTableView;
 @property (nonatomic, strong) IBOutlet UILabel *offSeasonLabel;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *password;

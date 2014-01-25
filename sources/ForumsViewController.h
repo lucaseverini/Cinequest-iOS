@@ -8,13 +8,10 @@
 
 @class CinequestAppDelegate;
 
-@interface ForumsViewController : UIViewController <UIAccelerometerDelegate>
+@interface ForumsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 {
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
-	NSMutableDictionary *backedUpData;
-	NSMutableArray *backedUpDays;
-	NSMutableArray *backedUpIndex;
     UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;    
@@ -22,11 +19,10 @@
 
 @property (nonatomic, strong) IBOutlet UITableView *forumsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 
-@property (nonatomic, strong) NSMutableArray *days;
-@property (nonatomic, strong) NSMutableArray *index;
-@property (nonatomic, strong) NSMutableDictionary *data;
-
-- (IBAction) reloadData:(id)sender;
+@property (nonatomic, strong) NSMutableDictionary *dateToForumsDictionary;
+@property (nonatomic, strong) NSMutableArray *sortedKeysInDateToForumsDictionary;
+@property (nonatomic, strong) NSMutableArray *sortedIndexesInDateToForumsDictionary;
 
 @end

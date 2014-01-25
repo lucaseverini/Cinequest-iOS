@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
-#import "NewsViewController.h"
 #import "CinequestAppDelegate.h"
-#import "EventDetailViewController.h"
+#import "NewsViewController.h"
+#import "NewsDetailViewController.h"
 #import "DDXML.h"
 #import "DataProvider.h"
 
@@ -17,6 +17,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 @implementation NewsViewController
 
+@synthesize switchTitle;
 @synthesize newsTableView;
 @synthesize activityIndicator;
 @synthesize news;
@@ -34,23 +35,19 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 		
 	news = [NSMutableArray new];
 
-	self.newsTableView.tableHeaderView = nil;
-		
-	[self performSelectorOnMainThread:@selector(startParsingXML) withObject:nil waitUntilDone:NO];
+	newsTableView.tableHeaderView = nil;
+	newsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
-	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle insertSegmentWithTitle:@"News" atIndex:0 animated:NO];
-	[switchTitle setSelectedSegmentIndex:0];
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
-	self.navigationItem.titleView = switchTitle;
+	[switchTitle removeSegmentAtIndex:1 animated:NO];
+	
+	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear: animated];
-	
-	activityIndicator.hidden = YES;
 	
 	if(tabBarAnimation)
 	{
@@ -79,7 +76,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 #pragma mark -
 #pragma mark - Private Methods
 
-- (void) startParsingXML
+- (void) loadData
 {
 	[news removeAllObjects];
 	
@@ -232,9 +229,9 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSUInteger row = [indexPath row];
-	NSMutableDictionary *newsData = [news objectAtIndex:row];
+	NSDictionary *newsData = [news objectAtIndex:row];
 
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithNews:newsData];
+	NewsDetailViewController *eventDetail = [[NewsDetailViewController alloc] initWithTitle:@"News" andNews:newsData];
 	[self.navigationController pushViewController:eventDetail animated:YES];
 	
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -256,7 +253,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-	return 0.01f;		// This will create a "invisible" footer
+	return 0.01;		// This creates a "invisible" footer
 }
 
 @end

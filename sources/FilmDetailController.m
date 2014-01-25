@@ -57,7 +57,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 @implementation FilmDetailController
 
-@synthesize detailsTableView;
+@synthesize detailTableView;
 @synthesize webView;
 @synthesize activityIndicator;
 @synthesize film;
@@ -96,7 +96,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	[GPPSignIn sharedInstance].shouldFetchGoogleUserID = YES;
 	[GPPSignIn sharedInstance].scopes = @[ kGTLAuthScopePlusLogin ];
 
-	self.detailsTableView.hidden = YES;
+	self.detailTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
     
 	titleFont = [UIFont systemFontOfSize:14.0];
@@ -113,13 +113,13 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	
 	self.activityIndicator.color = [UIColor grayColor];
     
-	[(UIWebView*)self.detailsTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
+	[(UIWebView*)self.detailTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
 
 	[self.activityIndicator startAnimating];
 
     [self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
 	
-	[self.detailsTableView reloadData];
+	[self.detailTableView reloadData];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -131,7 +131,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 {
 	[super viewWillAppear:animated];
 			
-    [self.detailsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.detailTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void) loadData
@@ -193,19 +193,43 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	[webView loadHTMLString:weba baseURL:nil];
 }
 
+- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
+{
+    NSSet *touches = [touchEvent allTouches];
+	UITouch *touch = [touches anyObject];
+	CGPoint currentTouchPosition = [touch locationInView:self.detailTableView];
+	NSIndexPath *indexPath = [self.detailTableView indexPathForRowAtPoint:currentTouchPosition];
+	NSInteger row = [indexPath row];
+	Schedule *schedule = nil;
+	
+	if(indexPath != nil)
+	{
+		NSMutableArray *schedules = [film schedules];
+		schedule = [schedules objectAtIndex:row];
+    }
+    
+    return schedule;
+}
+
+- (void) showShortFilmDetails:(Film*)shortFilm
+{
+	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Short Film" andId:shortFilm.ID];
+	[[self navigationController] pushViewController:filmDetail animated:YES];
+}
+
 #pragma mark -
 #pragma mark UIWebView delegate
 
 - (void) webViewDidFinishLoad:(UIWebView *)_webView
 {
 	// Updates the WebView and force it to redisplay correctly 
-	[self.detailsTableView.tableHeaderView sizeToFit];
-	[self.detailsTableView setTableHeaderView:self.detailsTableView.tableHeaderView];
+	[self.detailTableView.tableHeaderView sizeToFit];
+	[self.detailTableView setTableHeaderView:self.detailTableView.tableHeaderView];
 
 	[self.activityIndicator stopAnimating];
 	
 	self.view.userInteractionEnabled = YES;
-	self.detailsTableView.hidden = NO;
+	self.detailTableView.hidden = NO;
 }
 
 #pragma mark - UITableView Datasource
@@ -286,11 +310,11 @@ static NSString *kActionsCellID	= @"ActionsCell";
 			CGSize size = [shortFilm.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 			if(size.width >= 292.0)
 			{
-				return 42.0;
+				return 48.0;
 			}
 			else
 			{
-				return 26.0;
+				return 30.0;
 			}
 		}
 			break;
@@ -345,7 +369,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				titleNumLines = 2;
 			}
 			
-			UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleNumLines == 1 ? CGRectMake(16.0, 4.0, 292.0, 18.0) : CGRectMake(16.0, 4.0, 292.0, 34.0)];
+			UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleNumLines == 1 ? CGRectMake(16.0, 6.0, 292.0, 18.0) : CGRectMake(16.0, 6.0, 292.0, 34.0)];
 			titleLabel.tag = CELL_TITLE_LABEL_TAG;
 			[titleLabel setNumberOfLines:titleNumLines];
 			titleLabel.font = titleFont;
@@ -552,10 +576,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	}
 }
 
-- (void) showShortFilmDetails:(Film*)shortFilm
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Short Film" andId:shortFilm.ID];
-	[[self navigationController] pushViewController:filmDetail animated:YES];
+	return 0.01;		// This creates a "invisible" footer
 }
 
 #pragma mark -
@@ -595,9 +618,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
     [delegate addOrRemoveFilm:schedule];
     
     NSLog(@"Schedule:ID+ItemID:%@-%@",schedule.ID,schedule.itemID);
-    UIButton *checkBoxButton = (UIButton*)sender;
+    UIButton *calendarButton = (UIButton*)sender;
     UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-    [checkBoxButton setImage:buttonImage forState:UIControlStateNormal];
+    [calendarButton setImage:buttonImage forState:UIControlStateNormal];
 }
 
 #pragma mark -
@@ -614,23 +637,6 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	{
 		NSLog(@"Schedule is nil!!");
 	}
-}
-
-- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
-{
-    NSSet *touches = [touchEvent allTouches];
-	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.detailsTableView];
-	NSIndexPath *indexPath = [self.detailsTableView indexPathForRowAtPoint:currentTouchPosition];
-	NSInteger row = [indexPath row];
-	Schedule *schedule = nil;
-	if(indexPath != nil)
-	{
-		NSMutableArray *schedules = [film schedules];
-		schedule = [schedules objectAtIndex:row];
-    }
-    
-    return schedule;
 }
 
 - (void) showMapWithVenue:(Venue*)venue

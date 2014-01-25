@@ -621,6 +621,14 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 	NSData *queryData = [NSData dataWithNetURLShowingActivity:[NSURL URLWithString:MAIN_FEED]];
 	if(queryData != nil)
 	{
+		// Temporary set the feed data for Debug
+		if(queryData.length < 1024)
+		{
+			NSString* filePath = [[NSBundle mainBundle] pathForResource:@"Fake_MainFeed" ofType:@"xml"];
+			queryData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:filePath]];
+			return queryData;
+		}
+		
 		[queryData writeToURL:fileUrl atomically:YES];
 		
 		return queryData;

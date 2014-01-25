@@ -25,7 +25,7 @@
 	BOOL statusBarHidden;
 }
 
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 @property (nonatomic, strong) IBOutlet UITableView *filmsTableView;
 @property (nonatomic, strong) IBOutlet UISearchBar *filmSearchBar;

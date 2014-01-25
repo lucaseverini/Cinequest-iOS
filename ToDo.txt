@@ -4,8 +4,6 @@
 3) The bottom bar must be gray like the top navigation bar.
 4) The icons of the bottom bar must be black. Red when selected.
 5) The left/right buttons on the top navigation bar must be red. Title stays black.
-6) Segmented control in film tab must be red.
-7) Search button "cancel" must be red too.
 8) The index on the far right of film/event/forum/schedule list must be red.
 9) For film children (the short films) they must be showed only in detail of their parent film in a section before the Schedules.
 	When one of those short films is selected its detail must be showed like for their parents on another view.

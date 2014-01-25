@@ -3,7 +3,7 @@
 //  CineQuest
 //
 //  Created by harold lee on 11/11/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "LogInViewController.h"

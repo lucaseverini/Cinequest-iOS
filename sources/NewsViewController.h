@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) IBOutlet UITableView *newsTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *switchTitle;
 
 @property (nonatomic, strong) NSMutableArray *news;
 

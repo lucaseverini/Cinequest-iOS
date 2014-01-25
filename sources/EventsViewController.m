@@ -19,6 +19,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 
 @implementation EventsViewController
 
+@synthesize switchTitle;
 @synthesize eventsTableView;
 @synthesize activityIndicator;
 @synthesize dateToEventsDictionary;
@@ -48,12 +49,12 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
   
-	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle insertSegmentWithTitle:@"Events" atIndex:0 animated:NO];
-	[switchTitle setSelectedSegmentIndex:0];
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
-	self.navigationItem.titleView = switchTitle;
+	[switchTitle removeSegmentAtIndex:1 animated:NO];
+	
+	eventsTableView.tableHeaderView = nil;
+	eventsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -62,7 +63,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	
 	[self syncTableDataWithScheduler];
 	
-    [self.eventsTableView reloadData];
+    // [self.eventsTableView reloadData];
+
+#pragma message "Must Update Calendar Icons..."
 }
 
 #pragma mark -
@@ -84,8 +87,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	{
 		NSString *day = [self.sortedKeysInDateToEventsDictionary objectAtIndex:section];
 		NSMutableArray *events =  [self.dateToEventsDictionary objectForKey:day];
-		NSInteger eventsCount = [events count];
-		for (NSUInteger row = 0; row < eventsCount; row++)
+		NSInteger eventCount = [events count];
+		
+		for (NSUInteger row = 0; row < eventCount; row++)
 		{
 			NSArray *schedules = [[events objectAtIndex:row] schedules];
 			NSInteger scheduleCount = [schedules count];
@@ -105,6 +109,42 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 			}
 		}
 	}
+}
+
+- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
+{
+    Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+    schedule.isSelected ^= YES;
+    
+    // Call to Appdelegate to Add/Remove from Calendar
+    [delegate addToDeviceCalendar:schedule];
+    [delegate addOrRemoveFilm:schedule];
+    [self syncTableDataWithScheduler];
+    
+    NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@", schedule.itemID, schedule.ID, mySchedule);
+    UIButton *calendarButton = (UIButton*)sender;
+    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+    [calendarButton setImage:buttonImage forState:UIControlStateNormal];
+}
+
+- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
+{
+    NSSet *touches = [touchEvent allTouches];
+	UITouch *touch = [touches anyObject];
+	CGPoint currentTouchPosition = [touch locationInView:self.eventsTableView];
+	NSIndexPath *indexPath = [self.eventsTableView indexPathForRowAtPoint:currentTouchPosition];
+	NSInteger row = [indexPath row];
+	NSInteger section = [indexPath section];
+    Schedule *schedule = nil;
+    
+    if (indexPath != nil)
+	{
+		NSString *day = [self.sortedKeysInDateToEventsDictionary  objectAtIndex:section];
+		Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
+		schedule = [event.schedules objectAtIndex:0];
+    }
+    
+    return schedule;
 }
 
 #pragma mark -
@@ -200,51 +240,30 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	venueLabel.text = [NSString stringWithFormat:@"Venue: %@", schedule.venue];
 	
 	calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 8.0 : 24.0, 44.0, 44.0)];
+	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 12.0 : 24.0, 40.0, 40.0)];
 	[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 	
     return cell;
 }
 
-- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    Schedule *schedule = [self getItemForSender:sender event:touchEvent];
-    schedule.isSelected ^= YES;
-    
-    // Call to Appdelegate to Add/Remove from Calendar
-    [delegate addToDeviceCalendar:schedule];
-    [delegate addOrRemoveFilm:schedule];
-    [self syncTableDataWithScheduler];
-    
-    NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@", schedule.itemID, schedule.ID, mySchedule);
-    UIButton *calendarButton = (UIButton*)sender;
-    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-    [calendarButton setImage:buttonImage forState:UIControlStateNormal];
-}
-
-- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
-{
-    NSSet *touches = [touchEvent allTouches];
-	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.eventsTableView];
-	NSIndexPath *indexPath = [self.eventsTableView indexPathForRowAtPoint:currentTouchPosition];
-	NSInteger row = [indexPath row];
-	NSInteger section = [indexPath section];
-    Schedule *schedule = nil;
-    
-    if (indexPath != nil)
-	{
-		NSString *day = [self.sortedKeysInDateToEventsDictionary  objectAtIndex:section];
-		Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
-		schedule = [event.schedules objectAtIndex:0];
-    }
-    
-    return schedule;
+	return 0.01;		// This creates a "invisible" footer
 }
 
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
 	return [self.sortedKeysInDateToEventsDictionary objectAtIndex:section];
+}
+
+- (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
+{
+#pragma message "** OS bug **"
+	// Temporary fix for crash in [self.filmsTableView reloadData] usually caused by Google+-related code
+	// http://stackoverflow.com/questions/18918986/uitableview-section-index-related-crashes-under-ios-7
+	// return nil;
+	
+	return self.sortedIndexesInDateToEventsDictionary;
 }
 
 #pragma mark -

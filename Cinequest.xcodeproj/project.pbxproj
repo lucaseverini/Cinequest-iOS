@@ -64,8 +64,13 @@
 		81B12C68182B759E000D5200 /* FilmsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A517EBABEE00033D4F /* FilmsViewController.xib */; };
 		81B12C69182B759E000D5200 /* ForumsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3A617EBABEE00033D4F /* ForumsViewController.xib */; };
 		81B12C6C182B759E000D5200 /* MySchedulerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */; };
+		81B130AF189368BA00352959 /* Fake_MainFeed.xml in Resources */ = {isa = PBXBuildFile; fileRef = 81B130AE189368BA00352959 /* Fake_MainFeed.xml */; };
 		81B32C91183C2AF9006D2D78 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81B32C90183C2AF9006D2D78 /* Default-568h@2x.png */; };
 		81B32C99183C2DF8006D2D78 /* logoSJSU.png in Resources */ = {isa = PBXBuildFile; fileRef = 81B32C98183C2DF8006D2D78 /* logoSJSU.png */; };
+		81B38F25189323590047AEFE /* NewsDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B38F24189323590047AEFE /* NewsDetailViewController.xib */; };
+		81B38F281893239A0047AEFE /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B38F271893239A0047AEFE /* NewsDetailViewController.m */; };
+		81B38F2A18934C7E0047AEFE /* ForumDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B38F2918934C7E0047AEFE /* ForumDetailViewController.xib */; };
+		81B38F2D18934D180047AEFE /* ForumDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B38F2C18934D180047AEFE /* ForumDetailViewController.m */; };
 		81B7C4A8184D1358001F4B16 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B7C4A6184D1358001F4B16 /* MapViewController.m */; };
 		81B7C4A9184D1358001F4B16 /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B7C4A7184D1358001F4B16 /* MapViewController.xib */; };
 		81C02F24188F040B0019227F /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C02F23188F040B0019227F /* AddressBook.framework */; };
@@ -223,8 +228,15 @@
 		81A496401845A50C0025CCBB /* mail@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mail@2x.png"; path = "images/mail@2x.png"; sourceTree = SOURCE_ROOT; };
 		81A496411845A50C0025CCBB /* maps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = maps.png; path = images/maps.png; sourceTree = SOURCE_ROOT; };
 		81A496421845A50C0025CCBB /* maps@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "maps@2x.png"; path = "images/maps@2x.png"; sourceTree = SOURCE_ROOT; };
+		81B130AE189368BA00352959 /* Fake_MainFeed.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Fake_MainFeed.xml; sourceTree = "<group>"; };
 		81B32C90183C2AF9006D2D78 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "images/Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
 		81B32C98183C2DF8006D2D78 /* logoSJSU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoSJSU.png; path = images/logoSJSU.png; sourceTree = SOURCE_ROOT; };
+		81B38F24189323590047AEFE /* NewsDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NewsDetailViewController.xib; path = resources/NewsDetailViewController.xib; sourceTree = SOURCE_ROOT; };
+		81B38F261893239A0047AEFE /* NewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewsDetailViewController.h; path = sources/NewsDetailViewController.h; sourceTree = SOURCE_ROOT; };
+		81B38F271893239A0047AEFE /* NewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewsDetailViewController.m; path = sources/NewsDetailViewController.m; sourceTree = SOURCE_ROOT; };
+		81B38F2918934C7E0047AEFE /* ForumDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ForumDetailViewController.xib; path = resources/ForumDetailViewController.xib; sourceTree = SOURCE_ROOT; };
+		81B38F2B18934D180047AEFE /* ForumDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForumDetailViewController.h; path = sources/ForumDetailViewController.h; sourceTree = SOURCE_ROOT; };
+		81B38F2C18934D180047AEFE /* ForumDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForumDetailViewController.m; path = sources/ForumDetailViewController.m; sourceTree = SOURCE_ROOT; };
 		81B7C4A5184D1358001F4B16 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapViewController.h; path = sources/MapViewController.h; sourceTree = SOURCE_ROOT; };
 		81B7C4A6184D1358001F4B16 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapViewController.m; path = sources/MapViewController.m; sourceTree = SOURCE_ROOT; };
 		81B7C4A7184D1358001F4B16 /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MapViewController.xib; path = sources/MapViewController.xib; sourceTree = SOURCE_ROOT; };
@@ -447,6 +459,14 @@
 			path = Cinequest;
 			sourceTree = "<group>";
 		};
+		81B130AD1893689600352959 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				81B130AE189368BA00352959 /* Fake_MainFeed.xml */,
+			);
+			name = Debug;
+			sourceTree = "<group>";
+		};
 		81C52B82182B62D200D2F55D /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
@@ -464,6 +484,7 @@
 				81C8B3A017EBABAA00033D4F /* Resources */,
 				81C8B3B917EBAC1600033D4F /* Images */,
 				81745A8717EBAFAE008D2C2C /* Supporting Files */,
+				81B130AD1893689600352959 /* Debug */,
 				8199E788182F623F001BCC36 /* Unused */,
 				C271393B1828E8C900BF8DCB /* List of Shows Tests */,
 				8149DFC117EBB3280092F8F9 /* Libraries */,
@@ -513,11 +534,13 @@
 				81D1EC3D182B8990003DD8BB /* StartupViewController.xib */,
 				81C8B3A917EBABEE00033D4F /* MainWindow.xib */,
 				81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */,
+				81B38F24189323590047AEFE /* NewsDetailViewController.xib */,
 				81C8B3A517EBABEE00033D4F /* FilmsViewController.xib */,
 				81C8B3A417EBABEE00033D4F /* FilmDetailController.xib */,
 				81C8B3A317EBABEE00033D4F /* EventsViewController.xib */,
 				81C8B3A217EBABEE00033D4F /* EventDetailViewController.xib */,
 				81C8B3A617EBABEE00033D4F /* ForumsViewController.xib */,
+				81B38F2918934C7E0047AEFE /* ForumDetailViewController.xib */,
 				81C8B3AA17EBABEE00033D4F /* MySchedulerViewController.xib */,
 				81B7C4A7184D1358001F4B16 /* MapViewController.xib */,
 				81C6BA4A188F641200BCEA26 /* GPlusDialogViewController.xib */,
@@ -599,20 +622,24 @@
 				81C52B82182B62D200D2F55D /* Reachability */,
 				81D1EC38182B892B003DD8BB /* StartupViewController.h */,
 				81D1EC39182B892B003DD8BB /* StartupViewController.m */,
-				81745A6117EBAEED008D2C2C /* EventsViewController.h */,
-				81745A6217EBAEED008D2C2C /* EventsViewController.m */,
-				81745A5F17EBAEED008D2C2C /* EventDetailViewController.h */,
-				81745A6017EBAEED008D2C2C /* EventDetailViewController.m */,
+				81745A6F17EBAEED008D2C2C /* NewsViewController.h */,
+				81745A7017EBAEED008D2C2C /* NewsViewController.m */,
+				81B38F261893239A0047AEFE /* NewsDetailViewController.h */,
+				81B38F271893239A0047AEFE /* NewsDetailViewController.m */,
 				81745A6517EBAEED008D2C2C /* FilmsViewController.h */,
 				81745A6617EBAEED008D2C2C /* FilmsViewController.m */,
 				81745A6317EBAEED008D2C2C /* FilmDetailController.h */,
 				81745A6417EBAEED008D2C2C /* FilmDetailController.m */,
+				81745A6117EBAEED008D2C2C /* EventsViewController.h */,
+				81745A6217EBAEED008D2C2C /* EventsViewController.m */,
+				81745A5F17EBAEED008D2C2C /* EventDetailViewController.h */,
+				81745A6017EBAEED008D2C2C /* EventDetailViewController.m */,
 				81745A6717EBAEED008D2C2C /* ForumsViewController.h */,
 				81745A6817EBAEED008D2C2C /* ForumsViewController.m */,
+				81B38F2B18934D180047AEFE /* ForumDetailViewController.h */,
+				81B38F2C18934D180047AEFE /* ForumDetailViewController.m */,
 				81745A6D17EBAEED008D2C2C /* MySchedulerViewController.h */,
 				81745A6E17EBAEED008D2C2C /* MySchedulerViewController.m */,
-				81745A6F17EBAEED008D2C2C /* NewsViewController.h */,
-				81745A7017EBAEED008D2C2C /* NewsViewController.m */,
 				81B7C4A5184D1358001F4B16 /* MapViewController.h */,
 				81B7C4A6184D1358001F4B16 /* MapViewController.m */,
 				81C6BA46188F641200BCEA26 /* GPlusDialogView.h */,
@@ -802,6 +829,7 @@
 				81C8B3B417EBABEE00033D4F /* MainWindow.xib in Resources */,
 				81C8B3B617EBABEE00033D4F /* NewsViewController.xib in Resources */,
 				81A4964B1845A50C0025CCBB /* mail.png in Resources */,
+				81B38F25189323590047AEFE /* NewsDetailViewController.xib in Resources */,
 				81E1963B18530E9800C1A89D /* phone.png in Resources */,
 				816C4AB3183C0B4C00BE896C /* iphone_launch_640_960.png in Resources */,
 				81D6705C183E19D8007E9B99 /* iphone_icon_29.png in Resources */,
@@ -836,6 +864,7 @@
 				8163D494185C499A0035F67F /* Schedule_black.png in Resources */,
 				81A496501845A50C0025CCBB /* maps@2x.png in Resources */,
 				81A4964E1845A50C0025CCBB /* mail@2x.png in Resources */,
+				81B38F2A18934C7E0047AEFE /* ForumDetailViewController.xib in Resources */,
 				93E4E0A7182BB1A200515A84 /* cal_unselected@2x.png in Resources */,
 				8163D49C185C49BA0035F67F /* Events_black.png in Resources */,
 				81E1964018530F9C00C1A89D /* browser@2x.png in Resources */,
@@ -849,6 +878,7 @@
 				8163D492185C499A0035F67F /* News_black.png in Resources */,
 				813D3AE118505911004667D5 /* message.png in Resources */,
 				81A4964F1845A50C0025CCBB /* maps.png in Resources */,
+				81B130AF189368BA00352959 /* Fake_MainFeed.xml in Resources */,
 				81B12C68182B759E000D5200 /* FilmsViewController.xib in Resources */,
 				81D67062183E19D8007E9B99 /* iphone_icon_512.jpg in Resources */,
 				81B12C69182B759E000D5200 /* ForumsViewController.xib in Resources */,
@@ -880,6 +910,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81C6BA4B188F641200BCEA26 /* GPlusDialogView.m in Sources */,
+				81B38F281893239A0047AEFE /* NewsDetailViewController.m in Sources */,
 				C2D6DC211829771E005A6897 /* Show.m in Sources */,
 				C2D6DC1A182975E5005A6897 /* Festival.m in Sources */,
 				C27BC6DB182A3734006F7D25 /* Schedule.m in Sources */,
@@ -891,6 +922,7 @@
 				C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */,
 				81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */,
 				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
+				81B38F2D18934D180047AEFE /* ForumDetailViewController.m in Sources */,
 				C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */,
 				C2B86DF71844C0350088A958 /* Special.m in Sources */,
 				C2D6DC291829B8BF005A6897 /* Film.m in Sources */,

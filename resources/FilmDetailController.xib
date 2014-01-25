@@ -8,7 +8,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FilmDetailController">
             <connections>
                 <outlet property="activityIndicator" destination="43" id="44"/>
-                <outlet property="detailsTableView" destination="5" id="Rqs-5U-LO4"/>
+                <outlet property="detailTableView" destination="5" id="qyv-mQ-fMi"/>
                 <outlet property="view" destination="1" id="3"/>
                 <outlet property="webView" destination="39" id="41"/>
             </connections>

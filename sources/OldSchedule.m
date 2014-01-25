@@ -3,7 +3,7 @@
 //  CineQuest
 //
 //  Created by Loc Phan on 10/23/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "Schedule.h"

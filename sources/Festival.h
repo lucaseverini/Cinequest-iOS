@@ -6,9 +6,11 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
+
 @class ProgramItem;
 @class Film;
 @class Special;
+@class Forum;
 
 @interface Festival : NSObject
 
@@ -46,5 +48,6 @@
 - (Film *)getFilmForId:(NSString *)ID;
 - (ProgramItem *) getProgramItemForId:(NSString *)ID;
 - (Special *) getEventForId:(NSString *)ID;
+- (Forum *) getForumForId:(NSString *)ID;
 
 @end

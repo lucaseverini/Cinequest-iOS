@@ -2,8 +2,8 @@
 //  MySchedulerViewController.m
 //  CineQuest
 //
-//  Created by someone on 11/5/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
 #import "MySchedulerViewController.h"
@@ -17,6 +17,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 @implementation MySchedulerViewController
 
+@synthesize switchTitle;
 @synthesize scheduleTableView;
 @synthesize username;
 @synthesize password;
@@ -54,6 +55,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	mySchedule = delegate.mySchedule;
     eventStore = delegate.eventStore;
     cinequestCalendar = delegate.cinequestCalendar;
+	
     [delegate populateCalendarEntries];
 	
 	// initialize variables
@@ -70,12 +72,12 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 																						   target:self
 																						   action:@selector(edit)];
 
-	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
-	[switchTitle insertSegmentWithTitle:@"My Schedule" atIndex:0 animated:NO];
-	[switchTitle setSelectedSegmentIndex:0];
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
-	self.navigationItem.titleView = switchTitle;
+	[switchTitle removeSegmentAtIndex:1 animated:NO];
+	
+	scheduleTableView.tableHeaderView = nil;
+	scheduleTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -353,6 +355,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
  	if (cell == nil)
 	{
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kScheduleCellIdentifier];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
 		titleLabel = [UILabel new];
 		titleLabel.tag = CELL_TITLE_LABEL_TAG;
@@ -400,7 +403,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
 	
 	calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-	[calendarButton setFrame:CGRectMake(11.0, titleNumLines == 1 ? 16.0 : 28.0, 32.0, 32.0)];
+	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 12.0 : 24.0, 40.0, 40.0)];
 	
     if([delegate.arrayCalendarItems containsObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]])
 	{
@@ -419,7 +422,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-//	[self launchCalendar];	
+	[self launchCalendar];	
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -439,7 +442,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		Schedule *item = [rowsData objectAtIndex:indexPath.row];
 		[rowsData removeObjectAtIndex:indexPath.row];
 		
-		// Delete the row from the data source
+		// delete the row from the data source
 		[mySchedule removeObject:item];
 		
 		// remove row from tableView
@@ -452,14 +455,15 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 			[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:YES];
 		}
         
-        //Remove Event from Calendar
+        // remove Event from Calendar
         NSDate *startDate = [item.startDate dateByAddingTimeInterval:ONE_YEAR];
         NSDate *endDate = [item.endDate dateByAddingTimeInterval:ONE_YEAR];
         NSPredicate *predicateForEvents = [eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:cinequestCalendar]];
-        //set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
+		
+        // set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
         NSArray *events_Array = [eventStore eventsMatchingPredicate: predicateForEvents];
-        //get array of events from the eventStore
-        
+		
+        // get array of events from the eventStore
         for (EKEvent *eventToCheck in events_Array)
         {
             if( [eventToCheck.title isEqualToString:item.title] )
@@ -493,6 +497,11 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	{
 		return 68.0;
 	}
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+	return 0.01;		// This creates a "invisible" footer
 }
 
 #pragma mark -
@@ -543,13 +552,9 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *components = [[NSDateComponents alloc] init];
     components.hour = 4;
-    event.startDate = [calendar dateByAddingComponents:components
-                                                toDate:[NSDate date]
-												options:0];
+    event.startDate = [calendar dateByAddingComponents:components toDate:[NSDate date] options:0];
     components.hour = 1;
-    event.endDate = [calendar dateByAddingComponents:components
-												toDate:event.startDate
-												options:0];
+    event.endDate = [calendar dateByAddingComponents:components toDate:event.startDate options:0];
     return event;
 }
 

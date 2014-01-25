@@ -2,9 +2,9 @@
 //  FilmsViewController.m
 //  CineQuest
 //
-//  Created by Luca Severini on 10/9/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
-// 
+//  Created by Luca Severini on 10/1/13.
+//  Copyright (c) 2013 San Jose State University. All rights reserved.
+//
 
 #import "FilmsViewController.h"
 #import "FilmDetailController.h"
@@ -53,7 +53,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 @synthesize switchTitle;
 @synthesize filmsTableView;
-@synthesize activity;
+@synthesize activityIndicator;
 @synthesize filmSearchBar;
 @synthesize dateToFilmsDictionary;
 @synthesize sortedKeysInDateToFilmsDictionary;
@@ -61,24 +61,55 @@ static char *const kAssociatedScheduleKey = "Schedule";
 @synthesize alphabetToFilmsDictionary;
 @synthesize sortedKeysInAlphabetToFilmsDictionary;
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - UIViewController Delegate methods
 
-- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
+- (void) viewDidLoad
 {
-    Schedule *schedule = [self getItemForSender:sender event:touchEvent];
-    schedule.isSelected ^= YES;
+    [super viewDidLoad];
     
-    // Call to Appdelegate to Add/Remove from Calendar
-    [delegate addToDeviceCalendar:schedule];
-    [delegate addOrRemoveFilm:schedule];
-    [self syncTableDataWithScheduler];
+	delegate = appDelegate;
+	mySchedule = delegate.mySchedule;
+	cinequestCalendar = delegate.cinequestCalendar;
+    eventStore = delegate.eventStore;
+	
+	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
+	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary mutableCopy];
+ 	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
+	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
+  	
+	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	venueFont = timeFont;
+	
+	filmsTableView.tableHeaderView = nil;
+	filmsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
-    NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@", schedule.itemID, schedule.ID, mySchedule);
-    UIButton *calendarButton = (UIButton*)sender;
-    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
-    [calendarButton setImage:buttonImage forState:UIControlStateNormal];
+    [self setSearchKeyAsDone];
+	
+	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
+	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
+	
+	statusBarHidden = NO;
 }
+
+- (BOOL) prefersStatusBarHidden
+{
+	return statusBarHidden;
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+	[self syncTableDataWithScheduler];
+	
+    // [self.filmsTableView reloadData];
+	
+#pragma message "Must Update Calendar Icons..."
+}
+
+#pragma mark - Private methods
 
 - (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
 {
@@ -139,54 +170,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 
-#pragma mark - UIViewController Methods
-
-- (void) viewDidLoad
-{
-    [super viewDidLoad];
-    
-	delegate = appDelegate;
-	mySchedule = [delegate mySchedule];
-	cinequestCalendar = delegate.cinequestCalendar;
-    eventStore = delegate.eventStore;
-	
-	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
-	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
-	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary mutableCopy];
- 	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
-	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
-  	
-	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
-	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-	venueFont = timeFont;
-	
-	self.filmsTableView.tableHeaderView = nil;
-	self.filmsTableView.tableFooterView = nil;
-    
-    [self setSearchKeyAsDone];
-	
-	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
-	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
-	
-	statusBarHidden = NO;
-}
-
-- (BOOL) prefersStatusBarHidden
-{
-	return statusBarHidden;
-}
-
-- (void) viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
-	
-	[self syncTableDataWithScheduler];
-	
-    [self.filmsTableView reloadData];
-}
-
-#pragma mark - Private Methods
-
 - (void) syncTableDataWithScheduler
 {
     [delegate populateCalendarEntries];
@@ -203,9 +186,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	{
 		NSString *day = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
 		NSMutableArray *films =  [self.dateToFilmsDictionary objectForKey:day];
-		NSInteger filmsCount = [films count];
+		NSInteger filmCount = [films count];
 
-		for (NSUInteger row = 0; row < filmsCount; row++)
+		for (NSUInteger row = 0; row < filmCount; row++)
 		{
 			NSArray *schedules = [[films objectAtIndex:row] schedules];
 			NSInteger scheduleCount = [schedules count];
@@ -227,7 +210,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	}
 }
 
-#pragma mark - Table View Datasource methods
+#pragma mark - UITableView Datasource methods
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView*)tableView
 {
@@ -356,7 +339,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			venueLabel.text = [NSString stringWithFormat:@"Venue: %@", schedule.venue];
             
 			calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
-			[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 8.0 : 24.0, 44.0, 44.0)];
+			[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 12.0 : 24.0, 40.0, 40.0)];
 			[calendarButton setImage:buttonImage forState:UIControlStateNormal];
 		}
 			break;
@@ -469,7 +452,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	}
 }
 
-#pragma mark - UITableView Delegate
+#pragma mark - UITableView Delegate methods
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
@@ -544,7 +527,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	}
 }
 
-#pragma mark Content Filtering
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+	return 0.01;		// This creates a "invisible" footer
+}
+
+#pragma mark - Content Filtering methods
 
 - (void) filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
@@ -617,7 +605,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	[self.filmsTableView reloadData];
 }
 
-#pragma mark - UISearchDisplayController Delegate Methods
+#pragma mark - UISearchDisplayController Delegate methods
 
 -(BOOL) searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
@@ -723,7 +711,23 @@ static char *const kAssociatedScheduleKey = "Schedule";
     return sortedIndexes;
 }
 
-#pragma mark - Image Tapping Action
+#pragma mark - Action methods
+
+- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
+{
+    Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+    schedule.isSelected ^= YES;
+    
+    // Call to Appdelegate to Add/Remove from Calendar
+    [delegate addToDeviceCalendar:schedule];
+    [delegate addOrRemoveFilm:schedule];
+    [self syncTableDataWithScheduler];
+    
+    NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@", schedule.itemID, schedule.ID, mySchedule);
+    UIButton *calendarButton = (UIButton*)sender;
+    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+    [calendarButton setImage:buttonImage forState:UIControlStateNormal];
+}
 
 - (void) imageTouched:(id)sender
 {
