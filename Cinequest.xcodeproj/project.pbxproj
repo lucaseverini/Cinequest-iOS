@@ -517,7 +517,9 @@
 		81C8B38017EBAB3200033D4F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				81D62081185ED54E00FEDD03 /* GooglePlus */,
+				81D6208B185ED96C00FEDD03 /* GoogleOpenSource.framework */,
+				81D6208C185ED96C00FEDD03 /* GooglePlus.framework */,
+				81D62086185ED7C800FEDD03 /* GooglePlus.bundle */,
 				81C02F23188F040B0019227F /* AddressBook.framework */,
 				81C02F29188F04C30019227F /* AssetsLibrary.framework */,
 				81C8B38517EBAB3200033D4F /* CoreGraphics.framework */,
@@ -666,17 +668,6 @@
 				81C6BA49188F641200BCEA26 /* GPlusDialogViewController.m */,
 			);
 			name = Sources;
-			path = Cinequest;
-			sourceTree = "<group>";
-		};
-		81D62081185ED54E00FEDD03 /* GooglePlus */ = {
-			isa = PBXGroup;
-			children = (
-				81D6208B185ED96C00FEDD03 /* GoogleOpenSource.framework */,
-				81D6208C185ED96C00FEDD03 /* GooglePlus.framework */,
-				81D62086185ED7C800FEDD03 /* GooglePlus.bundle */,
-			);
-			name = GooglePlus;
 			path = Cinequest;
 			sourceTree = "<group>";
 		};
@@ -1071,13 +1062,19 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
-					"/Jobs/Cinequest-iOS/Frameworks",
-					"/Jobs/Cinequest-iOS/GooglePlus",
+					"$(inherited)",
+					"\"$(SRCROOT)/..\"",
+					"\"$(SRCROOT)/GooglePlus\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sources/Cinequest-Prefix.pch";
 				INFOPLIST_FILE = "resources/Cinequest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/GooglePlus\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1096,13 +1093,19 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
-					"/Jobs/Cinequest-iOS/Frameworks",
-					"/Jobs/Cinequest-iOS/GooglePlus",
+					"$(inherited)",
+					"\"$(SRCROOT)/..\"",
+					"\"$(SRCROOT)/GooglePlus\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sources/Cinequest-Prefix.pch";
 				INFOPLIST_FILE = "resources/Cinequest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/GooglePlus\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
