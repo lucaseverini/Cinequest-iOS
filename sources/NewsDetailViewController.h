@@ -26,6 +26,6 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) NSDictionary *news;
 
-- (id) initWithTitle:(NSString*)title andNews:(NSDictionary*)newsData;
+- (id) initWithNews:(NSDictionary*)newsData;
 
 @end

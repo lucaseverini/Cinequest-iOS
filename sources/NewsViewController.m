@@ -231,7 +231,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	NSUInteger row = [indexPath row];
 	NSDictionary *newsData = [news objectAtIndex:row];
 
-	NewsDetailViewController *eventDetail = [[NewsDetailViewController alloc] initWithTitle:@"News" andNews:newsData];
+	NewsDetailViewController *eventDetail = [[NewsDetailViewController alloc] initWithNews:newsData];
 	[self.navigationController pushViewController:eventDetail animated:YES];
 	
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];

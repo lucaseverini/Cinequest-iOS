@@ -22,19 +22,16 @@
 @synthesize dateString;
 @synthesize longDateString;
 @synthesize endTimeString;
-@synthesize fontColor;
-@synthesize type;
-
-@synthesize presentInScheduler;
-@synthesize presentInCalendar;
 @synthesize isSelected;
 
--(id)init{
+- (id) init
+{
     self = [super init];
 	if(self != nil)
 	{
-        if (!self.venueItem) {
-            self.venueItem = [[Venue alloc] init];
+        if (!self.venueItem)
+		{
+            self.venueItem = [Venue new];
         }
     }
 	

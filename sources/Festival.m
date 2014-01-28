@@ -12,6 +12,7 @@
 #import "Special.h"
 #import "Forum.h"
 #import "ProgramItem.h"
+#import "CinequestItem.h"
 
 
 @implementation Festival
@@ -141,6 +142,21 @@
 	}
 	
     return nil;
+}
+
+- (CinequestItem*) getScheduleItem:(NSString *)itemID
+{
+	CinequestItem* item = [self getForumForId:itemID];
+	if(item == nil)
+	{
+		item = [self getEventForId:itemID];
+		if(item == nil)
+		{
+			item = [self getFilmForId:itemID];
+		}
+	}
+	
+	return item;
 }
 
 @end

@@ -38,7 +38,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 #pragma mark -
 #pragma mark UIViewController
 
-- (id) initWithTitle:(NSString*)title andId:(NSString*)Id
+- (id) initWithForum:(NSString*)forumId
 {
 	self = [super init];
 	if(self != nil)
@@ -46,9 +46,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
 		delegate = appDelegate;
 		mySchedule = delegate.mySchedule;
 		
-		self.navigationItem.title = title;
+		self.navigationItem.title = @"Forum";
 		
-		forum = [delegate.festival getForumForId:Id];
+		forum = [delegate.festival getForumForId:forumId];
 	}
 	
 	return self;
@@ -352,9 +352,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				[cell.contentView addSubview:lblMail];
 				
 				UIButton *messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				messageButton.frame = CGRectMake(260.0, 6.0, 40.0, 40.0);
+				messageButton.frame = CGRectMake(263.0, 8.0, 35.0, 35.0);
 				[messageButton addTarget:self action:@selector(shareToMessage:) forControlEvents:UIControlEventTouchDown];
-				[messageButton setImage:[UIImage imageNamed:@"message.png"] forState:UIControlStateNormal];
+				[messageButton setImage:[UIImage imageNamed:@"messages_icon.png"] forState:UIControlStateNormal];
 				[cell.contentView addSubview:messageButton];
 				
 				UILabel *lblMessage = [[UILabel alloc] initWithFrame:CGRectMake(252.0, 46.0, 56.0, 20)];
@@ -378,7 +378,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				linkButton.frame = CGRectMake(20.0, 6.0, 40.0, 40.0);
 				[linkButton addTarget:self action:@selector(goTicketLink:) forControlEvents:UIControlEventTouchDown];
-				[linkButton setImage:[UIImage imageNamed:@"browser.png"] forState:UIControlStateNormal];
+				[linkButton setImage:[UIImage imageNamed:@"safari_icon.png"] forState:UIControlStateNormal];
 				[cell.contentView addSubview:linkButton];
 				
 				UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
@@ -492,9 +492,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
         controller.mailComposeDelegate = self;
 		
         NSString *friendlyMessage = @"Hey,\nI found an interesting forum from Cinequest festival.\nCheck it out!";
-        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, eventName, infoLink];
+        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, forum.name, forum.infoLink];
         
-		[controller setSubject:eventName];
+		[controller setSubject:forum.name];
         [controller setMessageBody:messageBody isHTML:NO];
         
         delegate.isPresentingModalView = YES;
@@ -530,11 +530,11 @@ static NSString *kActionsCellID	= @"ActionsCell";
         controller.messageComposeDelegate = self;
 		
         NSString *friendlyMessage = @"Hey,\nI found an interesting forum from Cinequest festival.\nCheck it out!";
-        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, eventName, infoLink];
+        NSString *messageBody = [NSString stringWithFormat:@"%@\n%@\n%@", friendlyMessage, forum.name, forum.infoLink];
         
 		if([controller respondsToSelector:@selector(setSubject:)])
 		{
-			[controller setSubject:eventName];
+			[controller setSubject:forum.name];
 		}
 		
         [controller setBody:messageBody];
@@ -595,7 +595,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 					   NSLog(@"%@", subview3.subviews);
 				   });
     
-	NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", eventName, infoLink];
+	NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", forum.name, forum.infoLink];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
@@ -618,7 +618,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) shareToTwitter:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", eventName, infoLink];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", forum.name, forum.infoLink];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
@@ -640,7 +640,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) shareToGooglePlus:(id)sender
 {
-    NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", eventName, infoLink];
+    NSString *postString = [NSString stringWithFormat:@"I'm planning to partecipate to the forum %@\n%@", forum.name, forum.infoLink];
 	
 	googlePlusConnectionDone = 0;
 	if(![[GPPSignIn sharedInstance] trySilentAuthentication])
@@ -734,7 +734,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) goTicketLink:(id)sender
 {
-    [app openURL:[NSURL URLWithString:infoLink]];
+    [app openURL:[NSURL URLWithString:forum.infoLink]];
 }
 
 #pragma mark -

@@ -278,7 +278,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
 	Schedule *schedule = [event.schedules objectAtIndex:0];
 
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithTitle:event.name andId:schedule.itemID];
+	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:schedule.itemID];
 	[self.navigationController pushViewController:eventDetail animated:YES];
 }
 

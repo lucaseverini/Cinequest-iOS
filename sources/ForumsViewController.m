@@ -278,7 +278,7 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
 	Schedule *schedule = [forum.schedules objectAtIndex:0];
 
-	ForumDetailViewController *eventDetail = [[ForumDetailViewController alloc] initWithTitle:@"Forum" andId:schedule.itemID];
+	ForumDetailViewController *eventDetail = [[ForumDetailViewController alloc] initWithForum:schedule.itemID];
 	[self.navigationController pushViewController:eventDetail animated:YES];
 }
 

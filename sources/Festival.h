@@ -11,6 +11,7 @@
 @class Film;
 @class Special;
 @class Forum;
+@class CinequestItem;
 
 @interface Festival : NSObject
 
@@ -49,5 +50,6 @@
 - (ProgramItem *) getProgramItemForId:(NSString *)ID;
 - (Special *) getEventForId:(NSString *)ID;
 - (Forum *) getForumForId:(NSString *)ID;
+- (CinequestItem*) getScheduleItem:(NSString *)itemID;
 
 @end

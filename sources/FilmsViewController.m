@@ -7,7 +7,7 @@
 //
 
 #import "FilmsViewController.h"
-#import "FilmDetailController.h"
+#import "FilmDetailViewController.h"
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
 #import "DataProvider.h"
@@ -166,7 +166,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) showFilmDetails:(Schedule*)schedule
 {
-	FilmDetailController *filmDetail = [[FilmDetailController alloc] initWithTitle:@"Film" andId:schedule.itemID];
+	FilmDetailViewController *filmDetail = [[FilmDetailViewController alloc] initWithFilm:schedule.itemID];
 	[[self navigationController] pushViewController:filmDetail animated:YES];
 }
 

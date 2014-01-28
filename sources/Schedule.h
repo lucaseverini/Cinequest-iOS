@@ -17,8 +17,6 @@
 @property (nonatomic, strong) NSDate *startDate;		// @"yyyy-MM-dd'T'HH:mm:ss"
 @property (nonatomic, strong) NSString *startTime;		// @"h:mm a"
 @property (nonatomic, strong) NSString *endTime;		// @"h:mm a"
-@property (nonatomic, strong) UIColor *fontColor;
-@property (nonatomic, strong) NSString *type;
 
 @property (nonatomic, strong) NSString *venue;
 @property (nonatomic, strong) NSDate *date;
@@ -28,8 +26,6 @@
 @property (nonatomic, strong) NSString *timeString;
 @property (nonatomic, strong) NSString *endTimeString;
 @property (nonatomic, assign) BOOL isSelected;
-@property (nonatomic, assign) BOOL presentInScheduler;
-@property (nonatomic, assign) BOOL presentInCalendar;
 @property (nonatomic, strong) Venue *venueItem;
 
 /* From the old Schedule.h

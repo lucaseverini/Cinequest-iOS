@@ -1,5 +1,5 @@
 //
-//  EventDetailViewController.h
+//  FilmDetailViewController.h
 //  CineQuest
 //
 //  Created by Luca Severini on 10/1/13.
@@ -7,11 +7,13 @@
 //
 
 
-@class Special;
-@class Schedule;
 @class CinequestAppDelegate;
+@class Schedule;
+@class FBSession;
+@class Film;
+@class ProgramItem;
 
-@interface EventDetailViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, GPPShareDelegate>
+@interface FilmDetailViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate, GPPSignInDelegate, GPPShareDelegate>
 {
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
@@ -25,9 +27,9 @@
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) IBOutlet UITableView *detailTableView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) Film *film;
 
-@property (nonatomic, strong) Special *event;
-
-- (id) initWithEvent:(NSString*)eventId;
+- (id) initWithFilm:(NSString*)filmId;
+- (id) initWithShortFilm:(NSString*)shortFilmId;
 
 @end

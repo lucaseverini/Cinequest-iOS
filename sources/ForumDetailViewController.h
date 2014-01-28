@@ -15,8 +15,6 @@
 {
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
-	NSString *eventName;
-	NSString *infoLink;
 	UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
@@ -30,6 +28,6 @@
 
 @property (nonatomic, strong) Forum *forum;
 
-- (id) initWithTitle:(NSString*)title andId:(NSString*)Id;
+- (id) initWithForum:(NSString*)forumId;
 
 @end

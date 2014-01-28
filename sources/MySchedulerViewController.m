@@ -7,10 +7,15 @@
 //
 
 #import "MySchedulerViewController.h"
-#import "FilmDetailController.h"
+#import "FilmDetailViewController.h"
 #import "EventDetailViewController.h"
+#import "ForumDetailViewController.h"
 #import "CinequestAppDelegate.h"
 #import "Schedule.h"
+#import "Film.h"
+#import "Forum.h"
+#import "Special.h"
+#import "CinequestItem.h"
 
 static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
@@ -67,7 +72,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
  		
-    //display an Edit button in the navigation bar for this view controller.
+    // display an Edit button in the navigation bar for this view controller.
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
 																						   target:self
 																						   action:@selector(edit)];
@@ -101,28 +106,28 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) edit
 {
-	[self.scheduleTableView setEditing:YES animated:YES];
+	[scheduleTableView setEditing:YES animated:YES];
 
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-																							target:self
-																							action:@selector(doneEditing)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEditing)];
+	
+	[self inEditMode:YES];
 }
 
 - (void) doneEditing
 {
-	[self.scheduleTableView setEditing:NO animated:YES];
+	[scheduleTableView setEditing:NO animated:YES];
 	
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-																							target:self
-																							action:@selector(edit)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
 	if(mySchedule.count == 0)
 	{
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 	}
+	
+	[self inEditMode:NO];
 }
 
--(void) getDataForTable{
-    
+- (void) getDataForTable
+{
     NSSortDescriptor *sortTime = [[NSSortDescriptor alloc] initWithKey:@"startDate" ascending:YES];
 	[mySchedule sortUsingDescriptors:[NSArray arrayWithObjects:sortTime,nil]];
     
@@ -156,7 +161,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	[displayData setObject:tempArray forKey:lastDateString];
     
 	// reload tableView data
-	[self.scheduleTableView reloadData];
+	[scheduleTableView reloadData];
 	[self doneEditing];
     
 	if(mySchedule.count == 0)
@@ -165,8 +170,10 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	}
 }
 
-- (void) addItemToCalendar:(id)sender event:(id)touchEvent
+- (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
+	[self launchCalendar];
+/*
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
     schedule.isSelected ^= YES;
     
@@ -174,20 +181,22 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     [delegate addToDeviceCalendar:schedule];
     [delegate addOrRemoveFilm:schedule];
     
-    for (Schedule *sch in mySchedule) {
+    for (Schedule *sch in mySchedule) 
+	{
         NSLog(@"MySchedule :%@-%@",sch.itemID,sch.ID);
     }
     
     [self getDataForTable];
     [self reloadCalendarItems];
+*/
 }
 
--(Schedule*)getItemForSender:(id)sender event:(id)touchEvent{
-    
+- (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
+{
     NSSet *touches = [touchEvent allTouches];
 	UITouch *touch = [touches anyObject];
-	CGPoint currentTouchPosition = [touch locationInView:self.scheduleTableView];
-	NSIndexPath *indexPath = [self.scheduleTableView indexPathForRowAtPoint:currentTouchPosition];
+	CGPoint currentTouchPosition = [touch locationInView:scheduleTableView];
+	NSIndexPath *indexPath = [scheduleTableView indexPathForRowAtPoint:currentTouchPosition];
     Schedule *film = nil;
     
     if (indexPath != nil)
@@ -307,7 +316,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 */
 - (void) reloadCalendarItems
 {
-    [self.scheduleTableView reloadData];
+    [scheduleTableView reloadData];
 }
 
 #pragma mark -
@@ -371,10 +380,16 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
 		venueLabel.font = venueFont;
 		[cell.contentView addSubview:venueLabel];
-        
+/*
         calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
         calendarButton.tag = CELL_LEFTBUTTON_TAG;
-        [calendarButton addTarget:self action:@selector(addItemToCalendar:event:) forControlEvents:UIControlEventTouchDown];
+        [calendarButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchDown];
+        [cell.contentView addSubview:calendarButton];
+*/
+		calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        calendarButton.tag = CELL_LEFTBUTTON_TAG;
+		[calendarButton setImage:[UIImage imageNamed:@"calendar_icon.png"] forState:UIControlStateNormal];
+        [calendarButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchDown];
         [cell.contentView addSubview:calendarButton];
 	}
 	
@@ -383,11 +398,11 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	CGSize size = [schedule.title sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 	if(size.width < 256.0)
 	{
-		[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 20.0)];
+		[titleLabel setFrame:CGRectMake(56.0, 6.0, 256.0, 20.0)];
 	}
 	else
 	{
-		[titleLabel setFrame:CGRectMake(52.0, 6.0, 256.0, 42.0)];
+		[titleLabel setFrame:CGRectMake(56.0, 6.0, 256.0, 42.0)];
 		titleNumLines = 2;
 	}
 	
@@ -395,16 +410,17 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	titleLabel.text = schedule.title;
 	
 	timeLabel = (UILabel*)[cell viewWithTag:CELL_TIME_LABEL_TAG];
-	[timeLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 28.0 : 50.0, 250.0, 20.0)];
+	[timeLabel setFrame:CGRectMake(56.0, titleNumLines == 1 ? 28.0 : 50.0, 250.0, 20.0)];
 	timeLabel.text = [NSString stringWithFormat:@"%@ %@ - %@", schedule.dateString, schedule.startTime, schedule.endTime];
 	
 	venueLabel = (UILabel*)[cell viewWithTag:CELL_VENUE_LABEL_TAG];
-	[venueLabel setFrame:CGRectMake(52.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
+	[venueLabel setFrame:CGRectMake(56.0, titleNumLines == 1 ? 46.0 : 68.0, 250.0, 20.0)];
 	venueLabel.text = [NSString stringWithFormat:@"Venue: %@",schedule.venue];
 	
 	calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
 	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 12.0 : 24.0, 40.0, 40.0)];
-	
+/*
+	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 12.0 : 24.0, 40.0, 40.0)];
     if([delegate.arrayCalendarItems containsObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]])
 	{
         [calendarButton setImage:[UIImage imageNamed:@"cal_selected"] forState:UIControlStateNormal];
@@ -413,7 +429,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	{
         [calendarButton setImage:[UIImage imageNamed:@"cal_unselected"] forState:UIControlStateNormal];
     }
-	
+*/
     return cell;
 }
 
@@ -422,8 +438,30 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-	[self launchCalendar];	
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
+	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
+	Schedule *schedule = [rowsData objectAtIndex:indexPath.row];
+	
+	// NSLog(@"%@ : %@ : %@", schedule.ID, schedule.title, schedule.itemID);
+	
+	CinequestItem *item = [delegate.festival getScheduleItem:schedule.itemID];
+	assert(item != nil);
+	
+	if([item isKindOfClass:[Film class]])
+	{
+		FilmDetailViewController *filmDetail = [[FilmDetailViewController alloc] initWithFilm:schedule.itemID];
+		[[self navigationController] pushViewController:filmDetail animated:YES];
+	}
+	else if([item isKindOfClass:[Special class]])
+	{
+		EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:schedule.itemID];
+		[[self navigationController] pushViewController:eventDetail animated:YES];
+	}
+	else if([item isKindOfClass:[Forum class]])
+	{
+		ForumDetailViewController *forumDetail = [[ForumDetailViewController alloc] initWithForum:schedule.itemID];
+		[[self navigationController] pushViewController:forumDetail animated:YES];
+	}
 }
 
 - (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -502,6 +540,30 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
 	return 0.01;		// This creates a "invisible" footer
+}
+
+- (void) tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self inEditMode:YES];
+}
+
+- (void) tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self inEditMode:NO];
+}
+
+- (void) inEditMode:(BOOL)inEditMode
+{
+    if (inEditMode)
+	{
+        scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMax;	// hide index while in edit mode
+    }
+	else
+	{
+		scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMin;
+    }
+	
+    [scheduleTableView reloadSectionIndexTitles];
 }
 
 #pragma mark -

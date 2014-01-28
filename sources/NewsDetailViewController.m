@@ -40,18 +40,18 @@ static NSString *kActionsCellID	= @"ActionsCell";
 #pragma mark -
 #pragma mark UIViewController
 
-- (id) initWithTitle:(NSString*)title andNews:(NSDictionary*)newsData
+- (id) initWithNews:(NSDictionary*)newsData
 {
 	self = [super init];
 	if(self != nil)
 	{
 		delegate = appDelegate;
 		
+		self.navigationItem.title = @"News";
+
 		self.news = newsData;
 		newsName = [news objectForKey:@"name"];
 		infoLink = [[news objectForKey:@"info"] lowercaseString];
-		
-		self.navigationItem.title = title;
 	}
 	
 	return self;
@@ -261,9 +261,9 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				[cell.contentView addSubview:lblMail];
 				
 				UIButton *messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				messageButton.frame = CGRectMake(260.0, 6.0, 40.0, 40.0);
+				messageButton.frame = CGRectMake(263.0, 8.0, 35.0, 35.0);
 				[messageButton addTarget:self action:@selector(shareToMessage:) forControlEvents:UIControlEventTouchDown];
-				[messageButton setImage:[UIImage imageNamed:@"message.png"] forState:UIControlStateNormal];
+				[messageButton setImage:[UIImage imageNamed:@"messages_icon.png"] forState:UIControlStateNormal];
 				[cell.contentView addSubview:messageButton];
 				
 				UILabel *lblMessage = [[UILabel alloc] initWithFrame:CGRectMake(252.0, 46.0, 56.0, 20)];
@@ -287,7 +287,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				UIButton *linkButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				linkButton.frame = CGRectMake(20.0, 6.0, 40.0, 40.0);
 				[linkButton addTarget:self action:@selector(goTicketLink:) forControlEvents:UIControlEventTouchDown];
-				[linkButton setImage:[UIImage imageNamed:@"browser.png"] forState:UIControlStateNormal];
+				[linkButton setImage:[UIImage imageNamed:@"safari_icon.png"] forState:UIControlStateNormal];
 				[cell.contentView addSubview:linkButton];
 				
 				UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
