@@ -719,11 +719,12 @@ static char *const kAssociatedScheduleKey = "Schedule";
     schedule.isSelected ^= YES;
     
     // Call to Appdelegate to Add/Remove from Calendar
-    [delegate addToDeviceCalendar:schedule];
-    [delegate addOrRemoveFilm:schedule];
+    [delegate addScheduleToDeviceCalendar:schedule];
+    [delegate addOrRemoveSchedule:schedule];
     [self syncTableDataWithScheduler];
     
-    NSLog(@"Schedule:ItemID-ID:%@-%@\nSchedule Array:%@", schedule.itemID, schedule.ID, mySchedule);
+    NSLog(@"Schedule:ItemID-ID:%@-%@", schedule.itemID, schedule.ID);
+	
     UIButton *calendarButton = (UIButton*)sender;
     UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
     [calendarButton setImage:buttonImage forState:UIControlStateNormal];

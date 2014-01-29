@@ -98,8 +98,8 @@
 - (BOOL) connectedToNetwork;
 - (void) startReachability:(NSString*)hostName;
 
-- (void) addOrRemoveFilm:(Schedule*)film;
-- (void) addToDeviceCalendar:(Schedule*)film;
+- (void) addOrRemoveSchedule:(Schedule*)schedule;
+- (void) addScheduleToDeviceCalendar:(Schedule*)schedule;
 - (void) populateCalendarEntries;
 - (void) checkEventStoreAccessForCalendar;
 - (void) fetchVenues;

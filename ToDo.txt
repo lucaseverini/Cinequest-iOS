@@ -13,6 +13,7 @@
 12) Add CrashLytics framework to help Cinequest people to track problems with the app.
 13) Implementing a shell script to build app automatically.
 14) Up to 3 lines for the title in Forums list 
+15) Add settings to cleanup the My Schedule
 
 Bugs: 
 1) Film schedule doesn't update from detail view

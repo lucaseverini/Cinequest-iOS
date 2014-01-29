@@ -449,10 +449,11 @@ static NSString *kActionsCellID	= @"ActionsCell";
     schedule.isSelected ^= YES;
     
     // Call to Delegate to Add/Remove from Calendar
-    [delegate addToDeviceCalendar:schedule];
-    [delegate addOrRemoveFilm:schedule];
+    [delegate addScheduleToDeviceCalendar:schedule];
+    [delegate addOrRemoveSchedule:schedule];
     
     NSLog(@"Schedule:ID+ItemID:%@-%@", schedule.ID, schedule.itemID);
+	
     UIButton *calendarButton = (UIButton*)sender;
     UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
     [calendarButton setImage:buttonImage forState:UIControlStateNormal];

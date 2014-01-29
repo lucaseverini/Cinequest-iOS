@@ -68,10 +68,8 @@
 {
     [super viewWillAppear:animated];
 	
-	NSString *venueName = [[venue.name componentsSeparatedByString:@"-"] objectAtIndex:0];
-	
 	// Set location to be searched
-	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@", venueName, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
+	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@", venue.name, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
 	
 	CLGeocoder *geocoder = [CLGeocoder new];
 	[geocoder geocodeAddressString:location completionHandler:
@@ -88,7 +86,7 @@
 
 			venueAnnotation = [MKPointAnnotation new];
 			venueAnnotation.coordinate = placemark.coordinate;
-			venueAnnotation.title = venueName;
+			venueAnnotation.title = venue.name;
 			venueAnnotation.subtitle = nil;
 
 			// Create a map item for the geocoded address to pass to Maps app

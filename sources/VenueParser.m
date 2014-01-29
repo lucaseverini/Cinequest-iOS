@@ -39,39 +39,48 @@
 	DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:responseData options:0 error:nil];
 	DDXMLElement *atsFeed = [xmlDoc rootElement];
 	
-	for (int i = 0; i < [atsFeed childCount]; i++) {
-        
-		DDXMLElement *showElement = (DDXMLElement*)[atsFeed childAtIndex:i];
+	for (int idx = 0; idx < [atsFeed childCount]; idx++)
+	{
+		DDXMLElement *showElement = (DDXMLElement*)[atsFeed childAtIndex:idx];
 		Venue *venue1 = [[Venue alloc]init];
 		
-		for (int j = 0; j<[showElement childCount]; j++) {
-            
+		for (int j = 0; j<[showElement childCount]; j++)
+		{
 			DDXMLElement *showChild = (DDXMLElement*)[showElement childAtIndex:j];
-			if ([[showChild name] isEqualToString:@"ID"]) {
+			if ([[showChild name] isEqualToString:@"ID"])
+			{
 				venue1.ID = [showChild stringValue];
 			}
-			else if ([[showChild name] isEqualToString:@"Name"]) {
+			else if ([[showChild name] isEqualToString:@"Name"])
+			{
 				venue1.name = [showChild stringValue];
 			}
-            else if ([[showChild name] isEqualToString:@"ShortName"]) {
+            else if ([[showChild name] isEqualToString:@"ShortName"])
+			{
 				venue1.shortName = [showChild stringValue];
 			}
-			else if ([[showChild name] isEqualToString:@"Address1"]) {
+			else if ([[showChild name] isEqualToString:@"Address1"])
+			{
 				venue1.address1 = [showChild stringValue];
 			}
-			else if ([[showChild name] isEqualToString:@"Address2"]) {
+			else if ([[showChild name] isEqualToString:@"Address2"])
+			{
 				venue1.address2 = [showChild stringValue];
 			}
-			else if ([[showChild name] isEqualToString:@"City"]) {
+			else if ([[showChild name] isEqualToString:@"City"])
+			{
 				venue1.city = [showChild stringValue];
 			}
-			else if ([[showChild name] isEqualToString:@"State"]) {
+			else if ([[showChild name] isEqualToString:@"State"])
+			{
 				venue1.state = [showChild stringValue];
 			}
-            else if ([[showChild name] isEqualToString:@"Zip"]) {
+            else if ([[showChild name] isEqualToString:@"Zip"])
+			{
 				venue1.zip = [showChild stringValue];
 			}
-            else if ([[showChild name] isEqualToString:@"location"]) {
+            else if ([[showChild name] isEqualToString:@"location"])
+			{
 				venue1.location = [showChild stringValue];
 			}
 		}
@@ -85,3 +94,5 @@
 }
 
 @end
+
+

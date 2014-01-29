@@ -18,5 +18,4 @@
 - (void) parseShows;
 - (Festival*) parseFestival;
 
-
 @end

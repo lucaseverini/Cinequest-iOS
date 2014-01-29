@@ -388,11 +388,12 @@
 #pragma mark -
 #pragma mark Event Add/Delete from Calendar
 
-- (void) addToDeviceCalendar:(Schedule*)film
+- (void) addScheduleToDeviceCalendar:(Schedule*)schedule
 {
-    NSDate *startDate = [film.startDate dateByAddingTimeInterval:ONE_YEAR];
-    NSDate *endDate = [film.endDate dateByAddingTimeInterval:ONE_YEAR];
-    NSString *uniqueIDForEvent = [NSString stringWithFormat:@"%@-%@", film.itemID, film.ID];
+    NSDate *startDate = schedule.startDate;
+    NSDate *endDate = schedule.endDate;
+	
+    NSString *uniqueIDForEvent = [NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID];
     if ([self.arrayCalendarItems containsObject:uniqueIDForEvent])
     {
         NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
@@ -402,7 +403,7 @@
         
         for (EKEvent *eventToCheck in events_Array)
         {
-            if( [eventToCheck.title isEqualToString:film.title] )
+            if( [eventToCheck.title isEqualToString:schedule.title] )
             {
                 NSError *err;
                 NSString *stringID = eventToCheck.eventIdentifier;
@@ -410,9 +411,9 @@
                 if(success)
                 {
                     [self.arrayCalendarItems removeObject:uniqueIDForEvent];
-                    [self.dictSavedEventsInCalendar removeObjectForKey:[NSString stringWithFormat:@"%@-%@", film.itemID,film.ID]];
+                    [self.dictSavedEventsInCalendar removeObjectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
                     [self.arrCalendarIdentifiers removeObject:stringID];
-                    NSLog( @"Event %@ with ID:%@ deleted successfully", eventToCheck.title,[NSString stringWithFormat:@"%@-%@", film.itemID,film.ID]);
+                    NSLog( @"Event %@ with ID:%@ deleted successfully", eventToCheck.title,[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]);
                     NSLog(@"Dictionary is after delete:%@",self.dictSavedEventsInCalendar);
                 }
                 break;
@@ -421,32 +422,34 @@
     }
     else
     {
+		Venue *venue = [appDelegate.venuesDictionary objectForKey:schedule.venueItem.ID];
+		NSString *venueLocation = [NSString stringWithFormat:@"%@, %@, %@ %@", venue.address1, venue.city, venue.state, venue.zip];
+
         EKEvent *newEvent = [EKEvent eventWithEventStore:self.eventStore];
-        newEvent.title = [NSString stringWithFormat:@"%@", film.title];
-        newEvent.location = film.venue;
+        newEvent.title = schedule.title;
+        newEvent.location = [NSString stringWithFormat:@"Venue: %@ %@", schedule.venue, venueLocation];
         newEvent.startDate = startDate;
         newEvent.endDate = endDate;
         [newEvent setCalendar:self.cinequestCalendar];
-        NSError *error= nil;
-        
+		
+        NSError *error = nil;
         BOOL result = [self.eventStore saveEvent:newEvent span:EKSpanThisEvent error:&error];
         if (result)
         {
             [self.arrayCalendarItems addObject:uniqueIDForEvent];
             NSLog(@"Succesfully saved event %@ %@ - %@", newEvent.title, startDate, endDate);
-            
         }
         
         NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
-        //set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
+        // set predicate to search for an event of the calendar (you can set the startdate, enddate and check in the calendars other than the default Calendar)
         NSArray *events_Array = [self.eventStore eventsMatchingPredicate:predicateForEvents];
         for (EKEvent *event in events_Array)
 		{
-            if (![self.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", film.itemID, film.ID]])
+            if (![self.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]])
 			{
-                [self.dictSavedEventsInCalendar setObject:event.eventIdentifier forKey:[NSString stringWithFormat:@"%@-%@", film.itemID, film.ID]];
+                [self.dictSavedEventsInCalendar setObject:event.eventIdentifier forKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
                 [self.arrCalendarIdentifiers addObject:event.eventIdentifier];
-                NSLog(@"Item added to Calednar Dictionary");
+                NSLog(@"Item added to Calendar dictionary");
             }
         }
     }
@@ -454,17 +457,17 @@
     [self saveCalendarToDocuments];
 }
 
-- (void) addOrRemoveFilm:(Schedule*)film
+- (void) addOrRemoveSchedule:(Schedule*)schedule
 {
-	if(film.isSelected)
+	if(schedule.isSelected)
 	{
-		// Add the selected film
+		// Add the selected schedule
 		BOOL alreadyAdded = NO;
 		NSInteger scheduleCount = [mySchedule count];
 		for(NSInteger idx = 0; idx < scheduleCount; idx++)
 		{
 			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == film.ID)
+			if (obj.ID == schedule.ID)
 			{
 				alreadyAdded = YES;
 				break;
@@ -472,22 +475,22 @@
 		}
 		if(!alreadyAdded)
 		{
-			[mySchedule addObject:film];
-			NSLog(@"%@ : %@ %@ added to my schedule", film.title, film.dateString, film.timeString);
+			[mySchedule addObject:schedule];
+			NSLog(@"%@ : %@ %@ added to my schedule", schedule.title, schedule.dateString, schedule.timeString);
 		}
 	}
 	else
 	{
-		// Remove the un-selected film
+		// Remove the un-selected schedule
 		NSInteger scheduleCount = [mySchedule count];
 		for(NSInteger idx = 0; idx < scheduleCount; idx++)
 		{
 			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == film.ID)
+			if (obj.ID == schedule.ID)
 			{
-				[mySchedule removeObject:film];
+				[mySchedule removeObject:schedule];
 				
-				NSLog(@"%@ : %@ %@ removed from my schedule", film.title, film.dateString, film.timeString);
+				NSLog(@"%@ : %@ %@ removed from my schedule", schedule.title, schedule.dateString, schedule.timeString);
 				break;
 			}
 		}

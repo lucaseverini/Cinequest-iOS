@@ -73,9 +73,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	venueFont = timeFont;
  		
     // display an Edit button in the navigation bar for this view controller.
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-																						   target:self
-																						   action:@selector(edit)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
 
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
@@ -90,7 +88,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     [super viewWillAppear:animated];
   	
     [self getDataForTable];
-    [self reloadCalendarItems];
+    [scheduleTableView reloadData];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -172,14 +170,16 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
-	[self launchCalendar];
+	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+	// NSLog(@"%@ : %@ : %@", schedule.ID, schedule.title, schedule.itemID);
+	[self editEventForSchedule:schedule];
 /*
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
     schedule.isSelected ^= YES;
     
     //Call to Appdelegate to Add/Remove from Calendar
-    [delegate addToDeviceCalendar:schedule];
-    [delegate addOrRemoveFilm:schedule];
+    [delegate addScheduleToDeviceCalendar:schedule];
+    [delegate addOrRemoveSchedule:schedule];
     
     for (Schedule *sch in mySchedule) 
 	{
@@ -187,7 +187,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     }
     
     [self getDataForTable];
-    [self reloadCalendarItems];
+    [scheduleTableView reloadData];
 */
 }
 
@@ -197,16 +197,14 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	UITouch *touch = [touches anyObject];
 	CGPoint currentTouchPosition = [touch locationInView:scheduleTableView];
 	NSIndexPath *indexPath = [scheduleTableView indexPathForRowAtPoint:currentTouchPosition];
-    Schedule *film = nil;
-    
     if (indexPath != nil)
 	{
 		NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
         NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
-        film = [rowsData objectAtIndex:indexPath.row];
+        return [rowsData objectAtIndex:indexPath.row];
     }
     
-    return film;
+    return nil;
 }
 
 #pragma mark Utility Methods
@@ -309,15 +307,12 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
             NSLog(@"Error saving calendar: %@.", error);
         }
     }
-    if (self.cinequestCalendar) {
-        [self reloadCalendarItems];
+    if (self.cinequestCalendar) 
+	{
+        [scheduleTableView reloadData];
     }
 }
 */
-- (void) reloadCalendarItems
-{
-    [scheduleTableView reloadData];
-}
 
 #pragma mark -
 #pragma mark UITableView DataSource
@@ -333,7 +328,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 {
 	NSString *sectionTitle = [titleForSection objectAtIndex:section];
 	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
-    return [rowsData count];
+    return rowsData.count;
 }
 
 - (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -472,6 +467,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView beginUpdates];
+	
     if (editingStyle == UITableViewCellEditingStyleDelete) 
 	{
 		NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
@@ -508,8 +504,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
             {
                 NSError *err;
                 BOOL success = [eventStore removeEvent:eventToCheck span:EKSpanThisEvent error:&err];
-                [delegate addToDeviceCalendar:item];
-                [delegate addOrRemoveFilm:item];
+                [delegate addScheduleToDeviceCalendar:item];
+                [delegate addOrRemoveSchedule:item];
                 [delegate.arrayCalendarItems removeObject:item.title];
                 NSLog( @"event deleted success if value = 1 : %d", success );
                 break;
@@ -569,54 +565,95 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 #pragma mark -
 #pragma mark Access Calendar
 
-- (void) launchCalendar
+- (void) editEventForSchedule:(Schedule*)schedule
 {
-    EKEventStore *store = [[EKEventStore alloc] init];
-	
-	[store requestAccessToEntityType:EKEntityTypeEvent completion:
+	[eventStore requestAccessToEntityType:EKEntityTypeEvent completion:
 	^(BOOL granted, NSError *error)
 	{
 		if(granted)
 		{
-			dispatch_async(dispatch_get_main_queue(),
-			^{
-				[self createEventAndPresentViewController:store];
-			});
+			EKEvent *event = [self findEventForSchedule:schedule inStore:eventStore];
+			if(event != nil)
+			{
+				NSLog(@"Event %@ : %@", event.title, event.eventIdentifier);
+
+				dispatch_async(dispatch_get_main_queue(),
+				^{
+					EKEventEditViewController *controller = [[EKEventEditViewController alloc] init];
+					controller.event = event;
+					controller.eventStore = eventStore;
+					controller.editViewDelegate = self;
+					
+					[self presentViewController:controller animated:YES completion:nil];
+				});
+			}
 		}
 	}];
 }
 
-- (void) createEventAndPresentViewController:(EKEventStore *)store
-{
-    EKEvent *event = [self findOrCreateEvent:store];
-	
-    EKEventEditViewController *controller = [[EKEventEditViewController alloc] init];
-    controller.event = event;
-    controller.eventStore = store;
-    controller.editViewDelegate = self;
-	
-    [self presentViewController:controller animated:YES completion:nil];
-}
-
 - (void) eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
 {
+	// NSLog(@"%@", delegate.arrayCalendarItems);
+	// NSLog(@"%@", delegate.dictSavedEventsInCalendar);
+
+	if(action == EKEventEditViewActionDeleted)
+	{
+		Schedule *schedule = [self findScheduleForEvent:controller.event];
+		if(schedule != nil)
+		{
+			[mySchedule removeObject:schedule];
+			
+			[delegate.arrayCalendarItems removeObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
+	
+			NSArray *keys = [delegate.dictSavedEventsInCalendar allKeysForObject:controller.event.eventIdentifier];
+			[delegate.dictSavedEventsInCalendar removeObjectsForKeys:keys];
+		
+			NSLog(@"Event and associated Schedule deleted");
+		}
+	}
+	else if(action == EKEventEditViewActionSaved)
+	{
+		// Update and save the schedule
+		
+		NSLog(@"Event and associated Schedule updated");
+	}
+	
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (EKEvent*) findOrCreateEvent:(EKEventStore*)store
+- (Schedule*) findScheduleForEvent:(EKEvent*)event
 {
-    EKEvent *event = [EKEvent eventWithEventStore:store];
-    event.title = @"My event title";
-    event.notes = @"My event notes";
-    event.location = @"My event location";
-    event.calendar = [store defaultCalendarForNewEvents];
+	NSArray *keys = [delegate.dictSavedEventsInCalendar allKeysForObject:event.eventIdentifier];
+	if(keys.count > 0)
+	{
+		NSString *key = [keys firstObject];
+		
+		for(Schedule *schedule in mySchedule)
+		{
+			if([key isEqualToString:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]])
+			{
+				return schedule;
+			}
+		}
+	}
+
+	return nil;
+}
+
+- (EKEvent*) findEventForSchedule:(Schedule*)schedule inStore:(EKEventStore*)store
+{
+	EKEvent *event = nil;
 	
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    components.hour = 4;
-    event.startDate = [calendar dateByAddingComponents:components toDate:[NSDate date] options:0];
-    components.hour = 1;
-    event.endDate = [calendar dateByAddingComponents:components toDate:event.startDate options:0];
+	NSString *eventIdentifier = [delegate.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
+	if(eventIdentifier != nil)
+	{
+		EKEvent *event = [store eventWithIdentifier:eventIdentifier];
+		if(event != nil)
+		{
+			return event;
+		}
+	}
+
     return event;
 }
 
