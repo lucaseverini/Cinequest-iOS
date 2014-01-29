@@ -88,6 +88,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     [super viewWillAppear:animated];
   	
     [self getDataForTable];
+	
     [scheduleTableView reloadData];
 }
 
@@ -105,8 +106,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (void) edit
 {
 	[scheduleTableView setEditing:YES animated:YES];
-
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEditing)];
 	
 	[self inEditMode:YES];
 }
@@ -114,13 +113,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 - (void) doneEditing
 {
 	[scheduleTableView setEditing:NO animated:YES];
-	
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
-	if(mySchedule.count == 0)
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
-	
+
 	[self inEditMode:NO];
 }
 
@@ -158,14 +151,9 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	}
 	[displayData setObject:tempArray forKey:lastDateString];
     
-	// reload tableView data
 	[scheduleTableView reloadData];
+	
 	[self doneEditing];
-    
-	if(mySchedule.count == 0)
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
 }
 
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
@@ -173,22 +161,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
 	// NSLog(@"%@ : %@ : %@", schedule.ID, schedule.title, schedule.itemID);
 	[self editEventForSchedule:schedule];
-/*
-	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
-    schedule.isSelected ^= YES;
-    
-    //Call to Appdelegate to Add/Remove from Calendar
-    [delegate addScheduleToDeviceCalendar:schedule];
-    [delegate addOrRemoveSchedule:schedule];
-    
-    for (Schedule *sch in mySchedule) 
-	{
-        NSLog(@"MySchedule :%@-%@",sch.itemID,sch.ID);
-    }
-    
-    [self getDataForTable];
-    [scheduleTableView reloadData];
-*/
 }
 
 - (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
@@ -228,91 +200,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	
 	return returnString;
 }
-
-// Below Method Commented for now
-/*
-- (void) checkAndCreateCalendar
-{
-    if (!_arrCalendarItems)
-	{
-        _arrCalendarItems = [[NSMutableArray alloc] init];
-    }
-    
-    _calendarIdentifier = [[NSUserDefaults standardUserDefaults] stringForKey:@"CalendarID"];
-    _eventStore = [[EKEventStore alloc] init];
-    
-    NSArray *caleandarsArray = [[NSArray alloc] init];
-    caleandarsArray = [_eventStore calendarsForEntityType:EKEntityTypeEvent];
-    BOOL isCalendar = false;
-    
-    for (EKCalendar *iCalendar in caleandarsArray)
-    {
-        if ([iCalendar.title isEqualToString:CALENDAR_NAME] || [iCalendar.calendarIdentifier isEqualToString:_calendarIdentifier]) {
-            isCalendar = true;
-            self.calendarIdentifier = iCalendar.calendarIdentifier;
-            self.cinequestCalendar = iCalendar;
-            [[NSUserDefaults standardUserDefaults] setValue:self.calendarIdentifier forKey:@"CalendarID"];
-            break;
-        }
-    }
-    
-    if (!isCalendar)
-	{
-        // Iterate over all sources in the event store and look for the local source
-        EKSource *theSource = nil;
-        for (EKSource *source in _eventStore.sources)
-		{
-            if (source.sourceType == EKSourceTypeLocal)
-			{
-                theSource = source;
-                break;
-            }
-        }
-        
-        EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:_eventStore];
-        calendar.title = CALENDAR_NAME;
-        if (theSource)
-		{
-            calendar.source = theSource;
-        }
-		else
-		{
-            NSLog(@"Error: Local source not available");
-            return;
-        }
-        
-        NSError *error = nil;
-        BOOL result = [_eventStore saveCalendar:calendar commit:YES error:&error];
-        if (result)
-		{
-            NSLog(@"Saved calendar to event store.");
-            
-            caleandarsArray = [_eventStore calendarsForEntityType:EKEntityTypeEvent];
-            BOOL isCalendar = false;
-            
-            for (EKCalendar *iCalendar in caleandarsArray)
-            {
-                if ([iCalendar.title isEqualToString:CALENDAR_NAME])
-				{
-                    isCalendar = true;
-                    self.calendarIdentifier = iCalendar.calendarIdentifier;
-                    self.cinequestCalendar = iCalendar;
-                    [[NSUserDefaults standardUserDefaults] setValue:self.calendarIdentifier forKey:@"CalendarID"];
-                    break;
-                }
-            }
-        }
-		else
-		{
-            NSLog(@"Error saving calendar: %@.", error);
-        }
-    }
-    if (self.cinequestCalendar) 
-	{
-        [scheduleTableView reloadData];
-    }
-}
-*/
 
 #pragma mark -
 #pragma mark UITableView DataSource
@@ -466,54 +353,34 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView beginUpdates];
-	
-    if (editingStyle == UITableViewCellEditingStyleDelete) 
+	if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
 		NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
 		NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
 		
-		Schedule *item = [rowsData objectAtIndex:indexPath.row];
-		[rowsData removeObjectAtIndex:indexPath.row];
-		
-		// delete the row from the data source
-		[mySchedule removeObject:item];
-		
-		// remove row from tableView
-		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-		
-		if ([rowsData count] == EMPTY)
+		Schedule *schedule = [rowsData objectAtIndex:indexPath.row];
+		if(schedule != nil)
 		{
-			[titleForSection removeObjectAtIndex:indexPath.section];
-			[index removeObjectAtIndex:indexPath.section];
-			[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:YES];
+			EKEvent *event = [self findEventForSchedule:schedule inStore:eventStore];
+			if(event != nil)
+			{
+				[delegate addOrRemoveScheduleToCalendar:schedule];
+
+				[mySchedule removeObject:schedule];
+		
+				[delegate.arrayCalendarItems removeObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
+		
+				NSArray *keys = [delegate.dictSavedEventsInCalendar allKeysForObject:event.eventIdentifier];
+				[delegate.dictSavedEventsInCalendar removeObjectsForKeys:keys];
+
+				[self getDataForTable];
+				
+				[scheduleTableView reloadData];
+				
+				NSLog(@"Schedule and associated Event deleted");
+			}
 		}
-        
-        // remove Event from Calendar
-        NSDate *startDate = [item.startDate dateByAddingTimeInterval:ONE_YEAR];
-        NSDate *endDate = [item.endDate dateByAddingTimeInterval:ONE_YEAR];
-        NSPredicate *predicateForEvents = [eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:cinequestCalendar]];
-		
-        // set predicate to search for an event of the calendar(you can set the startdate, enddate and check in the calendars other than the default Calendar)
-        NSArray *events_Array = [eventStore eventsMatchingPredicate: predicateForEvents];
-		
-        // get array of events from the eventStore
-        for (EKEvent *eventToCheck in events_Array)
-        {
-            if( [eventToCheck.title isEqualToString:item.title] )
-            {
-                NSError *err;
-                BOOL success = [eventStore removeEvent:eventToCheck span:EKSpanThisEvent error:&err];
-                [delegate addScheduleToDeviceCalendar:item];
-                [delegate addOrRemoveSchedule:item];
-                [delegate.arrayCalendarItems removeObject:item.title];
-                NSLog( @"event deleted success if value = 1 : %d", success );
-                break;
-            }
-        }
-    }
-	
-	[tableView endUpdates];
+	}
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -550,15 +417,24 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) inEditMode:(BOOL)inEditMode
 {
-    if (inEditMode)
+	if (inEditMode)
 	{
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEditing)];
+
         scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMax;	// hide index while in edit mode
     }
 	else
 	{
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
+
 		scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMin;
     }
 	
+	if(mySchedule.count == 0)
+	{
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
+
     [scheduleTableView reloadSectionIndexTitles];
 }
 
@@ -575,7 +451,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 			EKEvent *event = [self findEventForSchedule:schedule inStore:eventStore];
 			if(event != nil)
 			{
-				NSLog(@"Event %@ : %@", event.title, event.eventIdentifier);
+				NSLog(@"Edit Event %@ : %@", event.title, event.eventIdentifier);
 
 				dispatch_async(dispatch_get_main_queue(),
 				^{
@@ -601,6 +477,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		Schedule *schedule = [self findScheduleForEvent:controller.event];
 		if(schedule != nil)
 		{
+			[delegate addOrRemoveScheduleToCalendar:schedule];
+
 			[mySchedule removeObject:schedule];
 			
 			[delegate.arrayCalendarItems removeObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];

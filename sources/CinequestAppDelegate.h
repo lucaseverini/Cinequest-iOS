@@ -99,7 +99,7 @@
 - (void) startReachability:(NSString*)hostName;
 
 - (void) addOrRemoveSchedule:(Schedule*)schedule;
-- (void) addScheduleToDeviceCalendar:(Schedule*)schedule;
+- (void) addOrRemoveScheduleToCalendar:(Schedule*)schedule;
 - (void) populateCalendarEntries;
 - (void) checkEventStoreAccessForCalendar;
 - (void) fetchVenues;

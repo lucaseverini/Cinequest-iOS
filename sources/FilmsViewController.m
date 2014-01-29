@@ -719,8 +719,9 @@ static char *const kAssociatedScheduleKey = "Schedule";
     schedule.isSelected ^= YES;
     
     // Call to Appdelegate to Add/Remove from Calendar
-    [delegate addScheduleToDeviceCalendar:schedule];
+    [delegate addOrRemoveScheduleToCalendar:schedule];
     [delegate addOrRemoveSchedule:schedule];
+	
     [self syncTableDataWithScheduler];
     
     NSLog(@"Schedule:ItemID-ID:%@-%@", schedule.itemID, schedule.ID);

@@ -29,7 +29,7 @@
     EKCalendar *cinequestCalendar;
 	UIFont *titleFont;
 	UIFont *timeFont;
-	UIFont *venueFont;    
+	UIFont *venueFont;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *scheduleTableView;

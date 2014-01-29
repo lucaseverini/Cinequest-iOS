@@ -603,7 +603,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     schedule.isSelected ^= YES;
     
     //Call to Delegate to Add/Remove from Calendar
-    [delegate addScheduleToDeviceCalendar:schedule];
+    [delegate addOrRemoveScheduleToCalendar:schedule];
     [delegate addOrRemoveSchedule:schedule];
     
     NSLog(@"Schedule:ID+ItemID:%@-%@",schedule.ID,schedule.itemID);

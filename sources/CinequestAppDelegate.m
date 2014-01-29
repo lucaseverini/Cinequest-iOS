@@ -430,7 +430,7 @@
 #pragma mark -
 #pragma mark Event Add/Delete from Calendar
 
-- (void) addScheduleToDeviceCalendar:(Schedule*)schedule
+- (void) addOrRemoveScheduleToCalendar:(Schedule*)schedule
 {
     NSDate *startDate = schedule.startDate;
     NSDate *endDate = schedule.endDate;
