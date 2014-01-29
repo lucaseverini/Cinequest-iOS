@@ -43,6 +43,11 @@
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
+    if([self checkForFirstAppLaunch])
+    {
+        [self removeUnwantedCalendars];
+    }
+    
 	[self startReachability:MAIN_FEED];
 
 	[self collectContextInformation];
@@ -104,6 +109,43 @@
         // NSLog(@"Content from Cache:%@", self.dictSavedEventsInCalendar);
     }
 }
+
+//Check if the application is launching for the first time
+-(BOOL)checkForFirstAppLaunch
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"])
+    {
+        // app already launched
+        return NO;
+    }
+    else
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        // This is the first launch ever
+        return YES;
+    }
+}
+
+//Remove if extra calendar exists with name Cinequest
+-(void)removeUnwantedCalendars
+{
+    EKEventStore *eventStoreLocal = [[EKEventStore alloc] init];
+    NSArray *caleandarsArray = [[NSArray alloc] init];
+    caleandarsArray = [eventStoreLocal calendarsForEntityType:EKEntityTypeEvent];
+    
+    for (EKCalendar *iCalendars in caleandarsArray)
+    {
+        NSLog(@"Calendar Title : %@", iCalendars.title);
+        if ([iCalendars.title isEqualToString:@"Cinequest"])
+        {
+            NSError *error = nil;
+            [eventStoreLocal removeCalendar:iCalendars commit:YES error:&error];
+            NSLog(@"Error:%@",[error localizedDescription]);
+        }
+    }
+}
+
 
 //Saves the Calendar.plist file to Documents Directory to keep track of save items in calendar
 - (void) saveCalendarToDocuments
