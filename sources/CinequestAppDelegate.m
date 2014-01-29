@@ -518,7 +518,7 @@
 		if(!alreadyAdded)
 		{
 			[mySchedule addObject:schedule];
-			NSLog(@"%@ : %@ %@ added to my schedule", schedule.title, schedule.dateString, schedule.timeString);
+			NSLog(@"%@ : %@ added to my schedule", schedule.title, schedule.dateString);
 		}
 	}
 	else
