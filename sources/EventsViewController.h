@@ -15,6 +15,7 @@
     UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
+	NSDataDetector *dateDetector;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *eventsTableView;

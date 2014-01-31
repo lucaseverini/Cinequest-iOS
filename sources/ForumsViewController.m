@@ -40,6 +40,8 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 	
+	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
+
 	self.dateToForumsDictionary = [delegate.festival.dateToForumsDictionary mutableCopy];
 	self.sortedKeysInDateToForumsDictionary = [delegate.festival.sortedKeysInDateToForumsDictionary mutableCopy];
 	self.sortedIndexesInDateToForumsDictionary = [delegate.festival.sortedIndexesInDateToForumsDictionary mutableCopy];
@@ -62,13 +64,24 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
     
 	[self syncTableDataWithScheduler];
 
-	// [self.ForumsTableView reloadData];
-
-#pragma message "Must Update Calendar Icons..."
+	[self.forumsTableView reloadData];
 }
 
 #pragma mark -
 #pragma mark Private Methods
+
+- (NSDate*) dateFromString:(NSString*)string
+{
+	__block NSDate *detectedDate;
+	
+	[dateDetector enumerateMatchesInString:string options:kNilOptions range:NSMakeRange(0, string.length) usingBlock:
+	 ^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop)
+	 {
+		 detectedDate = result.date;
+	 }];
+	
+	return detectedDate;
+}
 
 - (void) syncTableDataWithScheduler
 {
@@ -123,13 +136,21 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
     if (indexPath != nil)
 	{
 		NSString *day = [self.sortedKeysInDateToForumsDictionary  objectAtIndex:section];
+		NSDate *date = [self dateFromString:day];
+		
 		Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
-		schedule = [forum.schedules objectAtIndex:0];
-    }
+		
+		for(schedule in forum.schedules)
+		{
+			if([schedule.startDate compare:date] >= NSOrderedSame)
+			{
+				break;
+			}
+		}
+	}
     
     return schedule;
 }
-
 
 #pragma mark - Actions
 
@@ -170,22 +191,32 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	NSUInteger row = [indexPath row];
 
 	NSString *day = [self.sortedKeysInDateToForumsDictionary objectAtIndex:section];
-	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
-	Schedule *schedule = [forum.schedules objectAtIndex:0];
+	NSDate *date = [self dateFromString:day];
 	
-	// check if current cell is already added to mySchedule
-	NSUInteger count = [mySchedule count];
-	for (int idx = 0; idx < count; idx++)
+	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
+	
+	Schedule *schedule = nil;
+	for(schedule in forum.schedules)
 	{
-		Schedule *obj = [mySchedule objectAtIndex:idx];
-		if(obj.ID == schedule.ID)
+		if([schedule.startDate compare:date] >= NSOrderedSame)
 		{
-			schedule.isSelected = YES;
+			break;
+		}
+	}
+
+	BOOL selected = NO;
+	NSUInteger count = [mySchedule count];
+	for(int idx = 0; idx < count; idx++)
+	{
+		Schedule *selSchedule = [mySchedule objectAtIndex:idx];
+		if(schedule.ID == selSchedule.ID)
+		{
+			selected = YES;
 			break;
 		}
 	}
 	
-    UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+    UIImage *buttonImage = selected ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
     NSInteger titleNumLines = 1;
 	UILabel *titleLabel = nil;
 	UILabel *timeLabel = nil;
@@ -277,11 +308,20 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	NSUInteger row = [indexPath row];
 	
 	NSString *day = [self.sortedKeysInDateToForumsDictionary  objectAtIndex:section];
+	NSDate *date = [self dateFromString:day];
+	
 	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
-	Schedule *schedule = [forum.schedules objectAtIndex:0];
-
-	ForumDetailViewController *eventDetail = [[ForumDetailViewController alloc] initWithForum:schedule.itemID];
-	[self.navigationController pushViewController:eventDetail animated:YES];
+	
+	for(Schedule *schedule in forum.schedules)
+	{
+		if([schedule.startDate compare:date] >= NSOrderedSame)
+		{
+			ForumDetailViewController *eventDetail = [[ForumDetailViewController alloc] initWithForum:schedule.itemID];
+			[self.navigationController pushViewController:eventDetail animated:YES];
+			
+			break;
+		}
+	}
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

@@ -41,6 +41,8 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	delegate = appDelegate;
 	mySchedule = delegate.mySchedule;
 		
+	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
+
 	self.dateToEventsDictionary = [delegate.festival.dateToSpecialsDictionary mutableCopy];
 	self.sortedKeysInDateToEventsDictionary = [delegate.festival.sortedKeysInDateToSpecialsDictionary mutableCopy];
 	self.sortedIndexesInDateToEventsDictionary = [delegate.festival.sortedIndexesInDateToSpecialsDictionary mutableCopy];
@@ -63,13 +65,24 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	
 	[self syncTableDataWithScheduler];
 	
-    // [self.eventsTableView reloadData];
-
-#pragma message "Must Update Calendar Icons..."
+    [self.eventsTableView reloadData];
 }
 
 #pragma mark -
 #pragma mark Private Methods
+
+- (NSDate*) dateFromString:(NSString*)string
+{
+	__block NSDate *detectedDate;
+	
+	[dateDetector enumerateMatchesInString:string options:kNilOptions range:NSMakeRange(0, string.length) usingBlock:
+	 ^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop)
+	 {
+		 detectedDate = result.date;
+	 }];
+	
+	return detectedDate;
+}
 
 - (void) syncTableDataWithScheduler
 {
@@ -98,13 +111,19 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 			{
 				Schedule *schedule = [schedules objectAtIndex:schedIdx];
 
-				for (NSUInteger idx = 0; idx < myScheduleCount; idx++)
+				NSUInteger idx;
+				for (idx = 0; idx < myScheduleCount; idx++)
 				{
-					Schedule *mySched = [mySchedule objectAtIndex:idx];
-					if ([mySched.ID isEqualToString:schedule.ID])
+					Schedule *selSchedule = [mySchedule objectAtIndex:idx];
+					if ([selSchedule.ID isEqualToString:schedule.ID])
 					{
 						schedule.isSelected = YES;
+						break;
 					}
+				}
+				if(idx == myScheduleCount)
+				{
+					schedule.isSelected = NO;
 				}
 			}
 		}
@@ -142,10 +161,19 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     if (indexPath != nil)
 	{
 		NSString *day = [self.sortedKeysInDateToEventsDictionary  objectAtIndex:section];
+		NSDate *date = [self dateFromString:day];
+		
 		Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
-		schedule = [event.schedules objectAtIndex:0];
+		
+		for(schedule in event.schedules)
+		{
+			if([schedule.startDate compare:date] >= NSOrderedSame)
+			{
+				break;
+			}
+		}
     }
-    
+	
     return schedule;
 }
 
@@ -169,22 +197,32 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	NSUInteger row = [indexPath row];
 	
 	NSString *day = [self.sortedKeysInDateToEventsDictionary objectAtIndex:section];
-	Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
-	Schedule *schedule = [event.schedules objectAtIndex:0];
+	NSDate *date = [self dateFromString:day];
 
-	// check if current cell is already added to mySchedule
-	NSUInteger count = [mySchedule count];
-	for(int idx = 0; idx < count; idx++)
+	Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
+
+	Schedule *schedule = nil;
+	for(schedule in event.schedules)
 	{
-		Schedule *obj = [mySchedule objectAtIndex:idx];
-		if(obj.ID == schedule.ID)
+		if([schedule.startDate compare:date] >= NSOrderedSame)
 		{
-			schedule.isSelected = YES;
 			break;
 		}
 	}
-	
-	UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+
+	BOOL selected = NO;
+	NSUInteger count = [mySchedule count];
+	for(int idx = 0; idx < count; idx++)
+	{
+		Schedule *selSchedule = [mySchedule objectAtIndex:idx];
+		if(schedule.ID == selSchedule.ID)
+		{
+			selected = YES;
+			break;
+		}
+	}
+
+	UIImage *buttonImage = selected ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
 	UILabel *titleLabel = nil;
 	UILabel *timeLabel = nil;
 	UILabel *venueLabel = nil;
@@ -277,11 +315,20 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	NSUInteger row = [indexPath row];
 
 	NSString *day = [self.sortedKeysInDateToEventsDictionary  objectAtIndex:section];
+	NSDate *date = [self dateFromString:day];
+	
 	Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
-	Schedule *schedule = [event.schedules objectAtIndex:0];
+	
+	for(Schedule *schedule in event.schedules)
+	{
+		if([schedule.startDate compare:date] >= NSOrderedSame)
+		{
+			EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:schedule.itemID];
+			[self.navigationController pushViewController:eventDetail animated:YES];
 
-	EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:schedule.itemID];
-	[self.navigationController pushViewController:eventDetail animated:YES];
+			break;
+		}
+	}
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
