@@ -17,7 +17,6 @@
 
 static NSString *const kDateCellIdentifier = @"DateCell";
 static NSString *const kTitleCellIdentifier = @"TitleCell";
-static char *const kAssociatedScheduleKey = "Schedule";
 
 
 @implementation UIView (private)

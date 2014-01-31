@@ -21,7 +21,6 @@
 
 #define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
-static char *const kAssociatedScheduleKey = "Schedule";
 static NSString *kShortProgCellID = @"ShortProgCell";
 static NSString *kScheduleCellID = @"ScheduleCell";
 static NSString *kSocialMediaCellID = @"SocialMediaCell";
@@ -542,7 +541,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 			break;
 			
 		default:
-			NSLog(@"Unknown section %ld", section);
+			NSLog(@"Unknown section %d", (int)section);
 			break;
 	}
 	

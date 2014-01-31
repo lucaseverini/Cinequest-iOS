@@ -461,28 +461,21 @@
         [newEvent setCalendar:self.cinequestCalendar];
 
         NSError *error = nil;
-        BOOL result = [self.eventStore saveEvent:newEvent span:EKSpanThisEvent error:&error];
-        if (result)
+        if ([self.eventStore saveEvent:newEvent span:EKSpanThisEvent error:&error])
         {
             [self.arrayCalendarItems addObject:uniqueIDForEvent];
 			
             NSLog(@"Succesfully saved event %@ %@", newEvent.title, newEvent.eventIdentifier);
         }
         
-        NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
-        // set predicate to search for an event of the calendar (you can set the startdate, enddate and check in the calendars other than the default Calendar)
-        NSArray *events_Array = [self.eventStore eventsMatchingPredicate:predicateForEvents];
-        for (EKEvent *event in events_Array)
+		if ([self.dictSavedEventsInCalendar objectForKey:uniqueIDForEvent] == nil)
 		{
-            if ([self.dictSavedEventsInCalendar objectForKey:uniqueIDForEvent] == nil)
-			{
-                [self.dictSavedEventsInCalendar setObject:newEvent.eventIdentifier forKey:uniqueIDForEvent];
-				
-                [self.arrCalendarIdentifiers addObject:newEvent.eventIdentifier];
-				
-                NSLog(@"Event %@ added to Calendar dictionary", newEvent.eventIdentifier);
-            }
-        }
+			[self.dictSavedEventsInCalendar setObject:newEvent.eventIdentifier forKey:uniqueIDForEvent];
+			
+			[self.arrCalendarIdentifiers addObject:newEvent.eventIdentifier];
+			
+			NSLog(@"Event %@ added to Calendar dictionary", newEvent.eventIdentifier);
+		}
     }
 	
     [self saveCalendarToDocuments];
