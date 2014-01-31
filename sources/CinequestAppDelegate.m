@@ -110,12 +110,12 @@
     }
 }
 
-//Check if the application is launching for the first time
--(BOOL)checkForFirstAppLaunch
+// Check if the application is launching for the first time
+- (BOOL) checkForFirstAppLaunch
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"])
     {
-        // app already launched
+        // App already launched
         return NO;
     }
     else
@@ -127,8 +127,8 @@
     }
 }
 
-//Remove if extra calendar exists with name Cinequest
--(void)removeUnwantedCalendars
+// Remove if extra calendar exists with name Cinequest
+- (void) removeUnwantedCalendars
 {
     EKEventStore *eventStoreLocal = [[EKEventStore alloc] init];
     NSArray *caleandarsArray = [[NSArray alloc] init];
@@ -147,41 +147,25 @@
 }
 
 
-//Saves the Calendar.plist file to Documents Directory to keep track of save items in calendar
+// Saves the Calendar.plist file to Documents Directory to keep track of save items in calendar
 - (void) saveCalendarToDocuments
 {
-    NSError *error = nil;
     NSURL *url = [[self documentsDirectory] URLByAppendingPathComponent:CALENDAR_FILE];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[url path]])
 	{
-        NSLog(@"Dictionary is:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
-        
-        [fileManager removeItemAtURL:url error:&error];
-        BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
-        NSLog(@"Dictionary is after update:%@", [NSMutableDictionary dictionaryWithContentsOfURL:url]);
-        
-        if (flag)
-		{
-            NSLog(@"Success saving file");
-        }
-        else
-		{
-            NSLog(@"Fail saving file");
-        }
-    }
-    else
+        [fileManager removeItemAtURL:url error:nil];
+	}
+    
+	BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
+	if (flag)
 	{
-        BOOL flag = [self.dictSavedEventsInCalendar writeToURL:url atomically: YES];
-        if (flag)
-		{
-            NSLog(@"Success saving file");
-        }
-        else
-		{
-            NSLog(@"Fail saving file");
-        }
-    }
+		// NSLog(@"Success saving file");
+	}
+	else
+	{
+		NSLog(@"Fail saving file");
+	}
 }
 
 - (void) fetchVenues
@@ -434,8 +418,8 @@
 {
     NSDate *startDate = schedule.startDate;
     NSDate *endDate = schedule.endDate;
-	
     NSString *uniqueIDForEvent = [NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID];
+	
     if ([self.arrayCalendarItems containsObject:uniqueIDForEvent])
     {
         NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
@@ -453,10 +437,12 @@
                 if(success)
                 {
                     [self.arrayCalendarItems removeObject:uniqueIDForEvent];
-                    [self.dictSavedEventsInCalendar removeObjectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
+                    [self.dictSavedEventsInCalendar removeObjectForKey:uniqueIDForEvent];
                     [self.arrCalendarIdentifiers removeObject:stringID];
-                    NSLog( @"Event %@ with ID:%@ deleted successfully", eventToCheck.title,[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]);
-                    NSLog(@"Dictionary is after delete:%@",self.dictSavedEventsInCalendar);
+					
+                    NSLog( @"Event %@ with ID:%@ deleted successfully", eventToCheck.title, uniqueIDForEvent);
+                    
+					// NSLog(@"Dictionary is after delete:%@", self.dictSavedEventsInCalendar);
                 }
                 break;
             }
@@ -473,13 +459,14 @@
         newEvent.startDate = startDate;
         newEvent.endDate = endDate;
         [newEvent setCalendar:self.cinequestCalendar];
-		
+
         NSError *error = nil;
         BOOL result = [self.eventStore saveEvent:newEvent span:EKSpanThisEvent error:&error];
         if (result)
         {
             [self.arrayCalendarItems addObject:uniqueIDForEvent];
-            NSLog(@"Succesfully saved event %@ %@ - %@", newEvent.title, startDate, endDate);
+			
+            NSLog(@"Succesfully saved event %@ %@", newEvent.title, newEvent.eventIdentifier);
         }
         
         NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
@@ -487,11 +474,13 @@
         NSArray *events_Array = [self.eventStore eventsMatchingPredicate:predicateForEvents];
         for (EKEvent *event in events_Array)
 		{
-            if (![self.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]])
+            if ([self.dictSavedEventsInCalendar objectForKey:uniqueIDForEvent] == nil)
 			{
-                [self.dictSavedEventsInCalendar setObject:event.eventIdentifier forKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
-                [self.arrCalendarIdentifiers addObject:event.eventIdentifier];
-                NSLog(@"Item added to Calendar dictionary");
+                [self.dictSavedEventsInCalendar setObject:newEvent.eventIdentifier forKey:uniqueIDForEvent];
+				
+                [self.arrCalendarIdentifiers addObject:newEvent.eventIdentifier];
+				
+                NSLog(@"Event %@ added to Calendar dictionary", newEvent.eventIdentifier);
             }
         }
     }

@@ -14,6 +14,7 @@
 #import "Film.h"
 #import "Festival.h"
 
+
 static NSString *const kDateCellIdentifier = @"DateCell";
 static NSString *const kTitleCellIdentifier = @"TitleCell";
 static char *const kAssociatedScheduleKey = "Schedule";
@@ -72,6 +73,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	cinequestCalendar = delegate.cinequestCalendar;
     eventStore = delegate.eventStore;
 	
+	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
+	
 	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
 	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
 	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary mutableCopy];
@@ -104,12 +107,30 @@ static char *const kAssociatedScheduleKey = "Schedule";
 	
 	[self syncTableDataWithScheduler];
 	
-    // [self.filmsTableView reloadData];
-	
-#pragma message "Must Update Calendar Icons..."
+	if(searchActive)
+	{
+		[self.searchDisplayController.searchResultsTableView reloadData];
+	}
+	else
+	{
+		[self.filmsTableView reloadData];
+	}
 }
 
 #pragma mark - Private methods
+
+- (NSDate*) dateFromString:(NSString*)string
+{
+	__block NSDate *detectedDate;
+	
+	[dateDetector enumerateMatchesInString:string options:kNilOptions range:NSMakeRange(0, string.length) usingBlock:
+	^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop)
+	 {
+		 detectedDate = result.date;
+	 }];
+
+	return detectedDate;
+}
 
 - (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
 {
@@ -126,14 +147,24 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		if(switcher == VIEW_BY_DATE) // VIEW_BY_DATE
 		{
 			NSString *day = [self.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
+			NSDate *date = [self dateFromString:day];
+
 			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			schedule = [film.schedules objectAtIndex:0];
+			
+			for(schedule in film.schedules)
+			{
+				if([schedule.startDate compare:date] >= NSOrderedSame)
+				{
+					break;
+				}
+			}
 		}
 		else // VIEW_BY_TITLE
 		{
 			NSString *sort = [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
 			NSArray *films = [self.alphabetToFilmsDictionary objectForKey:sort];
 			Film *film = [films objectAtIndex:[indexPath row]];
+			
 			schedule = (Schedule*)[film.schedules objectAtIndex:[(UIButton*)sender tag] - CELL_LEFTBUTTON_TAG];
 		}
     }
@@ -172,6 +203,8 @@ static char *const kAssociatedScheduleKey = "Schedule";
 
 - (void) syncTableDataWithScheduler
 {
+	NSLog(@"syncTableDataWithScheduler");
+	
     [delegate populateCalendarEntries];
     
 	NSInteger sectionCount = [self.sortedKeysInDateToFilmsDictionary count];
@@ -181,7 +214,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		return;
 	}
 
-	// Sync current data
 	for (NSUInteger section = 0; section < sectionCount; section++)
 	{
 		NSString *day = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
@@ -197,13 +229,19 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			{
 				Schedule *schedule = [schedules objectAtIndex:schedIdx];
 
-				for (NSUInteger idx = 0; idx < myScheduleCount; idx++)
+				NSUInteger idx;
+				for (idx = 0; idx < myScheduleCount; idx++)
 				{
-					Schedule *mySched = [mySchedule objectAtIndex:idx];
-					if ([mySched.ID isEqualToString:schedule.ID])
+					Schedule *selSchedule = [mySchedule objectAtIndex:idx];
+					if ([selSchedule.ID isEqualToString:schedule.ID])
 					{
 						schedule.isSelected = YES;
+						break;
 					}
+				}
+				if(idx == myScheduleCount)
+				{
+					schedule.isSelected = NO;
 				}
 			}
 		}
@@ -265,17 +303,27 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		case VIEW_BY_DATE:
 		{
 			NSString *day = [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
-			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			Schedule *schedule = [film.schedules objectAtIndex:0];
+			NSDate *date = [self dateFromString:day];
 			
-			// check if current cell is already added to mySchedule
+			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
+						
+			Schedule *schedule = nil;
+			for(schedule in film.schedules)
+			{
+				if([schedule.startDate compare:date] >= NSOrderedSame)
+				{
+					break;
+				}
+			}
+
+			BOOL selected = NO;
 			NSUInteger count = [mySchedule count];
 			for(int idx = 0; idx < count; idx++)
 			{
-				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if(obj.ID == schedule.ID)
+				Schedule *selSchedule = [mySchedule objectAtIndex:idx];
+				if(schedule.ID == selSchedule.ID)
 				{
-					schedule.isSelected = YES;
+					selected = YES;
 					break;
 				}
 			}
@@ -285,7 +333,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 			UILabel *venueLabel = nil;
 			UIButton *calendarButton = nil;
 			
-			UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
+			UIImage *buttonImage = selected ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
 			
 			cell = [tableView dequeueReusableCellWithIdentifier:kDateCellIdentifier];
 			if(cell == nil)
@@ -394,14 +442,14 @@ static char *const kAssociatedScheduleKey = "Schedule";
 				[cell.contentView addSubview:venueLabel];
 				
 				UIButton *calButton = [UIButton buttonWithType:UIButtonTypeCustom];
-				calButton.frame = CGRectMake(11.0, hPos, 40.0, 40.0);
+				calButton.frame = CGRectMake(11.0, hPos - 2.0, 40.0, 40.0);
 				calButton.tag = CELL_LEFTBUTTON_TAG + filmIdx;
 				UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];;
 				[calButton setImage:buttonImage forState:UIControlStateNormal];
 				[calButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				[cell.contentView addSubview:calButton];
 				
-				hPos += 38.0;
+				hPos += 40.0;
 				filmIdx++;
 			}
 		}
@@ -464,10 +512,17 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		case VIEW_BY_DATE:
 		{
 			NSString *day = [self.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
+			NSDate *date = [self dateFromString:day];
+
 			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			Schedule *schedule = [film.schedules objectAtIndex:0];
-			
-			[self showFilmDetails:schedule];
+			for(Schedule *schedule in film.schedules)
+			{
+				if([schedule.startDate compare:date] >= NSOrderedSame)
+				{
+					[self showFilmDetails:schedule];
+					break;
+				}
+			}
 		}
 			break;
 			
@@ -485,8 +540,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		default:
 			break;
 	}
-	
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -518,11 +571,11 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		CGSize size = [film.name sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
 		if(size.width >= 256.0)
 		{
-			return 52.0 + (38.0 * film.schedules.count);
+			return 52.0 + (40.0 * film.schedules.count);
 		}
 		else
 		{
-			return 30.0 + (38.0 * film.schedules.count);
+			return 30.0 + (40.0 * film.schedules.count);
 		}
 	}
 }
@@ -611,8 +664,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 {
 	if([searchString caseInsensitiveCompare:@"CS175"] == NSOrderedSame)
 	{
-		NSLog(@"Show Team picture");
-		
 		UIImageView *teamView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"team" ofType:@"png"]]];
 		teamView.userInteractionEnabled = YES;
 		teamView.contentMode = UIViewContentModeCenter;
@@ -644,9 +695,7 @@ static char *const kAssociatedScheduleKey = "Schedule";
 		return NO;
 	}
 	
- 	[self filterContentForSearchText:searchString scope:
-	 
-	[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+ 	[self filterContentForSearchText:searchString scope:[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
 	
 	// Return YES to cause the search result table view to be reloaded.
     return YES;
@@ -700,6 +749,18 @@ static char *const kAssociatedScheduleKey = "Schedule";
     return YES;
 }
 
+- (void) searchDisplayControllerDidBeginSearch:(UISearchDisplayController *)controller
+{
+	[self.searchDisplayController.searchResultsTableView setSectionIndexColor:[UIColor redColor]];
+
+	searchActive = YES;
+}
+
+- (void) searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
+{
+	searchActive = NO;
+}
+
 - (NSMutableArray*) sortedIndexesFromSortedKeys:(NSMutableArray*)sortedKeysArray
 {
     NSMutableArray *sortedIndexes = [NSMutableArray new];
@@ -734,8 +795,6 @@ static char *const kAssociatedScheduleKey = "Schedule";
 - (void) imageTouched:(id)sender
 {
 	UITapGestureRecognizer *gesture = (UITapGestureRecognizer*)sender;
-
-	NSLog(@"Dismiss Team picture");
 	
 	[gesture.view removeFromSuperviewAnimated];
 

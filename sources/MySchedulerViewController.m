@@ -24,32 +24,14 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 @synthesize switchTitle;
 @synthesize scheduleTableView;
-@synthesize username;
-@synthesize password;
-@synthesize retrievedTimeStamp;
-@synthesize status;
-@synthesize offSeasonLabel;
 
 - (void) didReceiveMemoryWarning
 {
-	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
 }
 
 #pragma mark -
 #pragma mark UIViewController
-
-// Resets some variables when the users moves to a different screen
-- (void) viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-	
-	status = @"none";
-	previousCell = nil;
-	previousEndDate = nil;
-}
 
 - (void) viewDidLoad
 {
@@ -71,10 +53,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	venueFont = timeFont;
- 		
-    // display an Edit button in the navigation bar for this view controller.
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
-
+ 
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	[switchTitle removeSegmentAtIndex:1 animated:NO];
@@ -88,13 +67,21 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     [super viewWillAppear:animated];
   	
     [self getDataForTable];
-	
+		
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
+	self.navigationItem.rightBarButtonItem.enabled = (mySchedule.count != 0);
+
     [scheduleTableView reloadData];
 }
 
-- (void) viewDidAppear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewDidDisappear:animated];
+	
+	if(scheduleTableView.isEditing)
+	{
+		[scheduleTableView setEditing:NO animated:NO];
+	}
 }
 
 #pragma mark -
@@ -105,6 +92,8 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) edit
 {
+	editActivatedFromButton = YES;
+	
 	[scheduleTableView setEditing:YES animated:YES];
 	
 	[self inEditMode:YES];
@@ -149,17 +138,15 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		}
         
 	}
-	[displayData setObject:tempArray forKey:lastDateString];
-    
-	[scheduleTableView reloadData];
 	
-	[self doneEditing];
+	[displayData setObject:tempArray forKey:lastDateString];
 }
 
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
-	// NSLog(@"%@ : %@ : %@", schedule.ID, schedule.title, schedule.itemID);
+	NSLog(@"Editing Event associated to Schedule %@ %@-%@", schedule.title, schedule.itemID, schedule.ID);
+	
 	[self editEventForSchedule:schedule];
 }
 
@@ -177,28 +164,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     }
     
     return nil;
-}
-
-#pragma mark Utility Methods
-
-// This method helps increment the timestamp supplied
-// PRECOND: the format should be similiar to the one used in the CQ XML
-// PSTCOND: Will return the string with exactly 1 second incremented from the supplie time
-+ (NSString *) incrementCQTime:(NSString *)CQdateTime
-{
-	//NSLog(@"CQdateTime: %@", CQdateTime);
-	if(CQdateTime == nil)
-		return @"0";
-	
-	NSDateFormatter *CQDateFormat = [[NSDateFormatter alloc] init];	
-	[CQDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-	
-	NSDate *parsedDate = [CQDateFormat dateFromString:CQdateTime];
-    parsedDate = [parsedDate dateByAddingTimeInterval:1];
-	
-	NSString *returnString = [CQDateFormat stringFromDate:parsedDate];	
-	
-	return returnString;
 }
 
 #pragma mark -
@@ -361,17 +326,14 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		Schedule *schedule = [rowsData objectAtIndex:indexPath.row];
 		if(schedule != nil)
 		{
+			NSLog(@"Deleting Schedule %@ %@-%@ and associated Event...", schedule.title, schedule.itemID, schedule.ID);
+
 			EKEvent *event = [self findEventForSchedule:schedule inStore:eventStore];
 			if(event != nil)
 			{
 				[delegate addOrRemoveScheduleToCalendar:schedule];
 
 				[mySchedule removeObject:schedule];
-		
-				[delegate.arrayCalendarItems removeObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
-		
-				NSArray *keys = [delegate.dictSavedEventsInCalendar allKeysForObject:event.eventIdentifier];
-				[delegate.dictSavedEventsInCalendar removeObjectsForKeys:keys];
 
 				[self getDataForTable];
 				
@@ -380,6 +342,15 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 				NSLog(@"Schedule and associated Event deleted");
 			}
 		}
+
+		if(mySchedule.count == 0 || !editActivatedFromButton)
+		{
+			[scheduleTableView setEditing:NO animated:NO];
+
+			[self inEditMode:NO];
+		}
+		
+		self.navigationItem.rightBarButtonItem.enabled = (mySchedule.count != 0);
 	}
 }
 
@@ -407,12 +378,27 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self inEditMode:YES];
+	NSString *sectionTitle = [titleForSection objectAtIndex:indexPath.section];
+	NSMutableArray *rowsData = [displayData objectForKey:sectionTitle];
+	
+	Schedule *schedule = [rowsData objectAtIndex:indexPath.row];
+	if(schedule != nil)
+	{
+		NSLog(@"Selected Schedule %@ %@-%@ for deletion...", schedule.title, schedule.itemID, schedule.ID);
+	}
+	
+	self.navigationItem.rightBarButtonItem.enabled = NO;
+
+	scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMax;	// hide index while in edit mode
+	[scheduleTableView reloadSectionIndexTitles];
 }
 
 - (void) tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self inEditMode:NO];
+	self.navigationItem.rightBarButtonItem.enabled = (mySchedule.count != 0);
+
+	scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMin;
+	[scheduleTableView reloadSectionIndexTitles];
 }
 
 - (void) inEditMode:(BOOL)inEditMode
@@ -428,12 +414,11 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
 
 		scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMin;
+		
+		editActivatedFromButton = NO;
     }
 	
-	if(mySchedule.count == 0)
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	self.navigationItem.rightBarButtonItem.enabled = (mySchedule.count != 0);
 
     [scheduleTableView reloadSectionIndexTitles];
 }
@@ -469,34 +454,36 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
 {
-	// NSLog(@"%@", delegate.arrayCalendarItems);
-	// NSLog(@"%@", delegate.dictSavedEventsInCalendar);
-
-	if(action == EKEventEditViewActionDeleted)
-	{
-		Schedule *schedule = [self findScheduleForEvent:controller.event];
-		if(schedule != nil)
+    [self dismissViewControllerAnimated:YES completion:
+	^{
+		// NSLog(@"%@", delegate.arrayCalendarItems);
+		// NSLog(@"%@", delegate.dictSavedEventsInCalendar);
+		
+		if(action == EKEventEditViewActionDeleted)
 		{
-			[delegate addOrRemoveScheduleToCalendar:schedule];
+			Schedule *schedule = [self findScheduleForEvent:controller.event];
+			if(schedule != nil)
+			{
+				NSLog(@"Deleting Schedule %@ %@-%@ and associated Event...", schedule.title, schedule.itemID, schedule.ID);
+				
+				[delegate addOrRemoveScheduleToCalendar:schedule];
+				
+				[mySchedule removeObject:schedule];
+				
+				[self getDataForTable];
+				
+				[scheduleTableView reloadData];
 
-			[mySchedule removeObject:schedule];
-			
-			[delegate.arrayCalendarItems removeObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
-	
-			NSArray *keys = [delegate.dictSavedEventsInCalendar allKeysForObject:controller.event.eventIdentifier];
-			[delegate.dictSavedEventsInCalendar removeObjectsForKeys:keys];
-		
-			NSLog(@"Event and associated Schedule deleted");
+				NSLog(@"Event and associated Schedule deleted");
+			}
 		}
-	}
-	else if(action == EKEventEditViewActionSaved)
-	{
-		// Update and save the schedule
-		
-		NSLog(@"Event and associated Schedule updated");
-	}
-	
-    [self dismissViewControllerAnimated:YES completion:nil];
+		else if(action == EKEventEditViewActionSaved)
+		{
+			// Update and save the schedule
+			
+			NSLog(@"Event and associated Schedule updated");
+		}
+	}];
 }
 
 - (Schedule*) findScheduleForEvent:(EKEvent*)event
@@ -520,19 +507,14 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (EKEvent*) findEventForSchedule:(Schedule*)schedule inStore:(EKEventStore*)store
 {
-	EKEvent *event = nil;
-	
 	NSString *eventIdentifier = [delegate.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
 	if(eventIdentifier != nil)
 	{
 		EKEvent *event = [store eventWithIdentifier:eventIdentifier];
-		if(event != nil)
-		{
-			return event;
-		}
+		return event;
 	}
 
-    return event;
+    return nil;
 }
 
 @end

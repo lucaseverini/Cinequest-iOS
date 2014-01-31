@@ -23,6 +23,8 @@
     EKCalendar *cinequestCalendar;
     EKEventStore *eventStore;
 	BOOL statusBarHidden;
+	NSDataDetector *dateDetector;
+	BOOL searchActive;
 }
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
