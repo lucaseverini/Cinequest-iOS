@@ -19,7 +19,7 @@
 #import "GPlusDialogViewController.h"
 
 
-#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}h4{background-color:#F3F3F3; border-radius:4px 4px 4px 4px;text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
+#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}p{margin-bottom:5px;}h4{background-color:#F3F3F3; border-radius:4px 4px 4px 4px;text-align:center;margin-bottom:5px;margin-top:5px;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
 static NSString *kShortProgCellID = @"ShortProgCell";
 static NSString *kScheduleCellID = @"ScheduleCell";
