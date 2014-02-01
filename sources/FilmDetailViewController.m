@@ -19,7 +19,7 @@
 #import "GPlusDialogViewController.h"
 
 
-#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
+#define web @"<style type=\"text/css\">h1{font-size:23px;text-align:center;}p.image{text-align:center;}h4{background-color:#F3F3F3; border-radius:4px 4px 4px 4px;text-align:center;}</style><h1>%@</h1><p class=\"image\"><img style=\"max-height:200px;max-width:250px;\"src=\"%@\"/></p><p>%@</p>"
 
 static NSString *kShortProgCellID = @"ShortProgCell";
 static NSString *kScheduleCellID = @"ScheduleCell";
@@ -127,7 +127,8 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[film imageURL]];
 
 	NSString *weba = [NSString stringWithFormat:web, film.name, cachedImage, [film description]];
-
+    weba = [weba stringByAppendingString:film.webString];
+    /*
     if (film.genre.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Genre</b>: %@<br/>",film.genre];
@@ -177,7 +178,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	{
         weba = [weba stringByAppendingFormat:@"<b>Film Info</b>: %@<br/>", film.filmInfo];
 	}
-
+     */
 	[webView loadHTMLString:weba baseURL:nil];
 }
 

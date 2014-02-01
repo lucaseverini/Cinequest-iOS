@@ -20,5 +20,6 @@
 @property (strong, nonatomic) NSString *country;
 @property (strong, nonatomic) NSString *language;
 @property (strong, nonatomic) NSString *filmInfo;
+@property (strong, nonatomic) NSString *webString;
 
 @end

@@ -19,7 +19,7 @@
 @synthesize infoLink;
 @synthesize customProperties;
 @synthesize currentShowings;
-
+@synthesize sequenceDictionary;
 
 - (id) init
 {
@@ -28,6 +28,7 @@
 	{
 		customProperties = [[NSMutableDictionary alloc] init];
 		currentShowings = [[NSMutableArray alloc] init];
+        sequenceDictionary = [NSMutableDictionary dictionary];
 	}
 	
     return self;

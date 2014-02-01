@@ -22,6 +22,12 @@
 #import "Forum.h"
 #import "Special.h"
 
+@interface NewFestivalParser(){
+    NSSet *neglectKeysFromFeed;
+}
+
+@end
+
 @implementation NewFestivalParser
 
 @synthesize shows;
@@ -32,6 +38,7 @@
     if(self != nil)
     {
         shows = [[NSMutableArray alloc] init];
+        neglectKeysFromFeed = [NSMutableSet setWithObjects:@"Submission ID",@"ShortID",@"EventType", nil];
     }
     
     return self;
@@ -332,6 +339,19 @@
     film.language = [self get:show.customProperties forkey:@"Language"];
     film.genre = [self get:show.customProperties forkey:@"Genre"];
     
+    //Create webContent for Film Detail according to the sequence numbers from Feed
+    NSArray *sortedSequence = [[show.sequenceDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    film.webString = @"";
+    film.webString = [film.webString stringByAppendingFormat:@"<h4>Film Info</h4>"];
+    for (NSNumber *num in sortedSequence) {
+        NSString *strKey = [show.sequenceDictionary objectForKey:num];
+        NSString *strValue = [self get:show.customProperties forkey:[show.sequenceDictionary objectForKey:num]];
+        if ([strKey isEqualToString:@"Director"]) {
+            film.webString = [film.webString stringByAppendingFormat:@"<h4>Cast/Crew Info</h4>"];
+        }
+        film.webString = [film.webString stringByAppendingFormat:@"<b>%@</b>: %@<br/>",strKey,strValue];
+    }
+    
     return film;
 }
 
@@ -529,6 +549,15 @@
 								NSString *customPropertyValue = [[customProperty childAtIndex:4] stringValue];
 								[values addObject:customPropertyValue];
 							}
+                            
+                            //Store Sequence Numbers with value Name of Property
+                            if ([[[customProperty childAtIndex:2] name]isEqualToString:@"Sequence"] && ![[show.sequenceDictionary allValues] containsObject:customPropertyName]) {
+                                //Neglect sequence number for Submission ID, ShortID, EventType
+                                if (![neglectKeysFromFeed containsObject:customPropertyName]) {
+                                    NSNumber *num = @([[[customProperty childAtIndex:2] stringValue] intValue]);
+                                    [show.sequenceDictionary setObject:customPropertyName forKey:num];
+                                }
+                            }
 						}
 					}
 					
