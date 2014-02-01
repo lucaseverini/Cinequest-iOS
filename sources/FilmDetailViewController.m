@@ -88,8 +88,8 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	self.view.userInteractionEnabled = NO;
     
 	titleFont = [UIFont systemFontOfSize:14.0];
-	actionFont = [UIFont systemFontOfSize:16.0];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
 	
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
@@ -128,7 +128,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 	NSString *weba = [NSString stringWithFormat:web, film.name, cachedImage, [film description]];
     weba = [weba stringByAppendingString:film.webString];
-    /*
+/*
     if (film.genre.length)
 	{
         weba = [weba stringByAppendingFormat:@"<b>Genre</b>: %@<br/>",film.genre];
@@ -178,7 +178,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	{
         weba = [weba stringByAppendingFormat:@"<b>Film Info</b>: %@<br/>", film.filmInfo];
 	}
-     */
+*/
 	[webView loadHTMLString:weba baseURL:nil];
 }
 
@@ -254,7 +254,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 #pragma mark -
 #pragma mark UITableView delegate
-
+/*
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
 	NSString *title = nil;
@@ -282,6 +282,60 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	}
 	
     return title;
+}
+*/
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	if(section == SHORT_PROGRAM_SECTION && [[film shortItems] count] == 0)
+	{
+		return 0.0;
+	}
+	else
+	{
+		return 28.0;
+	}
+}
+
+- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
+{
+	if(section == SHORT_PROGRAM_SECTION && [[film shortItems] count] == 0)
+	{
+		return nil;
+	}
+
+	CGFloat width = tableView.bounds.size.width;
+	CGFloat height = 24.0;
+	
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    view.userInteractionEnabled = NO;
+		
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 2.0, width, height)];
+    label.backgroundColor = [UIColor redColor];
+    label.textColor = [UIColor whiteColor];
+    label.font = sectionFont;
+	
+    [view addSubview:label];
+	
+	switch(section)
+	{
+		case SHORT_PROGRAM_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Short Programs"];
+			break;
+			
+		case SCHEDULE_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Schedule"];
+			break;
+			
+		case SOCIAL_MEDIA_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Share Film Detail"];
+			break;
+			
+		case ACTION_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Information & Ticket"];
+			break;
+	}
+	
+    return view;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

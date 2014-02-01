@@ -82,6 +82,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
   	
 	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
 	
 	filmsTableView.tableHeaderView = nil;
@@ -457,7 +458,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
     return cell;
 }
-
+/*
 - (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
 {
 	switch (switcher)
@@ -469,11 +470,43 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 		case VIEW_BY_TITLE:
 			return [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
 			break;
+	}
+	
+	return @"";
+}
+*/
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	return 28.0;
+}
+
+- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
+{
+	CGFloat width = tableView.bounds.size.width - 17.0;
+	CGFloat height = 24.0;
+	
+	UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+	view.userInteractionEnabled = NO;
+	
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 2.0, width, height)];
+	label.backgroundColor = [UIColor redColor];
+	label.textColor = [UIColor whiteColor];
+	label.font = sectionFont;
+	
+	[view addSubview:label];
+
+	switch (switcher)
+	{
+		case VIEW_BY_DATE:
+			label.text = [NSString stringWithFormat:@"  %@", [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section]];
+			break;
 			
-		default:
-			return @"";
+		case VIEW_BY_TITLE:
+			label.text = [NSString stringWithFormat:@"  %@", [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section]];
 			break;
 	}
+
+	return view;
 }
 
 - (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView

@@ -20,7 +20,7 @@
 	UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
-	UIFont *actionFont;
+	UIFont *sectionFont;
 	NSInteger googlePlusConnectionDone;
 }
 

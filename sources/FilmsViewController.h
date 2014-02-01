@@ -20,6 +20,7 @@
 	UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
+	UIFont *sectionFont;
     EKCalendar *cinequestCalendar;
     EKEventStore *eventStore;
 	BOOL statusBarHidden;
