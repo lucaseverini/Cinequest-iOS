@@ -309,11 +309,10 @@ static NSString *kActionsCellID	= @"ActionsCell";
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     view.userInteractionEnabled = NO;
 		
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 2.0, width, height)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
     label.backgroundColor = [UIColor redColor];
     label.textColor = [UIColor whiteColor];
-    label.font = sectionFont;
-	
+    label.font = sectionFont;	
     [view addSubview:label];
 	
 	switch(section)
