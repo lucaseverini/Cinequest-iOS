@@ -20,6 +20,7 @@
 @synthesize country;
 @synthesize language;
 @synthesize filmInfo;
+@synthesize webString;
 
 - (id) init
 {

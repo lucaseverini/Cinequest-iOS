@@ -17,6 +17,7 @@
 @property (strong, nonatomic) NSString *infoLink;
 @property (strong, nonatomic) NSMutableDictionary *customProperties;
 @property (strong, nonatomic) NSMutableArray *currentShowings;
+@property (strong, nonatomic) NSMutableDictionary *sequenceDictionary;
 
 @end
 
