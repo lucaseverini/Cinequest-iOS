@@ -63,7 +63,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 	if(self != nil)
 	{
 		fileMgr = [NSFileManager defaultManager];
-		cacheDir = [NSURL URLWithString:@"CinequestDataCache" relativeToURL:[appDelegate cachesDirectory]];
+		cacheDir = [NSURL URLWithString:CINEQUEST_DATACACHE_FOLDER relativeToURL:[appDelegate cachesDirectory]];
 		
 		if(![fileMgr fileExistsAtPath:[cacheDir path] isDirectory:nil])
 		{
@@ -1035,7 +1035,10 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 	}
 	
 	BOOL imageCached = NO;
-    imageUrl = [imageUrl stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]; // Cleanup to avoid errors in getting an NSURL
+	
+	imageUrl = [imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    // imageUrl = [imageUrl stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]; // Cleanup to avoid errors in getting an NSURL
+	
 	NSURL *url = [NSURL URLWithString:imageUrl];
 	NSString *fileName = [imageUrl lastPathComponent];
 	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:fileName];

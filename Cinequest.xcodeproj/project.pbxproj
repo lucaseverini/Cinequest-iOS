@@ -15,6 +15,7 @@
 		811791C2189787F000B6D21F /* safari_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 811791C0189787F000B6D21F /* safari_icon@2x.png */; };
 		811E00371835991D003C81B0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 811E00361835991D003C81B0 /* CoreLocation.framework */; };
 		811E0039183599A2003C81B0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 811E0038183599A2003C81B0 /* MapKit.framework */; };
+		81309046189CADA300E9266B /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 81309044189CADA300E9266B /* Settings.bundle */; };
 		813CB476183E1FAF00974776 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 813CB475183E1FAF00974776 /* Images.xcassets */; };
 		813D3AE118505911004667D5 /* message.png in Resources */ = {isa = PBXBuildFile; fileRef = 813D3ADF18505911004667D5 /* message.png */; };
 		813D3AE218505911004667D5 /* message@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 813D3AE018505911004667D5 /* message@2x.png */; };
@@ -163,6 +164,7 @@
 		811791C0189787F000B6D21F /* safari_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "safari_icon@2x.png"; path = "images/safari_icon@2x.png"; sourceTree = SOURCE_ROOT; };
 		811E00361835991D003C81B0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		811E0038183599A2003C81B0 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		81309044189CADA300E9266B /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = sources/Settings.bundle; sourceTree = SOURCE_ROOT; };
 		813CB475183E1FAF00974776 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = images/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		813D3ADF18505911004667D5 /* message.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = message.png; path = images/message.png; sourceTree = SOURCE_ROOT; };
 		813D3AE018505911004667D5 /* message@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "message@2x.png"; path = "images/message@2x.png"; sourceTree = SOURCE_ROOT; };
@@ -407,6 +409,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		81309043189CAD8900E9266B /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				81309044189CADA300E9266B /* Settings.bundle */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		8149DFC117EBB3280092F8F9 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -545,6 +555,7 @@
 		81C8B3A017EBABAA00033D4F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				81309043189CAD8900E9266B /* Settings */,
 				81D1EC3D182B8990003DD8BB /* StartupViewController.xib */,
 				81C8B3A917EBABEE00033D4F /* MainWindow.xib */,
 				81C8B3AB17EBABEE00033D4F /* NewsViewController.xib */,
@@ -854,6 +865,7 @@
 				81C8B3D817EBAC2C00033D4F /* events_icon_small.png in Resources */,
 				81C8B3D917EBAC2C00033D4F /* film_icon2.png in Resources */,
 				81D6705E183E19D8007E9B99 /* iphone_icon_58.png in Resources */,
+				81309046189CADA300E9266B /* Settings.bundle in Resources */,
 				81D1EC3E182B8990003DD8BB /* StartupViewController.xib in Resources */,
 				81D62087185ED7C800FEDD03 /* GooglePlus.bundle in Resources */,
 				81D67061183E19D8007E9B99 /* iphone_icon_120.png in Resources */,

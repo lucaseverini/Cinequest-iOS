@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 San Jose State University. All rights reserved.
 //
 
+
 #define FILMSBYTIME		@"http://mobile.cinequest.org/mobileCQ.php?type=schedules&filmtitles&iphone"
 #define FILMSBYTITLE	@"http://mobile.cinequest.org/mobileCQ.php?type=films&iphone"
 #define OLD_NEWS		@"http://mobile.cinequest.org/mobileCQ.php?type=xml&name=ihome"
@@ -38,6 +39,7 @@
 #define TICKET_LINE @"telprompt://1-408-295-3378"
 
 #define CALENDAR_NAME @"Cinequest"
+#define CINEQUEST_DATACACHE_FOLDER @"CinequestDataCache"
 
 #define EMPTY 0
 #define ONE_YEAR (60.0 * 60.0 * 24.0 * 365.0)

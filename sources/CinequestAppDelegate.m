@@ -43,7 +43,32 @@
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-    if([self checkForFirstAppLaunch])
+	if([self checkPrefsForDataDeletion])
+	{
+		NSFileManager *fileMgr = [NSFileManager defaultManager];
+		
+		NSString *cacheDir = [[[self cachesDirectory] path] stringByAppendingPathComponent:CINEQUEST_DATACACHE_FOLDER];
+		if([fileMgr removeItemAtPath:cacheDir error:nil])
+		{
+			NSLog(@"App cache data deleted");
+		}
+		
+		NSInteger fileDeleted = 0;
+		NSString *docDir = [[self documentsDirectory] path];
+		for(NSString *file in [fileMgr contentsOfDirectoryAtPath:docDir error:nil])
+		{
+			if([fileMgr removeItemAtPath:[docDir stringByAppendingPathComponent:file] error:nil])
+			{
+				fileDeleted++;
+			}
+		}
+		if(fileDeleted > 0)
+		{
+			NSLog(@"App document data deleted");
+		}
+	}
+
+	if([self checkForFirstAppLaunch])
     {
         [self removeUnwantedCalendars];
     }
@@ -106,8 +131,21 @@
     if ([fileManager fileExistsAtPath:[url path]])
     {
         self.dictSavedEventsInCalendar = [NSMutableDictionary dictionaryWithContentsOfURL:url];
-        // NSLog(@"Content from Cache:%@", self.dictSavedEventsInCalendar);
     }
+}
+
+- (BOOL) checkPrefsForDataDeletion
+{
+	NSUserDefaults *userDefs = [NSUserDefaults standardUserDefaults];
+		
+	BOOL deleteAppData = [userDefs boolForKey:@"deleteAppData"];
+	if(deleteAppData)
+	{
+        [userDefs setBool:NO forKey:@"deleteAppData"];
+        [userDefs synchronize];
+	}
+		
+	return deleteAppData;
 }
 
 // Check if the application is launching for the first time
