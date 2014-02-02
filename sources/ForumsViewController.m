@@ -48,6 +48,7 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
 
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
@@ -284,9 +285,23 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
     return cell;
 }
 
-- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
 {
-	return [self.sortedKeysInDateToForumsDictionary objectAtIndex:section];
+	CGFloat width = tableView.bounds.size.width - 17.0;
+	CGFloat height = 24.0;
+	
+	UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+	view.userInteractionEnabled = NO;
+	
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
+	label.backgroundColor = [UIColor redColor];
+	label.textColor = [UIColor whiteColor];
+	label.font = sectionFont;
+	[view addSubview:label];
+	
+	label.text = [NSString stringWithFormat:@"  %@", [self.sortedKeysInDateToForumsDictionary objectAtIndex:section]];
+	
+	return view;
 }
 
 - (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
@@ -301,6 +316,11 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 
 #pragma mark -
 #pragma mark UITableView Delegate
+
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	return 28.0;
+}
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

@@ -49,6 +49,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
   
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
@@ -286,16 +287,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     return cell;
 }
 
-- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-	return 0.01;		// This creates a "invisible" footer
-}
-
-- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
-{
-	return [self.sortedKeysInDateToEventsDictionary objectAtIndex:section];
-}
-
 - (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
 {
 #pragma message "** OS bug **"
@@ -306,8 +297,37 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	return self.sortedIndexesInDateToEventsDictionary;
 }
 
+- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
+{
+	CGFloat width = tableView.bounds.size.width - 17.0;
+	CGFloat height = 24.0;
+	
+	UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+	view.userInteractionEnabled = NO;
+	
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
+	label.backgroundColor = [UIColor redColor];
+	label.textColor = [UIColor whiteColor];
+	label.font = sectionFont;
+	[view addSubview:label];
+	
+	label.text = [NSString stringWithFormat:@"  %@", [self.sortedKeysInDateToEventsDictionary objectAtIndex:section]];
+	
+	return view;
+}
+
 #pragma mark -
 #pragma mark UITableView delegate
+
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+	return 0.01;		// This creates a "invisible" footer
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	return 28.0;
+}
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -349,7 +369,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
         return 68.0;
     }
 }
-
 
 @end
 

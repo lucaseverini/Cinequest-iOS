@@ -22,6 +22,7 @@
 	UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
+	UIFont *sectionFont;
 	BOOL editActivatedFromButton;
 }
 

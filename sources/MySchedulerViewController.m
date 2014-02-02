@@ -52,6 +52,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
  
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
@@ -86,6 +87,28 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 #pragma mark -
 #pragma mark Private Methods
+
+- (void) inEditMode:(BOOL)inEditMode
+{
+	if (inEditMode)
+	{
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEditing)];
+		
+        scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMax;	// hide index while in edit mode
+    }
+	else
+	{
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
+		
+		scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMin;
+		
+		editActivatedFromButton = NO;
+    }
+	
+	self.navigationItem.rightBarButtonItem.enabled = (mySchedule.count != 0);
+	
+    [scheduleTableView reloadSectionIndexTitles];
+}
 
 #pragma mark -
 #pragma mark Actions
@@ -183,11 +206,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     return rowsData.count;
 }
 
-- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-	return [titleForSection objectAtIndex:section];
-}
-
 // not too sure what this does, hopefully does not affect the "SLGET";
 // it is one of the implemented functions for the "scheduler list"
 - (NSArray *) sectionIndexTitlesForTableView:(UITableView *)tableView
@@ -227,12 +245,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		venueLabel.tag = CELL_VENUE_LABEL_TAG;
 		venueLabel.font = venueFont;
 		[cell.contentView addSubview:venueLabel];
-/*
-        calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        calendarButton.tag = CELL_LEFTBUTTON_TAG;
-        [calendarButton addTarget:self action:@selector(calendarButtonTapped:event:) forControlEvents:UIControlEventTouchDown];
-        [cell.contentView addSubview:calendarButton];
-*/
+
 		calendarButton = [UIButton buttonWithType:UIButtonTypeCustom];
         calendarButton.tag = CELL_LEFTBUTTON_TAG;
 		[calendarButton setImage:[UIImage imageNamed:@"calendar_icon.png"] forState:UIControlStateNormal];
@@ -266,22 +279,36 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	
 	calendarButton = (UIButton*)[cell viewWithTag:CELL_LEFTBUTTON_TAG];
 	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 12.0 : 24.0, 40.0, 40.0)];
-/*
-	[calendarButton setFrame:CGRectMake(8.0, titleNumLines == 1 ? 12.0 : 24.0, 40.0, 40.0)];
-    if([delegate.arrayCalendarItems containsObject:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]])
-	{
-        [calendarButton setImage:[UIImage imageNamed:@"cal_selected"] forState:UIControlStateNormal];
-    }
-    else
-	{
-        [calendarButton setImage:[UIImage imageNamed:@"cal_unselected"] forState:UIControlStateNormal];
-    }
-*/
+
     return cell;
+}
+
+- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
+{
+	CGFloat width = tableView.bounds.size.width - 17.0;
+	CGFloat height = 24.0;
+	
+	UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+	view.userInteractionEnabled = NO;
+	
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
+	label.backgroundColor = [UIColor redColor];
+	label.textColor = [UIColor whiteColor];
+	label.font = sectionFont;
+	[view addSubview:label];
+	
+	label.text = [NSString stringWithFormat:@"  %@", [titleForSection objectAtIndex:section]];
+	
+	return view;
 }
 
 #pragma mark -
 #pragma mark UITableView Delegate
+
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	return 28.0;
+}
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
@@ -399,28 +426,6 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 	scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMin;
 	[scheduleTableView reloadSectionIndexTitles];
-}
-
-- (void) inEditMode:(BOOL)inEditMode
-{
-	if (inEditMode)
-	{
-		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEditing)];
-
-        scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMax;	// hide index while in edit mode
-    }
-	else
-	{
-		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
-
-		scheduleTableView.sectionIndexMinimumDisplayRowCount = NSIntegerMin;
-		
-		editActivatedFromButton = NO;
-    }
-	
-	self.navigationItem.rightBarButtonItem.enabled = (mySchedule.count != 0);
-
-    [scheduleTableView reloadSectionIndexTitles];
 }
 
 #pragma mark -

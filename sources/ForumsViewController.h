@@ -15,6 +15,7 @@
     UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;    
+	UIFont *sectionFont;
 	NSDataDetector *dateDetector;
 }
 

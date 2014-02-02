@@ -73,10 +73,10 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 	self.activityIndicator.color = [UIColor grayColor];
 
-	titleFont = [UIFont systemFontOfSize:14.0];
-	actionFont = [UIFont systemFontOfSize:16.0];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
+	actionFont = [UIFont systemFontOfSize:12.0];
 
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
 	[switchTitle insertSegmentWithTitle:@"Detail" atIndex:0 animated:NO];
@@ -177,49 +177,36 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	return 0;
 }
 
-- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
+- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
 {
-	NSString *title = nil;
-
+	CGFloat width = tableView.bounds.size.width;
+	CGFloat height = 24.0;
+	
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    view.userInteractionEnabled = NO;
+	
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
+    label.backgroundColor = [UIColor redColor];
+    label.textColor = [UIColor whiteColor];
+    label.font = sectionFont;
+    [view addSubview:label];
+	
 	switch(section)
 	{
 		case SCHEDULE_SECTION:
-			title = @"Schedule";
+			label.text = [NSString stringWithFormat:@"  %@", @"Schedule"];
 			break;
 			
 		case SOCIAL_MEDIA_SECTION:
-			title =  @"Share Event Detail";
+			label.text =  [NSString stringWithFormat:@"  %@", @"Share Forum Detail"];
 			break;
 			
 		case ACTION_SECTION:
-			title = @"Information & Ticket";
+			label.text = [NSString stringWithFormat:@"  %@", @"Information & Ticket"];
 			break;
 	}
 	
-	return title;
-}
-
-- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	NSInteger section = [indexPath section];
-	switch (section)
-	{
-		case SCHEDULE_SECTION:
-			return 50.0;
-			break;
-			
-		case SOCIAL_MEDIA_SECTION:
-			return 70.0;
-			break;
-			
-		case ACTION_SECTION:
-			return 70.0;
-			break;
-			
-		default:
-			return 50.0;
-			break;
-	}
+    return view;
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -311,7 +298,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				
 				UILabel *lblFacebook = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
 				lblFacebook.text = @"Facebook";
-				[lblFacebook setFont:[UIFont systemFontOfSize:12.0]];
+				[lblFacebook setFont:actionFont];
 				[lblFacebook setTextAlignment:NSTextAlignmentCenter];
 				[cell.contentView addSubview:lblFacebook];
 				
@@ -323,7 +310,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				
 				UILabel *lblTwitter = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
 				lblTwitter.text = @"Twitter";
-				[lblTwitter setFont:[UIFont systemFontOfSize:12.0]];
+				[lblTwitter setFont:actionFont];
 				[lblTwitter setTextAlignment:NSTextAlignmentCenter];
 				[cell.contentView addSubview:lblTwitter];
 				
@@ -335,7 +322,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				
 				UILabel *lblGoogle = [[UILabel alloc] initWithFrame:CGRectMake(132.0, 46.0, 56.0, 20)];
 				lblGoogle.text = @"Google+";
-				[lblGoogle setFont:[UIFont systemFontOfSize:12.0]];
+				[lblGoogle setFont:actionFont];
 				[lblGoogle setTextAlignment:NSTextAlignmentCenter];
 				[cell.contentView addSubview:lblGoogle];
 				
@@ -347,7 +334,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				
 				UILabel *lblMail = [[UILabel alloc] initWithFrame:CGRectMake(192.0, 46.0, 56.0, 20)];
 				lblMail.text = @"Email";
-				[lblMail setFont:[UIFont systemFontOfSize:12.0]];
+				[lblMail setFont:actionFont];
 				[lblMail setTextAlignment:NSTextAlignmentCenter];
 				[cell.contentView addSubview:lblMail];
 				
@@ -359,7 +346,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				
 				UILabel *lblMessage = [[UILabel alloc] initWithFrame:CGRectMake(252.0, 46.0, 56.0, 20)];
 				lblMessage.text = @"Message";
-				[lblMessage setFont:[UIFont systemFontOfSize:12.0]];
+				[lblMessage setFont:actionFont];
 				[lblMessage setTextAlignment:NSTextAlignmentCenter];
 				[cell.contentView addSubview:lblMessage];
 			}
@@ -383,7 +370,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				
 				UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
 				lblWebsite.text = @"Website";
-				[lblWebsite setFont:[UIFont systemFontOfSize:12.0]];
+				[lblWebsite setFont:actionFont];
 				[lblWebsite setTextAlignment:NSTextAlignmentCenter];
 				[cell.contentView addSubview:lblWebsite];
 				
@@ -395,7 +382,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				
 				UILabel *lblPhone = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
 				lblPhone.text = @"Call CQ";
-				[lblPhone setFont:[UIFont systemFontOfSize:12.0]];
+				[lblPhone setFont:actionFont];
 				[lblPhone setTextAlignment:NSTextAlignmentCenter];
 				[cell.contentView addSubview:lblPhone];
 			}
@@ -407,18 +394,53 @@ static NSString *kActionsCellID	= @"ActionsCell";
     return cell;
 }
 
+#pragma mark -
+#pragma mark UITableView delegate
+
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
 	return 0.01;		// This creates a "invisible" footer
 }
 
-#pragma mark -
-#pragma mark UITableView delegate
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	NSInteger section = [indexPath section];
+	switch (section)
+	{
+		case SCHEDULE_SECTION:
+			return 50.0;
+			break;
+			
+		case SOCIAL_MEDIA_SECTION:
+			return 70.0;
+			break;
+			
+		case ACTION_SECTION:
+			return 70.0;
+			break;
+			
+		default:
+			return 50.0;
+			break;
+	}
+}
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	// NSInteger section = [indexPath section];
 	// NSInteger row = [indexPath row];
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	if(section == SHORT_PROGRAM_SECTION)
+	{
+		return 0.0;
+	}
+	else
+	{
+		return 28.0;
+	}
 }
 
 #pragma mark -

@@ -15,9 +15,9 @@
 {
 	CinequestAppDelegate *delegate;
 	NSMutableArray *mySchedule;
-	UIFont *titleFont;
 	UIFont *timeFont;
 	UIFont *venueFont;
+	UIFont *sectionFont;
 	UIFont *actionFont;
 	NSInteger googlePlusConnectionDone;
 }

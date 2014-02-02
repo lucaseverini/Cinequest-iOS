@@ -12,7 +12,7 @@
 			<key>Key</key>
 			<string>appVersion</string>
 			<key>DefaultValue</key>
-			<string>1.0 (February 1 2014)</string>
+			<string>3.0.1 (February 2 2014)</string>
 		</dict>
 		<dict>
 			<key>Title</key>
@@ -20,7 +20,7 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>FooterText</key>
-			<string>The app must be completely restarted, not just sent in background, for the deletion of data to occur.</string>
+			<string>The app must be completely restarted, not just sent in background, for the data resetting to occur.</string>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
@@ -28,7 +28,7 @@
 			<key>Key</key>
 			<string>deleteAppData</string>
 			<key>Title</key>
-			<string>Delete application data</string>
+			<string>Reset application data</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>

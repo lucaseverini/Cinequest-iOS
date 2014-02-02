@@ -16,8 +16,8 @@
 	CinequestAppDelegate *delegate;
 	NSString *newsName;
 	NSString *infoLink;
-	UIFont *titleFont;
 	UIFont *actionFont;
+	UIFont *sectionFont;
 	NSInteger googlePlusConnectionDone;
 }
 

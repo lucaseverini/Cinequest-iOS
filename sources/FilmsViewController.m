@@ -458,27 +458,6 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
     return cell;
 }
-/*
-- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
-{
-	switch (switcher)
-	{
-		case VIEW_BY_DATE:
-			return [self.sortedKeysInDateToFilmsDictionary objectAtIndex:section];
-			break;
-			
-		case VIEW_BY_TITLE:
-			return [self.sortedKeysInAlphabetToFilmsDictionary objectAtIndex:section];
-			break;
-	}
-	
-	return @"";
-}
-*/
-- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-	return 28.0;
-}
 
 - (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -532,6 +511,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 }
 
 #pragma mark - UITableView Delegate methods
+
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	return 28.0;
+}
 
 - (void) tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {

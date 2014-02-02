@@ -91,6 +91,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
+	actionFont = [UIFont systemFontOfSize:12.0];
 	
 	UISegmentedControl *switchTitle = [[UISegmentedControl alloc] initWithFrame:CGRectMake(98.5, 7.5, 123.0, 29.0)];
 	[switchTitle insertSegmentWithTitle:[NSString stringWithFormat:@"%@ Detail", self.navigationItem.title] atIndex:0 animated:NO];
@@ -128,57 +129,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 	NSString *weba = [NSString stringWithFormat:web, film.name, cachedImage, [film description]];
     weba = [weba stringByAppendingString:film.webString];
-/*
-    if (film.genre.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Genre</b>: %@<br/>",film.genre];
-	}
-	
-    if (film.director.length != 0)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Director</b>: %@<br/>",film.director];
-	}
-	
-    if (film.producer.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Producer</b>: %@<br/>",film.producer];
-	}
-	
-    if (film.writer.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Writer</b>: %@<br/>",film.writer];
-	}
-	
-    if (film.cinematographer.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Cinematographer</b>: %@<br/>",film.cinematographer];
-	}
-	
-    if (film.editor.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Editor</b>: %@<br/>",film.editor];
-	}
-	
-    if (film.cast.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Cast</b>: %@<br/>",film.cast];
-	}
-	
-    if (film.country.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Country</b>: %@<br/>",film.country];
-	}
-	
-    if (film.language.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Language</b>: %@<br/>", film.language];
-	}
-	
-    if (film.filmInfo.length)
-	{
-        weba = [weba stringByAppendingFormat:@"<b>Film Info</b>: %@<br/>", film.filmInfo];
-	}
-*/
+
 	[webView loadHTMLString:weba baseURL:nil];
 }
 
@@ -223,6 +174,47 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 #pragma mark - UITableView Datasource
 
+- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
+{
+	if(section == SHORT_PROGRAM_SECTION && [[film shortItems] count] == 0)
+	{
+		return nil;
+	}
+	
+	CGFloat width = tableView.bounds.size.width;
+	CGFloat height = 24.0;
+	
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    view.userInteractionEnabled = NO;
+	
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
+    label.backgroundColor = [UIColor redColor];
+    label.textColor = [UIColor whiteColor];
+    label.font = sectionFont;
+    [view addSubview:label];
+	
+	switch(section)
+	{
+		case SHORT_PROGRAM_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Short Programs"];
+			break;
+			
+		case SCHEDULE_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Schedule"];
+			break;
+			
+		case SOCIAL_MEDIA_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Share Film Detail"];
+			break;
+			
+		case ACTION_SECTION:
+			label.text = [NSString stringWithFormat:@"  %@", @"Information & Ticket"];
+			break;
+	}
+	
+    return view;
+}
+
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
 	return 4;
@@ -254,36 +246,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 #pragma mark -
 #pragma mark UITableView delegate
-/*
-- (NSString*) tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
-{
-	NSString *title = nil;
-	
-	switch(section)
-	{
-		case SHORT_PROGRAM_SECTION:
-			if([[film shortItems] count] > 0)
-			{
-				title = @"Short Programs";
-			}
-			break;
-			
-		case SCHEDULE_SECTION:
-			title = @"Schedule";
-			break;
-			
-		case SOCIAL_MEDIA_SECTION:
-			title = @"Share Film Detail";
-			break;
-			
-		case ACTION_SECTION:
-			title = @"Information & Ticket";
-			break;
-	}
-	
-    return title;
-}
-*/
+
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
 	if(section == SHORT_PROGRAM_SECTION && [[film shortItems] count] == 0)
@@ -294,47 +257,6 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	{
 		return 28.0;
 	}
-}
-
-- (UIView*) tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
-{
-	if(section == SHORT_PROGRAM_SECTION && [[film shortItems] count] == 0)
-	{
-		return nil;
-	}
-
-	CGFloat width = tableView.bounds.size.width;
-	CGFloat height = 24.0;
-	
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
-    view.userInteractionEnabled = NO;
-		
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
-    label.backgroundColor = [UIColor redColor];
-    label.textColor = [UIColor whiteColor];
-    label.font = sectionFont;	
-    [view addSubview:label];
-	
-	switch(section)
-	{
-		case SHORT_PROGRAM_SECTION:
-			label.text = [NSString stringWithFormat:@"  %@", @"Short Programs"];
-			break;
-			
-		case SCHEDULE_SECTION:
-			label.text = [NSString stringWithFormat:@"  %@", @"Schedule"];
-			break;
-			
-		case SOCIAL_MEDIA_SECTION:
-			label.text = [NSString stringWithFormat:@"  %@", @"Share Film Detail"];
-			break;
-			
-		case ACTION_SECTION:
-			label.text = [NSString stringWithFormat:@"  %@", @"Information & Ticket"];
-			break;
-	}
-	
-    return view;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -503,7 +425,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
                 
                 UILabel *lblFacebook = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
                 lblFacebook.text = @"Facebook";
-                [lblFacebook setFont:[UIFont systemFontOfSize:12.0]];
+                [lblFacebook setFont:actionFont];
                 [lblFacebook setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblFacebook];
                 
@@ -515,7 +437,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
                 UILabel *lblTwitter = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
                 lblTwitter.text = @"Twitter";
-                [lblTwitter setFont:[UIFont systemFontOfSize:12.0]];
+                [lblTwitter setFont:actionFont];
                 [lblTwitter setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblTwitter];
 
@@ -527,7 +449,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
                 
                 UILabel *lblGoogle = [[UILabel alloc] initWithFrame:CGRectMake(132.0, 46.0, 56.0, 20)];
                 lblGoogle.text = @"Google+";
-                [lblGoogle setFont:[UIFont systemFontOfSize:12.0]];
+                [lblGoogle setFont:actionFont];
                 [lblGoogle setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblGoogle];
 
@@ -539,7 +461,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
                 
                 UILabel *lblMail = [[UILabel alloc] initWithFrame:CGRectMake(192.0, 46.0, 56.0, 20)];
                 lblMail.text = @"Email";
-                [lblMail setFont:[UIFont systemFontOfSize:12.0]];
+                [lblMail setFont:actionFont];
                 [lblMail setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblMail];
 
@@ -551,7 +473,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 				UILabel *lblMessage = [[UILabel alloc] initWithFrame:CGRectMake(252.0, 46.0, 56.0, 20)];
                 lblMessage.text = @"Message";
-                [lblMessage setFont:[UIFont systemFontOfSize:12.0]];
+                [lblMessage setFont:actionFont];
                 [lblMessage setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblMessage];
 			}
@@ -575,7 +497,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
                 
                 UILabel *lblWebsite = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 46.0, 56.0, 20)];
                 lblWebsite.text = @"Website";
-                [lblWebsite setFont:[UIFont systemFontOfSize:12.0]];
+                [lblWebsite setFont:actionFont];
                 [lblWebsite setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblWebsite];
 
@@ -587,7 +509,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
                 
                 UILabel *lblPhone = [[UILabel alloc] initWithFrame:CGRectMake(72.0, 46.0, 56.0, 20)];
                 lblPhone.text = @"Call CQ";
-                [lblPhone setFont:[UIFont systemFontOfSize:12.0]];
+                [lblPhone setFont:actionFont];
                 [lblPhone setTextAlignment:NSTextAlignmentCenter];
                 [cell.contentView addSubview:lblPhone];
 			}
@@ -826,9 +748,6 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 - (IBAction) shareToTwitter:(id)sender
 {
-	// [[GPPSignIn sharedInstance] signOut];
-	//  return;
-	
     NSString *postString = [NSString stringWithFormat:@"I'm planning to go see %@\n%@", film.name, film.infoLink];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
