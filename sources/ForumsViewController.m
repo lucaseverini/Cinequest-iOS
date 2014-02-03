@@ -199,7 +199,19 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	Schedule *schedule = nil;
 	for(schedule in forum.schedules)
 	{
-		if([schedule.startDate compare:date] >= NSOrderedSame)
+        //Compare Date using Day-Month-year components excluding the time
+        NSDate *startDate, *sectionDate;
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+        
+        NSDateComponents *date1Components = [calendar components:components
+                                                        fromDate: schedule.startDate];
+        NSDateComponents *date2Components = [calendar components:components
+                                                        fromDate: date];
+        
+        startDate = [calendar dateFromComponents:date1Components];
+        sectionDate = [calendar dateFromComponents:date2Components];
+        if ([startDate compare:sectionDate] >= NSOrderedSame)
 		{
 			break;
 		}
@@ -334,8 +346,21 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	
 	for(Schedule *schedule in forum.schedules)
 	{
-		if([schedule.startDate compare:date] >= NSOrderedSame)
-		{
+        //Compare Date using Day-Month-year components excluding the time
+        NSDate *startDate, *sectionDate;
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+        
+        NSDateComponents *date1Components = [calendar components:components
+                                                        fromDate: schedule.startDate];
+        NSDateComponents *date2Components = [calendar components:components
+                                                        fromDate: date];
+        
+        startDate = [calendar dateFromComponents:date1Components];
+        sectionDate = [calendar dateFromComponents:date2Components];
+        if ([startDate compare:sectionDate] >= NSOrderedSame)
+//		if([schedule.startDate compare:date] >= NSOrderedSame)
+        {
 			ForumDetailViewController *eventDetail = [[ForumDetailViewController alloc] initWithForum:schedule.itemID];
 			[self.navigationController pushViewController:eventDetail animated:YES];
 			
