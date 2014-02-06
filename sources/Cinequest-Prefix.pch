@@ -21,6 +21,7 @@
 	#import <MessageUI/MessageUI.h>
 	#import <Social/Social.h>
 	#import <MapKit/MapKit.h>
+    #import <Crashlytics/Crashlytics.h>
 	#import <GooglePlus/GooglePlus.h>
 	#import <GoogleOpenSource/GoogleOpenSource.h>
 #endif

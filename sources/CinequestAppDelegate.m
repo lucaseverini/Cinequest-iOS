@@ -13,7 +13,6 @@
 #import "DataProvider.h"
 #import "VenueParser.h"
 
-
 @implementation CinequestAppDelegate
 
 @synthesize window;
@@ -43,6 +42,7 @@
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
+    [Crashlytics startWithAPIKey:@"c3d1ebb5b9d5f416213c217e714ce6a7f1dc0ee6"];
 	if([self checkPrefsForDataDeletion])
 	{
 		NSFileManager *fileMgr = [NSFileManager defaultManager];
