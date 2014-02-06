@@ -489,6 +489,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 
 - (NSArray*) sectionIndexTitlesForTableView:(UITableView*)tableView
 {
+    
 #pragma message "** OS bug **"
 	// Temporary fix for crash in [self.filmsTableView reloadData] usually caused by Google+-related code
 	// http://stackoverflow.com/questions/18918986/uitableview-section-index-related-crashes-under-ios-7

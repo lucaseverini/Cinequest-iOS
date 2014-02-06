@@ -117,7 +117,6 @@
 		81E1963F18530F9C00C1A89D /* browser.png in Resources */ = {isa = PBXBuildFile; fileRef = 81E1963D18530F9C00C1A89D /* browser.png */; };
 		81E1964018530F9C00C1A89D /* browser@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81E1963E18530F9C00C1A89D /* browser@2x.png */; };
 		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
-		931DA86318A3D9A900F31976 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 931DA86218A3D9A900F31976 /* Crashlytics.framework */; };
 		935D58D4183CE0E300BE904F /* VenueParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 935D58D3183CE0E300BE904F /* VenueParser.m */; };
 		935D58D6183CE26000BE904F /* News@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 935D58D5183CE26000BE904F /* News@2x.png */; };
 		93E4E09F182BAFE900515A84 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E4E09E182BAFE900515A84 /* EventKit.framework */; };
@@ -125,6 +124,7 @@
 		93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */; };
 		93E4E0A6182BB1A200515A84 /* cal_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A2182BB1A200515A84 /* cal_unselected.png */; };
 		93E4E0A7182BB1A200515A84 /* cal_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A3182BB1A200515A84 /* cal_unselected@2x.png */; };
+		93E6F1BE18A3E67E00EBC384 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E6F1BD18A3E67E00EBC384 /* Crashlytics.framework */; };
 		93F451D417FDEE6C0091CEE7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F451D317FDEE6C0091CEE7 /* Social.framework */; };
 		C27139381828E8C900BF8DCB /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C27139371828E8C900BF8DCB /* XCTest.framework */; };
 		C27139391828E8C900BF8DCB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38317EBAB3200033D4F /* Foundation.framework */; };
@@ -322,7 +322,6 @@
 		81F7B162184EBE3C002B4B56 /* NVPolylineAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NVPolylineAnnotationView.m; path = sources/NVPolylineAnnotationView.m; sourceTree = SOURCE_ROOT; };
 		81FBC131182DA37900C01783 /* DataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataProvider.h; path = sources/DataProvider.h; sourceTree = SOURCE_ROOT; };
 		81FBC132182DA37900C01783 /* DataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataProvider.m; path = sources/DataProvider.m; sourceTree = SOURCE_ROOT; };
-		931DA86218A3D9A900F31976 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		935D58D2183CE0E300BE904F /* VenueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VenueParser.h; path = sources/VenueParser.h; sourceTree = SOURCE_ROOT; };
 		935D58D3183CE0E300BE904F /* VenueParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VenueParser.m; path = sources/VenueParser.m; sourceTree = SOURCE_ROOT; };
 		935D58D5183CE26000BE904F /* News@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "News@2x.png"; path = "images/News@2x.png"; sourceTree = SOURCE_ROOT; };
@@ -331,6 +330,7 @@
 		93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cal_selected@2x.png"; path = "images/cal_selected@2x.png"; sourceTree = SOURCE_ROOT; };
 		93E4E0A2182BB1A200515A84 /* cal_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cal_unselected.png; path = images/cal_unselected.png; sourceTree = SOURCE_ROOT; };
 		93E4E0A3182BB1A200515A84 /* cal_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cal_unselected@2x.png"; path = "images/cal_unselected@2x.png"; sourceTree = SOURCE_ROOT; };
+		93E6F1BD18A3E67E00EBC384 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		93F451D317FDEE6C0091CEE7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		C27139361828E8C800BF8DCB /* List of Shows Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "List of Shows Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C27139371828E8C900BF8DCB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -372,6 +372,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93E6F1BE18A3E67E00EBC384 /* Crashlytics.framework in Frameworks */,
 				81C02F24188F040B0019227F /* AddressBook.framework in Frameworks */,
 				81D6208E185ED96C00FEDD03 /* GooglePlus.framework in Frameworks */,
 				811E00371835991D003C81B0 /* CoreLocation.framework in Frameworks */,
@@ -384,7 +385,6 @@
 				81C02F2A188F04C30019227F /* AssetsLibrary.framework in Frameworks */,
 				81C8B38417EBAB3200033D4F /* Foundation.framework in Frameworks */,
 				81D6208D185ED96C00FEDD03 /* GoogleOpenSource.framework in Frameworks */,
-				931DA86318A3D9A900F31976 /* Crashlytics.framework in Frameworks */,
 				81C8B38617EBAB3200033D4F /* CoreGraphics.framework in Frameworks */,
 				811E0039183599A2003C81B0 /* MapKit.framework in Frameworks */,
 				8149DFC017EBB2FD0092F8F9 /* QuartzCore.framework in Frameworks */,
@@ -519,10 +519,10 @@
 		81C8B38017EBAB3200033D4F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93E6F1BD18A3E67E00EBC384 /* Crashlytics.framework */,
 				81D6208B185ED96C00FEDD03 /* GoogleOpenSource.framework */,
 				81D6208C185ED96C00FEDD03 /* GooglePlus.framework */,
 				81D62086185ED7C800FEDD03 /* GooglePlus.bundle */,
-				931DA86218A3D9A900F31976 /* Crashlytics.framework */,
 				81C02F23188F040B0019227F /* AddressBook.framework */,
 				81C02F29188F04C30019227F /* AssetsLibrary.framework */,
 				81C8B38517EBAB3200033D4F /* CoreGraphics.framework */,
