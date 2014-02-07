@@ -37,6 +37,8 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 	newsTableView.tableHeaderView = nil;
 	newsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+	
+	titleFont = [UIFont systemFontOfSize:[UIFont labelFontSize]];
 
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
@@ -208,16 +210,22 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 		}
 	}
 	
-	CGRect titleFrame = CGRectMake(15.0, 4.0 + imgSize.height, 290.0, 48.0);
-		
-	UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
+	UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.0, 4.0 + imgSize.height, 305.0, 48.0)];
 	titleLabel.tag = CELL_TITLE_LABEL_TAG;
-	titleLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+	titleLabel.font = titleFont;
 	titleLabel.numberOfLines = 2;
 	titleLabel.text = [newsData objectForKey:@"name"];
-	[cell.contentView addSubview:titleLabel];
+
+	CGSize size = [titleLabel.text sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
+	if(size.width < 285.0)
+	{
+		[titleLabel setFrame:CGRectMake(15.0, 4.0 + imgSize.height, 305.0, 26.0)];
+		titleLabel.numberOfLines = 1;
+	}
 	
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	[cell.contentView addSubview:titleLabel];
+
+	// cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	
     return cell;
@@ -240,15 +248,30 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSMutableDictionary *newsData = [news objectAtIndex:[indexPath row]];
+
+	CGFloat height = 54.0;
+	NSString *text = [newsData objectForKey:@"name"];
+	CGSize size = [text sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
+	if(size.width < 285.0)
+	{
+		height = 34.0;
+	}
+
 	NSString *imageUrl = [newsData objectForKey:@"thumbImage"];
 	if(imageUrl.length != 0)
 	{
-		return 158.0;
+		imageUrl = [appDelegate.dataProvider cacheImage:imageUrl];
+		if(imageUrl.length != 0)
+		{
+			UIImage *image = [UIImage imageWithContentsOfFile:[[NSURL URLWithString:imageUrl] path]];
+			if(imageUrl != nil)
+			{
+				return height + [image size].height;
+			}
+		}
 	}
-	else
-	{
-		return 54.0;
-	}
+
+	return height;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section

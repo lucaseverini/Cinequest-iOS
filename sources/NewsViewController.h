@@ -8,6 +8,7 @@
 
 @interface NewsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
+	UIFont *titleFont;
 	BOOL tabBarAnimation;
 }
 

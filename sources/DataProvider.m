@@ -1042,11 +1042,10 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 	NSURL *url = [NSURL URLWithString:imageUrl];
 	NSString *fileName = [imageUrl lastPathComponent];
     
-    //If imageURL is nil return URL of Placeholder Image
-    if (fileName == nil || [fileName isEqualToString:@""]) {
-        NSString *imageURLFromBundle = [[NSBundle mainBundle] pathForResource:@"cqthumb" ofType:@"jpg"];
-        imageURLFromBundle = [@"file:///" stringByAppendingPathComponent:imageURLFromBundle];
-        return imageURLFromBundle;
+    // If url or imageURL is nil return URL of Placeholder Image
+    if (url == nil || fileName.length == 0)
+	{
+		return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
     }
     
 	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:fileName];
