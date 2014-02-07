@@ -1031,7 +1031,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 {
 	if(imageUrl == nil)
 	{
-		return nil;
+		return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 	}
 	
 	BOOL imageCached = NO;
@@ -1061,7 +1061,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 		}
 		else
 		{
-			return nil;
+			return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 		}
 	}
 
@@ -1095,7 +1095,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 		}
 		else
 		{
-			return nil;
+			return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 		}
 	}
 }
