@@ -1086,7 +1086,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/..\"",
 					"\"$(SRCROOT)/GooglePlus\"",
-					"/Users/dhwanilkarwa/Cinequest-iOS",
+					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sources/Cinequest-Prefix.pch";
@@ -1118,7 +1118,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/..\"",
 					"\"$(SRCROOT)/GooglePlus\"",
-					"/Users/dhwanilkarwa/Cinequest-iOS",
+					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sources/Cinequest-Prefix.pch";
