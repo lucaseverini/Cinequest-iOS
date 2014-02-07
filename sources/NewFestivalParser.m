@@ -342,14 +342,18 @@
     //Create webContent for Film Detail according to the sequence numbers from Feed
     NSArray *sortedSequence = [[show.sequenceDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)];
     film.webString = @"";
-    film.webString = [film.webString stringByAppendingFormat:@"<h4>Film Info</h4>"];
-    for (NSNumber *num in sortedSequence) {
-        NSString *strKey = [show.sequenceDictionary objectForKey:num];
-        NSString *strValue = [self get:show.customProperties forkey:[show.sequenceDictionary objectForKey:num]];
-        if ([strKey isEqualToString:@"Director"]) {
-            film.webString = [film.webString stringByAppendingFormat:@"<h4>Cast/Crew Info</h4>"];
+    
+    //Only compute webstring if the CustomProperty contains Sequence elements
+    if ([sortedSequence count]) {
+        film.webString = [film.webString stringByAppendingFormat:@"<h4>Film Info</h4>"];
+        for (NSNumber *num in sortedSequence) {
+            NSString *strKey = [show.sequenceDictionary objectForKey:num];
+            NSString *strValue = [self get:show.customProperties forkey:[show.sequenceDictionary objectForKey:num]];
+            if ([strKey isEqualToString:@"Director"]) {
+                film.webString = [film.webString stringByAppendingFormat:@"<h4>Cast/Crew Info</h4>"];
+            }
+            film.webString = [film.webString stringByAppendingFormat:@"<b>%@</b>: %@<br/>",strKey,strValue];
         }
-        film.webString = [film.webString stringByAppendingFormat:@"<b>%@</b>: %@<br/>",strKey,strValue];
     }
     
     return film;

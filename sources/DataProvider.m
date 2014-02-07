@@ -1038,9 +1038,17 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 	
 	imageUrl = [imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     // imageUrl = [imageUrl stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]; // Cleanup to avoid errors in getting an NSURL
-	
+    
 	NSURL *url = [NSURL URLWithString:imageUrl];
 	NSString *fileName = [imageUrl lastPathComponent];
+    
+    //If imageURL is nil return URL of Placeholder Image
+    if (fileName == nil || [fileName isEqualToString:@""]) {
+        NSString *imageURLFromBundle = [[NSBundle mainBundle] pathForResource:@"cqthumb" ofType:@"jpg"];
+        imageURLFromBundle = [@"file:///" stringByAppendingPathComponent:imageURLFromBundle];
+        return imageURLFromBundle;
+    }
+    
 	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:fileName];
 	NSString *filePath = [fileUrl path];
 

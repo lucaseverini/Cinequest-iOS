@@ -119,6 +119,8 @@
 		81FBC133182DA37900C01783 /* DataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBC132182DA37900C01783 /* DataProvider.m */; };
 		935D58D4183CE0E300BE904F /* VenueParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 935D58D3183CE0E300BE904F /* VenueParser.m */; };
 		935D58D6183CE26000BE904F /* News@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 935D58D5183CE26000BE904F /* News@2x.png */; };
+		93BD648C18A4BBC600838BEC /* cqthumb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 93BD648B18A4BBC600838BEC /* cqthumb.jpg */; };
+		93BD648E18A4C9D800838BEC /* cqthumb@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 93BD648D18A4C9D800838BEC /* cqthumb@2x.jpg */; };
 		93E4E09F182BAFE900515A84 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E4E09E182BAFE900515A84 /* EventKit.framework */; };
 		93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A0182BB1A200515A84 /* cal_selected.png */; };
 		93E4E0A5182BB1A200515A84 /* cal_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */; };
@@ -325,6 +327,8 @@
 		935D58D2183CE0E300BE904F /* VenueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VenueParser.h; path = sources/VenueParser.h; sourceTree = SOURCE_ROOT; };
 		935D58D3183CE0E300BE904F /* VenueParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VenueParser.m; path = sources/VenueParser.m; sourceTree = SOURCE_ROOT; };
 		935D58D5183CE26000BE904F /* News@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "News@2x.png"; path = "images/News@2x.png"; sourceTree = SOURCE_ROOT; };
+		93BD648B18A4BBC600838BEC /* cqthumb.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cqthumb.jpg; path = images/cqthumb.jpg; sourceTree = SOURCE_ROOT; };
+		93BD648D18A4C9D800838BEC /* cqthumb@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "cqthumb@2x.jpg"; path = "images/cqthumb@2x.jpg"; sourceTree = SOURCE_ROOT; };
 		93E4E09E182BAFE900515A84 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		93E4E0A0182BB1A200515A84 /* cal_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cal_selected.png; path = images/cal_selected.png; sourceTree = SOURCE_ROOT; };
 		93E4E0A1182BB1A200515A84 /* cal_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cal_selected@2x.png"; path = "images/cal_selected@2x.png"; sourceTree = SOURCE_ROOT; };
@@ -570,6 +574,8 @@
 		81C8B3B917EBAC1600033D4F /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				93BD648D18A4C9D800838BEC /* cqthumb@2x.jpg */,
+				93BD648B18A4BBC600838BEC /* cqthumb.jpg */,
 				813CB475183E1FAF00974776 /* Images.xcassets */,
 				8163D49E185C5DAD0035F67F /* team.png */,
 				814910B0188F445500ADF0DF /* PlaceholderAvatar.png */,
@@ -868,6 +874,7 @@
 				81C8B3DE17EBAC2C00033D4F /* schedule.png in Resources */,
 				811791C1189787F000B6D21F /* safari_icon.png in Resources */,
 				81A496461845A50C0025CCBB /* twitter@2x.png in Resources */,
+				93BD648E18A4C9D800838BEC /* cqthumb@2x.jpg in Resources */,
 				81B32C99183C2DF8006D2D78 /* logoSJSU.png in Resources */,
 				81B7C4A9184D1358001F4B16 /* MapViewController.xib in Resources */,
 				93E4E0A4182BB1A200515A84 /* cal_selected.png in Resources */,
@@ -878,6 +885,7 @@
 				811791C2189787F000B6D21F /* safari_icon@2x.png in Resources */,
 				8163D490185C499A0035F67F /* Forums_black.png in Resources */,
 				81C8B3E017EBAC2C00033D4F /* trans_forums_small.png in Resources */,
+				93BD648C18A4BBC600838BEC /* cqthumb.jpg in Resources */,
 				81D6705D183E19D8007E9B99 /* iphone_icon_57.png in Resources */,
 				8163D494185C499A0035F67F /* Schedule_black.png in Resources */,
 				81A496501845A50C0025CCBB /* maps@2x.png in Resources */,
