@@ -166,16 +166,38 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 		
 		Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
 		
-		for(schedule in event.schedules)
-		{
-			if([schedule.startDate compare:date] >= NSOrderedSame)
-			{
+		for (schedule in event.schedules) {
+			
+            if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 				break;
 			}
 		}
     }
 	
     return schedule;
+}
+
+//Returns result of comparision between the StartDate of Schedule
+//with the SectionDate of tableview using Calendar Components Day-Month-Year
+- (BOOL)compareStartDate:(NSDate *)startDate withSectionDate:(NSDate *)sectionDate
+{
+    //Compare Date using Day-Month-year components excluding the time
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+    
+    NSDateComponents *date1Components = [calendar components:components
+                                                    fromDate: startDate];
+    NSDateComponents *date2Components = [calendar components:components
+                                                    fromDate: sectionDate];
+    
+    startDate = [calendar dateFromComponents:date1Components];
+    sectionDate = [calendar dateFromComponents:date2Components];
+    
+    if ([startDate compare:sectionDate] >= NSOrderedSame) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
 }
 
 #pragma mark -
@@ -203,10 +225,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
 
 	Schedule *schedule = nil;
-	for(schedule in event.schedules)
-	{
-		if([schedule.startDate compare:date] >= NSOrderedSame)
-		{
+	for (schedule in event.schedules) {
+        
+        if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 			break;
 		}
 	}
@@ -339,10 +360,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	
 	Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
 	
-	for(Schedule *schedule in event.schedules)
-	{
-		if([schedule.startDate compare:date] >= NSOrderedSame)
-		{
+	for(Schedule *schedule in event.schedules) {
+        
+        if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 			EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:schedule.itemID];
 			[self.navigationController pushViewController:eventDetail animated:YES];
 

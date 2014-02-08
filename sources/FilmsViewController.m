@@ -151,10 +151,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 
 			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 			
-			for(schedule in film.schedules)
-			{
-				if([schedule.startDate compare:date] >= NSOrderedSame)
-				{
+			for(schedule in film.schedules) {
+                
+				if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 					break;
 				}
 			}
@@ -248,6 +247,28 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	}
 }
 
+//Returns result of comparision between the StartDate of Schedule
+//with the SectionDate of tableview using Calendar Components Day-Month-Year
+- (BOOL)compareStartDate:(NSDate *)startDate withSectionDate:(NSDate *)sectionDate
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+    
+    NSDateComponents *date1Components = [calendar components:components
+                                                    fromDate: startDate];
+    NSDateComponents *date2Components = [calendar components:components
+                                                    fromDate: sectionDate];
+    
+    startDate = [calendar dateFromComponents:date1Components];
+    sectionDate = [calendar dateFromComponents:date2Components];
+    
+    if ([startDate compare:sectionDate] >= NSOrderedSame) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
 #pragma mark - UITableView Datasource methods
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView*)tableView
@@ -308,10 +329,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
 						
 			Schedule *schedule = nil;
-			for(schedule in film.schedules)
-			{
-				if([schedule.startDate compare:date] >= NSOrderedSame)
-				{
+			for(schedule in film.schedules) {
+                
+				if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 					break;
 				}
 			}
@@ -531,10 +551,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSDate *date = [self dateFromString:day];
 
 			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			for(Schedule *schedule in film.schedules)
-			{
-				if([schedule.startDate compare:date] >= NSOrderedSame)
-				{
+			for (Schedule *schedule in film.schedules) {
+                
+				if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 					[self showFilmDetails:schedule];
 					break;
 				}
