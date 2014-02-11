@@ -12,6 +12,7 @@
 #import "StartupViewController.h"
 #import "DataProvider.h"
 #import "VenueParser.h"
+#import <Crashlytics/Crashlytics.h>
 
 @implementation CinequestAppDelegate
 
