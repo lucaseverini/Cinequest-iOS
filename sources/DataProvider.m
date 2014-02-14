@@ -8,6 +8,7 @@
 
 #import "DataProvider.h"
 #import "CinequestAppDelegate.h"
+#import "NewFestivalParser.h"
 
 NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 
@@ -478,6 +479,19 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 		}
 		
 		NSLog(@"newsFeedUpdated:%@  Date:%@", self.newsFeedUpdated ? @"YES" : @"NO", self.newsFeedDate);
+		
+		if(self.newsFeedUpdated)
+		{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+			^{
+				appDelegate.festival = [[NewFestivalParser new] parseFestival];
+			});
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+			^{
+				[appDelegate fetchVenues];
+			});
+		}
 	});
 }
 
