@@ -321,6 +321,18 @@
     return modifiedString;
 }
 
+//Checks if the show is part of shorts program
+- (BOOL) isPartOfShorts:(NSString *)shortDescription
+{
+    NSString *string = @"Part of Shorts Program";
+    
+    if ([shortDescription rangeOfString:string].location == NSNotFound) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
+}
+
 - (Film*) getFilmFrom:(Show *)show
 {
     Film *film = [[Film alloc] init];
@@ -619,8 +631,11 @@
 					}
 				}
 			}
-			
-			[self.shows addObject:show];
+            
+            //Do not add show when there are no schedules and its not a part of shorts program
+            if (!([show.currentShowings count] == 0 && ![self isPartOfShorts:show.shortDescription])) {
+                [self.shows addObject:show];
+            }
 		}
     }
 }

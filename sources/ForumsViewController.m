@@ -141,16 +141,38 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 		
 		Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
 		
-		for(schedule in forum.schedules)
-		{
-			if([schedule.startDate compare:date] >= NSOrderedSame)
-			{
+		for(schedule in forum.schedules) {
+            
+			if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 				break;
 			}
 		}
 	}
     
     return schedule;
+}
+
+//Returns result of comparision between the StartDate of Schedule
+//with the SectionDate of tableview using Calendar Components Day-Month-Year
+- (BOOL)compareStartDate:(NSDate *)startDate withSectionDate:(NSDate *)sectionDate
+{
+    //Compare Date using Day-Month-year components excluding the time
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+    
+    NSDateComponents *date1Components = [calendar components:components
+                                                    fromDate: startDate];
+    NSDateComponents *date2Components = [calendar components:components
+                                                    fromDate: sectionDate];
+    
+    startDate = [calendar dateFromComponents:date1Components];
+    sectionDate = [calendar dateFromComponents:date2Components];
+    
+    if ([startDate compare:sectionDate] >= NSOrderedSame) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
 }
 
 #pragma mark - Actions
@@ -197,22 +219,9 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
 	
 	Schedule *schedule = nil;
-	for(schedule in forum.schedules)
-	{
-        //Compare Date using Day-Month-year components excluding the time
-        NSDate *startDate, *sectionDate;
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+	for(schedule in forum.schedules) {
         
-        NSDateComponents *date1Components = [calendar components:components
-                                                        fromDate: schedule.startDate];
-        NSDateComponents *date2Components = [calendar components:components
-                                                        fromDate: date];
-        
-        startDate = [calendar dateFromComponents:date1Components];
-        sectionDate = [calendar dateFromComponents:date2Components];
-        if ([startDate compare:sectionDate] >= NSOrderedSame)
-		{
+        if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 			break;
 		}
 	}
@@ -344,23 +353,10 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	
 	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
 	
-	for(Schedule *schedule in forum.schedules)
-	{
-        //Compare Date using Day-Month-year components excluding the time
-        NSDate *startDate, *sectionDate;
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+	for(Schedule *schedule in forum.schedules) {
         
-        NSDateComponents *date1Components = [calendar components:components
-                                                        fromDate: schedule.startDate];
-        NSDateComponents *date2Components = [calendar components:components
-                                                        fromDate: date];
-        
-        startDate = [calendar dateFromComponents:date1Components];
-        sectionDate = [calendar dateFromComponents:date2Components];
-        if ([startDate compare:sectionDate] >= NSOrderedSame)
-//		if([schedule.startDate compare:date] >= NSOrderedSame)
-        {
+        if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
+            
 			ForumDetailViewController *eventDetail = [[ForumDetailViewController alloc] initWithForum:schedule.itemID];
 			[self.navigationController pushViewController:eventDetail animated:YES];
 			

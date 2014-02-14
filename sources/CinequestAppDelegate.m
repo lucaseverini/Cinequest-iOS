@@ -12,6 +12,7 @@
 #import "StartupViewController.h"
 #import "DataProvider.h"
 #import "VenueParser.h"
+#import <Crashlytics/Crashlytics.h>
 
 @implementation CinequestAppDelegate
 
@@ -169,17 +170,20 @@
 - (void) removeUnwantedCalendars
 {
     EKEventStore *eventStoreLocal = [[EKEventStore alloc] init];
-    NSArray *caleandarsArray = [[NSArray alloc] init];
-    caleandarsArray = [eventStoreLocal calendarsForEntityType:EKEntityTypeEvent];
+    NSArray *calendarsArray = [NSArray arrayWithArray:[eventStoreLocal calendarsForEntityType:EKEntityTypeEvent]];
     
-    for (EKCalendar *iCalendars in caleandarsArray)
-    {
+    for (EKCalendar *iCalendars in calendarsArray) {
+        
         NSLog(@"Calendar Title : %@", iCalendars.title);
-        if ([iCalendars.title isEqualToString:@"Cinequest"])
-        {
+        
+        if ([iCalendars.title isEqualToString:@"Cinequest"]) {
+            
             NSError *error = nil;
             [eventStoreLocal removeCalendar:iCalendars commit:YES error:&error];
-            NSLog(@"Error:%@",[error localizedDescription]);
+            
+            if (error) {
+                NSLog(@"Error:%@",[error localizedDescription]);
+            }
         }
     }
 }
@@ -552,7 +556,7 @@
 			{
 				[mySchedule removeObject:schedule];
 				
-				NSLog(@"%@ : %@ %@ removed from my schedule", schedule.title, schedule.dateString, schedule.timeString);
+				NSLog(@"%@ : %@ removed from my schedule", schedule.title, schedule.dateString);
 				break;
 			}
 		}
