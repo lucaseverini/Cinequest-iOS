@@ -12,7 +12,7 @@
 #import "StartupViewController.h"
 #import "DataProvider.h"
 #import "VenueParser.h"
-#import <Crashlytics/Crashlytics.h>
+#import "NewFestivalParser.h"
 
 @implementation CinequestAppDelegate
 
@@ -212,10 +212,12 @@
 
 - (void) fetchVenues
 {
-    // Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
     self.venuesDictionary = [[VenueParser new] parseVenues];
-    // Print Venue Dictionary
-    // NSLog(@"Venues Dictionary:%@", self.venuesDictionary);
+}
+
+- (void) fetchFestival
+{
+	self.festival = [[NewFestivalParser new] parseFestival];
 }
 
 #pragma mark -

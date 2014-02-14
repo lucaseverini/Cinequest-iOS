@@ -12,7 +12,6 @@
 #import "Reachability.h"
 #import "DataProvider.h"
 #import "NewsViewController.h"
-#import "NewFestivalParser.h"
 #import "Film.h"
 #import "Forum.h"
 #import "Special.h"
@@ -97,7 +96,7 @@
 
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
 	^{
-		appDelegate.festival = [[NewFestivalParser new] parseFestival];
+		[appDelegate fetchFestival];
 	});
 	
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),

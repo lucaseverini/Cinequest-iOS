@@ -19,6 +19,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 
 @implementation EventsViewController
 
+@synthesize refreshControl;
 @synthesize switchTitle;
 @synthesize eventsTableView;
 @synthesize activityIndicator;
@@ -43,10 +44,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 		
 	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
 
-	self.dateToEventsDictionary = [delegate.festival.dateToSpecialsDictionary mutableCopy];
-	self.sortedKeysInDateToEventsDictionary = [delegate.festival.sortedKeysInDateToSpecialsDictionary mutableCopy];
-	self.sortedIndexesInDateToEventsDictionary = [delegate.festival.sortedIndexesInDateToSpecialsDictionary mutableCopy];
-
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	sectionFont = [UIFont boldSystemFontOfSize:18.0];
@@ -58,19 +55,67 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	
 	eventsTableView.tableHeaderView = nil;
 	eventsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+	
+	refreshControl = [UIRefreshControl new];
+	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Events..."];
+	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+	[((UITableViewController*)self.eventsTableView.delegate) setRefreshControl:refreshControl];
+	[self.eventsTableView addSubview:refreshControl];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
+	self.dateToEventsDictionary = [delegate.festival.dateToSpecialsDictionary mutableCopy];
+	self.sortedKeysInDateToEventsDictionary = [delegate.festival.sortedKeysInDateToSpecialsDictionary mutableCopy];
+	self.sortedIndexesInDateToEventsDictionary = [delegate.festival.sortedIndexesInDateToSpecialsDictionary mutableCopy];
+
 	[self syncTableDataWithScheduler];
 	
     [self.eventsTableView reloadData];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNotification:) name:FEED_UPDATED_NOTIFICATION object:nil];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear: animated];
+	
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark -
 #pragma mark Private Methods
+
+- (void) refresh
+{
+	[appDelegate fetchFestival];
+	[appDelegate fetchVenues];
+	
+	[self updateDataAndTable];
+	
+	[refreshControl endRefreshing];
+}
+
+- (void) receivedNotification:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
+	{
+        NSLog (@"Events: Received update notification!");
+		
+		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+	}
+}
+
+- (void) updateDataAndTable
+{
+	self.dateToEventsDictionary = [delegate.festival.dateToSpecialsDictionary mutableCopy];
+	self.sortedKeysInDateToEventsDictionary = [delegate.festival.sortedKeysInDateToSpecialsDictionary mutableCopy];
+	self.sortedIndexesInDateToEventsDictionary = [delegate.festival.sortedIndexesInDateToSpecialsDictionary mutableCopy];
+	
+	[self.eventsTableView reloadData];
+}
 
 - (NSDate*) dateFromString:(NSString*)string
 {

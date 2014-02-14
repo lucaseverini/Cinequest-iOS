@@ -18,6 +18,7 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 
 @implementation ForumsViewController
 
+@synthesize refreshControl;
 @synthesize switchTitle;
 @synthesize forumsTableView;
 @synthesize activityIndicator;
@@ -41,11 +42,6 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	mySchedule = delegate.mySchedule;
 	
 	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
-
-	self.dateToForumsDictionary = [delegate.festival.dateToForumsDictionary mutableCopy];
-	self.sortedKeysInDateToForumsDictionary = [delegate.festival.sortedKeysInDateToForumsDictionary mutableCopy];
-	self.sortedIndexesInDateToForumsDictionary = [delegate.festival.sortedIndexesInDateToForumsDictionary mutableCopy];
-
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	sectionFont = [UIFont boldSystemFontOfSize:18.0];
@@ -57,19 +53,67 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 
 	forumsTableView.tableHeaderView = nil;
 	forumsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
+	refreshControl = [UIRefreshControl new];
+	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Forums..."];
+	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+	[((UITableViewController*)self.forumsTableView.delegate) setRefreshControl:refreshControl];
+	[self.forumsTableView addSubview:refreshControl];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
     
+	self.dateToForumsDictionary = [delegate.festival.dateToForumsDictionary mutableCopy];
+	self.sortedKeysInDateToForumsDictionary = [delegate.festival.sortedKeysInDateToForumsDictionary mutableCopy];
+	self.sortedIndexesInDateToForumsDictionary = [delegate.festival.sortedIndexesInDateToForumsDictionary mutableCopy];
+	
 	[self syncTableDataWithScheduler];
 
 	[self.forumsTableView reloadData];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNotification:) name:FEED_UPDATED_NOTIFICATION object:nil];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear: animated];
+	
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark -
 #pragma mark Private Methods
+
+- (void) refresh
+{
+	[appDelegate fetchFestival];
+	[appDelegate fetchVenues];
+	
+	[self updateDataAndTable];
+	
+	[refreshControl endRefreshing];
+}
+
+- (void) receivedNotification:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
+	{
+        NSLog (@"Forums: Received update notification!");
+		
+		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+	}
+}
+
+- (void) updateDataAndTable
+{
+	self.dateToForumsDictionary = [delegate.festival.dateToForumsDictionary mutableCopy];
+	self.sortedKeysInDateToForumsDictionary = [delegate.festival.sortedKeysInDateToForumsDictionary mutableCopy];
+	self.sortedIndexesInDateToForumsDictionary = [delegate.festival.sortedIndexesInDateToForumsDictionary mutableCopy];
+	
+	[self.forumsTableView reloadData];
+}
 
 - (NSDate*) dateFromString:(NSString*)string
 {

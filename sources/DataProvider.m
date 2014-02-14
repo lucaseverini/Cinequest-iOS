@@ -8,12 +8,10 @@
 
 #import "DataProvider.h"
 #import "CinequestAppDelegate.h"
-#import "NewFestivalParser.h"
 
-NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 
 #define NEWSFEED_TIMESTAMP_ENDPOSITION	256						// News feed time-stamp is contained within that number of bytes
-#define NEWSFEED_CHECK_INTERVAL			300.0					// Interval in seconds between checking for an updated news feed
+#define NEWSFEED_CHECK_INTERVAL			120.0					// Interval in seconds between checking for an updated news feed
 #define NEWSFEED_TIMEOUT				30.0					// Timeout in seconds for downloading the news feed
 #define NEWSFEED_CHECK_RETRYINTERVAL	60.0					// Interval in seconds before retrying to download the news feed
 #define CACHEFOLDER_CHECKINTERVAL		120.0					// Interval in seconds between checking the size of cache folder
@@ -138,7 +136,14 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
     NSLog(@"Getting news feed...");
 
 	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:NEWSFEED_FILE];
-
+/*
+	static int test = 0;
+	if(++test % 3 == 0)
+	{
+		NSData *xmlData = [NSData dataWithContentsOfFile:@""];
+		return xmlData;
+	}
+*/
 	if(![appDelegate connectedToNetwork])
 	{
 		NSData *xmlData = [NSData dataWithContentsOfURL:fileUrl];
@@ -482,15 +487,11 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 		
 		if(self.newsFeedUpdated)
 		{
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-			^{
-				appDelegate.festival = [[NewFestivalParser new] parseFestival];
-			});
-			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-			^{
-				[appDelegate fetchVenues];
-			});
+			[appDelegate fetchFestival];
+			[appDelegate fetchVenues];
+
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:appDelegate.festival, @"festival", appDelegate.venuesDictionary, @"venues", nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:FEED_UPDATED_NOTIFICATION object:nil userInfo:userInfo];
 		}
 	});
 }

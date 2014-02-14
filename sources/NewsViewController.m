@@ -20,6 +20,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 @synthesize switchTitle;
 @synthesize newsTableView;
 @synthesize activityIndicator;
+@synthesize refreshControl;
 @synthesize news;
 
 - (void) didReceiveMemoryWarning
@@ -43,18 +44,33 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	[switchTitle removeSegmentAtIndex:1 animated:NO];
-	
-	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+
+	refreshControl = [UIRefreshControl new];
+	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating News..."];
+	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+	[((UITableViewController*)self.newsTableView.delegate) setRefreshControl:refreshControl];
+	[self.newsTableView addSubview:refreshControl];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear: animated];
 	
+	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+
 	if(tabBarAnimation)
 	{
 		[appDelegate.tabBar.view setHidden:YES];
 	}
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNotification:) name:FEED_UPDATED_NOTIFICATION object:nil];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear: animated];
+	
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -77,6 +93,28 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 #pragma mark -
 #pragma mark - Private Methods
+
+- (void) refresh
+{
+	[self loadData];
+		
+	[refreshControl endRefreshing];
+}
+
+- (void) receivedNotification:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
+	{
+        NSLog (@"News: Received update notification!");
+		
+		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+	}
+}
+
+- (void) updateDataAndTable
+{
+	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+}
 
 - (void) loadData
 {
