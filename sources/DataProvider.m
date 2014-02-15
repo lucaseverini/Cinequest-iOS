@@ -136,14 +136,7 @@
     NSLog(@"Getting news feed...");
 
 	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:NEWSFEED_FILE];
-/*
-	static int test = 0;
-	if(++test % 3 == 0)
-	{
-		NSData *xmlData = [NSData dataWithContentsOfFile:@""];
-		return xmlData;
-	}
-*/
+
 	if(![appDelegate connectedToNetwork])
 	{
 		NSData *xmlData = [NSData dataWithContentsOfURL:fileUrl];

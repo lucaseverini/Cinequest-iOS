@@ -21,18 +21,13 @@
 
 @implementation DVDsViewController
 
-
-#pragma mark -
-#pragma mark Memory Management
 @synthesize order;
 @synthesize data;
 @synthesize activity;
 @synthesize loadingLabel;
 @synthesize tableView = _tableView;
 
-
-#pragma mark -
-#pragma mark UIViewController Methods
+#pragma mark - UIViewController Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];

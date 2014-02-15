@@ -220,8 +220,7 @@
 	self.festival = [[NewFestivalParser new] parseFestival];
 }
 
-#pragma mark -
-#pragma mark Network Reachability
+#pragma mark - Network Reachability
 
 - (BOOL) connectedToNetwork
 {
@@ -289,8 +288,7 @@
 	NSLog(@"Network Connection: %s", networkConnection == 1 ? "DialUp" : networkConnection == 2 ? "WiFi" : "None");
 }
 
-#pragma mark -
-#pragma mark Utility functions
+#pragma mark - Utility functions
 
 - (NSURL*) cachesDirectory
 {
@@ -320,8 +318,7 @@
     return docsDir;
 }
 
-#pragma mark -
-#pragma mark Access Calendar
+#pragma mark - Access Calendar
 
 // Check the authorization status of our application for Calendar
 - (void) checkEventStoreAccessForCalendar
@@ -455,8 +452,7 @@
 }
 
 
-#pragma mark -
-#pragma mark Event Add/Delete from Calendar
+#pragma mark - Event Add/Delete from Calendar
 
 - (void) addOrRemoveScheduleToCalendar:(Schedule*)schedule
 {

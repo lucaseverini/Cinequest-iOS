@@ -11,6 +11,7 @@
 #import "NewsDetailViewController.h"
 #import "DDXML.h"
 #import "DataProvider.h"
+#import "MBProgressHUD.h"
 
 static NSString *const kNewsCellIdentifier = @"NewsCell";
 
@@ -46,7 +47,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	[switchTitle removeSegmentAtIndex:1 animated:NO];
 
 	refreshControl = [UIRefreshControl new];
-	refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating News..."];
+	// refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating News..."];
 	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 	[((UITableViewController*)self.newsTableView.delegate) setRefreshControl:refreshControl];
 	[self.newsTableView addSubview:refreshControl];
@@ -91,7 +92,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	}
 }
 
-#pragma mark -
 #pragma mark - Private Methods
 
 - (void) refresh
@@ -99,15 +99,26 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	[self loadData];
 		
 	[refreshControl endRefreshing];
+	
+	[NSThread sleepForTimeInterval:0.5];
 }
 
 - (void) receivedNotification:(NSNotification*) notification
 {
     if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
 	{
-        NSLog (@"News: Received update notification!");
-		
-		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+ 		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+
+		dispatch_async(dispatch_get_main_queue(),
+		^{
+			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+			hud.mode = MBProgressHUDModeText;
+			hud.labelText = @"News have been updated";
+			hud.margin = 10.0;
+			hud.yOffset = 0.0;
+			hud.removeFromSuperViewOnHide = YES;
+			[hud hide:YES afterDelay:2.0];
+		});
 	}
 }
 
@@ -203,8 +214,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark -
-#pragma mark UITableView Data Source
+#pragma mark - UITableView Data Source
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -269,8 +279,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
     return cell;
 }
 
-#pragma mark -
-#pragma mark UITableView Delegate
+#pragma mark - UITableView Delegate
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

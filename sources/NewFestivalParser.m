@@ -326,11 +326,7 @@
 {
     NSString *string = @"Part of Shorts Program";
     
-    if ([shortDescription rangeOfString:string].location == NSNotFound) {
-        return FALSE;
-    } else {
-        return TRUE;
-    }
+    return ([shortDescription rangeOfString:string].location != NSNotFound);
 }
 
 - (Film*) getFilmFrom:(Show *)show

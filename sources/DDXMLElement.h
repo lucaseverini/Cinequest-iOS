@@ -16,12 +16,12 @@
 - (id)initWithName:(NSString *)name stringValue:(NSString *)string;
 - (id)initWithXMLString:(NSString *)string error:(NSError **)error;
 
-#pragma mark --- Elements by name ---
+#pragma mark - Elements by name ---
 
 - (NSArray *)elementsForName:(NSString *)name;
 - (NSArray *)elementsForLocalName:(NSString *)localName URI:(NSString *)URI;
 
-#pragma mark --- Attributes ---
+#pragma mark - Attributes ---
 
 - (void)addAttribute:(DDXMLNode *)attribute;
 - (void)removeAttributeForName:(NSString *)name;
@@ -32,7 +32,7 @@
 - (DDXMLNode *)attributeForName:(NSString *)name;
 //- (DDXMLNode *)attributeForLocalName:(NSString *)localName URI:(NSString *)URI;
 
-#pragma mark --- Namespaces ---
+#pragma mark - Namespaces ---
 
 - (void)addNamespace:(DDXMLNode *)aNamespace;
 - (void)removeNamespaceForPrefix:(NSString *)name;
@@ -42,7 +42,7 @@
 - (DDXMLNode *)resolveNamespaceForName:(NSString *)name;
 - (NSString *)resolvePrefixForNamespaceURI:(NSString *)namespaceURI;
 
-#pragma mark --- Children ---
+#pragma mark - Children ---
 
 - (void)insertChild:(DDXMLNode *)child atIndex:(NSUInteger)index;
 //- (void)insertChildren:(NSArray *)children atIndex:(NSUInteger)index;

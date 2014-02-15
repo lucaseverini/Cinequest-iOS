@@ -30,8 +30,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark -
-#pragma mark UIViewController
+#pragma mark - UIViewController
 
 - (void) viewDidLoad
 {
@@ -85,8 +84,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	}
 }
 
-#pragma mark -
-#pragma mark Private Methods
+#pragma mark - Private Methods
 
 - (void) inEditMode:(BOOL)inEditMode
 {
@@ -110,8 +108,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     [scheduleTableView reloadSectionIndexTitles];
 }
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - Actions
 
 - (void) edit
 {
@@ -189,8 +186,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
     return nil;
 }
 
-#pragma mark -
-#pragma mark UITableView DataSource
+#pragma mark - UITableView DataSource
 
 // There are multiple ways to load this table, one is to load the "scheduler list" of added films
 // the second is to display the return of "SLGET" (confirmed,moved,removed)
@@ -302,8 +298,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	return view;
 }
 
-#pragma mark -
-#pragma mark UITableView Delegate
+#pragma mark - UITableView Delegate
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -428,8 +423,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 	[scheduleTableView reloadSectionIndexTitles];
 }
 
-#pragma mark -
-#pragma mark Access Calendar
+#pragma mark - Access Calendar
 
 - (void) editEventForSchedule:(Schedule*)schedule
 {
