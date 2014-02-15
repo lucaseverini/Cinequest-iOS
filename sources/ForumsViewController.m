@@ -12,7 +12,6 @@
 #import "Forum.h"
 #import "Schedule.h"
 #import "DataProvider.h"
-#import "MBProgressHUD.h"
 
 
 static NSString *const kForumCellIdentifier = @"ForumCell";
@@ -87,6 +86,19 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear: animated];
+	
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"ForumsUpdated"])
+	{
+		[appDelegate showMessage:@"Forums have been updated" onView:self.view hideAfter:3.0];
+		
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ForumsUpdated"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+	}
+}
+
 #pragma mark - Private Methods
 
 - (void) refresh
@@ -107,16 +119,10 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	{
  		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
 
-		dispatch_async(dispatch_get_main_queue(),
-		^{
-			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-			hud.mode = MBProgressHUDModeText;
-			hud.labelText = @"Forums have been updated";
-			hud.margin = 10.0;
-			hud.yOffset = 0.0;
-			hud.removeFromSuperViewOnHide = YES;
-			[hud hide:YES afterDelay:2.0];
-		});
+		[appDelegate showMessage:@"Forums have been updated" onView:self.view hideAfter:3.0];
+
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ForumsUpdated"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
 	}
 }
 

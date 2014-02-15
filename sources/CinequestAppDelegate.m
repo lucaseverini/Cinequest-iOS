@@ -13,6 +13,7 @@
 #import "DataProvider.h"
 #import "VenueParser.h"
 #import "NewFestivalParser.h"
+#import "MBProgressHUD.h"
 
 @implementation CinequestAppDelegate
 
@@ -625,6 +626,20 @@
 - (BOOL) application:(UIApplication*)application openURL:(NSURL*)url sourceApplication:(NSString*)sourceApplication annotation:(id)annotation
 {
     return [GPPURLHandler handleURL:url sourceApplication:sourceApplication annotation:annotation];
+}
+
+- (void) showMessage:(NSString*)message onView:view hideAfter:(NSTimeInterval)time
+{
+	dispatch_async(dispatch_get_main_queue(),
+	^{
+		MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+		hud.mode = MBProgressHUDModeText;
+		hud.labelText = message;
+		hud.margin = 10.0;
+		hud.yOffset = 0.0;
+		hud.removeFromSuperViewOnHide = YES;
+		[hud hide:YES afterDelay:time];
+	});
 }
 
 @end

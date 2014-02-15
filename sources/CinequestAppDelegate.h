@@ -110,6 +110,7 @@
 - (void) checkEventStoreAccessForCalendar;
 - (void) fetchVenues;
 - (void) fetchFestival;
+- (void) showMessage:(NSString*)message onView:view hideAfter:(NSTimeInterval)time;
 
 - (NSURL*) cachesDirectory;
 - (NSURL*) documentsDirectory;
