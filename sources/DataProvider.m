@@ -482,12 +482,12 @@
 		{
 			[appDelegate fetchFestival];
 			[appDelegate fetchVenues];
-
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:appDelegate.festival, @"festival", appDelegate.venuesDictionary, @"venues", nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:FEED_UPDATED_NOTIFICATION object:nil userInfo:userInfo];
 			
 			if(!appDelegate.firstLaunch)
 			{
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:appDelegate.festival, @"festival", appDelegate.venuesDictionary, @"venues", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:FEED_UPDATED_NOTIFICATION object:nil userInfo:userInfo];
+
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NewsUpdated"];
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FilmsUpdated"];
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"EventsUpdated"];
