@@ -11,6 +11,7 @@
 #import "NewsDetailViewController.h"
 #import "DDXML.h"
 #import "DataProvider.h"
+#import "MBProgressHUD.h"
 
 static NSString *const kNewsCellIdentifier = @"NewsCell";
 
@@ -20,6 +21,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 @synthesize switchTitle;
 @synthesize newsTableView;
 @synthesize activityIndicator;
+@synthesize refreshControl;
 @synthesize news;
 
 - (void) didReceiveMemoryWarning
@@ -37,22 +39,39 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 	newsTableView.tableHeaderView = nil;
 	newsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+	
+	titleFont = [UIFont systemFontOfSize:[UIFont labelFontSize]];
 
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	[switchTitle removeSegmentAtIndex:1 animated:NO];
-	
-	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+
+	refreshControl = [UIRefreshControl new];
+	// refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating News..."];
+	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+	[((UITableViewController*)self.newsTableView.delegate) setRefreshControl:refreshControl];
+	[self.newsTableView addSubview:refreshControl];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear: animated];
 	
+	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+
 	if(tabBarAnimation)
 	{
 		[appDelegate.tabBar.view setHidden:YES];
 	}
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNotification:) name:FEED_UPDATED_NOTIFICATION object:nil];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear: animated];
+	
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -73,8 +92,40 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	}
 }
 
-#pragma mark -
 #pragma mark - Private Methods
+
+- (void) refresh
+{
+	[self loadData];
+		
+	[refreshControl endRefreshing];
+	
+	[NSThread sleepForTimeInterval:0.5];
+}
+
+- (void) receivedNotification:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
+	{
+ 		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+
+		dispatch_async(dispatch_get_main_queue(),
+		^{
+			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+			hud.mode = MBProgressHUDModeText;
+			hud.labelText = @"News have been updated";
+			hud.margin = 10.0;
+			hud.yOffset = 0.0;
+			hud.removeFromSuperViewOnHide = YES;
+			[hud hide:YES afterDelay:2.0];
+		});
+	}
+}
+
+- (void) updateDataAndTable
+{
+	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+}
 
 - (void) loadData
 {
@@ -163,8 +214,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark -
-#pragma mark UITableView Data Source
+#pragma mark - UITableView Data Source
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -208,23 +258,28 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 		}
 	}
 	
-	CGRect titleFrame = CGRectMake(15.0, 4.0 + imgSize.height, 290.0, 48.0);
-		
-	UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
+	UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.0, 4.0 + imgSize.height, 305.0, 48.0)];
 	titleLabel.tag = CELL_TITLE_LABEL_TAG;
-	titleLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+	titleLabel.font = titleFont;
 	titleLabel.numberOfLines = 2;
 	titleLabel.text = [newsData objectForKey:@"name"];
-	[cell.contentView addSubview:titleLabel];
+
+	CGSize size = [titleLabel.text sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
+	if(size.width < 285.0)
+	{
+		[titleLabel setFrame:CGRectMake(15.0, 4.0 + imgSize.height, 305.0, 26.0)];
+		titleLabel.numberOfLines = 1;
+	}
 	
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	[cell.contentView addSubview:titleLabel];
+
+	// cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	
     return cell;
 }
 
-#pragma mark -
-#pragma mark UITableView Delegate
+#pragma mark - UITableView Delegate
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -240,15 +295,30 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSMutableDictionary *newsData = [news objectAtIndex:[indexPath row]];
+
+	CGFloat height = 54.0;
+	NSString *text = [newsData objectForKey:@"name"];
+	CGSize size = [text sizeWithAttributes:@{ NSFontAttributeName : titleFont }];
+	if(size.width < 285.0)
+	{
+		height = 34.0;
+	}
+
 	NSString *imageUrl = [newsData objectForKey:@"thumbImage"];
 	if(imageUrl.length != 0)
 	{
-		return 158.0;
+		imageUrl = [appDelegate.dataProvider cacheImage:imageUrl];
+		if(imageUrl.length != 0)
+		{
+			UIImage *image = [UIImage imageWithContentsOfFile:[[NSURL URLWithString:imageUrl] path]];
+			if(imageUrl != nil)
+			{
+				return height + [image size].height;
+			}
+		}
 	}
-	else
-	{
-		return 54.0;
-	}
+
+	return height;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section

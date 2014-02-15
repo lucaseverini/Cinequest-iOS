@@ -35,8 +35,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark -
-#pragma mark UIViewController
+#pragma mark - UIViewController
 
 - (id) initWithForum:(NSString*)forumId
 {
@@ -122,8 +121,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     return schedule;
 }
 
-#pragma mark -
-#pragma mark UIWebView delegate
+#pragma mark - UIWebView delegate
 
 - (void) webViewDidFinishLoad:(UIWebView *)webView
 {
@@ -149,8 +147,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     return YES;
 }
 
-#pragma mark -
-#pragma mark UITableView Datasource
+#pragma mark - UITableView Datasource
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -394,8 +391,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     return cell;
 }
 
-#pragma mark -
-#pragma mark UITableView delegate
+#pragma mark - UITableView delegate
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
@@ -443,8 +439,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	}
 }
 
-#pragma mark -
-#pragma mark UIAlertView Delegate
+#pragma mark - UIAlertView Delegate
 
 - (void) alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -462,8 +457,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     [self.detailTableView deselectRowAtIndexPath:tableSelection animated:YES];
 }
 
-#pragma mark -
-#pragma mark Calendar Integration
+#pragma mark - Calendar Integration
 
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
@@ -481,8 +475,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     [calendarButton setImage:buttonImage forState:UIControlStateNormal];
 }
 
-#pragma mark -
-#pragma mark Maps Integration
+#pragma mark - Maps Integration
 
 - (void) mapsButtonTapped:(id)sender event:(id)touchEvent
 {
@@ -504,8 +497,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	[[self navigationController] pushViewController:mapViewController animated:YES];
 }
 
-#pragma mark -
-#pragma mark Mail Sharing Delegate
+#pragma mark - Mail Sharing Delegate
 
 - (IBAction) shareToMail:(id)sender
 {
@@ -542,8 +534,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark -
-#pragma mark Message Sharing Delegate
+#pragma mark - Message Sharing Delegate
 
 - (IBAction) shareToMessage:(id)sender
 {
@@ -601,8 +592,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark -
-#pragma mark Social Media Sharing
+#pragma mark - Social Media Sharing
 
 - (IBAction) shareToFacebook:(id)sender
 {
@@ -752,24 +742,21 @@ static NSString *kActionsCellID	= @"ActionsCell";
     [dialogView show];
 }
 
-#pragma mark -
-#pragma mark Browser integration
+#pragma mark - Browser integration
 
 - (IBAction) goTicketLink:(id)sender
 {
     [app openURL:[NSURL URLWithString:forum.infoLink]];
 }
 
-#pragma mark -
-#pragma mark Phone call integration
+#pragma mark - Phone call integration
 
 - (IBAction) callTicketLine:(id)sender
 {
 	[app openURL:[NSURL URLWithString:TICKET_LINE]];
 }
 
-#pragma mark -
-#pragma mark Decode NSString for HTML
+#pragma mark - Decode NSString for HTML
 
 - (NSString *) htmlEntityDecode:(NSString *)string
 {

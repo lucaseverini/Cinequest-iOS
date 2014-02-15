@@ -112,7 +112,7 @@ typedef struct _xmlStd *xmlStdPtr;
 
 //+ (id)DTDNodeWithXMLString:(NSString *)string;
 
-#pragma mark --- Properties ---
+#pragma mark - Properties
 
 - (DDXMLNodeKind)kind;
 
@@ -126,7 +126,7 @@ typedef struct _xmlStd *xmlStdPtr;
 //- (void)setStringValue:(NSString *)string resolvingEntities:(BOOL)resolve;
 - (NSString *)stringValue;
 
-#pragma mark --- Tree Navigation ---
+#pragma mark - Tree Navigation
 
 - (NSUInteger)index;
 
@@ -149,7 +149,7 @@ typedef struct _xmlStd *xmlStdPtr;
 
 - (NSString *)XPath;
 
-#pragma mark --- QNames ---
+#pragma mark - QNames
 
 - (NSString *)localName;
 - (NSString *)prefix;
@@ -161,14 +161,14 @@ typedef struct _xmlStd *xmlStdPtr;
 + (NSString *)prefixForName:(NSString *)name;
 //+ (DDXMLNode *)predefinedNamespaceForPrefix:(NSString *)name;
 
-#pragma mark --- Output ---
+#pragma mark - Output
 
 - (NSString *)description;
 - (NSString *)XMLString;
 - (NSString *)XMLStringWithOptions:(NSUInteger)options;
 //- (NSString *)canonicalXMLStringPreservingComments:(BOOL)comments;
 
-#pragma mark --- XPath/XQuery ---
+#pragma mark - XPath/XQuery
 
 - (NSArray *)nodesForXPath:(NSString *)xpath error:(NSError **)error;
 //- (NSArray *)objectsForXQuery:(NSString *)xquery constants:(NSDictionary *)constants error:(NSError **)error;

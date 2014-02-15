@@ -51,8 +51,12 @@
 #define NETWORK_CONNECTION_WIFI  1
 #define NETWORK_CONNECTION_PHONE 2
 
+#define FEED_UPDATED_NOTIFICATION @"FeedUpdateNotification"
+
 #define GOOGLEPLUS_CLIENTID	@"470208679525-9nYBufiT7puYS3jIkOe49Rv6.apps.googleusercontent.com";	// org.cinequest.mobileapp
 // #define GOOGLEPLUS_CLIENTID	@"452265719636-qbqmhro0t3j9jip1npl69a3er7biidd2.apps.googleusercontent.com"; // com.google.GooglePlusPlatformSample
+
+#define CRASHLYTICS_ID @"c3d1ebb5b9d5f416213c217e714ce6a7f1dc0ee6"
 
 #define appDelegate ((CinequestAppDelegate*)[[UIApplication sharedApplication] delegate])
 #define app [UIApplication sharedApplication]
@@ -105,6 +109,7 @@
 - (void) populateCalendarEntries;
 - (void) checkEventStoreAccessForCalendar;
 - (void) fetchVenues;
+- (void) fetchFestival;
 
 - (NSURL*) cachesDirectory;
 - (NSURL*) documentsDirectory;

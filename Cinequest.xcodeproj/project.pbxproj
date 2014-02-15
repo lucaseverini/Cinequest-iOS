@@ -15,6 +15,7 @@
 		811791C2189787F000B6D21F /* safari_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 811791C0189787F000B6D21F /* safari_icon@2x.png */; };
 		811E00371835991D003C81B0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 811E00361835991D003C81B0 /* CoreLocation.framework */; };
 		811E0039183599A2003C81B0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 811E0038183599A2003C81B0 /* MapKit.framework */; };
+		8127A62318AF1FCF00CC1BDF /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 8127A62218AF1FCF00CC1BDF /* MBProgressHUD.m */; };
 		81309046189CADA300E9266B /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 81309044189CADA300E9266B /* Settings.bundle */; };
 		813CB476183E1FAF00974776 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 813CB475183E1FAF00974776 /* Images.xcassets */; };
 		813D3AE118505911004667D5 /* message.png in Resources */ = {isa = PBXBuildFile; fileRef = 813D3ADF18505911004667D5 /* message.png */; };
@@ -166,6 +167,8 @@
 		811791C0189787F000B6D21F /* safari_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "safari_icon@2x.png"; path = "images/safari_icon@2x.png"; sourceTree = SOURCE_ROOT; };
 		811E00361835991D003C81B0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		811E0038183599A2003C81B0 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		8127A62118AF1FCF00CC1BDF /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = sources/MBProgressHUD.h; sourceTree = SOURCE_ROOT; };
+		8127A62218AF1FCF00CC1BDF /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = sources/MBProgressHUD.m; sourceTree = SOURCE_ROOT; };
 		81309044189CADA300E9266B /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = sources/Settings.bundle; sourceTree = SOURCE_ROOT; };
 		813CB475183E1FAF00974776 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = images/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		813D3ADF18505911004667D5 /* message.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = message.png; path = images/message.png; sourceTree = SOURCE_ROOT; };
@@ -414,6 +417,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8127A62018AF1FAA00CC1BDF /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				8127A62118AF1FCF00CC1BDF /* MBProgressHUD.h */,
+				8127A62218AF1FCF00CC1BDF /* MBProgressHUD.m */,
+			);
+			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
 		81309043189CAD8900E9266B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -650,6 +662,7 @@
 				C271392E1828A36100BF8DCB /* FestivalParser */,
 				C271392418279DE300BF8DCB /* DDXMLFiles */,
 				81C52B82182B62D200D2F55D /* Reachability */,
+				8127A62018AF1FAA00CC1BDF /* MBProgressHUD */,
 				81D1EC38182B892B003DD8BB /* StartupViewController.h */,
 				81D1EC39182B892B003DD8BB /* StartupViewController.m */,
 				81745A6F17EBAEED008D2C2C /* NewsViewController.h */,
@@ -980,6 +993,7 @@
 				81745A8017EBAEED008D2C2C /* ForumsViewController.m in Sources */,
 				C2D6DC231829771E005A6897 /* Venue.m in Sources */,
 				81745A8317EBAEED008D2C2C /* MySchedulerViewController.m in Sources */,
+				8127A62318AF1FCF00CC1BDF /* MBProgressHUD.m in Sources */,
 				81745A8417EBAEED008D2C2C /* NewsViewController.m in Sources */,
 				81C52B85182B62F000D2F55D /* Reachability.m in Sources */,
 				81B7C4A8184D1358001F4B16 /* MapViewController.m in Sources */,

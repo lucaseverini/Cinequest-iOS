@@ -13,6 +13,7 @@
 #import "DataProvider.h"
 #import "Film.h"
 #import "Festival.h"
+#import "MBProgressHUD.h"
 
 
 static NSString *const kDateCellIdentifier = @"DateCell";
@@ -51,6 +52,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 
 @implementation FilmsViewController
 
+@synthesize refreshControl;
 @synthesize switchTitle;
 @synthesize filmsTableView;
 @synthesize activityIndicator;
@@ -73,13 +75,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
     eventStore = delegate.eventStore;
 	
 	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
-	
-	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
-	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
-	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary mutableCopy];
- 	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
-	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
-  	
+	  	
 	titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	sectionFont = [UIFont boldSystemFontOfSize:18.0];
@@ -87,13 +83,23 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
 	filmsTableView.tableHeaderView = nil;
 	filmsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    
+	
+	self.searchDisplayController.searchResultsTableView.tableHeaderView = nil;
+ 	self.searchDisplayController.searchResultsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+ 	self.searchDisplayController.searchResultsTableView.sectionIndexColor = [UIColor redColor];
+  
     [self setSearchKeyAsDone];
 	
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	
 	statusBarHidden = NO;
+
+	refreshControl = [UIRefreshControl new];
+	// refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Films..."];
+	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+	[((UITableViewController*)self.filmsTableView.delegate) setRefreshControl:refreshControl];
+	[self.filmsTableView addSubview:refreshControl];
 }
 
 - (BOOL) prefersStatusBarHidden
@@ -105,6 +111,12 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 {
 	[super viewWillAppear:animated];
 	
+	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
+	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary mutableCopy];
+ 	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
+	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
+
 	[self syncTableDataWithScheduler];
 	
 	if(searchActive)
@@ -115,9 +127,66 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		[self.filmsTableView reloadData];
 	}
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNotification:) name:FEED_UPDATED_NOTIFICATION object:nil];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear: animated];
+	
+	self.dateToFilmsDictionary = nil;
+	self.sortedKeysInDateToFilmsDictionary = nil;
+	self.sortedIndexesInDateToFilmsDictionary = nil;
+ 	self.alphabetToFilmsDictionary = nil;
+	self.sortedKeysInAlphabetToFilmsDictionary = nil;
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Private methods
+
+- (void) refresh
+{
+	[appDelegate fetchFestival];
+	[appDelegate fetchVenues];
+	
+	[self updateDataAndTable];
+	
+	[refreshControl endRefreshing];
+	
+	[NSThread sleepForTimeInterval:0.5];
+}
+
+- (void) receivedNotification:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
+	{
+		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+
+		dispatch_async(dispatch_get_main_queue(),
+		^{
+			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+			hud.mode = MBProgressHUDModeText;
+			hud.labelText = @"Films have been updated";
+			hud.margin = 10.0;
+			hud.yOffset = 0.0;
+			hud.removeFromSuperViewOnHide = YES;
+			[hud hide:YES afterDelay:2.0];
+		});
+	}
+}
+
+- (void) updateDataAndTable
+{
+	self.dateToFilmsDictionary = [delegate.festival.dateToFilmsDictionary mutableCopy];
+	self.sortedKeysInDateToFilmsDictionary = [delegate.festival.sortedKeysInDateToFilmsDictionary mutableCopy];
+	self.sortedIndexesInDateToFilmsDictionary = [delegate.festival.sortedIndexesInDateToFilmsDictionary mutableCopy];
+	self.alphabetToFilmsDictionary = [delegate.festival.alphabetToFilmsDictionary mutableCopy];
+	self.sortedKeysInAlphabetToFilmsDictionary = [delegate.festival.sortedKeysInAlphabetToFilmsDictionary mutableCopy];
+	
+	[self.filmsTableView reloadData];
+}
 
 - (NSDate*) dateFromString:(NSString*)string
 {
@@ -149,11 +218,10 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSString *day = [self.sortedKeysInDateToFilmsDictionary  objectAtIndex:section];
 			NSDate *date = [self dateFromString:day];
 
-			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			
+			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];			
 			for(schedule in film.schedules)
 			{
-				if([schedule.startDate compare:date] >= NSOrderedSame)
+				if ([self compareStartDate:schedule.startDate withSectionDate:date])
 				{
 					break;
 				}
@@ -203,8 +271,6 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 
 - (void) syncTableDataWithScheduler
 {
-	NSLog(@"syncTableDataWithScheduler");
-	
     [delegate populateCalendarEntries];
     
 	NSInteger sectionCount = [self.sortedKeysInDateToFilmsDictionary count];
@@ -246,6 +312,22 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			}
 		}
 	}
+}
+
+// Returns result of comparision between the StartDate of Schedule
+// with the SectionDate of tableview using Calendar Components Day-Month-Year
+- (BOOL) compareStartDate:(NSDate *)startDate withSectionDate:(NSDate *)sectionDate
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+    
+    NSDateComponents *date1Components = [calendar components:components fromDate: startDate];
+    NSDateComponents *date2Components = [calendar components:components fromDate: sectionDate];
+    
+    startDate = [calendar dateFromComponents:date1Components];
+    sectionDate = [calendar dateFromComponents:date2Components];
+    
+    return ([startDate compare:sectionDate] >= NSOrderedSame);
 }
 
 #pragma mark - UITableView Datasource methods
@@ -310,7 +392,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			Schedule *schedule = nil;
 			for(schedule in film.schedules)
 			{
-				if([schedule.startDate compare:date] >= NSOrderedSame)
+				if ([self compareStartDate:schedule.startDate withSectionDate:date])
 				{
 					break;
 				}
@@ -531,9 +613,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 			NSDate *date = [self dateFromString:day];
 
 			Film *film = [[self.dateToFilmsDictionary objectForKey:day] objectAtIndex:row];
-			for(Schedule *schedule in film.schedules)
+			for (Schedule *schedule in film.schedules)
 			{
-				if([schedule.startDate compare:date] >= NSOrderedSame)
+				if ([self compareStartDate:schedule.startDate withSectionDate:date])
 				{
 					[self showFilmDetails:schedule];
 					break;
@@ -801,7 +883,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	
     [self syncTableDataWithScheduler];
     
-    NSLog(@"Schedule:ItemID-ID:%@-%@", schedule.itemID, schedule.ID);
+    // NSLog(@"Schedule:ItemID-ID:%@-%@", schedule.itemID, schedule.ID);
 	
     UIButton *calendarButton = (UIButton*)sender;
     UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];

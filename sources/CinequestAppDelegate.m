@@ -12,6 +12,7 @@
 #import "StartupViewController.h"
 #import "DataProvider.h"
 #import "VenueParser.h"
+#import "NewFestivalParser.h"
 
 @implementation CinequestAppDelegate
 
@@ -42,7 +43,7 @@
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-    [Crashlytics startWithAPIKey:@"c3d1ebb5b9d5f416213c217e714ce6a7f1dc0ee6"];
+    [Crashlytics startWithAPIKey:CRASHLYTICS_ID];
 	if([self checkPrefsForDataDeletion])
 	{
 		NSFileManager *fileMgr = [NSFileManager defaultManager];
@@ -169,17 +170,20 @@
 - (void) removeUnwantedCalendars
 {
     EKEventStore *eventStoreLocal = [[EKEventStore alloc] init];
-    NSArray *caleandarsArray = [[NSArray alloc] init];
-    caleandarsArray = [eventStoreLocal calendarsForEntityType:EKEntityTypeEvent];
+    NSArray *calendarsArray = [NSArray arrayWithArray:[eventStoreLocal calendarsForEntityType:EKEntityTypeEvent]];
     
-    for (EKCalendar *iCalendars in caleandarsArray)
-    {
+    for (EKCalendar *iCalendars in calendarsArray) {
+        
         NSLog(@"Calendar Title : %@", iCalendars.title);
-        if ([iCalendars.title isEqualToString:@"Cinequest"])
-        {
+        
+        if ([iCalendars.title isEqualToString:@"Cinequest"]) {
+            
             NSError *error = nil;
             [eventStoreLocal removeCalendar:iCalendars commit:YES error:&error];
-            NSLog(@"Error:%@",[error localizedDescription]);
+            
+            if (error) {
+                NSLog(@"Error:%@",[error localizedDescription]);
+            }
         }
     }
 }
@@ -208,14 +212,15 @@
 
 - (void) fetchVenues
 {
-    // Store Venues in a dictionary--> Key in Dictionary is ID and Value is Venue
     self.venuesDictionary = [[VenueParser new] parseVenues];
-    // Print Venue Dictionary
-    // NSLog(@"Venues Dictionary:%@", self.venuesDictionary);
 }
 
-#pragma mark -
-#pragma mark Network Reachability
+- (void) fetchFestival
+{
+	self.festival = [[NewFestivalParser new] parseFestival];
+}
+
+#pragma mark - Network Reachability
 
 - (BOOL) connectedToNetwork
 {
@@ -283,8 +288,7 @@
 	NSLog(@"Network Connection: %s", networkConnection == 1 ? "DialUp" : networkConnection == 2 ? "WiFi" : "None");
 }
 
-#pragma mark -
-#pragma mark Utility functions
+#pragma mark - Utility functions
 
 - (NSURL*) cachesDirectory
 {
@@ -314,8 +318,7 @@
     return docsDir;
 }
 
-#pragma mark -
-#pragma mark Access Calendar
+#pragma mark - Access Calendar
 
 // Check the authorization status of our application for Calendar
 - (void) checkEventStoreAccessForCalendar
@@ -449,8 +452,7 @@
 }
 
 
-#pragma mark -
-#pragma mark Event Add/Delete from Calendar
+#pragma mark - Event Add/Delete from Calendar
 
 - (void) addOrRemoveScheduleToCalendar:(Schedule*)schedule
 {
@@ -552,7 +554,7 @@
 			{
 				[mySchedule removeObject:schedule];
 				
-				NSLog(@"%@ : %@ %@ removed from my schedule", schedule.title, schedule.dateString, schedule.timeString);
+				NSLog(@"%@ : %@ removed from my schedule", schedule.title, schedule.dateString);
 				break;
 			}
 		}

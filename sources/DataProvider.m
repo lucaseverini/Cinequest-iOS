@@ -9,10 +9,9 @@
 #import "DataProvider.h"
 #import "CinequestAppDelegate.h"
 
-NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 
 #define NEWSFEED_TIMESTAMP_ENDPOSITION	256						// News feed time-stamp is contained within that number of bytes
-#define NEWSFEED_CHECK_INTERVAL			300.0					// Interval in seconds between checking for an updated news feed
+#define NEWSFEED_CHECK_INTERVAL			120.0					// Interval in seconds between checking for an updated news feed
 #define NEWSFEED_TIMEOUT				30.0					// Timeout in seconds for downloading the news feed
 #define NEWSFEED_CHECK_RETRYINTERVAL	60.0					// Interval in seconds before retrying to download the news feed
 #define CACHEFOLDER_CHECKINTERVAL		120.0					// Interval in seconds between checking the size of cache folder
@@ -478,6 +477,15 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 		}
 		
 		NSLog(@"newsFeedUpdated:%@  Date:%@", self.newsFeedUpdated ? @"YES" : @"NO", self.newsFeedDate);
+		
+		if(self.newsFeedUpdated)
+		{
+			[appDelegate fetchFestival];
+			[appDelegate fetchVenues];
+
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:appDelegate.festival, @"festival", appDelegate.venuesDictionary, @"venues", nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:FEED_UPDATED_NOTIFICATION object:nil userInfo:userInfo];
+		}
 	});
 }
 
@@ -1031,7 +1039,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 {
 	if(imageUrl == nil)
 	{
-		return nil;
+		return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 	}
 	
 	BOOL imageCached = NO;
@@ -1042,11 +1050,10 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 	NSURL *url = [NSURL URLWithString:imageUrl];
 	NSString *fileName = [imageUrl lastPathComponent];
     
-    //If imageURL is nil return URL of Placeholder Image
-    if (fileName == nil || [fileName isEqualToString:@""]) {
-        NSString *imageURLFromBundle = [[NSBundle mainBundle] pathForResource:@"cqthumb" ofType:@"jpg"];
-        imageURLFromBundle = [@"file:///" stringByAppendingPathComponent:imageURLFromBundle];
-        return imageURLFromBundle;
+    // If url or imageURL is nil return URL of Placeholder Image
+    if (url == nil || fileName.length == 0)
+	{
+		return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
     }
     
 	NSURL *fileUrl = [cacheDir URLByAppendingPathComponent:fileName];
@@ -1062,7 +1069,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 		}
 		else
 		{
-			return nil;
+			return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 		}
 	}
 
@@ -1096,7 +1103,7 @@ NSString *const kMNewsFeedUpdatedNotification = @"NewsFeedUpdatedNotification";
 		}
 		else
 		{
-			return nil;
+			return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 		}
 	}
 }

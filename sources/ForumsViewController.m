@@ -12,12 +12,14 @@
 #import "Forum.h"
 #import "Schedule.h"
 #import "DataProvider.h"
+#import "MBProgressHUD.h"
 
 
 static NSString *const kForumCellIdentifier = @"ForumCell";
 
 @implementation ForumsViewController
 
+@synthesize refreshControl;
 @synthesize switchTitle;
 @synthesize forumsTableView;
 @synthesize activityIndicator;
@@ -30,8 +32,7 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark -
-#pragma mark UIViewController
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -41,11 +42,6 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	mySchedule = delegate.mySchedule;
 	
 	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
-
-	self.dateToForumsDictionary = [delegate.festival.dateToForumsDictionary mutableCopy];
-	self.sortedKeysInDateToForumsDictionary = [delegate.festival.sortedKeysInDateToForumsDictionary mutableCopy];
-	self.sortedIndexesInDateToForumsDictionary = [delegate.festival.sortedIndexesInDateToForumsDictionary mutableCopy];
-
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	sectionFont = [UIFont boldSystemFontOfSize:18.0];
@@ -57,19 +53,81 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 
 	forumsTableView.tableHeaderView = nil;
 	forumsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
+	refreshControl = [UIRefreshControl new];
+	// refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Forums..."];
+	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+	[((UITableViewController*)self.forumsTableView.delegate) setRefreshControl:refreshControl];
+	[self.forumsTableView addSubview:refreshControl];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
     
+	self.dateToForumsDictionary = [delegate.festival.dateToForumsDictionary mutableCopy];
+	self.sortedKeysInDateToForumsDictionary = [delegate.festival.sortedKeysInDateToForumsDictionary mutableCopy];
+	self.sortedIndexesInDateToForumsDictionary = [delegate.festival.sortedIndexesInDateToForumsDictionary mutableCopy];
+	
 	[self syncTableDataWithScheduler];
 
 	[self.forumsTableView reloadData];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNotification:) name:FEED_UPDATED_NOTIFICATION object:nil];
 }
 
-#pragma mark -
-#pragma mark Private Methods
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear: animated];
+	
+	self.dateToForumsDictionary = nil;
+	self.sortedKeysInDateToForumsDictionary = nil;
+	self.sortedIndexesInDateToForumsDictionary = nil;
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Private Methods
+
+- (void) refresh
+{
+	[appDelegate fetchFestival];
+	[appDelegate fetchVenues];
+	
+	[self updateDataAndTable];
+	
+	[refreshControl endRefreshing];
+	
+	[NSThread sleepForTimeInterval:0.5];
+}
+
+- (void) receivedNotification:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
+	{
+ 		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+
+		dispatch_async(dispatch_get_main_queue(),
+		^{
+			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+			hud.mode = MBProgressHUDModeText;
+			hud.labelText = @"Forums have been updated";
+			hud.margin = 10.0;
+			hud.yOffset = 0.0;
+			hud.removeFromSuperViewOnHide = YES;
+			[hud hide:YES afterDelay:2.0];
+		});
+	}
+}
+
+- (void) updateDataAndTable
+{
+	self.dateToForumsDictionary = [delegate.festival.dateToForumsDictionary mutableCopy];
+	self.sortedKeysInDateToForumsDictionary = [delegate.festival.sortedKeysInDateToForumsDictionary mutableCopy];
+	self.sortedIndexesInDateToForumsDictionary = [delegate.festival.sortedIndexesInDateToForumsDictionary mutableCopy];
+	
+	[self.forumsTableView reloadData];
+}
 
 - (NSDate*) dateFromString:(NSString*)string
 {
@@ -139,11 +197,10 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 		NSString *day = [self.sortedKeysInDateToForumsDictionary  objectAtIndex:section];
 		NSDate *date = [self dateFromString:day];
 		
-		Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
-		
+		Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];		
 		for(schedule in forum.schedules)
 		{
-			if([schedule.startDate compare:date] >= NSOrderedSame)
+			if ([self compareStartDate:schedule.startDate withSectionDate:date])
 			{
 				break;
 			}
@@ -151,6 +208,23 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	}
     
     return schedule;
+}
+
+//Returns result of comparision between the StartDate of Schedule
+//with the SectionDate of tableview using Calendar Components Day-Month-Year
+- (BOOL) compareStartDate:(NSDate *)startDate withSectionDate:(NSDate *)sectionDate
+{
+    //Compare Date using Day-Month-year components excluding the time
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+    
+    NSDateComponents *date1Components = [calendar components:components fromDate: startDate];
+    NSDateComponents *date2Components = [calendar components:components fromDate: sectionDate];
+    
+    startDate = [calendar dateFromComponents:date1Components];
+    sectionDate = [calendar dateFromComponents:date2Components];
+    
+    return ([startDate compare:sectionDate] >= NSOrderedSame);
 }
 
 #pragma mark - Actions
@@ -197,22 +271,9 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
 	
 	Schedule *schedule = nil;
-	for(schedule in forum.schedules)
-	{
-        //Compare Date using Day-Month-year components excluding the time
-        NSDate *startDate, *sectionDate;
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+	for(schedule in forum.schedules) {
         
-        NSDateComponents *date1Components = [calendar components:components
-                                                        fromDate: schedule.startDate];
-        NSDateComponents *date2Components = [calendar components:components
-                                                        fromDate: date];
-        
-        startDate = [calendar dateFromComponents:date1Components];
-        sectionDate = [calendar dateFromComponents:date2Components];
-        if ([startDate compare:sectionDate] >= NSOrderedSame)
-		{
+        if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 			break;
 		}
 	}
@@ -326,8 +387,7 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	return self.sortedIndexesInDateToForumsDictionary;
 }
 
-#pragma mark -
-#pragma mark UITableView Delegate
+#pragma mark - UITableView Delegate
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -343,24 +403,10 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	NSDate *date = [self dateFromString:day];
 	
 	Forum *forum = [[self.dateToForumsDictionary objectForKey:day] objectAtIndex:row];
-	
 	for(Schedule *schedule in forum.schedules)
 	{
-        //Compare Date using Day-Month-year components excluding the time
-        NSDate *startDate, *sectionDate;
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
-        
-        NSDateComponents *date1Components = [calendar components:components
-                                                        fromDate: schedule.startDate];
-        NSDateComponents *date2Components = [calendar components:components
-                                                        fromDate: date];
-        
-        startDate = [calendar dateFromComponents:date1Components];
-        sectionDate = [calendar dateFromComponents:date2Components];
-        if ([startDate compare:sectionDate] >= NSOrderedSame)
-//		if([schedule.startDate compare:date] >= NSOrderedSame)
-        {
+        if ([self compareStartDate:schedule.startDate withSectionDate:date])
+		{
 			ForumDetailViewController *eventDetail = [[ForumDetailViewController alloc] initWithForum:schedule.itemID];
 			[self.navigationController pushViewController:eventDetail animated:YES];
 			

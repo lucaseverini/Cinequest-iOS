@@ -13,12 +13,14 @@
 #import "NewsViewController.h"
 #import "Special.h"
 #import "DataProvider.h"
+#import "MBProgressHUD.h"
 
 
 static NSString *const kEventCellIdentifier = @"EventCell";
 
 @implementation EventsViewController
 
+@synthesize refreshControl;
 @synthesize switchTitle;
 @synthesize eventsTableView;
 @synthesize activityIndicator;
@@ -31,7 +33,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark -
 #pragma mark UIViewController Methods
 
 - (void) viewDidLoad
@@ -42,10 +43,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	mySchedule = delegate.mySchedule;
 		
 	dateDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:nil];
-
-	self.dateToEventsDictionary = [delegate.festival.dateToSpecialsDictionary mutableCopy];
-	self.sortedKeysInDateToEventsDictionary = [delegate.festival.sortedKeysInDateToSpecialsDictionary mutableCopy];
-	self.sortedIndexesInDateToEventsDictionary = [delegate.festival.sortedIndexesInDateToSpecialsDictionary mutableCopy];
 
     titleFont = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
@@ -58,19 +55,81 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	
 	eventsTableView.tableHeaderView = nil;
 	eventsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+	
+	refreshControl = [UIRefreshControl new];
+	// refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Events..."];
+	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+	[((UITableViewController*)self.eventsTableView.delegate) setRefreshControl:refreshControl];
+	[self.eventsTableView addSubview:refreshControl];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
+	self.dateToEventsDictionary = [delegate.festival.dateToSpecialsDictionary mutableCopy];
+	self.sortedKeysInDateToEventsDictionary = [delegate.festival.sortedKeysInDateToSpecialsDictionary mutableCopy];
+	self.sortedIndexesInDateToEventsDictionary = [delegate.festival.sortedIndexesInDateToSpecialsDictionary mutableCopy];
+
 	[self syncTableDataWithScheduler];
 	
     [self.eventsTableView reloadData];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNotification:) name:FEED_UPDATED_NOTIFICATION object:nil];
 }
 
-#pragma mark -
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear: animated];
+	
+	self.dateToEventsDictionary = nil;
+	self.sortedKeysInDateToEventsDictionary = nil;
+	self.sortedIndexesInDateToEventsDictionary = nil;
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark Private Methods
+
+- (void) refresh
+{
+	[appDelegate fetchFestival];
+	[appDelegate fetchVenues];
+	
+	[self updateDataAndTable];
+	
+	[refreshControl endRefreshing];
+	
+	[NSThread sleepForTimeInterval:0.5];
+}
+
+- (void) receivedNotification:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
+	{
+		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+
+		dispatch_async(dispatch_get_main_queue(),
+	    ^{
+			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+			hud.mode = MBProgressHUDModeText;
+			hud.labelText = @"Events have been updated";
+			hud.margin = 10.0;
+			hud.yOffset = 0.0;
+			hud.removeFromSuperViewOnHide = YES;
+			[hud hide:YES afterDelay:2.0];
+	    });
+	}
+}
+
+- (void) updateDataAndTable
+{
+	self.dateToEventsDictionary = [delegate.festival.dateToSpecialsDictionary mutableCopy];
+	self.sortedKeysInDateToEventsDictionary = [delegate.festival.sortedKeysInDateToSpecialsDictionary mutableCopy];
+	self.sortedIndexesInDateToEventsDictionary = [delegate.festival.sortedIndexesInDateToSpecialsDictionary mutableCopy];
+	
+	[self.eventsTableView reloadData];
+}
 
 - (NSDate*) dateFromString:(NSString*)string
 {
@@ -166,9 +225,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 		
 		Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
 		
-		for(schedule in event.schedules)
+		for (schedule in event.schedules)
 		{
-			if([schedule.startDate compare:date] >= NSOrderedSame)
+            if ([self compareStartDate:schedule.startDate withSectionDate:date])
 			{
 				break;
 			}
@@ -178,7 +237,23 @@ static NSString *const kEventCellIdentifier = @"EventCell";
     return schedule;
 }
 
-#pragma mark -
+//Returns result of comparision between the StartDate of Schedule
+//with the SectionDate of tableview using Calendar Components Day-Month-Year
+- (BOOL) compareStartDate:(NSDate *)startDate withSectionDate:(NSDate *)sectionDate
+{
+    //Compare Date using Day-Month-year components excluding the time
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger components = (NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit);
+    
+    NSDateComponents *date1Components = [calendar components:components fromDate: startDate];
+    NSDateComponents *date2Components = [calendar components:components fromDate: sectionDate];
+    
+    startDate = [calendar dateFromComponents:date1Components];
+    sectionDate = [calendar dateFromComponents:date2Components];
+    
+    return ([startDate compare:sectionDate] >= NSOrderedSame);
+}
+
 #pragma mark UITableView DataSource
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
@@ -203,10 +278,9 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	Special *event = [[self.dateToEventsDictionary objectForKey:day] objectAtIndex:row];
 
 	Schedule *schedule = nil;
-	for(schedule in event.schedules)
-	{
-		if([schedule.startDate compare:date] >= NSOrderedSame)
-		{
+	for (schedule in event.schedules) {
+        
+        if ([self compareStartDate:schedule.startDate withSectionDate:date]) {
 			break;
 		}
 	}
@@ -316,7 +390,6 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	return view;
 }
 
-#pragma mark -
 #pragma mark UITableView delegate
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
@@ -341,7 +414,7 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	
 	for(Schedule *schedule in event.schedules)
 	{
-		if([schedule.startDate compare:date] >= NSOrderedSame)
+        if ([self compareStartDate:schedule.startDate withSectionDate:date])
 		{
 			EventDetailViewController *eventDetail = [[EventDetailViewController alloc] initWithEvent:schedule.itemID];
 			[self.navigationController pushViewController:eventDetail animated:YES];

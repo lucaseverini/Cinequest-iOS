@@ -33,6 +33,7 @@
 @property (nonatomic, strong) IBOutlet UITableView *filmsTableView;
 @property (nonatomic, strong) IBOutlet UISearchBar *filmSearchBar;
 
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) NSMutableDictionary *dateToFilmsDictionary;
 @property (nonatomic, strong) NSMutableArray *sortedKeysInDateToFilmsDictionary;			// Sections
 @property (nonatomic, strong) NSMutableArray *sortedIndexesInDateToFilmsDictionary;			// Films
