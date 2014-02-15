@@ -89,6 +89,7 @@
 @property (nonatomic, assign) NSInteger deviceIdiom;
 @property (atomic, assign) BOOL festivalParsed;
 @property (atomic, assign) BOOL venuesParsed;
+@property (nonatomic, assign) BOOL firstLaunch;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UITabBarController *tabBar;

@@ -41,6 +41,7 @@
 @synthesize arrayCalendarItems;
 @synthesize dictSavedEventsInCalendar;
 @synthesize arrCalendarIdentifiers;
+@synthesize firstLaunch;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
@@ -69,8 +70,10 @@
 			NSLog(@"App document data deleted");
 		}
 	}
+	
+	[self checkForFirstAppLaunch];
 
-	if([self checkForFirstAppLaunch])
+	if(firstLaunch)
     {
         [self removeUnwantedCalendars];
     }
@@ -156,14 +159,14 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"])
     {
         // App already launched
-        return NO;
+        firstLaunch = NO;
     }
     else
     {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         // This is the first launch ever
-        return YES;
+        firstLaunch = YES;
     }
 }
 
