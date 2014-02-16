@@ -358,7 +358,7 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 				[mySchedule removeObject:schedule];
 
 				[self getDataForTable];
-				
+                schedule.isSelected = NO;
 				[scheduleTableView reloadData];
 				
 				NSLog(@"Schedule and associated Event deleted");

@@ -119,8 +119,8 @@ static NSString *kActionsCellID	= @"ActionsCell";
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-			
-    [self.detailTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];
+	   
+    [self.detailTableView reloadSections:[NSIndexSet indexSetWithIndex:SCHEDULE_SECTION] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void) loadData
@@ -350,14 +350,20 @@ static NSString *kActionsCellID	= @"ActionsCell";
 			Schedule *schedule = [schedules objectAtIndex:row];
 						
 			NSUInteger count = [mySchedule count];
-			for (int idx = 0; idx < count; idx++)
-			{
-				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if (obj.ID == schedule.ID)
-				{
-					schedule.isSelected = YES;
-				}
-			}
+            
+            if (count) {
+                for (int idx = 0; idx < count; idx++)
+                {
+                    Schedule *obj = [mySchedule objectAtIndex:idx];
+                    if ([obj.ID isEqualToString:schedule.ID])
+                    {
+                        schedule.isSelected = YES;
+                    }
+                }
+
+            } else {
+                schedule.isSelected = NO;
+            }
 			
 			UILabel *timeLabel = nil;
 			UILabel *venueLabel = nil;

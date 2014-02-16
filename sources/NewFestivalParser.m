@@ -37,6 +37,7 @@
     self = [super init];
     if(self != nil)
     {
+        delegate = appDelegate;
         shows = [[NSMutableArray alloc] init];
         neglectKeysFromFeed = [NSMutableSet setWithObjects:@"Submission ID",@"ShortID",@"EventType", nil];
     }
@@ -308,6 +309,18 @@
     schedule.venue = [self venueAbbr:showing.venue.name];
     
     schedule.venueItem = [showing venue];
+    
+    //To keep track of Selected User schedules after refresh of table from FilmsView, EventsView or ForumsView
+    NSUInteger scheduleCount = [delegate.mySchedule count];
+    if (scheduleCount) {
+        for (int scheduleIdx = 0; scheduleIdx < scheduleCount; scheduleIdx++) {
+            Schedule *scheduleFromCalendar = [delegate.mySchedule objectAtIndex:scheduleIdx];
+            if ([scheduleFromCalendar.ID isEqualToString:schedule.ID]) {
+                schedule.isSelected = YES;
+                break;
+            }
+        }
+    }
     
     return schedule;
 }

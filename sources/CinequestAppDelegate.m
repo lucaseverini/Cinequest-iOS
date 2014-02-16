@@ -156,18 +156,17 @@
 // Check if the application is launching for the first time
 - (BOOL) checkForFirstAppLaunch
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"])
-    {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
         // App already launched
         firstLaunch = NO;
-    }
-    else
-    {
+    } else {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         // This is the first launch ever
         firstLaunch = YES;
     }
+
+    return firstLaunch;
 }
 
 // Remove if extra calendar exists with name Cinequest
@@ -531,11 +530,11 @@
 	{
 		// Add the selected schedule
 		BOOL alreadyAdded = NO;
-		NSInteger scheduleCount = [mySchedule count];
+		NSInteger scheduleCount = [self.mySchedule count];
 		for(NSInteger idx = 0; idx < scheduleCount; idx++)
 		{
-			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == schedule.ID)
+			Schedule *obj = [self.mySchedule objectAtIndex:idx];
+			if ([obj.ID isEqualToString:schedule.ID])
 			{
 				alreadyAdded = YES;
 				break;
@@ -543,20 +542,20 @@
 		}
 		if(!alreadyAdded)
 		{
-			[mySchedule addObject:schedule];
+			[self.mySchedule addObject:schedule];
 			NSLog(@"%@ : %@ added to my schedule", schedule.title, schedule.dateString);
 		}
 	}
 	else
 	{
 		// Remove the un-selected schedule
-		NSInteger scheduleCount = [mySchedule count];
+		NSInteger scheduleCount = [self.mySchedule count];
 		for(NSInteger idx = 0; idx < scheduleCount; idx++)
 		{
-			Schedule *obj = [mySchedule objectAtIndex:idx];
-			if (obj.ID == schedule.ID)
+			Schedule *obj = [self.mySchedule objectAtIndex:idx];
+			if ([obj.ID isEqualToString:schedule.ID])
 			{
-				[mySchedule removeObject:schedule];
+                [self.mySchedule removeObjectAtIndex:idx];
 				
 				NSLog(@"%@ : %@ removed from my schedule", schedule.title, schedule.dateString);
 				break;
@@ -572,7 +571,7 @@
         self.mySchedule = [NSMutableArray array];
     }
     
-    if ([mySchedule count] == 0 && [[self.dictSavedEventsInCalendar allKeys] count] > 0)
+    if ([self.mySchedule count] == 0 && [[self.dictSavedEventsInCalendar allKeys] count] > 0)
 	{
         for (Schedule *schedule in self.festival.schedules)
 		{
@@ -583,7 +582,7 @@
                 if (event)
 				{
                     schedule.isSelected = YES;
-                    [mySchedule addObject:schedule];
+                    [self.mySchedule addObject:schedule];
                     [self.arrayCalendarItems addObject:stringID];
                 }
                 else

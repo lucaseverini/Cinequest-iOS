@@ -289,7 +289,7 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	for(int idx = 0; idx < count; idx++)
 	{
 		Schedule *selSchedule = [mySchedule objectAtIndex:idx];
-		if(schedule.ID == selSchedule.ID)
+		if([schedule.ID isEqualToString:selSchedule.ID])
 		{
 			selected = YES;
 			break;

@@ -93,6 +93,13 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	[self.detailTableView reloadData];
 }
 
+- (void) viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+    
+    [self.detailTableView reloadSections:[NSIndexSet indexSetWithIndex:SCHEDULE_SECTION] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
 - (void) loadData
 {
 	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[forum imageURL]];
@@ -222,14 +229,20 @@ static NSString *kActionsCellID	= @"ActionsCell";
 			Schedule *schedule = [schedules objectAtIndex:row];
 			
 			NSUInteger count = [mySchedule count];
-			for (int idx = 0; idx < count; idx++)
-			{
-				Schedule *obj = [mySchedule objectAtIndex:idx];
-				if (obj.ID == schedule.ID)
-				{
-					schedule.isSelected = YES;
-				}
-			}
+            
+            if (count) {
+                for (int idx = 0; idx < count; idx++)
+                {
+                    Schedule *obj = [mySchedule objectAtIndex:idx];
+                    if ([obj.ID isEqualToString:schedule.ID])
+                    {
+                        schedule.isSelected = YES;
+                    }
+                }
+                
+            } else {
+                schedule.isSelected = NO;
+            }
 			
 			UIImage *buttonImage = (schedule.isSelected) ? [UIImage imageNamed:@"cal_selected.png"] : [UIImage imageNamed:@"cal_unselected.png"];
 			UILabel *timeLabel = nil;

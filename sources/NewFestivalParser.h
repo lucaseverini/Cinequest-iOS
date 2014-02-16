@@ -9,8 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @class Festival;
+@class CinequestAppDelegate;
 
 @interface NewFestivalParser : NSObject
+{
+    CinequestAppDelegate *delegate;
+}
 
 @property (strong, nonatomic) NSMutableArray *shows;
 
