@@ -98,6 +98,9 @@
 
 	// Force to draw the tabbar items in red color
 	[[UITabBar appearance] setTintColor:[UIColor redColor]];
+    
+    // Set UITextFields to have light appearance instead of dark appearance
+    [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceLight];
 
 	for(UITabBarItem *item in tabBar.tabBar.items)
 	{

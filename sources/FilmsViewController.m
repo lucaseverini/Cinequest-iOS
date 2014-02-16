@@ -814,13 +814,11 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
             if ([subSubview conformsToProtocol:@protocol(UITextInputTraits)])
             {
                 UITextField *textField = (UITextField *)subSubview;
-                [textField setKeyboardAppearance: UIKeyboardAppearanceAlert];
                 textField.returnKeyType = UIReturnKeyDone;
                 break;
             }
         }
     }
-    
 }
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
