@@ -13,6 +13,7 @@
 #import "DataProvider.h"
 #import "VenueParser.h"
 #import "NewFestivalParser.h"
+#import "MBProgressHUD.h"
 
 @implementation CinequestAppDelegate
 
@@ -40,6 +41,7 @@
 @synthesize arrayCalendarItems;
 @synthesize dictSavedEventsInCalendar;
 @synthesize arrCalendarIdentifiers;
+@synthesize firstLaunch;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
@@ -68,8 +70,10 @@
 			NSLog(@"App document data deleted");
 		}
 	}
+	
+	[self checkForFirstAppLaunch];
 
-	if([self checkForFirstAppLaunch])
+	if(firstLaunch)
     {
         [self removeUnwantedCalendars];
     }
@@ -155,14 +159,14 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"])
     {
         // App already launched
-        return NO;
+        firstLaunch = NO;
     }
     else
     {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         // This is the first launch ever
-        return YES;
+        firstLaunch = YES;
     }
 }
 
@@ -625,6 +629,20 @@
 - (BOOL) application:(UIApplication*)application openURL:(NSURL*)url sourceApplication:(NSString*)sourceApplication annotation:(id)annotation
 {
     return [GPPURLHandler handleURL:url sourceApplication:sourceApplication annotation:annotation];
+}
+
+- (void) showMessage:(NSString*)message onView:view hideAfter:(NSTimeInterval)time
+{
+	dispatch_async(dispatch_get_main_queue(),
+	^{
+		MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+		hud.mode = MBProgressHUDModeText;
+		hud.labelText = message;
+		hud.margin = 10.0;
+		hud.yOffset = 0.0;
+		hud.removeFromSuperViewOnHide = YES;
+		[hud hide:YES afterDelay:time];
+	});
 }
 
 @end

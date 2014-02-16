@@ -11,7 +11,6 @@
 #import "NewsDetailViewController.h"
 #import "DDXML.h"
 #import "DataProvider.h"
-#import "MBProgressHUD.h"
 
 static NSString *const kNewsCellIdentifier = @"NewsCell";
 
@@ -90,6 +89,14 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 		
 		tabBarAnimation = NO;
 	}
+	
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"NewsUpdated"])
+	{
+		[appDelegate showMessage:@"News have been updated" onView:self.view hideAfter:3.0];
+		
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NewsUpdated"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+	}
 }
 
 #pragma mark - Private Methods
@@ -109,16 +116,10 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	{
  		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
 
-		dispatch_async(dispatch_get_main_queue(),
-		^{
-			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-			hud.mode = MBProgressHUDModeText;
-			hud.labelText = @"News have been updated";
-			hud.margin = 10.0;
-			hud.yOffset = 0.0;
-			hud.removeFromSuperViewOnHide = YES;
-			[hud hide:YES afterDelay:2.0];
-		});
+		[appDelegate showMessage:@"News have been updated" onView:self.view hideAfter:3.0];
+
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NewsUpdated"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
 	}
 }
 

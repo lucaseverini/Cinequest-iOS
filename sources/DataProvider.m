@@ -482,9 +482,18 @@
 		{
 			[appDelegate fetchFestival];
 			[appDelegate fetchVenues];
+			
+			if(!appDelegate.firstLaunch)
+			{
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:appDelegate.festival, @"festival", appDelegate.venuesDictionary, @"venues", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:FEED_UPDATED_NOTIFICATION object:nil userInfo:userInfo];
 
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:appDelegate.festival, @"festival", appDelegate.venuesDictionary, @"venues", nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:FEED_UPDATED_NOTIFICATION object:nil userInfo:userInfo];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NewsUpdated"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FilmsUpdated"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"EventsUpdated"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForumsUpdated"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+			}
 		}
 	});
 }

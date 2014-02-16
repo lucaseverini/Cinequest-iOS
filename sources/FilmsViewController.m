@@ -13,7 +13,6 @@
 #import "DataProvider.h"
 #import "Film.h"
 #import "Festival.h"
-#import "MBProgressHUD.h"
 
 
 static NSString *const kDateCellIdentifier = @"DateCell";
@@ -144,6 +143,19 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear: animated];
+	
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"FilmsUpdated"])
+	{
+		[appDelegate showMessage:@"Films have been updated" onView:self.view hideAfter:3.0];
+		
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FilmsUpdated"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+	}
+}
+
 #pragma mark - Private methods
 
 - (void) refresh
@@ -164,16 +176,10 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	{
 		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
 
-		dispatch_async(dispatch_get_main_queue(),
-		^{
-			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-			hud.mode = MBProgressHUDModeText;
-			hud.labelText = @"Films have been updated";
-			hud.margin = 10.0;
-			hud.yOffset = 0.0;
-			hud.removeFromSuperViewOnHide = YES;
-			[hud hide:YES afterDelay:2.0];
-		});
+		[appDelegate showMessage:@"Films have been updated" onView:self.view hideAfter:3.0];
+
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FilmsUpdated"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
 	}
 }
 
