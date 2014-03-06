@@ -33,9 +33,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
     [super viewDidLoad];
     
 	tabBarAnimation = YES;
-
-	newsTableView.tableHeaderView = nil;
-	newsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 	
 	titleFont = [UIFont systemFontOfSize:[UIFont labelFontSize]];
 
@@ -48,6 +45,9 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 	[((UITableViewController*)self.newsTableView.delegate) setRefreshControl:refreshControl];
 	[self.newsTableView addSubview:refreshControl];
+
+	newsTableView.tableHeaderView = nil;
+	newsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -112,7 +112,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 {
     if ([[notification name] isEqualToString:FEED_UPDATED_NOTIFICATION]) // Not really necessary until there is only one notification
 	{
- 		[self performSelectorOnMainThread:@selector(updateDataAndTable) withObject:nil waitUntilDone:NO];
+ 		[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
 
 		[appDelegate showMessage:@"News have been updated" onView:self.view hideAfter:3.0];
 
@@ -121,16 +121,11 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	}
 }
 
-- (void) updateDataAndTable
-{
-	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
-}
-
 - (void) loadData
 {
 	news = [NSMutableArray new];
 	
-	NSData *xmlData = [[appDelegate dataProvider] newsFeed];
+	NSData *xmlData = [appDelegate.dataProvider newsFeed];
 	
 	NSString* myString = [[NSString alloc] initWithData:xmlData encoding:NSUTF8StringEncoding];
 	myString = [myString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
@@ -304,7 +299,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 			UIImage *image = [UIImage imageWithContentsOfFile:[[NSURL URLWithString:imageUrl] path]];
 			if(imageUrl != nil)
 			{
-				return height + [image size].height;
+				height += [image size].height;
 			}
 		}
 	}

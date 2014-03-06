@@ -79,10 +79,7 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	timeFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 	sectionFont = [UIFont boldSystemFontOfSize:18.0];
 	venueFont = timeFont;
-	
-	filmsTableView.tableHeaderView = nil;
-	filmsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-	
+		
 	self.searchDisplayController.searchResultsTableView.tableHeaderView = nil;
  	self.searchDisplayController.searchResultsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
  	self.searchDisplayController.searchResultsTableView.sectionIndexColor = [UIColor redColor];
@@ -99,6 +96,9 @@ static NSString *const kTitleCellIdentifier = @"TitleCell";
 	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 	[((UITableViewController*)self.filmsTableView.delegate) setRefreshControl:refreshControl];
 	[self.filmsTableView addSubview:refreshControl];
+
+	filmsTableView.tableHeaderView = nil;
+	filmsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (BOOL) prefersStatusBarHidden

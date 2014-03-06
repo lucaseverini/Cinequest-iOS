@@ -50,14 +50,14 @@ static NSString *const kForumCellIdentifier = @"ForumCell";
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	[switchTitle removeSegmentAtIndex:1 animated:NO];
 
-	forumsTableView.tableHeaderView = nil;
-	forumsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-
 	refreshControl = [UIRefreshControl new];
 	// refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Forums..."];
 	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 	[((UITableViewController*)self.forumsTableView.delegate) setRefreshControl:refreshControl];
 	[self.forumsTableView addSubview:refreshControl];
+
+	forumsTableView.tableHeaderView = nil;
+	forumsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void) viewWillAppear:(BOOL)animated

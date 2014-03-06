@@ -84,7 +84,6 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	[GPPSignIn sharedInstance].shouldFetchGoogleUserID = YES;
 	[GPPSignIn sharedInstance].scopes = @[ kGTLAuthScopePlusLogin ];
 
-	self.detailTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
     
 	titleFont = [UIFont systemFontOfSize:14.0];
@@ -103,6 +102,8 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	self.activityIndicator.color = [UIColor grayColor];
     
 	[(UIWebView*)self.detailTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
+
+	self.detailTableView.hidden = YES;
 
 	[self.activityIndicator startAnimating];
 

@@ -455,7 +455,7 @@
 			keepRunning = YES;
 			while(keepRunning)
 			{
-				[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+				[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 			}
 			
 			[checkConnection cancel];
@@ -1107,7 +1107,7 @@
 	NSDate *endDate = [[NSDate date] dateByAddingTimeInterval:IMAGELOADING_TIMEOUT];
 
 	// Wait for the image loading nsoperation to really start
-	while(![loadImageOp isExecuting])
+	while(![loadImageOp isExecuting] && ![loadImageOp isFinished])
 	{
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	}

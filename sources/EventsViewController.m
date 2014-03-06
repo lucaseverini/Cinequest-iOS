@@ -51,15 +51,15 @@ static NSString *const kEventCellIdentifier = @"EventCell";
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	[switchTitle removeSegmentAtIndex:1 animated:NO];
-	
-	eventsTableView.tableHeaderView = nil;
-	eventsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-	
+		
 	refreshControl = [UIRefreshControl new];
 	// refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Events..."];
 	[refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 	[((UITableViewController*)self.eventsTableView.delegate) setRefreshControl:refreshControl];
 	[self.eventsTableView addSubview:refreshControl];
+
+	eventsTableView.tableHeaderView = nil;
+	eventsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void) viewWillAppear:(BOOL)animated

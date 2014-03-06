@@ -69,7 +69,6 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 	delegate = appDelegate;
 
-	self.detailTableView.hidden = YES;
 	self.view.userInteractionEnabled = NO;
 
 	self.activityIndicator.color = [UIColor grayColor];
@@ -83,6 +82,8 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	NSDictionary *attribute = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:16.0f] forKey:NSFontAttributeName];
 	[switchTitle setTitleTextAttributes:attribute forState:UIControlStateNormal];
 	self.navigationItem.titleView = switchTitle;
+
+	self.detailTableView.hidden = YES;
 
 	[(UIWebView*)self.detailTableView.tableHeaderView setSuppressesIncrementalRendering:YES]; // Avoids scrolling problems when the WebView is showed
 
