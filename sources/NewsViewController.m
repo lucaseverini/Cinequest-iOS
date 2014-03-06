@@ -33,8 +33,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
     [super viewDidLoad];
     
 	tabBarAnimation = YES;
-		
-	news = [NSMutableArray new];
 
 	newsTableView.tableHeaderView = nil;
 	newsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -130,7 +128,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 
 - (void) loadData
 {
-	[news removeAllObjects];
+	news = [NSMutableArray new];
 	
 	NSData *xmlData = [[appDelegate dataProvider] newsFeed];
 	
@@ -205,14 +203,6 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
 	}
 
 	[self.newsTableView reloadData];
-}
-
-- (IBAction) toFestival:(id)sender
-{
-	CinequestAppDelegate *delegate = appDelegate;
-	delegate.tabBar.selectedIndex = 0;
-	delegate.isPresentingModalView = NO;
-	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UITableView Data Source

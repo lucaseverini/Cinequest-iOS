@@ -88,24 +88,43 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 	[self.activityIndicator startAnimating];
 
-	[self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+	[self performSelectorInBackground:@selector(loadData) withObject:nil];
 	
 	[self.detailTableView reloadData];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
+	
+	viewWillDisappear = NO;
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	
+	viewWillDisappear = YES;
 }
 
 - (void) loadData
 {
 	NSString *image = [appDelegate.dataProvider cacheImage:[news objectForKey:@"eventImage"]];
-	NSString *description = [news objectForKey:@"description"];
-	NSString *weba = [NSString stringWithFormat:web, newsName, image, description];
 	
-	if(infoLink.length != 0 && [infoLink hasPrefix:@"http"])
+	// Don't execute unuseful code if the view is going to disappear shortly
+	if(!viewWillDisappear)
 	{
-		weba = [weba stringByAppendingString:[NSString stringWithFormat:web_paragraph, infoLink]];
+		NSString *description = [news objectForKey:@"description"];
+		NSString *weba = [NSString stringWithFormat:web, newsName, image, description];
+		
+		if(infoLink.length != 0 && [infoLink hasPrefix:@"http"])
+		{
+			weba = [weba stringByAppendingString:[NSString stringWithFormat:web_paragraph, infoLink]];
+		}
+		weba = [self htmlEntityDecode:weba];
+		
+		[self.webView loadHTMLString:weba baseURL:nil];
 	}
-	weba = [self htmlEntityDecode:weba];
-	
-	[self.webView loadHTMLString:weba baseURL:nil];
 }
 
 #pragma mark - UIWebView delegate

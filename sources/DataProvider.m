@@ -7,6 +7,7 @@
 //
 
 #import "DataProvider.h"
+#import "LoadImageOperation.h"
 #import "CinequestAppDelegate.h"
 
 
@@ -17,6 +18,7 @@
 #define CACHEFOLDER_CHECKINTERVAL		120.0					// Interval in seconds between checking the size of cache folder
 #define CACHEFOLDER_MAXSIZE				(20L * 1024L * 1024L)	// Size upper limit for the cache folder. 20 MBytes
 #define CACHEFOLDER_MINSIZE				(15L * 1024L * 1024L)	// Size lower limit for the cache folder. 15 MBytes
+#define IMAGELOADING_TIMEOUT			10.0					// Timeout in seconds for downloading an image
 #define MAINFEED_FILE					@"MainFeed.xml"
 #define FILMSBYTIME_FILE				@"FilmsByTime.xml"
 #define FILMSBYTITLE_FILE				@"FilmsByTitle.xml"
@@ -100,6 +102,8 @@
 		checkFolderTimer = [NSTimer timerWithTimeInterval:CACHEFOLDER_CHECKINTERVAL target:self selector:@selector(checkCacheFolder) userInfo:nil repeats:YES];
 		[[NSRunLoop mainRunLoop] addTimer:checkFolderTimer forMode:NSRunLoopCommonModes];
 		[checkFolderTimer fire];
+		
+		loadImageQueue = [[NSOperationQueue alloc] init];
 	}
 	
 	return self;
@@ -1096,25 +1100,49 @@
 		}
 	}
 
-	// Image either not cached or earlier than last news feed to download it
-	NSData *imgData = [NSData dataWithContentsOfURL:url];
-	if(imgData != nil)
+	LoadImageOperation *loadImageOp = [[LoadImageOperation alloc] initWithImageUrl:url];
+	[loadImageQueue addOperation:loadImageOp];
+	
+	// Cal the date of the timeout
+	NSDate *endDate = [[NSDate date] dateByAddingTimeInterval:IMAGELOADING_TIMEOUT];
+
+	// Wait for the image loading nsoperation to really start
+	while(![loadImageOp isExecuting])
 	{
-		[imgData writeToFile:filePath atomically:YES];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+	}
+	
+	// Wait up to the timeout for the image loading nsoperation to finish
+	while([loadImageOp isExecuting] && [[NSDate date] earlierDate:endDate] != endDate)
+	{
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    }
 		
+	if([loadImageOp isFinished])
+	{
+		if(loadImageOp.imageData != nil)
+		{
+			[loadImageOp.imageData writeToFile:filePath atomically:YES];
+		
+			return [fileUrl absoluteString];
+		}
+	}
+	
+	if(imageCached)
+	{
 		return [fileUrl absoluteString];
 	}
 	else
 	{
-		if(imageCached)
-		{
-			return [fileUrl absoluteString];
-		}
-		else
-		{
-			return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
-		}
+		return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 	}
+}
+
+- (NSString*) cacheImageTest:(NSString*)imageUrl
+{
+	[NSThread sleepForTimeInterval:5.0];
+	
+	return [[[NSBundle mainBundle] URLForResource:@"cqthumb" withExtension:@"jpg"] absoluteString]; // return the file url to placeholder image
 }
 
 @end

@@ -37,6 +37,7 @@
 		8163D49C185C49BA0035F67F /* Events_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 8163D49A185C49BA0035F67F /* Events_black.png */; };
 		8163D49D185C49BA0035F67F /* Events_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8163D49B185C49BA0035F67F /* Events_black@2x.png */; };
 		8163D49F185C5DAD0035F67F /* team.png in Resources */ = {isa = PBXBuildFile; fileRef = 8163D49E185C5DAD0035F67F /* team.png */; };
+		81695DCF18C85F3C00AC790E /* LoadImageOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 81695DCE18C85F3C00AC790E /* LoadImageOperation.m */; };
 		816C4AB1183C0AEC00BE896C /* iphone_launch_320_480.png in Resources */ = {isa = PBXBuildFile; fileRef = 816C4AB0183C0AEC00BE896C /* iphone_launch_320_480.png */; };
 		816C4AB3183C0B4C00BE896C /* iphone_launch_640_960.png in Resources */ = {isa = PBXBuildFile; fileRef = 816C4AB2183C0B4C00BE896C /* iphone_launch_640_960.png */; };
 		816C4AB6183C160F00BE896C /* Splash4.png in Resources */ = {isa = PBXBuildFile; fileRef = 816C4AB4183C160F00BE896C /* Splash4.png */; };
@@ -190,6 +191,8 @@
 		8163D49A185C49BA0035F67F /* Events_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Events_black.png; path = images/Events_black.png; sourceTree = SOURCE_ROOT; };
 		8163D49B185C49BA0035F67F /* Events_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Events_black@2x.png"; path = "images/Events_black@2x.png"; sourceTree = SOURCE_ROOT; };
 		8163D49E185C5DAD0035F67F /* team.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = team.png; path = images/team.png; sourceTree = SOURCE_ROOT; };
+		81695DCD18C85F3C00AC790E /* LoadImageOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoadImageOperation.h; path = sources/LoadImageOperation.h; sourceTree = SOURCE_ROOT; };
+		81695DCE18C85F3C00AC790E /* LoadImageOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoadImageOperation.m; path = sources/LoadImageOperation.m; sourceTree = SOURCE_ROOT; };
 		816C4AB0183C0AEC00BE896C /* iphone_launch_320_480.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_launch_320_480.png; path = images/iphone_launch_320_480.png; sourceTree = SOURCE_ROOT; };
 		816C4AB2183C0B4C00BE896C /* iphone_launch_640_960.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iphone_launch_640_960.png; path = images/iphone_launch_640_960.png; sourceTree = SOURCE_ROOT; };
 		816C4AB4183C160F00BE896C /* Splash4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Splash4.png; path = images/Splash4.png; sourceTree = SOURCE_ROOT; };
@@ -659,6 +662,8 @@
 				81745A5017EBAEED008D2C2C /* CinequestAppDelegate.m */,
 				81FBC131182DA37900C01783 /* DataProvider.h */,
 				81FBC132182DA37900C01783 /* DataProvider.m */,
+				81695DCD18C85F3C00AC790E /* LoadImageOperation.h */,
+				81695DCE18C85F3C00AC790E /* LoadImageOperation.m */,
 				C271392E1828A36100BF8DCB /* FestivalParser */,
 				C271392418279DE300BF8DCB /* DDXMLFiles */,
 				81C52B82182B62D200D2F55D /* Reachability */,
@@ -979,6 +984,7 @@
 				C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */,
 				81745A7817EBAEED008D2C2C /* DDXMLElementAdditions.m in Sources */,
 				81745A7917EBAEED008D2C2C /* DDXMLNode.m in Sources */,
+				81695DCF18C85F3C00AC790E /* LoadImageOperation.m in Sources */,
 				81B38F2D18934D180047AEFE /* ForumDetailViewController.m in Sources */,
 				C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */,
 				C2B86DF71844C0350088A958 /* Special.m in Sources */,

@@ -106,7 +106,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 
 	[self.activityIndicator startAnimating];
 
-    [self performSelectorOnMainThread:@selector(loadData) withObject:nil waitUntilDone:NO];
+	[self performSelectorInBackground:@selector(loadData) withObject:nil];
 	
 	[self.detailTableView reloadData];
 }
@@ -114,6 +114,15 @@ static NSString *kActionsCellID	= @"ActionsCell";
 - (void) viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
+	
+	viewWillDisappear = NO;
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	
+	viewWillDisappear = YES;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -127,10 +136,14 @@ static NSString *kActionsCellID	= @"ActionsCell";
 {
 	NSString *cachedImage = [appDelegate.dataProvider cacheImage:[film imageURL]];
 
-	NSString *weba = [NSString stringWithFormat:web, film.name, cachedImage, [film description]];
-    weba = [weba stringByAppendingString:film.webString];
+	// Don't execute unuseful code if the view is going to disappear shortly
+	if(!viewWillDisappear)
+	{
+		NSString *weba = [NSString stringWithFormat:web, film.name, cachedImage, [film description]];
+		weba = [weba stringByAppendingString:film.webString];
 
-	[webView loadHTMLString:weba baseURL:nil];
+		[webView loadHTMLString:weba baseURL:nil];
+	}
 }
 
 - (Schedule*) getItemForSender:(id)sender event:(id)touchEvent

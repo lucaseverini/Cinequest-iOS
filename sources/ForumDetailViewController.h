@@ -20,6 +20,7 @@
 	UIFont *sectionFont;
 	UIFont *actionFont;
 	NSInteger googlePlusConnectionDone;
+	BOOL viewWillDisappear;
 }
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;

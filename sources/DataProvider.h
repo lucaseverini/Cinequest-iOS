@@ -27,6 +27,7 @@ extern NSString *const kUpdatedXMLFeedNotification;
 	NSURL *queryDatesUrl;
 	NSMutableDictionary *queryDates;
 	NSDate *cacheFolderDate;
+	NSOperationQueue *loadImageQueue;
 }
 
 @property (atomic, assign) BOOL newsFeedUpdated;
@@ -45,5 +46,7 @@ extern NSString *const kUpdatedXMLFeedNotification;
 - (NSData*) eventDetail:(NSString*)eventId;
 - (NSString*) cacheImage:(NSString*)imageUrl;
 - (void) reset;
+
+- (NSString*) cacheImageTest:(NSString*)imageUrl;
 
 @end

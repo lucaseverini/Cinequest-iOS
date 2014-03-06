@@ -1,4 +1,7 @@
 
-13) Implementing a shell script to build app automatically.
-14) Up to 3 lines for the title in Forums list 
+
+* When the app is busy downloading data in [loadData] isn't possible to bail out when the connecction is too slow.
+	[NSData datawithcontentsofurl] must be reimplemented with a shorter timeout.
+* Implementing a shell script to build app automatically.
+* Up to 3 lines for the title in Forums list.
 
