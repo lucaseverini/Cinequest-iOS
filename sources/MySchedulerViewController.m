@@ -164,10 +164,13 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (void) calendarButtonTapped:(id)sender event:(id)touchEvent
 {
-	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
-	NSLog(@"Editing Event associated to Schedule %@ %@-%@", schedule.title, schedule.itemID, schedule.ID);
-	
-	[self editEventForSchedule:schedule];
+	if(appDelegate.cinequestCalendar != nil)
+	{
+		Schedule *schedule = [self getItemForSender:sender event:touchEvent];
+		NSLog(@"Editing Event associated to Schedule %@ %@-%@", schedule.title, schedule.itemID, schedule.ID);
+		
+		[self editEventForSchedule:schedule];
+	}
 }
 
 - (Schedule*) getItemForSender:(id)sender event:(id)touchEvent
@@ -350,18 +353,33 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 		{
 			NSLog(@"Deleting Schedule %@ %@-%@ and associated Event...", schedule.title, schedule.itemID, schedule.ID);
 
-			EKEvent *event = [self findEventForSchedule:schedule inStore:eventStore];
-			if(event != nil)
+			if(appDelegate.cinequestCalendar != nil)
+			{
+				EKEvent *event = [self findEventForSchedule:schedule inStore:eventStore];
+				if(event != nil)
+				{
+					[delegate addOrRemoveScheduleToCalendar:schedule];
+
+					[mySchedule removeObject:schedule];
+
+					[self getDataForTable];
+					schedule.isSelected = NO;
+					[scheduleTableView reloadData];
+					
+					NSLog(@"Schedule and associated Event deleted");
+				}
+			}
+			else
 			{
 				[delegate addOrRemoveScheduleToCalendar:schedule];
-
+				
 				[mySchedule removeObject:schedule];
-
+				
 				[self getDataForTable];
-                schedule.isSelected = NO;
+				schedule.isSelected = NO;
 				[scheduleTableView reloadData];
 				
-				NSLog(@"Schedule and associated Event deleted");
+				NSLog(@"Schedule deleted");
 			}
 		}
 

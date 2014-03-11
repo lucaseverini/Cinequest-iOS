@@ -12,7 +12,7 @@
 
 
 #define NEWSFEED_TIMESTAMP_ENDPOSITION	256						// News feed time-stamp is contained within that number of bytes
-#define NEWSFEED_CHECK_INTERVAL			120.0					// Interval in seconds between checking for an updated news feed
+#define NEWSFEED_CHECK_INTERVAL			300.0					// Interval in seconds between checking for an updated news feed
 #define NEWSFEED_TIMEOUT				30.0					// Timeout in seconds for downloading the news feed
 #define NEWSFEED_CHECK_RETRYINTERVAL	60.0					// Interval in seconds before retrying to download the news feed
 #define CACHEFOLDER_CHECKINTERVAL		120.0					// Interval in seconds between checking the size of cache folder
@@ -328,7 +328,7 @@
 			NSString *dateTimeStr = [dataStr substringWithRange:NSMakeRange(rangeStart, rangeLen)];
 			
 			NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-			[dateFormat setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss"];
+			[dateFormat setDateFormat:@"yyyy'-'MM'-'dd'PDT'HH':'mm':'ss"];
 			NSDate *date = [dateFormat dateFromString:dateTimeStr];
 			
 			return date;

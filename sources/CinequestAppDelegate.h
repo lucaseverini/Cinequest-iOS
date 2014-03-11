@@ -100,13 +100,12 @@
 @property (nonatomic, strong) NSString *calendarIdentifier;
 @property (nonatomic, strong) NSMutableArray *arrayCalendarItems;
 @property (nonatomic, strong) NSMutableDictionary *dictSavedEventsInCalendar;
-@property (nonatomic, strong) NSMutableArray *arrCalendarIdentifiers;
 
 - (BOOL) connectedToNetwork;
 - (void) startReachability:(NSString*)hostName;
 
 - (void) addOrRemoveSchedule:(Schedule*)schedule;
-- (void) addOrRemoveScheduleToCalendar:(Schedule*)schedule;
+- (BOOL) addOrRemoveScheduleToCalendar:(Schedule*)schedule;
 - (void) populateCalendarEntries;
 - (void) checkEventStoreAccessForCalendar;
 - (void) fetchVenues;

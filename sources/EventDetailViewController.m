@@ -495,7 +495,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 	Schedule *schedule = [self getItemForSender:sender event:touchEvent];
     schedule.isSelected ^= YES;
     
-    //Call to Delegate to Add/Remove from Calendar
+    // Call to Delegate to Add/Remove from Calendar
     [delegate addOrRemoveScheduleToCalendar:schedule];
     [delegate addOrRemoveSchedule:schedule];
     
