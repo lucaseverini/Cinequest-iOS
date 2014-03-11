@@ -293,6 +293,7 @@ static NSString *kActionsCellID	= @"ActionsCell";
 				mapsButton = [UIButton buttonWithType:UIButtonTypeCustom];
 				mapsButton.frame = CGRectMake(274.0, 5.0, 40.0, 40.0);
 				mapsButton.tag = CELL_RIGHTBUTTON_TAG;
+				mapsButton.enabled = appDelegate.locationServicesON;
 				[mapsButton setImage:[UIImage imageNamed:@"maps.png"] forState:UIControlStateNormal];
 				[mapsButton addTarget:self action:@selector(mapsButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
 				[cell.contentView addSubview:mapsButton];

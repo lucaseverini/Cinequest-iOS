@@ -41,6 +41,11 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void) dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void) viewDidLoad
 {
     [super viewDidLoad];
@@ -58,16 +63,26 @@
     openInMapsBtn = [[UIBarButtonItem alloc] initWithTitle:@"Open in Maps" style:UIBarButtonItemStylePlain target:self action:@selector(openInMaps:)];
     NSArray *bottomBarItems = [[NSArray alloc] initWithObjects:trackingBtn, flexSpace, directionsBtn, flexSpace, openInMapsBtn, nil];
     [self.bottomBar setItems:bottomBarItems animated:NO];
-
-    [self.mapView setUserTrackingMode:MKUserTrackingModeNone animated:NO];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+	
+    [self.mapView setUserTrackingMode:MKUserTrackingModeNone animated:NO];
+		
 	self.mapView.hidden = YES;
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+	
+	trackingBtn.enabled = appDelegate.userLocationON;
+	directionsBtn.enabled = appDelegate.userLocationON;
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-	
+		
 	// Set location to be searched
 	NSString *location = [NSString stringWithFormat:@"%@, %@ %@, %@, %@ %@", venue.name, venue.address1, venue.address2, venue.city, venue.state, venue.zip];
 	
@@ -360,6 +375,17 @@
     polylineView.lineWidth = 10.0;
 	
     return polylineView;
+}
+
+- (void) appBecomeActive
+{
+/*
+	appDelegate.locationServicesON = [CLLocationManager locationServicesEnabled];
+	appDelegate.userLocationON = [CLLocationManager authorizationStatus];
+
+	trackingBtn.enabled = appDelegate.userLocationON;
+	directionsBtn.enabled = appDelegate.userLocationON;
+*/
 }
 
 @end

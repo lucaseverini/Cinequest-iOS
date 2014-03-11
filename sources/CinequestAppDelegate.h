@@ -90,6 +90,8 @@
 @property (atomic, assign) BOOL festivalParsed;
 @property (atomic, assign) BOOL venuesParsed;
 @property (nonatomic, assign) BOOL firstLaunch;
+@property (nonatomic, assign) BOOL locationServicesON;
+@property (nonatomic, assign) BOOL userLocationON;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UITabBarController *tabBar;
@@ -108,6 +110,7 @@
 - (BOOL) addOrRemoveScheduleToCalendar:(Schedule*)schedule;
 - (void) populateCalendarEntries;
 - (void) checkEventStoreAccessForCalendar;
+- (void) checkAndSyncWithCalendar:(BOOL)calendarAccessGranted;
 - (void) fetchVenues;
 - (void) fetchFestival;
 - (void) showMessage:(NSString*)message onView:view hideAfter:(NSTimeInterval)time;

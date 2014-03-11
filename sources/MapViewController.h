@@ -11,7 +11,7 @@
 @class MKPlacemark;
 @class MKPointAnnotation;
 
-@interface MapViewController : UIViewController <MKMapViewDelegate>
+@interface MapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
 {
 	NSArray *routes;
 }

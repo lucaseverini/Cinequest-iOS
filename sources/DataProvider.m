@@ -327,9 +327,15 @@
 			rangeLen = timeStampEnd.location - rangeStart;
 			NSString *dateTimeStr = [dataStr substringWithRange:NSMakeRange(rangeStart, rangeLen)];
 			
-			NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+			NSDateFormatter *dateFormat = [NSDateFormatter new];
 			[dateFormat setDateFormat:@"yyyy'-'MM'-'dd'PDT'HH':'mm':'ss"];
+			
 			NSDate *date = [dateFormat dateFromString:dateTimeStr];
+			if(date == nil)
+			{
+				[dateFormat setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss"];
+				date = [dateFormat dateFromString:dateTimeStr];
+			}
 			
 			return date;
 		}

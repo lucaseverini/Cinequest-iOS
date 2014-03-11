@@ -46,6 +46,8 @@
 @synthesize arrayCalendarItems;
 @synthesize dictSavedEventsInCalendar;
 @synthesize firstLaunch;
+@synthesize locationServicesON;
+@synthesize userLocationON;
 
 - (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
@@ -74,6 +76,8 @@
 			NSLog(@"App document data deleted");
 		}
 	}
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
 	
 	[self checkForFirstAppLaunch];
 
@@ -134,6 +138,11 @@
 - (void) applicationDidBecomeActive:(UIApplication *)application
 {
 	[self loadCalendar];
+}
+
+- (void) applicationWillTerminate:(UIApplication*)application
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL) checkPrefsForDataDeletion
@@ -279,6 +288,67 @@
 
 #pragma mark - Access Calendar
 
+- (void) checkAndSyncWithCalendar:(BOOL)calendarAccessGranted
+{
+	NSLog(@"checkAndSyncWithCalendar");
+	
+	NSArray *allKeys = [self.dictSavedEventsInCalendar allKeys];
+	for (NSString* key in allKeys)
+	{
+		NSMutableArray *eventArray = [self.dictSavedEventsInCalendar objectForKey:key];
+		if(eventArray != nil)
+		{
+			EKEvent *newEvent = [EKEvent eventWithEventStore:self.eventStore];
+			if(newEvent != nil)
+			{
+				NSString *uniqueIDForEvent = key;
+				NSString *title = [eventArray objectAtIndex:0];
+				NSString *location = [eventArray objectAtIndex:1];
+				NSDate *startDate = [eventArray objectAtIndex:2];
+				NSDate *endDate = [eventArray objectAtIndex:3];
+
+				// Search for same event already present in the calendar
+				NSString *eventIdentifier = nil;
+				NSPredicate *predicateForEvents = [self.eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:[NSArray arrayWithObject:self.cinequestCalendar]];
+				NSArray *eventsArray = [self.eventStore eventsMatchingPredicate: predicateForEvents];
+				for (EKEvent *event in eventsArray)
+				{
+					if([event.title isEqualToString:title])
+					{
+						eventIdentifier = event.eventIdentifier;
+						break;
+					}
+				}
+
+				if(eventIdentifier == nil)
+				{
+					newEvent.title = title;
+					newEvent.location = location;
+					newEvent.startDate = startDate;
+					newEvent.endDate = endDate;
+					
+					[newEvent setCalendar:self.cinequestCalendar];
+
+					NSError *error = nil;
+					if ([self.eventStore saveEvent:newEvent span:EKSpanThisEvent error:&error])
+					{
+						[self.arrayCalendarItems addObject:uniqueIDForEvent];
+						
+						NSLog(@"Succesfully saved event %@ %@", newEvent.title, newEvent.eventIdentifier);
+						
+						eventIdentifier = newEvent.eventIdentifier;
+					}
+				}
+
+				NSArray *newEventDict = [NSArray arrayWithObjects:newEvent.title, newEvent.location, newEvent.startDate, newEvent.endDate, eventIdentifier, nil];
+				[self.dictSavedEventsInCalendar setObject:newEventDict forKey:uniqueIDForEvent];
+			}
+		}
+	}
+	
+	[self saveCalendar];
+}
+
 // Check the authorization status of our application for Calendar
 - (void) checkEventStoreAccessForCalendar
 {
@@ -302,24 +372,48 @@
     {
 		// Update our UI if the user has granted access to their Calendar
         case EKAuthorizationStatusAuthorized:
+		{
 			[self accessGrantedForCalendar];
+			
+			if (![[NSUserDefaults standardUserDefaults] boolForKey:@"CalendarAccessGranted"])
+			{
+				[self checkAndSyncWithCalendar:YES];
+				
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"CalendarAccessGranted"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+			}
+
+			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"UserWarnedStatusDenied"];
+			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"UserWarnedStatusRestricted"];
+			[[NSUserDefaults standardUserDefaults] synchronize];
+		}
             break;
             
 		// Prompt the user for access to Calendar if there is no definitive answer
         case EKAuthorizationStatusNotDetermined:
+		{
 			[self requestCalendarAccess];
+		}
             break;
             
 		// Display a message if the user has denied or restricted access to Calendar
         case EKAuthorizationStatusDenied:
         {
+ 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"CalendarAccessGranted"])
+			{
+				// [self checkAndSyncWithCalendar:NO];
+				
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"CalendarAccessGranted"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+			}
+			
  			if (![[NSUserDefaults standardUserDefaults] boolForKey:@"UserWarnedStatusDenied"])
 			{
 				UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning"
-																message:@"Permission was not granted for Calendar"
-															   delegate:nil
-													  cancelButtonTitle:@"OK"
-													  otherButtonTitles:nil];
+															message:@"Permission was not granted for Calendar"
+															delegate:nil
+															cancelButtonTitle:@"OK"
+															otherButtonTitles:nil];
 				[alert show];
 				
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UserWarnedStatusDenied"];
@@ -330,6 +424,14 @@
 
         case EKAuthorizationStatusRestricted:
         {
+			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"CalendarAccessGranted"])
+			{
+				// [self checkAndSyncWithCalendar:NO];
+				
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"CalendarAccessGranted"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+			}
+
  			if (![[NSUserDefaults standardUserDefaults] boolForKey:@"UserWarnedStatusRestricted"])
 			{
 				UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning"
@@ -586,11 +688,12 @@
 		{
 			if(newEvent.eventIdentifier != nil)
 			{
-				[self.dictSavedEventsInCalendar setObject:newEvent.eventIdentifier forKey:uniqueIDForEvent];
+				NSArray *newEventDict = [NSArray arrayWithObjects:newEvent.title, newEvent.location, newEvent.startDate, newEvent.endDate, newEvent.eventIdentifier, nil];
+				[self.dictSavedEventsInCalendar setObject:newEventDict forKey:uniqueIDForEvent];
 			}
 			else
 			{
-				NSArray *newEventDict = [NSArray arrayWithObjects:newEvent.title, newEvent.location, newEvent.startDate, newEvent.endDate, nil];
+				NSArray *newEventDict = [NSArray arrayWithObjects:newEvent.title, newEvent.location, newEvent.startDate, newEvent.endDate, @"", nil];
 				[self.dictSavedEventsInCalendar setObject:newEventDict forKey:uniqueIDForEvent];
 			}
 			
@@ -661,16 +764,21 @@
 			{
 				if(self.cinequestCalendar != nil)
 				{
-					EKEvent *event = [self.eventStore eventWithIdentifier:[self.dictSavedEventsInCalendar objectForKey:stringID]];
-					if (event)
+					NSArray *eventArray = [self.dictSavedEventsInCalendar objectForKey:stringID];
+					NSString *identifier = [eventArray lastObject];
+					if(identifier.length > 0)
 					{
-						schedule.isSelected = YES;
-						[self.mySchedule addObject:schedule];
-						[self.arrayCalendarItems addObject:stringID];
-					}
-					else
-					{
-						[self.dictSavedEventsInCalendar removeObjectForKey:stringID];
+						EKEvent *event = [self.eventStore eventWithIdentifier:identifier];
+						if (event)
+						{
+							schedule.isSelected = YES;
+							[self.mySchedule addObject:schedule];
+							[self.arrayCalendarItems addObject:stringID];
+						}
+						else
+						{
+							[self.dictSavedEventsInCalendar removeObjectForKey:stringID];
+						}
 					}
 				}
 				else
@@ -732,6 +840,12 @@
 		hud.removeFromSuperViewOnHide = YES;
 		[hud hide:YES afterDelay:time];
 	});
+}
+
+- (void) appBecomeActive
+{
+	locationServicesON = [CLLocationManager locationServicesEnabled];
+	userLocationON = [CLLocationManager authorizationStatus];
 }
 
 @end

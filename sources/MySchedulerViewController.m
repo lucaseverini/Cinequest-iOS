@@ -524,11 +524,11 @@ static NSString *const kScheduleCellIdentifier = @"ScheduleCell";
 
 - (EKEvent*) findEventForSchedule:(Schedule*)schedule inStore:(EKEventStore*)store
 {
-	NSString *eventIdentifier = [delegate.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
+	NSArray *eventArray = [delegate.dictSavedEventsInCalendar objectForKey:[NSString stringWithFormat:@"%@-%@", schedule.itemID, schedule.ID]];
+	NSString *eventIdentifier = [eventArray lastObject];
 	if(eventIdentifier != nil)
 	{
-		EKEvent *event = [store eventWithIdentifier:eventIdentifier];
-		return event;
+		return [store eventWithIdentifier:eventIdentifier];
 	}
 
     return nil;
