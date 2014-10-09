@@ -134,7 +134,6 @@
 		C27139391828E8C900BF8DCB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38317EBAB3200033D4F /* Foundation.framework */; };
 		C271393A1828E8C900BF8DCB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C8B38117EBAB3200033D4F /* UIKit.framework */; };
 		C27139401828E8C900BF8DCB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C271393E1828E8C900BF8DCB /* InfoPlist.strings */; };
-		C27139421828E8C900BF8DCB /* List_of_Shows_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C27139411828E8C900BF8DCB /* List_of_Shows_Tests.m */; };
 		C27BC6D8182A1E26006F7D25 /* VenueLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6D7182A1E26006F7D25 /* VenueLocation.m */; };
 		C27BC6DB182A3734006F7D25 /* Schedule.m in Sources */ = {isa = PBXBuildFile; fileRef = C27BC6DA182A3734006F7D25 /* Schedule.m */; };
 		C2B86DF41844C01A0088A958 /* Forum.m in Sources */ = {isa = PBXBuildFile; fileRef = C2B86DF31844C01A0088A958 /* Forum.m */; };
@@ -146,7 +145,6 @@
 		C2D6DC291829B8BF005A6897 /* Film.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC281829B8BF005A6897 /* Film.m */; };
 		C2D6DC2C1829E0F7005A6897 /* CinequestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC2B1829E0F7005A6897 /* CinequestItem.m */; };
 		C2D6DC2F1829E1CE005A6897 /* ProgramItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC2E1829E1CE005A6897 /* ProgramItem.m */; };
-		C2D6DC311829E999005A6897 /* FestivalParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D6DC301829E999005A6897 /* FestivalParserTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -831,7 +829,7 @@
 				ORGANIZATIONNAME = "San Jose State University";
 				TargetAttributes = {
 					81C8B37D17EBAB3200033D4F = {
-						DevelopmentTeam = 5729M5Y5C8;
+						DevelopmentTeam = 2ZA68DRGAD;
 					};
 					C27139351828E8C800BF8DCB = {
 						TestTargetID = 81C8B37D17EBAB3200033D4F;
@@ -1014,8 +1012,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2D6DC311829E999005A6897 /* FestivalParserTest.m in Sources */,
-				C27139421828E8C900BF8DCB /* List_of_Shows_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
