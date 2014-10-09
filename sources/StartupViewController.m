@@ -40,7 +40,7 @@
 {
     [super viewDidLoad];
 
-	[app setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];	
+	[app setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade]; // Hide out the status bar
 }
 
 - (void) viewDidDisappear:(BOOL)animated
@@ -54,7 +54,7 @@
 {
 	[app setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 
-	[super viewWillDisappear: animated];
+	[super viewWillDisappear: animated]; // Make it animated
 }
 
 - (void) viewDidLayoutSubviews
