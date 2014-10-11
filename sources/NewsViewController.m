@@ -35,6 +35,7 @@ static NSString *const kNewsCellIdentifier = @"NewsCell";
  *  Function for loading app screen.
  * The screen is reloaded by a single data which doesn't vary or there is no editing operation
  * performed on data
+ * The screen is reloaded by a single data which doesn't vary or there is no editing 
  * @return Nothing
  */
 - (void) viewDidLoad
