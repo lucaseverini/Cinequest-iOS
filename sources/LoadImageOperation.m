@@ -12,6 +12,7 @@
 
 @synthesize imageData;
 
+// Init the image with the url
 - (id) initWithImageUrl:(NSURL*)url
 {
 	self = [super init];

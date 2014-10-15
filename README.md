@@ -1,4 +1,4 @@
 Cinequest
 =========
 
-Cinequest iOS app for CS175 class at SJSU, Fall 2013.
+Cinequest iOS app for CS175 class at SJSU, Fall 2014.
