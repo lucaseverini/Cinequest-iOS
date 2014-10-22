@@ -135,6 +135,7 @@
 	[checkFeedTimer fire];
 }
 
+// Get the news feed from server, then return them under XML data structure
 - (NSData*) newsFeed
 {
     NSLog(@"Getting news feed...");
@@ -226,6 +227,8 @@
 	return xmlData;
 }
 
+
+// Check the news feed is beign downloaed or not base on a time interval
 - (void) connection:(NSURLConnection*)connection didReceiveData:(NSData*)data
 {
 	if(connection == checkConnection)
@@ -310,6 +313,7 @@
 	}
 }
 
+// Return the timestamp for downloaded news feed
 - (NSDate*) getFeedTimeStamp:(NSData*)data
 {
 	NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -344,6 +348,7 @@
 	return nil;
 }
 
+// Check if cache folder is full, then clean the files in cache folder
 - (void) checkCacheFolder
 {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
@@ -417,6 +422,7 @@
 	});
 }
 
+// Check for news feed by using checkFeedTimer and update the news feeds
 - (void) checkNewsFeed
 {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
@@ -508,6 +514,7 @@
 	});
 }
 
+// Get a list of film base on time and return the film's URL
 - (NSData*) filmsByTime
 {
 	NSLog(@"Getting filmsByTime...");
@@ -558,6 +565,7 @@
 	}
 }
 
+// Get a list of film base on its title and return the film's URL
 - (NSData*) filmsByTitle
 {
 	NSLog(@"Getting filmsByTitle...");
@@ -608,6 +616,7 @@
 	}
 }
 
+// Return the new main feeds URL data if there is any
 - (NSData*) mainFeed
 {
 	NSLog(@"Getting main feed...");
@@ -666,6 +675,7 @@
 	}
 }
 
+// Return the new events URL data if there is any
 - (NSData*) events
 {
 	NSLog(@"Getting events...");
@@ -716,6 +726,7 @@
 	}
 }
 
+// Return the new forums URL data if there is any
 - (NSData*) forums
 {
 	NSLog(@"Getting forums...");
@@ -766,6 +777,7 @@
 	}
 }
 
+// Return the new venues data by checking the newsFeedDate
 - (NSData*) venues
 {
 	NSLog(@"Getting venues...");
@@ -816,6 +828,7 @@
 	}
 }
 
+// Return the new mode data by checking the newFeedDate
 - (NSData*) mode
 {
 	NSLog(@"Getting mode...");
@@ -952,6 +965,7 @@
 	}
 }
 
+// Get the film detail data base on the filmId
 - (NSData*) filmDetail:(NSString *)filmId
 {
 	NSLog(@"Getting detail for film %@...", filmId);
@@ -1003,6 +1017,7 @@
 	}
 }
 
+// Return the event detail base on the eventId which contains the show activities
 - (NSData*) eventDetail:(NSString*)eventId
 {
 	NSLog(@"Getting detail for event %@...", eventId);
@@ -1054,6 +1069,7 @@
 	}
 }
 
+// Build the cache image in the local for the new image
 - (NSString*) cacheImage:(NSString*)imageUrl
 {
 	if(imageUrl == nil)
@@ -1144,6 +1160,7 @@
 	}
 }
 
+// Check if the cache image if succesfully built after 5 seconds.
 - (NSString*) cacheImageTest:(NSString*)imageUrl
 {
 	[NSThread sleepForTimeInterval:5.0];

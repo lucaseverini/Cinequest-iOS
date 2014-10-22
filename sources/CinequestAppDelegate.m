@@ -145,6 +145,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+
 - (BOOL) checkPrefsForDataDeletion
 {
 	NSUserDefaults *userDefs = [NSUserDefaults standardUserDefaults];
@@ -195,6 +196,7 @@
 	return [self.reachability isReachable];
 }
 
+// Initialze the connection, and hold in the loop until get connected
 - (void) startReachability:(NSString*)hostName
 {
 	if(hostName == nil)
@@ -229,6 +231,7 @@
 	}
 }
 
+// Notify if changing the type of connection, then write down the log
 - (void) reachabilityDidChange:(NSNotification*)note
 {
     Reachability *reach = note != nil ? [note object] : reachability;
@@ -258,6 +261,7 @@
 
 #pragma mark - Utility functions
 
+// Returns the caches directory in the domain server, then set to local variable
 - (NSURL*) cachesDirectory
 {
     static NSURL *cachesDir;
@@ -272,6 +276,7 @@
     return cachesDir;
 }
 
+// Returns the document directory in the domain server, then set to local variable
 - (NSURL*) documentsDirectory
 {
     static NSURL *docsDir;
@@ -288,6 +293,7 @@
 
 #pragma mark - Access Calendar
 
+// Check if there are any new events on the calendar, then sync with the stored databse
 - (void) checkAndSyncWithCalendar:(BOOL)calendarAccessGranted
 {
 	NSLog(@"checkAndSyncWithCalendar");
@@ -748,6 +754,8 @@
 	}
 }
 
+
+// Update the calendar with new events created
 - (void) populateCalendarEntries
 {
     if (!self.mySchedule)
